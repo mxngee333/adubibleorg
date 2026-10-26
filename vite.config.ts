@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
     outDir: 'dist',
+    emptyOutDir: false,
     sourcemap: false,
     chunkSizeWarningLimit: 1200,
   },
