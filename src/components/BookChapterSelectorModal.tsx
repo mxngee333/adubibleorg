@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { X, Search, BookOpen, Sparkles, ChevronRight } from 'lucide-react';
 import { BibleBook } from '../types/bible';
 
@@ -32,6 +32,18 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
     () => books.find((b) => b.id === currentBookId) || books[0] || null
   );
   const [step, setStep] = useState<'books' | 'chapters'>('books');
+
+  useEffect(() => {
+    if (isOpen) {
+      const cur = books.find((b) => b.id === currentBookId);
+      if (cur?.testament === 'DC') setTestamentFilter('DC');
+      else if (cur?.testament === 'PSEUD') setTestamentFilter('PSEUD');
+      else setTestamentFilter('CANONICAL');
+      if (cur) setSelectedBook(cur);
+      setStep('books');
+      setSearchQuery('');
+    }
+  }, [isOpen, currentBookId, books]);
 
   const filteredBooks = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();

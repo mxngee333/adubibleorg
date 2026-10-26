@@ -682,6 +682,23 @@ body:has(.theme-lilac-light) ::-webkit-scrollbar-thumb:hover {
   cursor: pointer;
 }
 
+.field select optgroup {
+  background: var(--surface);
+  color: var(--green);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 6px 8px;
+}
+
+.field select option {
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 500;
+  font-size: 13px;
+  padding: 4px 10px;
+}
+
 .field.compact select {
   min-width: 96px;
 }

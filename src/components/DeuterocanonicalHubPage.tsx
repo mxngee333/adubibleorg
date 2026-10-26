@@ -204,19 +204,58 @@ export const DeuterocanonicalHubPage: React.FC<DeuterocanonicalHubPageProps> = (
           </button>
         </div>
 
-        <div className="chapter-search">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search Wisdom, Sirach, Tobit, Anyansa..."
-            style={{ minWidth: '240px' }}
-          />
-          {searchQuery && (
-            <button type="button" onClick={() => setSearchQuery('')}>
-              Clear
-            </button>
-          )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <select
+            className="quick-book-jump"
+            onChange={(e) => {
+              if (e.target.value) {
+                onSelectBookChapter(e.target.value, 1);
+              }
+            }}
+            defaultValue=""
+            style={{
+              height: '36px',
+              padding: '0 10px',
+              borderRadius: '8px',
+              border: '1px solid var(--line)',
+              background: 'var(--surface)',
+              color: 'var(--ink)',
+              fontSize: '13px',
+              cursor: 'pointer',
+            }}
+            aria-label="Quick jump to book"
+          >
+            <option value="" disabled>Quick jump to book...</option>
+            <optgroup label="── 16 Deuterocanonical Books ──">
+              {deuterocanonBooks.map((b) => (
+                <option key={b.id} value={b.slug}>
+                  {b.names.en} ({b.names.tw || b.id})
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="── All Other Books ──">
+              {books.filter((b) => b.testament !== 'DC').map((b) => (
+                <option key={b.id} value={b.slug}>
+                  {b.names.en}
+                </option>
+              ))}
+            </optgroup>
+          </select>
+
+          <div className="chapter-search">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search Wisdom, Sirach, Tobit, Anyansa..."
+              style={{ minWidth: '220px' }}
+            />
+            {searchQuery && (
+              <button type="button" onClick={() => setSearchQuery('')}>
+                Clear
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

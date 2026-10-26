@@ -544,6 +544,32 @@ export function App() {
     setSelectedVerse(1);
     setActiveVerseActionBar(null);
     setActiveNavTab('canonical');
+
+    // Auto-align parallel translations when switching between Canonical, Deuterocanon, and Apocrypha
+    const targetBook = allHistoricalBooks.find((b) => b.slug === bookSlug);
+    if (targetBook?.testament === 'DC') {
+      const hasDCVersion = activeVersionIds.some((id) =>
+        ['kjv-apoc', 'twi-apoc', 'dra', 'lxx', 'vulgate'].includes(id)
+      );
+      if (!hasDCVersion) {
+        setActiveVersionIds(['kjv-apoc', 'twi-apoc']);
+      }
+    } else if (targetBook?.testament === 'PSEUD') {
+      const hasPseudVersion = activeVersionIds.some((id) =>
+        ['charles', 'lightfoot', 'twi-apoc', 'kjv-apoc'].includes(id)
+      );
+      if (!hasPseudVersion) {
+        setActiveVersionIds(['charles', 'twi-apoc']);
+      }
+    } else if (targetBook?.testament === 'OT' || targetBook?.testament === 'NT') {
+      const onlyApocryphaVersions = activeVersionIds.every((id) =>
+        ['charles', 'lightfoot'].includes(id)
+      );
+      if (onlyApocryphaVersions) {
+        setActiveVersionIds(['nkjv', 'twi']);
+      }
+    }
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -1286,12 +1312,35 @@ export function App() {
                 <select
                   value={currentBook.slug}
                   onChange={(e) => handleSelectBookChapter(e.target.value, 1)}
+                  aria-label="Select Bible book across Canonical, Deuterocanon, and Apocrypha"
                 >
-                  {activeCollectionBooks.map((item) => (
-                    <option key={item.id} value={item.slug}>
-                      {item.names.en} ({item.names.tw || item.id})
-                    </option>
-                  ))}
+                  <optgroup label="── 66 ACCEPTED CANONICAL SCRIPTURES (OT 39 + NT 27) ──">
+                    {canonicalBooks.map((item) => (
+                      <option key={item.id} value={item.slug}>
+                        {item.names.en} ({item.names.tw || item.id})
+                      </option>
+                    ))}
+                  </optgroup>
+
+                  <optgroup label="── 16 DEUTEROCANONICAL BOOKS (Catholic / Orthodox) ──">
+                    {allHistoricalBooks
+                      .filter((b) => b.testament === 'DC')
+                      .map((item) => (
+                        <option key={item.id} value={item.slug}>
+                          {item.names.en} ({item.names.tw || item.id})
+                        </option>
+                      ))}
+                  </optgroup>
+
+                  <optgroup label="── 25 APOCRYPHA & HISTORICAL TEXTS (List of Sixty) ──">
+                    {allHistoricalBooks
+                      .filter((b) => b.testament === 'PSEUD')
+                      .map((item) => (
+                        <option key={item.id} value={item.slug}>
+                          {item.names.en} ({item.names.tw || item.id})
+                        </option>
+                      ))}
+                  </optgroup>
                 </select>
               </label>
 
