@@ -3,5 +3,13 @@ Allow: /
 
 User-agent: Googlebot-Image
 Allow: /
+Allow: /favicon.ico
+Allow: /favicon.svg
+Allow: /favicon-48x48.png
+Allow: /favicon-96x96.png
+Allow: /apple-touch-icon.png
+Allow: /og-image.jpg
+Allow: /icons/
+Allow: /images/
 
-Sitemap: https://elohimbible.web.app/sitemap.xml
+Sitemap: https://adubible.org/sitemap.xml
