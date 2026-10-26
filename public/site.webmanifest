@@ -1,17 +1,38 @@
 {
-  "name": "AduBible — Multilingual Parallel Bible",
+  "name": "AduBible — Free Multilingual Parallel Bible",
   "short_name": "AduBible",
-  "description": "AduBible (Adubible.org) — Honoring the Legacy of Apostle Kwame Adu (Nushia, Ghana). Ad-Free Multilingual Parallel Bible with Twi (Twerɛ Kronkron), 35+ Languages, Strong's Concordance, and Cloud Study Sync.",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#0c0a09",
-  "theme_color": "#0c0a09",
+  "description": "Ad-free multilingual parallel Bible study engine with Asante Twi, NKJV, KJV, Hebrew, Greek, and Strong's Concordance. Dedicated in honor of Apostle Kwame Adu.",
   "icons": [
+    {
+      "src": "/favicon-48x48.png",
+      "sizes": "48x48",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
     }
-  ]
+  ],
+  "theme_color": "#0c0a09",
+  "background_color": "#0c0a09",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/",
+  "lang": "en",
+  "id": "adubible-org-pwa"
 }
