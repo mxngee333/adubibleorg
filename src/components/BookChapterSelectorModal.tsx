@@ -21,12 +21,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
   uiLanguageCode,
   onSelectBookChapter,
 }) => {
-  const [testamentFilter, setTestamentFilter] = useState<'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD'>(() => {
-    const cur = books.find((b) => b.id === currentBookId);
-    if (cur?.testament === 'DC') return 'DC';
-    if (cur?.testament === 'PSEUD') return 'PSEUD';
-    return 'CANONICAL';
-  });
+  const [testamentFilter, setTestamentFilter] = useState<'CANONICAL' | 'OT' | 'NT'>('CANONICAL');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBook, setSelectedBook] = useState<BibleBook | null>(
     () => books.find((b) => b.id === currentBookId) || books[0] || null
@@ -36,8 +31,8 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
   useEffect(() => {
     if (isOpen) {
       const cur = books.find((b) => b.id === currentBookId);
-      if (cur?.testament === 'DC') setTestamentFilter('DC');
-      else if (cur?.testament === 'PSEUD') setTestamentFilter('PSEUD');
+      if (cur?.testament === 'OT') setTestamentFilter('OT');
+      else if (cur?.testament === 'NT') setTestamentFilter('NT');
       else setTestamentFilter('CANONICAL');
       if (cur) setSelectedBook(cur);
       setStep('books');
@@ -82,18 +77,10 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
             </div>
             <div>
               <h2 className="text-base font-bold text-amber-200">
-                {testamentFilter === 'DC'
-                  ? '16 Deuterocanonical Books Navigator'
-                  : testamentFilter === 'PSEUD'
-                  ? '25 List of Sixty & Apocrypha Navigator'
-                  : '66 Accepted Canonical Books Navigator'}
+                Holy Bible · 66 Canonical Books Navigator
               </h2>
               <p className="text-xs text-stone-400">
-                {testamentFilter === 'DC'
-                  ? 'Catholic & Orthodox Canons (16 Historical Books)'
-                  : testamentFilter === 'PSEUD'
-                  ? '7th-Century Manuscript Canon & Apostolic Fathers (25 Books)'
-                  : 'Old Testament (39) · New Testament (27) · Accepted Holy Scripture'}
+                Old Testament (39 Books) · New Testament (27 Books) · Accepted Scripture
               </p>
             </div>
           </div>
@@ -148,34 +135,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
             >
               New Testament (27)
             </button>
-            <button
-              onClick={() => {
-                setTestamentFilter('DC');
-                setStep('books');
-              }}
-              className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
-                testamentFilter === 'DC'
-                  ? 'bg-amber-500 text-stone-950'
-                  : 'bg-stone-800 text-stone-300 hover:text-white'
-              }`}
-              title="Tobit, Judith, Sirach, Wisdom, Maccabees, Baruch, 1-2 Esdras, Manasseh, Psalm 151"
-            >
-              📜 Deuterocanon (16)
-            </button>
-            <button
-              onClick={() => {
-                setTestamentFilter('PSEUD');
-                setStep('books');
-              }}
-              className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
-                testamentFilter === 'PSEUD'
-                  ? 'bg-amber-500 text-stone-950'
-                  : 'bg-stone-800 text-stone-300 hover:text-white'
-              }`}
-              title="7th-Century List of Sixty, Book of Enoch, Didache, Shepherd of Hermas, Clement, Patriarchs"
-            >
-              🏺 List of Sixty &amp; Apocrypha (25)
-            </button>
+
           </div>
 
           <div className="relative flex-1 max-w-xs">
@@ -314,6 +274,40 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                 </div>
               </div>
             )}
+
+            {/* Discreet Historical Non-Canonical Zone Link */}
+            <div className="border-t border-stone-800/80 pt-3 mt-4 text-center text-xs text-stone-400">
+              <span>Historical Non-Canonical Writings:</span>
+              <a
+                href="/deuterocanon"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onClose();
+                  if (typeof window !== 'undefined') {
+                    window.history.pushState({}, '', '/deuterocanon');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }
+                }}
+                className="text-amber-400/90 hover:underline font-semibold ml-2 inline-block"
+              >
+                16 Deuterocanonicals Zone →
+              </a>
+              <span className="mx-1.5 text-stone-600">·</span>
+              <a
+                href="/list-of-sixty"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onClose();
+                  if (typeof window !== 'undefined') {
+                    window.history.pushState({}, '', '/list-of-sixty');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }
+                }}
+                className="text-amber-400/90 hover:underline font-semibold inline-block"
+              >
+                25 Apocrypha Zone →
+              </a>
+            </div>
           </div>
         </div>
       </div>

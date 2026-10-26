@@ -1021,61 +1021,55 @@ export function App() {
         </div>
       </header>
 
-      {/* 2. CANONICAL TABS NAVIGATION */}
-      <nav className="canon-nav-bar" aria-label="Canons and Collections">
-        <div className="canon-nav-container">
+      {/* ISOLATED HISTORICAL ZONE BANNER (Only visible when user explicitly visits /deuterocanon or /list-of-sixty) */}
+      {activeNavTab !== 'canonical' && (
+        <div
+          className="historical-zone-strip"
+          style={{
+            background: 'var(--paper)',
+            borderBottom: '1px solid var(--line)',
+            padding: '8px 20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '10px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Historical &amp; Ancient Manuscript Zone
+            </span>
+            <span style={{ fontSize: '11px', color: 'var(--subtle)' }}>
+              (Isolated research zone · Not interleaved with the 66 Books of Scripture)
+            </span>
+          </div>
           <button
             type="button"
-            className={`canon-tab-btn ${activeNavTab === 'canonical' ? 'active' : ''}`}
             onClick={() => {
               setActiveNavTab('canonical');
               if (typeof window !== 'undefined') {
-                window.history.pushState(
-                  {},
-                  '',
-                  `/${activeVersionIds[0] || 'kjv'}/${currentBookSlug}/${currentChapter}`
-                );
+                window.history.pushState({}, '', '/');
               }
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            style={{
+              padding: '4px 12px',
+              borderRadius: '6px',
+              border: '1px solid var(--line)',
+              background: 'var(--surface)',
+              color: 'var(--ink)',
+              fontSize: '11.5px',
+              fontWeight: 700,
+              cursor: 'pointer',
             }}
           >
-            <span className="tab-icon">📖</span>
-            <span className="tab-title">Canonical Scriptures</span>
-            <span className="tab-badge">66 Books</span>
-          </button>
-
-          <button
-            type="button"
-            className={`canon-tab-btn ${activeNavTab === 'deuterocanon' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveNavTab('deuterocanon');
-              if (typeof window !== 'undefined') {
-                window.history.pushState({}, '', '/deuterocanon');
-              }
-            }}
-          >
-            <span className="tab-icon">📜</span>
-            <span className="tab-title">Deuterocanonicals</span>
-            <span className="tab-badge">16 Books</span>
-          </button>
-
-          <button
-            type="button"
-            className={`canon-tab-btn ${activeNavTab === 'list-of-sixty' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveNavTab('list-of-sixty');
-              if (typeof window !== 'undefined') {
-                window.history.pushState({}, '', '/list-of-sixty');
-              }
-            }}
-          >
-            <span className="tab-icon">🏺</span>
-            <span className="tab-title">List of Sixty &amp; Apocrypha</span>
-            <span className="tab-badge">25 Books</span>
+            ← Return to Holy Bible (66 Canonical Books)
           </button>
         </div>
-      </nav>
+      )}
 
-      {/* QUICK TRANSLATION VERSION RIBBON (BIBLEHUB-STYLE 1-TAP SWITCHER) */}
+            {/* QUICK TRANSLATION VERSION RIBBON (BIBLEHUB-STYLE 1-TAP SWITCHER) */}
       <QuickVersionRibbon
         activeVersionIds={activeVersionIds}
         allVersions={allVersions}

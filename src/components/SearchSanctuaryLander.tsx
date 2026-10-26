@@ -368,20 +368,20 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
         </div>
       </div>
 
-      {/* 4. THREE SACRED CANON PORTALS */}
+      {/* 4. THE 66 CANONICAL BOOKS OF THE HOLY SCRIPTURES */}
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
           gap: '14px',
           maxWidth: '920px',
-          margin: '0 auto 28px',
+          margin: '0 auto 16px',
         }}
       >
-        {/* Portal 1: 66 Canonical Books */}
+        {/* Old Testament 39 Books */}
         <div
           style={{
-            padding: '18px',
+            padding: '20px',
             borderRadius: '12px',
             border: '1px solid var(--line)',
             background: 'var(--paper)',
@@ -393,38 +393,42 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
               <BookOpen style={{ width: '18px', height: '18px', color: 'var(--green)' }} />
-              <strong style={{ fontSize: '14px', color: 'var(--ink)' }}>66 Canonical Books</strong>
+              <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>The Old Testament (39 Books)</strong>
             </div>
-            <p style={{ fontSize: '12px', color: 'var(--subtle)', lineHeight: 1.5, margin: '0 0 14px 0' }}>
-              The 39 Old Testament &amp; 27 New Testament scriptures in Asante Twi, NKJV, KJV, and Original Greek/Hebrew.
+            <p style={{ fontSize: '12.5px', color: 'var(--subtle)', lineHeight: 1.5, margin: '0 0 16px 0' }}>
+              From Genesis to Malachi. The Torah, Historical Books, Poetry &amp; Prophets in Asante Twi, Hebrew Interlinear, NKJV, and KJV.
             </p>
           </div>
           <button
             type="button"
-            onClick={() => onSelectNavTab('canonical')}
+            onClick={() => {
+              onNavigate('genesis', 1);
+              onEnterReader();
+            }}
             style={{
-              padding: '8px 12px',
+              padding: '9px 14px',
               borderRadius: '8px',
               border: '1px solid var(--line)',
               background: 'var(--soft)',
               color: 'var(--ink)',
-              fontSize: '12px',
+              fontSize: '12.5px',
               fontWeight: 700,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
+              transition: 'all 0.15s ease',
             }}
           >
-            <span>Read 66 Books</span>
+            <span>Read Old Testament (Genesis 1)</span>
             <ArrowRight style={{ width: '14px', height: '14px', color: 'var(--green)' }} />
           </button>
         </div>
 
-        {/* Portal 2: 16 Deuterocanonical Books */}
+        {/* New Testament 27 Books */}
         <div
           style={{
-            padding: '18px',
+            padding: '20px',
             borderRadius: '12px',
             border: '1px solid var(--line)',
             background: 'var(--paper)',
@@ -435,80 +439,95 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
         >
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <Scroll style={{ width: '18px', height: '18px', color: 'var(--green)' }} />
-              <strong style={{ fontSize: '14px', color: 'var(--ink)' }}>16 Deuterocanonicals</strong>
+              <BookOpen style={{ width: '18px', height: '18px', color: 'var(--green)' }} />
+              <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>The New Testament (27 Books)</strong>
             </div>
-            <p style={{ fontSize: '12px', color: 'var(--subtle)', lineHeight: 1.5, margin: '0 0 14px 0' }}>
-              Catholic &amp; Orthodox historical books: Wisdom of Solomon, Sirach, Tobit, Judith, Baruch, and Maccabees.
+            <p style={{ fontSize: '12.5px', color: 'var(--subtle)', lineHeight: 1.5, margin: '0 0 16px 0' }}>
+              From Matthew to Revelation. The Gospels, Acts of the Apostles, Epistles &amp; Apocalypse in Asante Twi, Greek, NKJV, and KJV.
             </p>
           </div>
           <button
             type="button"
-            onClick={() => onSelectNavTab('deuterocanon')}
+            onClick={() => {
+              onNavigate('matthew', 1);
+              onEnterReader();
+            }}
             style={{
-              padding: '8px 12px',
+              padding: '9px 14px',
               borderRadius: '8px',
               border: '1px solid var(--line)',
               background: 'var(--soft)',
               color: 'var(--ink)',
-              fontSize: '12px',
+              fontSize: '12.5px',
               fontWeight: 700,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
+              transition: 'all 0.15s ease',
             }}
           >
-            <span>Browse Deuterocanon (16)</span>
-            <ArrowRight style={{ width: '14px', height: '14px', color: 'var(--green)' }} />
-          </button>
-        </div>
-
-        {/* Portal 3: 25 List of Sixty & Apocrypha */}
-        <div
-          style={{
-            padding: '18px',
-            borderRadius: '12px',
-            border: '1px solid var(--line)',
-            background: 'var(--paper)',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <Layers style={{ width: '18px', height: '18px', color: 'var(--green)' }} />
-              <strong style={{ fontSize: '14px', color: 'var(--ink)' }}>25 List of Sixty Books</strong>
-            </div>
-            <p style={{ fontSize: '12px', color: 'var(--subtle)', lineHeight: 1.5, margin: '0 0 14px 0' }}>
-              Ancient manuscript apocrypha: 1 Enoch, Book of Jubilees, Book of Jasher, Didache, and Shepherd of Hermas.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => onSelectNavTab('list-of-sixty')}
-            style={{
-              padding: '8px 12px',
-              borderRadius: '8px',
-              border: '1px solid var(--line)',
-              background: 'var(--soft)',
-              color: 'var(--ink)',
-              fontSize: '12px',
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <span>Browse Apocrypha (25)</span>
+            <span>Read New Testament (Matthew 1)</span>
             <ArrowRight style={{ width: '14px', height: '14px', color: 'var(--green)' }} />
           </button>
         </div>
       </div>
 
-      
+      {/* ISOLATED HISTORICAL ZONE NOTICE (NOT INTERLEAVED WITH SCRIPTURE) */}
+      <div
+        style={{
+          maxWidth: '920px',
+          margin: '0 auto 24px',
+          padding: '10px 16px',
+          borderRadius: '8px',
+          background: 'rgba(0, 0, 0, 0.15)',
+          border: '1px dashed var(--line)',
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '10px',
+        }}
+      >
+        <span style={{ fontSize: '11.5px', color: 'var(--subtle)' }}>
+          📚 <strong>Historical &amp; Ancient Manuscript Zone:</strong> For scholarly research on non-canonical texts (16 Deuterocanonicals / 25 List of Sixty Apocrypha), explore their dedicated separate zone.
+        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button
+            type="button"
+            onClick={() => onSelectNavTab('deuterocanon')}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'var(--green)',
+              fontSize: '11.5px',
+              fontWeight: 600,
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              padding: 0,
+            }}
+          >
+            Deuterocanon (16) →
+          </button>
+          <span style={{ color: 'var(--subtle)', fontSize: '11px' }}>·</span>
+          <button
+            type="button"
+            onClick={() => onSelectNavTab('list-of-sixty')}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'var(--green)',
+              fontSize: '11.5px',
+              fontWeight: 600,
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              padding: 0,
+            }}
+          >
+            Ancient Apocrypha (25) →
+          </button>
+        </div>
+      </div>
 
       {/* 5. INSTANT PARALLEL STUDY LAUNCHERS */}
       <div
