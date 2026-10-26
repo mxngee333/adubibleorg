@@ -13,7 +13,7 @@ export const AduBibleLogo: React.FC<AduBibleLogoProps> = ({
   size = 'md',
   className = '',
   onClick,
-  title = 'AduBible — Adubible.org',
+  title = 'AduBible.org — Sovereign Scripture Engine',
 }) => {
   return (
     <div
@@ -28,6 +28,7 @@ export const AduBibleLogo: React.FC<AduBibleLogoProps> = ({
       <div className="logo-wordmark">
         <span className="logo-word-adu">Adu</span>
         <span className="logo-word-bible">Bible</span>
+        <span className="logo-word-tld">.org</span>
       </div>
     </div>
   );

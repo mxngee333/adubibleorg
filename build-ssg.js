@@ -14,7 +14,7 @@ const CANONICAL_ROUTES = [
     route: '/',
     priority: '1.0',
     changefreq: 'weekly',
-    title: "AduBible — Ad-Free Multilingual Parallel Bible, Twi (Twerɛ Kronkron), Strong's Concordance & Study Sync | Adubible.org",
+    title: "AduBible.org — Ad-Free Multilingual Parallel Bible, Twi (Twerɛ Kronkron), Strong's Concordance & Study Sync",
     description:
       "Read the Holy Bible in parallel across Asante Twi (Twerɛ Kronkron), NKJV, KJV, Hebrew, Greek, and 35+ world languages on AduBible (Adubible.org). Dedicated to Humanity in honor of the Legacy of Apostle Kwame Adu · Nsuhia, Ghana (https://nsuhia.com/). 100% Ads-Free Reading Experience with Strong's Concordance and Cloud Study Sync.",
     heading: 'AduBible — Multilingual Parallel Scripture & Exegetical Study Sanctuary',

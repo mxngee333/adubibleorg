@@ -2630,15 +2630,76 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
     font-size: 10px !important;
   }
 
-  /* Maintain BibleHub side-by-side synchronized grid on mobile with horizontal scroll */
+  /* Maintain BibleHub side-by-side synchronized grid on mobile with responsive fit */
+  .edition-head-add,
+  .verse-add-spacer {
+    display: none !important;
+  }
+
+  .edition-head-corner,
+  .verse-gutter {
+    width: 28px !important;
+    min-width: 28px !important;
+    max-width: 28px !important;
+    padding: 8px 2px !important;
+  }
+
+  .gutter-num {
+    font-size: 11.5px !important;
+  }
+
   .edition-heads,
   .verse-row {
-    grid-template-columns: 38px repeat(var(--columns), minmax(260px, 1fr)) 58px;
+    grid-template-columns: 28px 1fr 1fr;
+  }
+
+  .comparison.cols-1 .edition-heads,
+  .comparison.cols-1 .verse-row {
+    grid-template-columns: 28px 1fr !important;
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+
+  .comparison.cols-2 .edition-heads,
+  .comparison.cols-2 .verse-row {
+    grid-template-columns: 28px 1fr 1fr !important;
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+
+  .comparison.cols-3 .edition-heads,
+  .comparison.cols-3 .verse-row,
+  .comparison.cols-4 .edition-heads,
+  .comparison.cols-4 .verse-row,
+  .comparison.cols-5 .edition-heads,
+  .comparison.cols-5 .verse-row {
+    grid-template-columns: 28px repeat(var(--columns), minmax(160px, 1fr)) !important;
   }
 
   .edition-head,
   .verse-cell {
     border-right: 1px solid var(--line);
+    min-width: 0 !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+
+  .verse-cell {
+    padding: 8px 6px !important;
+    font-size: 13.5px !important;
+    line-height: 1.5 !important;
+  }
+
+  .verse-text-body p {
+    font-size: 13.5px !important;
+    line-height: 1.5 !important;
+    margin: 0 !important;
+  }
+
+  .verse-heading {
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+    margin: 0 0 4px 0 !important;
   }
 
   .mobile-cell-badge {
@@ -3617,7 +3678,7 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
 }
 
 .logo-word-adu {
-  font-weight: 700;
+  font-weight: 800;
   color: #ffffff;
   letter-spacing: -0.015em;
 }
@@ -3628,19 +3689,52 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
 }
 
 .logo-word-bible {
-  font-weight: 400;
-  color: #cbd5e1;
-  margin-left: 4.5px;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin-left: 0;
   letter-spacing: -0.01em;
 }
 
 .bible-app.theme-royal-purple .logo-word-bible {
-  color: #c4b5fd;
+  color: #e0e7ff;
 }
 
 .bible-app.theme-parchment .logo-word-bible,
 .bible-app.theme-daylight .logo-word-bible {
-  color: #475569;
+  color: #1e293b;
+}
+
+.bible-app.theme-adubible-si .logo-word-bible {
+  color: #fef08a;
+}
+
+.logo-word-tld {
+  font-weight: 700;
+  font-size: 0.8em;
+  color: #10b981;
+  letter-spacing: -0.02em;
+  margin-left: 1px;
+}
+
+.bible-app.theme-parchment .logo-word-tld,
+.bible-app.theme-daylight .logo-word-tld {
+  color: #059669;
+}
+
+.bible-app.theme-cobalt .logo-word-tld {
+  color: #38bdf8;
+}
+
+.bible-app.theme-royal-purple .logo-word-tld {
+  color: #a78bfa;
+}
+
+.bible-app.theme-adubible-si .logo-word-tld {
+  color: #d4af37;
+}
+
+.bible-app.theme-crimson .logo-word-tld {
+  color: #fb7185;
 }
 
 /* SIZES */

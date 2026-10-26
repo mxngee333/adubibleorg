@@ -399,7 +399,7 @@ export function App() {
 
     if (window.location.pathname === '/' && isAtHomeState) {
       document.title =
-        "AduBible — Ad-Free Multilingual Parallel Bible, Twi & 35+ Languages | Adubible.org";
+        "AduBible.org — Ad-Free Multilingual Parallel Bible, Twi & 35+ Languages";
       return;
     }
 
@@ -411,7 +411,7 @@ export function App() {
     ) {
       window.history.replaceState({}, '', nextUrl);
     }
-    document.title = `${currentBook.names.en} ${currentChapter} (${currentBook.names.tw || currentBook.names.en}) — AduBible Parallel Reader`;
+    document.title = `${currentBook.names.en} ${currentChapter} (${currentBook.names.tw || currentBook.names.en}) — AduBible.org Parallel Reader`;
   }, [activeVersionIds, currentBook, currentChapter]);
 
   // Listen for browser back / forward navigation
@@ -924,7 +924,7 @@ export function App() {
           href="/"
           className="brand"
           onClick={handleGoHome}
-          title="AduBible — Home | Adubible.org"
+          title="AduBible.org — Sovereign Scripture Engine"
         >
           <AduBibleLogo size="md" />
         </a>
@@ -1006,20 +1006,6 @@ export function App() {
 
         {/* Mobile-only clean top controls: Search icon, Active Edition Pill, Sign In */}
         <div className="mobile-mast-actions">
-          <button
-            type="button"
-            className="mobile-mast-icon-btn"
-            style={{ color: '#f59e0b', borderColor: 'rgba(245, 158, 11, 0.45)' }}
-            onClick={() => {
-              setStatusStudioTarget(null);
-              setIsStatusStudioOpen(true);
-            }}
-            aria-label="Create 10s Animated Video Status"
-            title="10s Status Video"
-          >
-            <Film className="h-4 w-4" />
-          </button>
-
           <button
             type="button"
             className="mobile-mast-icon-btn"
@@ -1170,66 +1156,6 @@ export function App() {
         />
       ) : (
         <main id="reader" className="workspace">
-          {/* VIRAL 10s ANIMATED VIDEO STATUS PROMO STRIP */}
-          <div
-            className="status-studio-strip"
-            style={{
-              maxWidth: '1100px',
-              margin: '0 auto 16px',
-              padding: '10px 16px',
-              borderRadius: '12px',
-              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.10), rgba(20, 16, 12, 0.6))',
-              border: '1px solid rgba(245, 158, 11, 0.3)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '12px',
-              flexWrap: 'wrap',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontSize: '18px' }}>🎬</span>
-              <div>
-                <strong style={{ fontSize: '12.5px', color: 'var(--ink)' }}>
-                  10s Animated Scripture Status &amp; Video Studio
-                </strong>
-                <span style={{ display: 'block', fontSize: '11px', color: 'var(--subtle)' }}>
-                  Animate {currentBook.names.en} {currentChapter} with 24kHz Google neural voice for WhatsApp Status, Reels &amp; TikTok with <strong>Adubible.org</strong> watermark
-                </span>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => {
-                const firstVerse = chaptersByVersion[primaryVersionId]?.verses[0]?.text;
-                setStatusStudioTarget({
-                  reference: `${currentBook.names.en} ${currentChapter}:1`,
-                  primaryText: firstVerse || 'For the word of God is living and active...',
-                  primaryVersion: primaryVersionId.toUpperCase(),
-                });
-                setIsStatusStudioOpen(true);
-              }}
-              style={{
-                padding: '6px 14px',
-                borderRadius: '8px',
-                background: 'var(--green)',
-                color: '#0c0a09',
-                fontSize: '11.5px',
-                fontWeight: 800,
-                cursor: 'pointer',
-                border: 0,
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-                boxShadow: '0 2px 10px rgba(245, 158, 11, 0.25)',
-              }}
-            >
-              <span>Create 10s Video</span>
-              <span>✦</span>
-            </button>
-          </div>
-
           <section className="page-heading">
             <h1>{currentBook.names.en} {currentChapter}</h1>
           </section>
@@ -2122,7 +2048,7 @@ export function App() {
           {/* PARALLEL COMPARISON TABLE (BIBLEHUB SCROLL-SYNCHRONIZED) */}
           <div className="biblehub-parallel-scroll-box">
             <div
-              className={`comparison biblehub-sync-table ${prefs.layoutMode === 'verse-by-verse-interlinear' ? 'stacked-mode' : ''}`}
+              className={`comparison biblehub-sync-table cols-${activeVersionIds.length} ${prefs.layoutMode === 'verse-by-verse-interlinear' ? 'stacked-mode' : ''}`}
               style={
                 {
                   '--columns': activeVersionIds.length,
