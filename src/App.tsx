@@ -1020,8 +1020,9 @@ export function App() {
             className="mobile-mast-pill-btn"
             onClick={() => setIsLangAddonModalOpen(true)}
             aria-label="Select translations"
+            title="Active Bible Translations"
           >
-            <span>{activeVersionIds.length > 1 ? `${activeVersionIds.length} Eds` : activeVersionIds[0]?.toUpperCase() || 'KJV'}</span>
+            <span>{activeVersionIds.length > 1 ? `${activeVersionIds.length} Versions` : activeVersionIds[0]?.toUpperCase() || 'KJV'}</span>
           </button>
 
           <button
