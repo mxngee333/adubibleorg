@@ -59,6 +59,8 @@ import { VerseCardStudioModal } from './components/VerseCardStudioModal';
 import { CommentaryPanel } from './components/CommentaryPanel';
 import { AudioBibleBar } from './components/AudioBibleBar';
 import { SettingsModal } from './components/SettingsModal';
+import { DeuterocanonicalHubPage } from './components/DeuterocanonicalHubPage';
+import { ListOfSixtyHubPage } from './components/ListOfSixtyHubPage';
 import {
   LegalInstitutionalModal,
   LegalPageKey,
@@ -67,7 +69,12 @@ import {
 const COMPARE_PRESETS: Array<{ label: string; versions: string[] }> = [
   { label: 'KJV + Twi', versions: ['kjv', 'twi'] },
   { label: 'NKJV + Twi', versions: ['nkjv', 'twi'] },
+  { label: 'KJV 1611 + Apocrypha', versions: ['kjv-apoc', 'twi-apoc'] },
+  { label: 'Septuagint LXX + KJV', versions: ['lxx', 'kjv-apoc'] },
+  { label: 'Catholic Douay-Rheims', versions: ['dra', 'twi-apoc'] },
+  { label: 'Charles (Enoch) + Twi', versions: ['charles', 'twi-apoc'] },
   { label: 'Akuapem + Asante', versions: ['ak-twi', 'twi'] },
+  { label: 'English Quad', versions: ['nkjv', 'kjv', 'bsb', 'asv'] },
   { label: 'Hausa + French', versions: ['ha', 'fr-lsg'] },
   { label: 'English versions', versions: ['kjv', 'bsb', 'web'] },
   { label: 'Greek/Hebrew + Twi', versions: ['tr-gk', 'twi', 'nkjv'] },
@@ -143,6 +150,20 @@ export function App() {
   const [currentChapter, setCurrentChapter] = useState<number>(
     initialRoute.chapter || 1
   );
+
+  // Active Canon Navigation Tab: 'canonical' (Default Scripture Reader) | 'deuterocanon' | 'list-of-sixty'
+  const [activeNavTab, setActiveNavTab] = useState<'canonical' | 'deuterocanon' | 'list-of-sixty'>(() => {
+    if (initialRoute.targetTab) return initialRoute.targetTab;
+    if (typeof window !== 'undefined') {
+      const qTab = new URLSearchParams(window.location.search).get('tab');
+      if (qTab === 'deuterocanon' || qTab === 'list-of-sixty') return qTab;
+      const p = window.location.pathname.toLowerCase();
+      if (p.includes('deuterocanon') || p.includes('apocrypha')) return 'deuterocanon';
+      if (p.includes('sixty') || p.includes('pseudepigrapha')) return 'list-of-sixty';
+    }
+    return 'canonical';
+  });
+
   const [activeVersionIds, setActiveVersionIds] = useState<string[]>(() => {
     if (typeof window !== 'undefined') {
       const q = new URLSearchParams(window.location.search);
@@ -334,7 +355,7 @@ export function App() {
 
     if (window.location.pathname === '/' && isAtHomeState) {
       document.title =
-        "Wisdom Bible — Ad-Free Multilingual Parallel Bible, Twi & 35+ Languages";
+        "AduBible — Ad-Free Multilingual Parallel Bible, Twi & 35+ Languages | Adubible.org";
       return;
     }
 
@@ -346,7 +367,7 @@ export function App() {
     ) {
       window.history.replaceState({}, '', nextUrl);
     }
-    document.title = `${currentBook.names.en} ${currentChapter} (${currentBook.names.tw || currentBook.names.en}) — Wisdom Bible Parallel Reader`;
+    document.title = `${currentBook.names.en} ${currentChapter} (${currentBook.names.tw || currentBook.names.en}) — AduBible Parallel Reader`;
   }, [activeVersionIds, currentBook, currentChapter]);
 
   // Listen for browser back / forward navigation
@@ -490,6 +511,7 @@ export function App() {
     setActiveVerseActionBar(null);
 
     // Reset to default home sanctuary reading state (Ephesians 1, KJV + Asante Twi)
+    setActiveNavTab('canonical');
     setCurrentBookSlug('ephesians');
     setCurrentChapter(1);
     setSelectedVerse(1);
@@ -718,21 +740,21 @@ export function App() {
 
   return (
     <div className={`bible-app theme-${prefs.theme} ${isNight ? 'night' : ''}`}>
-      {/* 1. TOP MASTHEAD (Matches Wisdom Bible Screenshot) */}
+      {/* 1. TOP MASTHEAD (AduBible) */}
       <header className="masthead">
         <a
           href="/"
           className="brand"
           onClick={handleGoHome}
-          title="Wisdom Bible — Home"
+          title="AduBible — Home | Adubible.org"
         >
           <span className="brand-icon" aria-hidden="true">
             ✦
           </span>
-          <span>Wisdom Bible</span>
+          <span>AduBible</span>
         </a>
 
-        <div className="mast-center">THE WORD, SIDE BY SIDE</div>
+        <div className="mast-center">100% AD-FREE · 107 BOOKS · NEURAL AUDIO</div>
 
         <div className="mast-actions">
           <button
@@ -793,10 +815,12 @@ export function App() {
       {/* 2. MAIN WORKSPACE */}
       <main id="reader" className="workspace">
         <section className="page-heading">
-          <p className="eyebrow">READ · COMPARE · UNDERSTAND</p>
-          <h1>A deeper reading.</h1>
+          <p className="eyebrow">
+            100% AD-FREE · 107 CANONICAL &amp; APOCRYPHAL BOOKS · 24KHZ NEURAL AUDIO
+          </p>
+          <h1>AduBible — The Pure Word, Side by Side.</h1>
           <p>
-            One passage. Different translations. A wider understanding.
+            Zero ads, zero trackers. 107 Canonical, Deuterocanonical &amp; Apocryphal books in Asante Twi, English &amp; 35+ languages with Strong’s Concordance and 24kHz Audio.
           </p>
         </section>
 
@@ -1539,42 +1563,72 @@ export function App() {
           }}
         >
           <div>
-            <a
-              href="/"
-              onClick={handleGoHome}
+            <div>
+              <a
+                href="/"
+                onClick={handleGoHome}
+                style={{
+                  color: 'inherit',
+                  textDecoration: 'none',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                }}
+                title="AduBible — Home | Adubible.org"
+              >
+                AduBible
+              </a>
+              <span> · Parallel Scripture Sanctuary (100% Ad-Free)</span>
+              {!prefs.showStrongsInline && !prefs.showCommentaries && (
+                <span style={{ marginLeft: '10px' }}>
+                  · Need Strong’s Concordance or Commentaries?{' '}
+                  <button
+                    type="button"
+                    style={{
+                      border: 0,
+                      background: 'transparent',
+                      color: 'var(--green)',
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                      padding: 0,
+                    }}
+                    onClick={() => setIsSettingsOpen(true)}
+                  >
+                    Turn them on in Settings
+                  </button>
+                </span>
+              )}
+            </div>
+            <div
               style={{
-                color: 'inherit',
-                textDecoration: 'none',
-                fontWeight: 600,
-                cursor: 'pointer',
+                marginTop: '4px',
+                fontSize: '12px',
+                color: 'var(--green)',
+                fontWeight: 500,
+                letterSpacing: '0.02em',
               }}
-              title="Wisdom Bible — Home"
             >
-              Wisdom Bible
-            </a>
-            <span> · Parallel Scripture Sanctuary (100% Ad-Free)</span>
-            {!prefs.showStrongsInline && !prefs.showCommentaries && (
-              <span style={{ marginLeft: '10px' }}>
-                · Need Strong’s Concordance or Commentaries?{' '}
-                <button
-                  type="button"
-                  style={{
-                    border: 0,
-                    background: 'transparent',
-                    color: 'var(--green)',
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
-                    padding: 0,
-                  }}
-                  onClick={() => setIsSettingsOpen(true)}
-                >
-                  Turn them on in Settings
-                </button>
-              </span>
-            )}
+              Honoring the Legacy of Apostle Kwame Adu · Nushia, Ghana ·{' '}
+              <a
+                href="https://adubible.org/"
+                style={{ textDecoration: 'underline', color: 'inherit' }}
+              >
+                adubible.org
+              </a>
+            </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
+            <a
+              href="https://adubible.org/"
+              style={{
+                fontWeight: 700,
+                color: 'var(--green)',
+                textDecoration: 'none',
+              }}
+            >
+              Adubible.org
+            </a>
             <a
               href="/about/"
               onClick={(e) => {

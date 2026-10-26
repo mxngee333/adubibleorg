@@ -137,7 +137,7 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
   const handleExportVaultJson = () => {
     const payload = {
       exportedAt: new Date().toISOString(),
-      app: 'Elohim Bible Hub',
+      app: 'AduBible (Adubible.org)',
       user: user?.email || 'guest',
       highlights,
       bookmarks,
@@ -150,7 +150,7 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `elohim-bible-study-vault-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `adubible-study-vault-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -166,10 +166,10 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
             </div>
             <div>
               <h2 className="text-base font-bold tracking-wide text-amber-200">
-                Elohim Cloud Study Sync
+                AduBible Cloud Study Sync
               </h2>
               <p className="text-xs text-stone-400">
-                YouVersion-Grade Sync • Zero Ads • Forever Free
+                Adubible.org • Zero Ads • Forever Free
               </p>
             </div>
           </div>

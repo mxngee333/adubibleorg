@@ -1,7 +1,7 @@
 {
-  "name": "Elohim Bible Hub — Multilingual Parallel Bible & Study Sync",
-  "short_name": "Elohim Bible",
-  "description": "Ad-Free Multilingual Parallel Bible with Twi (Twerɛ Kronkron), 35+ Languages, Strong's Concordance, Open-Source Commentaries, and Cloud Study Sync.",
+  "name": "AduBible — Multilingual Parallel Bible",
+  "short_name": "AduBible",
+  "description": "AduBible (Adubible.org) — Honoring the Legacy of Apostle Kwame Adu (Nushia, Ghana). Ad-Free Multilingual Parallel Bible with Twi (Twerɛ Kronkron), 35+ Languages, Strong's Concordance, and Cloud Study Sync.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0c0a09",

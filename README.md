@@ -1,31 +1,36 @@
-# ✦ ELOHIM BIBLE HUB — Generational Multilingual Parallel Bible & Exegetical Study Sanctuary
+# ✦ ADUBIBLE — Adubible.org
+### The Ad-Free Multilingual Parallel Bible Sanctuary · Honoring the Legacy of Apostle Kwame Adu (Nushia, Ghana)
 
-**Live Production URL**: [https://elohimbible.web.app](https://elohimbible.web.app)  
-**BibleHub-Compatible Direct Route Example**: [https://elohimbible.web.app/nkjv/ephesians/1/](https://elohimbible.web.app/nkjv/ephesians/1/)  
-**Asante Twi (Twerɛ Kronkron) Direct Route**: [https://elohimbible.web.app/twi/ephesians/1/](https://elohimbible.web.app/twi/ephesians/1/)
+**Canonical Domain**: [https://adubible.org](https://adubible.org)  
+**Firebase Hosting Staging URL**: [https://elohimbible.web.app](https://elohimbible.web.app)  
+**Direct Ephesians 1 NKJV**: [https://adubible.org/nkjv/ephesians/1/](https://adubible.org/nkjv/ephesians/1/)  
+**Direct Asante Twi (Twerɛ Kronkron)**: [https://adubible.org/twi/ephesians/1/](https://adubible.org/twi/ephesians/1/)
 
 ---
 
-## 🌟 Core Pillars & Capabilities
+## 🌟 Core Pillars & Strategic Advantages
 
-1. **100% Ad-Free Flowing Reading UX**:
-   - Zero pop-ups, zero banner ads, zero trackers. Built with 4 Sanctuary reading themes (*Sacred Parchment*, *Obsidian Dark*, *Midnight Gold*, *Pure Daylight*), adjustable typography (`14px`–`28px`), and a distraction-free **Zen Flow Mode**.
+1. **100% Ad-Free Sovereign Sanctuary**:
+   - Zero pop-ups, zero banner ads, zero trackers, zero commercial interruptions. Pure, unadulterated scripture study designed to outshine ad-cluttered portals like BibleHub and BibleGateway.
 
-2. **Synchronized Multi-Language & Multi-Version Parallel Engine**:
-   - Read 1, 2, 3, or 4 Bible versions side-by-side in **Parallel Columns** on desktop, or **Verse-by-Verse Interlinear Stack** on mobile.
-   - Includes **Asante Twi (`Twerɛ Kronkron`)**, **Akuapem Twi (`Kyerew Kronkron`)**, **Ewe**, **Ga**, **Yoruba**, **Hausa**, **Swahili**, **Igbo**, **Amharic**, **isiZulu**, **Original Hebrew (Westminster Leningrad Codex WLC)**, **Original Koine Greek (Textus Receptus & Septuagint LXX)**, **Latin Vulgate**, **NKJV Study / WEB**, **KJV 1769**, **BSB**, **ASV**, **YLT**, and all **23+ Mega-Multilingual SEO Transformer languages** (`de`, `es`, `fr`, `pt`, `it`, `ar`, `hi`, `bn`, `ta`, `te`, `id`, `tl`, `ko`, `ja`, `zh-Hans`, `zh-Hant`, `sw`, `tw`, `ha`, `yo`, `vi`, `tr`, `ru`).
+2. **Complete 107-Book Universal Canon (Including All Deuterocanon & Ancient Apocrypha)**:
+   - **Old Testament (39 Books)**
+   - **New Testament (27 Books)**
+   - **Deuterocanonical Books (16 Books)**: Tobit, Judith, Wisdom of Solomon, Sirach (Ecclesiasticus), Baruch, Letter of Jeremiah, 1 & 2 Maccabees, Greek Additions to Esther & Daniel.
+   - **List of Sixty & Ancient Apocrypha (25 Books)**: 1 Enoch, Jubilees, 1 & 2 Esdras, 3 & 4 Maccabees, Prayer of Manasseh, Psalm 151, Didache, Shepherd of Hermas, and more.
 
-3. **Zero-Code Language & Version Add-on Manager**:
-   - Connect any of **1,000+ open-source translations** live via the Free Use Bible Cloud API (`bible.helloao.org`) or `bolls.life`.
-   - Paste or upload custom `.json` / verse-per-line translations for any dialect or study edition directly into your browser's IndexedDB vault.
+3. **Powerful Multilingual Parallel & Audio Engine**:
+   - Compare up to 4 parallel versions side-by-side with instant **1-Click Language Swap (`⇄`)**.
+   - Includes **Asante Twi (`Twerɛ Kronkron`)**, **Akuapem Twi (`Kyerew Kronkron`)**, Hebrew WLC, Koine Greek Textus Receptus, Latin Vulgate, NKJV, KJV, and 35+ world languages.
+   - High-fidelity **24kHz Google Neural Audio** narration with gapless buffering and bilingual alternating verse-by-verse playback (English ↔ Twi).
 
-4. **BibleHub-Grade Exegetical Infrastructure**:
-   - **Interactive Strong's Exhaustive Concordance (`H1–H8674` & `G1–G5624`)**: Word-by-word interlinear cards with Original Hebrew/Greek script, transliteration, phonetic pronunciation + Web Speech audio, root etymology, Brown-Driver-Briggs (BDB) / Thayer's Greek Lexicon, KJV usage counts, and Asante Twi theological resonance.
-   - **Open-Source Commentaries & Cross-References**: Integrated verse-by-verse expositions from **Matthew Henry's Complete Commentary**, **Jamieson-Fausset-Brown (JFB)**, **John Gill's Exposition of the Entire Bible**, **1599 Geneva Study Bible Notes**, **Treasury of Scripture Knowledge (TSK)**, and **Elohim & Twi Theological Synthesis**.
+4. **Interactive Strong's Exhaustive Concordance & Commentaries**:
+   - Clickable Hebrew (`H1–H8674`) and Greek (`G1–G5624`) lexical cards with audio pronunciation, Thayer/BDB definitions, and Twi theological resonance.
+   - Verse-by-verse expositions from Matthew Henry, Jamieson-Fausset-Brown, John Gill, and Geneva Notes.
 
-5. **YouVersion-Grade Personal Study Vault & Cloud Sync**:
-   - **Highlights** (6 royal colors + underline), **Pinned Verses** (docked to the top quick-bar), **Bookmarks** (categorized), **Exegetical Study Notes** (with tags & Markdown export), and a **1080p Parallel Verse Card Image Studio**.
-   - Local-first IndexedDB + LocalStorage persistence with **Firebase Auth & Cloud Firestore Sync** (Email/Password + 1-Tap Google Sign-In + JSON/Markdown backup export & import).
+5. **Personal Study Vault & Cloud Sync**:
+   - Highlights, Pinned Verses, Bookmarks, and Markdown Exegetical Notes synced across devices or kept 100% local in private IndexedDB storage.
+   - 1080p Parallel Verse Card Studio generator.
 
 ---
 
@@ -41,6 +46,6 @@ npm run dev
 # Run TypeScript verification + Vite bundle + SSG Prerender (36 routes + sitemap.xml)
 npm run build
 
-# Deploy to dedicated Firebase Hosting site
-firebase deploy --only hosting:elohimbible
+# Deploy to Firebase Hosting
+firebase deploy --only hosting
 ```

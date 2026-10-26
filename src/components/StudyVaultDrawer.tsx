@@ -121,7 +121,8 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
 
   const handleExportMarkdown = () => {
     const lines: string[] = [
-      '# Elohim Bible Hub — Personal Exegetical Study Vault',
+      '# AduBible (Adubible.org) — Personal Exegetical Study Vault',
+      '## Honoring the Legacy of Apostle Kwame Adu · Nushia, Ghana',
       `Exported: ${new Date().toLocaleString()}`,
       '',
       '## 📌 Pinned Scripture Anchors',
@@ -149,7 +150,7 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `elohim-study-notes-${new Date().toISOString().slice(0, 10)}.md`;
+    a.download = `adubible-study-notes-${new Date().toISOString().slice(0, 10)}.md`;
     a.click();
     URL.revokeObjectURL(url);
   };

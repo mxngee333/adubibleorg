@@ -21,7 +21,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
   uiLanguageCode,
   onSelectBookChapter,
 }) => {
-  const [testamentFilter, setTestamentFilter] = useState<'ALL' | 'OT' | 'NT'>('ALL');
+  const [testamentFilter, setTestamentFilter] = useState<'ALL' | 'OT' | 'NT' | 'DC' | 'PSEUD'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBook, setSelectedBook] = useState<BibleBook | null>(
     () => books.find((b) => b.id === currentBookId) || books[0] || null
@@ -61,10 +61,10 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
             </div>
             <div>
               <h2 className="text-base font-bold text-amber-200">
-                66 Canonical Books &amp; Chapters Navigator
+                107 Sacred Books &amp; Chapters Navigator
               </h2>
               <p className="text-xs text-stone-400">
-                Bilingual Titles (English + Asante Twi Twerɛ Kronkron + Active Locale)
+                Canonical (66) · Deuterocanonicals (16) · List of Sixty &amp; Ancient Apocrypha (25)
               </p>
             </div>
           </div>
@@ -77,27 +77,27 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
         </div>
 
         {/* Filter Bar */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 border-b border-stone-800 bg-stone-900/70 px-5 py-3">
-          <div className="flex items-center gap-1.5">
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 border-b border-stone-800 bg-stone-900/70 px-5 py-3">
+          <div className="flex flex-wrap items-center gap-1.5">
             <button
               onClick={() => {
                 setTestamentFilter('ALL');
                 setStep('books');
               }}
-              className={`rounded-xl px-3 py-1.5 text-xs font-bold transition ${
+              className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
                 testamentFilter === 'ALL'
                   ? 'bg-amber-500 text-stone-950'
                   : 'bg-stone-800 text-stone-300 hover:text-white'
               }`}
             >
-              All 66 Books
+              All 107
             </button>
             <button
               onClick={() => {
                 setTestamentFilter('OT');
                 setStep('books');
               }}
-              className={`rounded-xl px-3 py-1.5 text-xs font-bold transition ${
+              className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
                 testamentFilter === 'OT'
                   ? 'bg-amber-500 text-stone-950'
                   : 'bg-stone-800 text-stone-300 hover:text-white'
@@ -110,13 +110,41 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                 setTestamentFilter('NT');
                 setStep('books');
               }}
-              className={`rounded-xl px-3 py-1.5 text-xs font-bold transition ${
+              className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
                 testamentFilter === 'NT'
                   ? 'bg-amber-500 text-stone-950'
                   : 'bg-stone-800 text-stone-300 hover:text-white'
               }`}
             >
               New Testament (27)
+            </button>
+            <button
+              onClick={() => {
+                setTestamentFilter('DC');
+                setStep('books');
+              }}
+              className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
+                testamentFilter === 'DC'
+                  ? 'bg-amber-500 text-stone-950'
+                  : 'bg-stone-800 text-stone-300 hover:text-white'
+              }`}
+              title="Tobit, Judith, Sirach, Wisdom, Maccabees, Baruch, 1-2 Esdras, Manasseh, Psalm 151"
+            >
+              📜 Deuterocanon (16)
+            </button>
+            <button
+              onClick={() => {
+                setTestamentFilter('PSEUD');
+                setStep('books');
+              }}
+              className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
+                testamentFilter === 'PSEUD'
+                  ? 'bg-amber-500 text-stone-950'
+                  : 'bg-stone-800 text-stone-300 hover:text-white'
+              }`}
+              title="7th-Century List of Sixty, Book of Enoch, Didache, Shepherd of Hermas, Clement, Patriarchs"
+            >
+              🏺 List of Sixty &amp; Apocrypha (25)
             </button>
           </div>
 
@@ -210,12 +238,24 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                 <div className="mb-4 pb-3 border-b border-stone-800">
                   <div className="flex items-center gap-2 text-xs text-amber-400 font-bold uppercase tracking-wider">
                     <Sparkles className="h-3.5 w-3.5" />
-                    {activeBook.category} • {activeBook.testament === 'OT' ? 'Old Testament' : 'New Testament'}
+                    {activeBook.category} •{' '}
+                    {activeBook.testament === 'OT'
+                      ? 'Old Testament'
+                      : activeBook.testament === 'NT'
+                      ? 'New Testament'
+                      : activeBook.testament === 'DC'
+                      ? 'Deuterocanonical'
+                      : 'List of Sixty & Apocrypha'}
                   </div>
                   <h3 className="text-lg font-bold text-white mt-0.5">
                     {activeBook.names.en} ({activeBook.names.tw})
                   </h3>
-                  <p className="text-xs text-stone-400 mt-0.5">
+                  {activeBook.canonStatus && (
+                    <p className="text-[11px] text-amber-300/80 mt-0.5 leading-relaxed">
+                      🏛️ {activeBook.canonStatus} {activeBook.historicalEra ? `(${activeBook.historicalEra})` : ''}
+                    </p>
+                  )}
+                  <p className="text-xs text-stone-400 mt-1">
                     Select a chapter (1 – {activeBook.chapters})
                   </p>
                 </div>

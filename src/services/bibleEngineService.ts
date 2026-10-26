@@ -130,6 +130,9 @@ export function getAllCanonicalBooks(): BibleBook[] {
     testament: b.testament,
     category: b.category,
     chapters: b.chapters,
+    author: b.author,
+    canonStatus: b.canonStatus,
+    historicalEra: b.historicalEra,
     names: b.names,
   }));
 }
@@ -447,6 +450,7 @@ export function parseBibleHubUrlPath(pathname: string): {
   chapter?: number;
   isParallelRoute?: boolean;
   legalPage?: 'about' | 'how-to-use' | 'privacy' | 'terms';
+  targetTab?: 'canonical' | 'deuterocanon' | 'list-of-sixty';
 } {
   const cleanPath = pathname
     .replace(/\.html?$/i, '')
@@ -458,6 +462,23 @@ export function parseBibleHubUrlPath(pathname: string): {
   }
 
   const lower = cleanPath.toLowerCase();
+  if (lower === 'deuterocanon' || lower === 'deuterocanonical' || lower === 'apocrypha') {
+    return {
+      versionId: 'kjv-apoc',
+      bookSlug: 'wisdom',
+      chapter: 1,
+      targetTab: 'deuterocanon',
+    };
+  }
+  if (lower === 'list-of-sixty' || lower === 'list-of-60' || lower === 'pseudepigrapha' || lower === 'ancient-apocrypha') {
+    return {
+      versionId: 'charles',
+      bookSlug: 'enoch',
+      chapter: 1,
+      targetTab: 'list-of-sixty',
+    };
+  }
+
   if (
     lower === 'about' ||
     lower === 'how-to-use' ||

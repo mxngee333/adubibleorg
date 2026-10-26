@@ -93,7 +93,7 @@ export const VerseCardStudioModal: React.FC<VerseCardStudioModalProps> = ({
     ctx.fillStyle = selectedTheme.accent;
     ctx.font = 'bold 28px Georgia, serif';
     ctx.textAlign = 'center';
-    ctx.fillText('✦ ELOHIM BIBLE HUB • PARALLEL SCRIPTURE ✦', W / 2, 130);
+    ctx.fillText('✦ ADUBIBLE • ADUBIBLE.ORG ✦', W / 2, 130);
 
     // Reference Title
     ctx.fillStyle = selectedTheme.textMain;
@@ -178,7 +178,7 @@ export const VerseCardStudioModal: React.FC<VerseCardStudioModalProps> = ({
     // Footer Signature
     ctx.font = 'bold 22px sans-serif';
     ctx.fillStyle = selectedTheme.accent;
-    ctx.fillText('ELOHIM BIBLE HUB • AD-FREE PARALLEL SCRIPTURE & EXEGESIS', W / 2, H - 90);
+    ctx.fillText('ADUBIBLE.ORG • THE LEGACY OF APOSTLE KWAME ADU', W / 2, H - 90);
   }, [
     isOpen,
     selectedTheme,
@@ -197,15 +197,15 @@ export const VerseCardStudioModal: React.FC<VerseCardStudioModalProps> = ({
     const url = canvasRef.current.toDataURL('image/png');
     const a = document.createElement('a');
     a.href = url;
-    a.download = `elohim-verse-${reference.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.png`;
+    a.download = `adubible-verse-${reference.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.png`;
     a.click();
   };
 
   const handleCopyCitation = () => {
     const citation =
       includeParallel && secondaryText
-        ? `${reference} (${primaryVersionName})\n"${primaryText}"\n\n${reference} (${secondaryVersionName})\n"${secondaryText}"\n— via Elohim Bible Hub`
-        : `${reference} (${primaryVersionName})\n"${primaryText}"\n— via Elohim Bible Hub`;
+        ? `${reference} (${primaryVersionName})\n"${primaryText}"\n\n${reference} (${secondaryVersionName})\n"${secondaryText}"\n— via AduBible (Adubible.org)`
+        : `${reference} (${primaryVersionName})\n"${primaryText}"\n— via AduBible (Adubible.org)`;
     navigator.clipboard.writeText(citation);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);

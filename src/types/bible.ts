@@ -1,4 +1,4 @@
-export type BibleTestament = 'OT' | 'NT';
+export type BibleTestament = 'OT' | 'NT' | 'DC' | 'PSEUD';
 
 export interface BibleBook {
   id: string;
@@ -7,6 +7,9 @@ export interface BibleBook {
   testament: BibleTestament;
   category: string;
   chapters: number;
+  author?: string;
+  canonStatus?: string;
+  historicalEra?: string;
   names: Record<string, string>;
 }
 

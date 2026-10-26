@@ -25,12 +25,13 @@ export const LegalInstitutionalModal: React.FC<LegalInstitutionalModalProps> = (
           <div className="flex items-center gap-2.5">
             <Sparkles className="h-5 w-5 text-amber-400" />
             <h2 className="text-base font-bold text-amber-200">
-              Elohim Bible Hub — Institutional Covenant &amp; Guide
+              AduBible (Adubible.org) — Institutional Covenant &amp; Guide
             </h2>
           </div>
           <button
             onClick={onClose}
             className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-800 hover:text-white"
+            aria-label="Close"
           >
             <X className="h-5 w-5" />
           </button>
@@ -45,7 +46,7 @@ export const LegalInstitutionalModal: React.FC<LegalInstitutionalModalProps> = (
                 : 'text-stone-300 hover:bg-stone-800'
             }`}
           >
-            <BookOpen className="h-3.5 w-3.5" /> About Mission
+            <BookOpen className="h-3.5 w-3.5" /> About &amp; Legacy
           </button>
           <button
             onClick={() => setPage('how-to-use')}
@@ -75,24 +76,36 @@ export const LegalInstitutionalModal: React.FC<LegalInstitutionalModalProps> = (
                 : 'text-stone-300 hover:bg-stone-800'
             }`}
           >
-            <Scale className="h-3.5 w-3.5" /> Terms of Use
+            <Scale className="h-3.5 w-3.5" /> Open-Source Terms
           </button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-4 text-sm leading-relaxed text-stone-300">
           {page === 'about' && (
-            <div className="space-y-3">
-              <h3 className="text-lg font-bold text-amber-200">
-                About Elohim Bible Hub — A Generational Sanctuary for Scripture &amp; Exegesis
-              </h3>
+            <div className="space-y-4">
+              <div className="rounded-xl border border-amber-500/30 bg-amber-950/20 p-4">
+                <span className="text-xs uppercase tracking-widest font-bold text-amber-400">
+                  SACRED MEMORIAL &amp; COVENANT
+                </span>
+                <h3 className="text-lg font-bold text-amber-200 mt-1">
+                  Honoring the Legacy of Apostle Kwame Adu — Nushia, Ghana
+                </h3>
+                <p className="mt-2 text-stone-200">
+                  <strong>AduBible (Adubible.org)</strong> is dedicated to honor the life, spiritual leadership, and enduring gospel ministry of <strong>Apostle Kwame Adu</strong> of Nushia, Ghana. Rooted in deep devotion to Christ and a steadfast love for the scriptures, this sanctuary stands as a living generational monument to spread the uncorrupted Word of God across Ghana, Africa, and the nations of the earth.
+                </p>
+              </div>
+
+              <h4 className="text-base font-bold text-amber-300">
+                A Modern Sanctuary for Multilingual Scripture &amp; Exegetical Depth
+              </h4>
               <p>
-                <strong>Elohim Bible Hub</strong> was architected with a singular generational mission: to provide believers, pastors, translators, and scholars worldwide with an unhurried, 100% ad-free, deeply scholarly yet mobile-friendly Scripture reading and parallel study platform.
+                <strong>AduBible</strong> was architected with a singular covenant: to provide believers, pastors, translators, and students with an unhurried, 100% ad-free, deeply scholarly yet mobile-friendly parallel study platform.
               </p>
               <p>
-                Where legacy Bible portals clutter the sacred text with intrusive pop-up advertisements and fragmented navigation, Elohim Bible Hub unites the exegetical rigor of <strong>BibleHub</strong> (Interlinear Hebrew &amp; Greek, Strong&apos;s Exhaustive Concordance, Matthew Henry, Jamieson-Fausset-Brown, John Gill, and Geneva Commentaries) with the personal study ergonomics of <strong>YouVersion</strong> (cloud-synced Highlights, Pinned Verses, Bookmarks, Personal Notes, and Shareable Verse Art).
+                Where legacy portals clutter the sacred text with intrusive advertisements and fragmented reading, AduBible unites the exegetical power of <strong>BibleHub</strong> (Original Hebrew &amp; Greek Interlinear, Strong&apos;s Exhaustive Concordance, Matthew Henry, Jamieson-Fausset-Brown, John Gill, and Geneva Commentaries) with the personal study sync of <strong>YouVersion</strong> (cloud-synced Highlights, Pinned Verses, Bookmarks, Exegetical Notes, and 1080p Verse Studio Art).
               </p>
               <p>
-                With first-class support for <strong>Asante Twi (Twerɛ Kronkron)</strong>, <strong>Akuapem Twi</strong>, Ewe, Ga, Yoruba, Hausa, Swahili, and all 24+ major global languages, plus an open-ended Language &amp; Version Add-on Manager, communities can study the Word of Elohim side-by-side in their mother tongue and the original biblical languages.
+                With native first-class fidelity for <strong>Asante Twi (Twerɛ Kronkron)</strong>, <strong>Akuapem Twi (Kyerew Kronkron)</strong>, Ewe, Ga, Yoruba, Hausa, Swahili, and 35+ world languages, plus instant <strong>1-Click Language Swap (⇄)</strong>, readers can compare the Word of God side-by-side in their mother tongue and the original biblical languages.
               </p>
             </div>
           )}
@@ -100,20 +113,23 @@ export const LegalInstitutionalModal: React.FC<LegalInstitutionalModalProps> = (
           {page === 'how-to-use' && (
             <div className="space-y-3">
               <h3 className="text-lg font-bold text-amber-200">
-                How to Use Parallel Reading, Strong&apos;s Concordance &amp; Add-on Languages
+                How to Use Parallel Columns, Language Swap &amp; Strong&apos;s Concordance
               </h3>
               <ul className="list-disc pl-5 space-y-2">
                 <li>
-                  <strong>Parallel Reading (1 to 4 Columns):</strong> Click <em>+ Add Parallel Language</em> in the top bar to open up to 4 synchronized translation columns (e.g., NKJV + Asante Twi + Original Greek + French Louis Segond). On mobile, switch seamlessly between Stacked Verse-by-Verse Interlinear cards or Side-by-Side view.
+                  <strong>Parallel Reading (1 to 4 Columns):</strong> Click <em>+ Add translation</em> to open up to 4 synchronized version columns (e.g. KJV + Asante Twi + Original Greek + French Louis Segond).
                 </li>
                 <li>
-                  <strong>Strong&apos;s Exhaustive Concordance:</strong> Enable the <em>Strong&apos;s / Interlinear</em> toggle on any verse or click any badge like <code>G2128</code> or <code>H430</code> to open the full Greek/Hebrew Lexicon with audio pronunciation, root etymology, BDB/Thayer definitions, and Twi theological resonance.
+                  <strong>1-Click Language Swap (⇄):</strong> Tap the <em>⇄ Swap</em> button in the chapter toolbar or within any column header to immediately invert parallel languages (e.g., swapping KJV on the left and Asante Twi on the right).
                 </li>
                 <li>
-                  <strong>Add New Languages or Custom Versions:</strong> Open the <em>Languages &amp; Add-ons</em> modal to connect over 1,000 open-source translations from the Free Use Bible API or upload/paste your own custom language translation pack.
+                  <strong>Strong&apos;s Exhaustive Concordance:</strong> Enable the <em>Strong&apos;s / Interlinear</em> toggle or click any code badge like <code>G2128</code> or <code>H430</code> to inspect the Hebrew/Greek Lexicon with phonetic pronunciation, root etymology, Thayer/BDB definitions, and Twi theological cross-references.
                 </li>
                 <li>
-                  <strong>Cloud Study Sync:</strong> Tap any verse to Highlight (6 colors), Pin to your top study bar, Bookmark, or write a rich Study Note. Sign in via Email or Google 1-Tap to synchronize across all your devices.
+                  <strong>Add New Translations:</strong> Open the <em>+ Add-on Hub</em> to connect over 1,000 open-source translations from the Free Use Bible API or upload your own custom dialect translation pack.
+                </li>
+                <li>
+                  <strong>Personal Study Vault &amp; Cloud Sync:</strong> Tap any verse to Highlight (6 royal colors), Pin to your top study deck, Bookmark, or author deep Exegetical Notes. All data syncs to your private vault across devices.
                 </li>
               </ul>
             </div>
@@ -125,10 +141,10 @@ export const LegalInstitutionalModal: React.FC<LegalInstitutionalModalProps> = (
                 Sovereign Privacy Policy — Zero Ads, Zero Behavioral Tracking
               </h3>
               <p>
-                Elohim Bible Hub operates under a strict <strong>Zero-Advertising Covenant</strong>. We never sell, rent, or monetize your scripture reading habits, prayer notes, or personal study highlights.
+                AduBible operates under a permanent <strong>Zero-Advertising Covenant</strong>. We never sell, rent, or monetize your scripture reading habits, prayer notes, or personal study highlights.
               </p>
               <p>
-                By default, all your highlights, pins, bookmarks, notes, and custom language add-ons are stored locally in your device&apos;s encrypted IndexedDB &amp; LocalStorage vault. When you optionally sign in with Cloud Sync, your study data is synchronized exclusively to your private account vault so you can access your Bible notes across mobile and desktop devices. You can export or delete your entire study vault as JSON or Markdown at any time with 1 click.
+                By default, all your highlights, pins, bookmarks, notes, and custom language add-ons are stored locally in your device&apos;s private IndexedDB &amp; LocalStorage vault. When you optionally sign in with Cloud Sync, your study data is synchronized exclusively to your secure private account vault. You can export or delete your entire study vault as JSON or Markdown at any time with 1 click.
               </p>
             </div>
           )}
@@ -136,13 +152,13 @@ export const LegalInstitutionalModal: React.FC<LegalInstitutionalModalProps> = (
           {page === 'terms' && (
             <div className="space-y-3">
               <h3 className="text-lg font-bold text-amber-200">
-                Terms of Service &amp; Open-Source Scripture Licensing
+                Terms of Service &amp; Open-Source Scripture Commons
               </h3>
               <p>
-                Public domain and open-access biblical texts (including KJV, WEB, BSB, ASV, YLT, WLC Hebrew, Textus Receptus Greek, Louis Segond, Reina-Valera, Luther, and Open-Source Commentaries by Matthew Henry, Jamieson-Fausset-Brown, John Gill, and Treasury of Scripture Knowledge) are provided freely for personal study, ministry, pulpit teaching, and academic research.
+                Public domain and open-access biblical texts (including KJV 1769, WEB, BSB, ASV, YLT, WLC Hebrew, Textus Receptus Greek, Louis Segond, Reina-Valera, Luther, and Open-Source Commentaries by Matthew Henry, Jamieson-Fausset-Brown, John Gill, and Treasury of Scripture Knowledge) are provided freely for personal devotion, sermon preparation, academic research, and Christian ministry.
               </p>
               <p>
-                Users importing custom language packs via the Add-on Manager retain full ownership of their uploaded translations and study notes. For inquiries or ministry partnerships, contact us at <code>support[at]elohimbible.org</code>.
+                Users importing custom translation packs via the Add-on Manager retain full ownership of their files. For ministry inquiries or community partnerships, contact us at <code>support[at]adubible.org</code>.
               </p>
             </div>
           )}
