@@ -73,6 +73,7 @@ import { MobileBottomDock } from './components/MobileBottomDock';
 import { GrandSiteFooter } from './components/GrandSiteFooter';
 import { AduBibleLogo } from './components/AduBibleLogo';
 import { AskAduBibleModal } from './components/AskAduBibleModal';
+import { Search, User } from 'lucide-react';
 import { AskAduBibleContext } from './services/askAduBibleService';
 
 const COMPARE_PRESETS: Array<{ label: string; versions: string[] }> = [
@@ -931,17 +932,7 @@ export function App() {
         </div>
 
         <div className="mast-actions">
-          {/* ✦ ASK ADUBIBLE AI SCHOLAR BUTTON - RADIANT & HIGHLY VISIBLE */}
-          <button
-            type="button"
-            className={`quiet-button ask-adubible-mast-btn ${isAskAduBibleOpen ? 'active-pill' : ''}`}
-            onClick={() => setIsAskAduBibleOpen(true)}
-            title="Ask AduBible — AI Exegetical Scripture Scholar & Language Companion"
-          >
-            <span className="ask-sparkle">✦</span>
-            <span className="ask-title">Ask AduBible</span>
-            <span className="ask-ai-badge">AI</span>
-          </button>
+
 
           <button
             type="button"
@@ -997,8 +988,36 @@ export function App() {
           >
             <span>{user ? user.displayName || 'Synced' : 'Sign in'}</span>
           </button>
+        </div>
 
+        {/* Mobile-only clean top controls: Search icon, Active Edition Pill, Sign In */}
+        <div className="mobile-mast-actions">
+          <button
+            type="button"
+            className="mobile-mast-icon-btn"
+            onClick={() => setIsMobileSearchOpen(true)}
+            aria-label="Search scripture or topic"
+          >
+            <Search className="h-4 w-4" />
+          </button>
 
+          <button
+            type="button"
+            className="mobile-mast-pill-btn"
+            onClick={() => setIsLangAddonModalOpen(true)}
+            aria-label="Select translations"
+          >
+            <span>{activeVersionIds.length > 1 ? `${activeVersionIds.length} Eds` : activeVersionIds[0]?.toUpperCase() || 'KJV'}</span>
+          </button>
+
+          <button
+            type="button"
+            className="mobile-mast-icon-btn"
+            onClick={() => setIsAuthModalOpen(true)}
+            aria-label="Account / Sign in"
+          >
+            <User className="h-4 w-4" />
+          </button>
         </div>
       </header>
 
@@ -1159,7 +1178,6 @@ export function App() {
                 const target = document.getElementById('reading-shell');
                 target?.scrollIntoView({ behavior: 'smooth' });
               }}
-              onOpenAskAi={() => setIsAskAduBibleOpen(true)}
             />
           )}
 
@@ -2727,14 +2745,19 @@ export function App() {
         }}
         onSaveToVaultNotes={(title, noteBody) => {
           const newNote: VerseNote = {
-            id: `ai-note-${Date.now()}`,
+            id: `note-${Date.now()}`,
             verseKey: `${currentBook.slug.toUpperCase()}.${currentChapter}.${selectedVerse || 1}`,
             bookId: currentBook.id,
             bookSlug: currentBook.slug,
             chapter: currentChapter,
             verse: selectedVerse || 1,
-            text: `${title}\n\n${noteBody}`,
+            versionId: activeVersionIds[0] || 'kjv',
+            verseText: '',
+            title: title,
+            body: noteBody,
+            tags: ['study'],
             createdAt: Date.now(),
+            updatedAt: Date.now(),
           };
           handleSaveNote(newNote);
         }}
@@ -2744,7 +2767,6 @@ export function App() {
       <MobileBottomDock
         onOpenBooks={() => setIsBookModalOpen(true)}
         onOpenSearch={() => setIsMobileSearchOpen(true)}
-        onOpenAskAi={() => setIsAskAduBibleOpen(true)}
         onToggleAudio={() => setShowAudioBar((prev) => !prev)}
         isAudioActive={showAudioBar}
         onSwapLanguages={handleSwapLanguages}

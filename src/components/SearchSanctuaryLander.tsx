@@ -20,7 +20,6 @@ interface SearchSanctuaryLanderProps {
   onLaunchPreset: (versions: string[], bookSlug?: string, chapter?: number) => void;
   onSelectNavTab: (tab: 'canonical' | 'deuterocanon' | 'list-of-sixty') => void;
   onEnterReader: () => void;
-  onOpenAskAi?: () => void;
 }
 
 interface QuickTopic {
@@ -51,7 +50,6 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
   onLaunchPreset,
   onSelectNavTab,
   onEnterReader,
-  onOpenAskAi,
 }) => {
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -159,8 +157,8 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
             gap: '8px',
             padding: '4px 14px',
             borderRadius: '999px',
-            background: 'rgba(245, 158, 11, 0.12)',
-            border: '1px solid rgba(245, 158, 11, 0.35)',
+            background: 'rgba(147, 51, 234, 0.15)',
+            border: '1px solid rgba(192, 132, 252, 0.3)',
             color: 'var(--green)',
             fontSize: '11px',
             fontWeight: 700,
@@ -169,8 +167,8 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
             marginBottom: '14px',
           }}
         >
-          <Sparkles style={{ width: '13px', height: '13px' }} />
-          <span>AduBible Scripture Sanctuary · 100% Ad-Free · 107 Holy Books</span>
+          <BookOpen style={{ width: '13px', height: '13px' }} />
+          <span>Multilingual Parallel Holy Scriptures · 100% Ad-Free</span>
         </div>
 
         <h1
@@ -510,90 +508,7 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
         </div>
       </div>
 
-      {/* 4.5. ASK ADUBIBLE AI SCRIPTURE SCHOLAR BANNER */}
-      {onOpenAskAi && (
-        <div
-          style={{
-            maxWidth: '920px',
-            margin: '0 auto 28px',
-            padding: '16px 20px',
-            borderRadius: '14px',
-            border: '1px solid rgba(245, 158, 11, 0.45)',
-            background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(147, 51, 234, 0.14) 100%)',
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '14px',
-            boxShadow: '0 4px 20px rgba(245, 158, 11, 0.12)',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div
-              style={{
-                width: '42px',
-                height: '42px',
-                borderRadius: '12px',
-                background: 'linear-gradient(135deg, #f59e0b 0%, #9333ea 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#fff',
-                fontWeight: 900,
-                fontSize: '20px',
-                boxShadow: '0 2px 12px rgba(245, 158, 11, 0.35)',
-              }}
-            >
-              ✦
-            </div>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <strong style={{ fontSize: '15px', color: 'var(--ink)' }}>✦ Ask AduBible AI Exegetical Companion</strong>
-                <span
-                  style={{
-                    fontSize: '10px',
-                    fontWeight: 800,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    background: '#f59e0b',
-                    color: '#0c0a09',
-                    padding: '2px 7px',
-                    borderRadius: '4px',
-                  }}
-                >
-                  AI Scholar
-                </span>
-              </div>
-              <p style={{ margin: '4px 0 0', fontSize: '12px', color: 'var(--subtle)' }}>
-                Greek/Hebrew root words, Asante Twi theological nuances, cross-references, and verse commentary with zero ads.
-              </p>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={onOpenAskAi}
-            style={{
-              padding: '9px 18px',
-              borderRadius: '8px',
-              border: '1px solid #f59e0b',
-              background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-              color: '#0c0a09',
-              fontSize: '13px',
-              fontWeight: 800,
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 2px 10px rgba(245, 158, 11, 0.3)',
-              transition: 'transform 0.1s, box-shadow 0.15s',
-            }}
-          >
-            <span>✦ Ask AduBible AI</span>
-            <ArrowRight style={{ width: '14px', height: '14px' }} />
-          </button>
-        </div>
-      )}
+      
 
       {/* 5. INSTANT PARALLEL STUDY LAUNCHERS */}
       <div

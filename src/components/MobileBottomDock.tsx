@@ -1,10 +1,9 @@
 import React from 'react';
-import { BookOpen, Search, Headphones, Repeat, Grid, Settings, Bookmark, Sparkles } from 'lucide-react';
+import { BookOpen, Search, Headphones, Repeat, Settings, Bookmark } from 'lucide-react';
 
 interface MobileBottomDockProps {
   onOpenBooks: () => void;
   onOpenSearch: () => void;
-  onOpenAskAi?: () => void;
   onToggleAudio: () => void;
   isAudioActive: boolean;
   onSwapLanguages: () => void;
@@ -19,7 +18,6 @@ interface MobileBottomDockProps {
 export const MobileBottomDock: React.FC<MobileBottomDockProps> = ({
   onOpenBooks,
   onOpenSearch,
-  onOpenAskAi,
   onToggleAudio,
   isAudioActive,
   onSwapLanguages,
@@ -33,41 +31,29 @@ export const MobileBottomDock: React.FC<MobileBottomDockProps> = ({
   return (
     <nav className="mobile-bottom-dock" aria-label="Mobile Navigation Dock">
       <div className="dock-container">
-        {/* 1. Books & Chapter Button */}
+        {/* 1. Books & Chapter Selector */}
         <button
           type="button"
           className="dock-item"
           onClick={onOpenBooks}
-          aria-label={`Open Book and Chapter Navigator (${currentBookName} ${currentChapter})`}
+          aria-label={`Open Scripture Navigator (${currentBookName} ${currentChapter})`}
         >
           <BookOpen className="dock-icon" />
-          <span className="dock-label truncate max-w-[64px]">
+          <span className="dock-label truncate max-w-[68px]">
             {currentBookName.split(' ')[0]} {currentChapter}
           </span>
         </button>
 
-        {/* 2. Ask AduBible AI Button (Prominent) */}
-        {onOpenAskAi ? (
-          <button
-            type="button"
-            className="dock-item ask-ai-dock"
-            onClick={onOpenAskAi}
-            aria-label="Ask AduBible AI Scripture Companion"
-          >
-            <Sparkles className="dock-icon text-amber-400" />
-            <span className="dock-label font-bold text-amber-400">Ask AI</span>
-          </button>
-        ) : (
-          <button
-            type="button"
-            className="dock-item"
-            onClick={onOpenSearch}
-            aria-label="Search scripture or topic"
-          >
-            <Search className="dock-icon" />
-            <span className="dock-label">Search</span>
-          </button>
-        )}
+        {/* 2. Scripture & Passage Search */}
+        <button
+          type="button"
+          className="dock-item"
+          onClick={onOpenSearch}
+          aria-label="Search scripture, reference, or topic"
+        >
+          <Search className="dock-icon" />
+          <span className="dock-label">Search</span>
+        </button>
 
         {/* 3. Center Highlighted Audio Button */}
         <button
@@ -81,14 +67,14 @@ export const MobileBottomDock: React.FC<MobileBottomDockProps> = ({
           <span className="dock-label">Audio</span>
         </button>
 
-        {/* 4. Instant Language Swap (if multiple versions active) or Study Vault */}
+        {/* 4. Instant Parallel Language Swap / Study Vault */}
         {canSwap ? (
           <button
             type="button"
             className="dock-item"
             onClick={onSwapLanguages}
-            aria-label="Swap parallel languages"
-            title="Swap parallel languages"
+            aria-label="Swap parallel translations"
+            title="Swap parallel translations"
           >
             <Repeat className="dock-icon" />
             <span className="dock-label">Swap ⇄</span>
@@ -105,7 +91,7 @@ export const MobileBottomDock: React.FC<MobileBottomDockProps> = ({
           </button>
         )}
 
-        {/* 5. Settings & Reading Tools */}
+        {/* 5. Reading Settings & Themes */}
         <button
           type="button"
           className="dock-item"

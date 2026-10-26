@@ -2183,29 +2183,142 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   background: #0c0a09;
 }
 
-@media (max-width: 900px) {
+/* ==========================================================================
+   CLEAN & ELEGANT MOBILE VIEWPORT (SINGLE SLIM HEADER, ZERO AI CLUTTER)
+   ========================================================================== */
+@media (max-width: 768px) {
   .masthead {
-    height: auto;
-    min-height: 54px;
-    padding: 10px 14px;
-    flex-wrap: wrap;
+    height: 52px;
+    min-height: 52px;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
     gap: 10px;
   }
+
+  /* Completely hide the bulky top button row and inline search input on mobile */
   .mast-actions {
-    overflow-x: auto;
-    max-width: 100%;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 2px;
+    display: none !important;
   }
-  .mast-actions::-webkit-scrollbar {
-    display: none;
-  }
+
   .mast-search {
-    order: 3;
-    width: 100%;
-    max-width: 100%;
-    margin: 4px 0 0;
+    display: none !important;
+  }
+
+  /* Show sleek, compact mobile-mast-actions */
+  .mobile-mast-actions {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .mobile-mast-icon-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .mobile-mast-icon-btn:hover,
+  .mobile-mast-icon-btn:active {
+    border-color: var(--green);
+    color: var(--green);
+    background: var(--surface);
+  }
+
+  .mobile-mast-pill-btn {
+    height: 30px;
+    padding: 0 10px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .mobile-mast-pill-btn:hover,
+  .mobile-mast-pill-btn:active {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  /* Slim down Canon Navigation on mobile */
+  .canon-nav-bar {
+    padding: 3px 10px;
+  }
+
+  .canon-nav-container {
+    gap: 5px;
+  }
+
+  .canon-tab-btn {
+    padding: 4px 10px;
+    font-size: 11px;
+    gap: 5px;
+  }
+
+  .canon-tab-btn .tab-badge {
+    padding: 1px 4px;
+    font-size: 9px;
+  }
+
+  /* Slim down Parallel Editions Ribbon on mobile */
+  .version-ribbon-bar {
+    padding: 3px 10px;
+    min-height: 34px;
+    gap: 6px;
+  }
+
+  .ribbon-label span {
+    display: none !important;
+  }
+
+  .ribbon-pill {
+    padding: 3px 7px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .ribbon-pill .pill-status {
+    display: none !important;
+  }
+
+  /* Search Sanctuary Lander - compact & clean on mobile */
+  .search-sanctuary-lander {
+    padding: 18px 14px !important;
+    margin-bottom: 16px !important;
+    border-radius: 12px !important;
+  }
+
+  .search-sanctuary-lander h1 {
+    font-size: 20px !important;
+    margin-bottom: 6px !important;
+    line-height: 1.2 !important;
+  }
+
+  .search-sanctuary-lander p {
+    font-size: 12.5px !important;
+    line-height: 1.4 !important;
+  }
+
+  .workspace {
+    padding: 12px 10px 42px;
   }
 
   .mast-center {
@@ -3042,4 +3155,8 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
 }
 .adubible-logo-mark.size-lg .logo-wordmark {
   font-size: 24px;
+}
+
+.mobile-mast-actions {
+  display: none;
 }
