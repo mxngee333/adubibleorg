@@ -476,6 +476,12 @@ export function App() {
           ? 'Sacred Lilac Parchment'
           : next.theme === 'burgundy-gold'
           ? 'Burgundy Leather KJV'
+          : next.theme === 'architect-gold'
+          ? 'Sacred Architect Maroon'
+          : next.theme === 'covenant-atlas'
+          ? 'Covenant Atlas'
+          : next.theme === 'wisdom-legacy'
+          ? 'Wisdom Bible Legacy'
           : next.theme === 'adubible-si'
           ? 'AduBible SI Sovereign'
           : next.theme === 'sapphire-blue'
@@ -890,7 +896,7 @@ export function App() {
           onClick={handleGoHome}
           title="AduBible — Home | Adubible.org"
         >
-          <AduBibleLogo size="md" variant="full" />
+          <AduBibleLogo size="md" />
         </a>
 
         <div className="mast-search">
@@ -1290,6 +1296,21 @@ export function App() {
                       <img src="/themes/burgundy-kjv-bible.png" alt="Burgundy" style={{ width: '18px', height: '18px', borderRadius: '4px', objectFit: 'cover' }} />
                       <span>Burgundy</span>
                     </>
+                  ) : prefs.theme === 'architect-gold' ? (
+                    <>
+                      <img src="/themes/architect-gold-bible.png" alt="Architect" style={{ width: '18px', height: '18px', borderRadius: '4px', objectFit: 'cover' }} />
+                      <span>Architect</span>
+                    </>
+                  ) : prefs.theme === 'covenant-atlas' ? (
+                    <>
+                      <img src="/themes/covenant-atlas.png" alt="Atlas" style={{ width: '18px', height: '18px', borderRadius: '4px', objectFit: 'cover' }} />
+                      <span>Atlas</span>
+                    </>
+                  ) : prefs.theme === 'wisdom-legacy' ? (
+                    <>
+                      <img src="/themes/wisdom-legacy-banner.png" alt="Legacy" style={{ width: '22px', height: '14px', borderRadius: '3px', objectFit: 'cover' }} />
+                      <span>Legacy</span>
+                    </>
                   ) : prefs.theme === 'adubible-si' ? (
                     <>
                       <img src="/themes/adubible-si-banner.png" alt="SI Gold" style={{ width: '22px', height: '14px', borderRadius: '3px', objectFit: 'cover' }} />
@@ -1495,6 +1516,102 @@ export function App() {
                             <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Obsidian &amp; sovereign gold</div>
                           </div>
                           {prefs.theme === 'adubible-si' && <span style={{ color: '#d4af37', fontSize: '12px' }}>✓</span>}
+                        </button>
+
+                        {/* 5. Sacred Architect & Royal Maroon */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updatePrefs({ theme: 'architect-gold' });
+                            setIsThemePickerOpen(false);
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '8px 10px',
+                            borderRadius: '6px',
+                            border: `1px solid ${prefs.theme === 'architect-gold' ? '#c89e34' : 'transparent'}`,
+                            background: prefs.theme === 'architect-gold' ? 'rgba(200, 158, 52, 0.2)' : 'transparent',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            color: 'var(--ink)',
+                          }}
+                        >
+                          <img
+                            src="/themes/architect-gold-bible.png"
+                            alt="Sacred Architect"
+                            style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover' }}
+                          />
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '12px', fontWeight: 600 }}>📐 Sacred Architect Maroon</div>
+                            <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Maroon leather &amp; compass gold</div>
+                          </div>
+                          {prefs.theme === 'architect-gold' && <span style={{ color: '#c89e34', fontSize: '12px' }}>✓</span>}
+                        </button>
+
+                        {/* 6. Covenant Atlas */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updatePrefs({ theme: 'covenant-atlas' });
+                            setIsThemePickerOpen(false);
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '8px 10px',
+                            borderRadius: '6px',
+                            border: `1px solid ${prefs.theme === 'covenant-atlas' ? '#2dd4bf' : 'transparent'}`,
+                            background: prefs.theme === 'covenant-atlas' ? 'rgba(45, 212, 191, 0.15)' : 'transparent',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            color: 'var(--ink)',
+                          }}
+                        >
+                          <img
+                            src="/themes/covenant-atlas.png"
+                            alt="Covenant Atlas"
+                            style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover' }}
+                          />
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '12px', fontWeight: 600 }}>🧭 Covenant Atlas</div>
+                            <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Scripture compass &amp; sea teal</div>
+                          </div>
+                          {prefs.theme === 'covenant-atlas' && <span style={{ color: '#2dd4bf', fontSize: '12px' }}>✓</span>}
+                        </button>
+
+                        {/* 7. Wisdom Bible Legacy */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updatePrefs({ theme: 'wisdom-legacy' });
+                            setIsThemePickerOpen(false);
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '8px 10px',
+                            borderRadius: '6px',
+                            border: `1px solid ${prefs.theme === 'wisdom-legacy' ? '#86efac' : 'transparent'}`,
+                            background: prefs.theme === 'wisdom-legacy' ? 'rgba(77, 124, 77, 0.2)' : 'transparent',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            color: 'var(--ink)',
+                          }}
+                        >
+                          <img
+                            src="/themes/wisdom-legacy-banner.png"
+                            alt="Wisdom Bible Legacy"
+                            style={{ width: '32px', height: '20px', borderRadius: '4px', objectFit: 'cover' }}
+                          />
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '12px', fontWeight: 600 }}>🌿 Wisdom Bible Legacy</div>
+                            <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Deep pine &amp; contemplative sage</div>
+                          </div>
+                          {prefs.theme === 'wisdom-legacy' && <span style={{ color: '#86efac', fontSize: '12px' }}>✓</span>}
                         </button>
 
                         {/* 5. Celestial Sapphire */}

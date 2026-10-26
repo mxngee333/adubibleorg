@@ -24,7 +24,7 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
       <div className="footer-top-brand">
         <div className="footer-brand-title">
           <a href="/" onClick={onGoHome} className="footer-logo">
-            <AduBibleLogo size="lg" variant="full" />
+            <AduBibleLogo size="lg" />
           </a>
           <span className="footer-motto">The Word, Side by Side · 100% Ad-Free Exegetical Sanctuary</span>
         </div>

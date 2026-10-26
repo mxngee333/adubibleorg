@@ -421,6 +421,99 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </div>
               </button>
 
+              {/* Option 5: Sacred Architect & Royal Maroon */}
+              <button
+                type="button"
+                className={`picker-option ${prefs.theme === 'architect-gold' ? 'active' : ''}`}
+                onClick={() => onUpdatePrefs({ theme: 'architect-gold' })}
+                style={{ textAlign: 'left', padding: '12px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}
+              >
+                <img
+                  src="/themes/architect-gold-bible.png"
+                  alt="Sacred Architect"
+                  style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '8px',
+                    objectFit: 'cover',
+                    border: '1px solid #c89e34',
+                    flexShrink: 0,
+                    boxShadow: '0 2px 8px rgba(200, 158, 52, 0.35)',
+                  }}
+                />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
+                    <strong style={{ fontSize: '13px' }}>📐 Sacred Architect Maroon</strong>
+                    <span style={{ fontSize: '11px', color: '#c89e34', fontWeight: 700 }}>MASON</span>
+                  </div>
+                  <span style={{ display: 'block', fontSize: '11px', lineHeight: 1.4 }}>
+                    Imperial maroon leather (#200813), compass sacred geometry &amp; gold leaf
+                  </span>
+                </div>
+              </button>
+
+              {/* Option 6: Covenant Atlas (Scripture Compass) */}
+              <button
+                type="button"
+                className={`picker-option ${prefs.theme === 'covenant-atlas' ? 'active' : ''}`}
+                onClick={() => onUpdatePrefs({ theme: 'covenant-atlas' })}
+                style={{ textAlign: 'left', padding: '12px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}
+              >
+                <img
+                  src="/themes/covenant-atlas.png"
+                  alt="Covenant Atlas"
+                  style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '8px',
+                    objectFit: 'cover',
+                    border: '1px solid #2dd4bf',
+                    flexShrink: 0,
+                    boxShadow: '0 2px 8px rgba(45, 212, 191, 0.35)',
+                  }}
+                />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
+                    <strong style={{ fontSize: '13px' }}>🧭 Covenant Atlas</strong>
+                    <span style={{ fontSize: '11px', color: '#2dd4bf', fontWeight: 700 }}>NAVIGATOR</span>
+                  </div>
+                  <span style={{ display: 'block', fontSize: '11px', lineHeight: 1.4 }}>
+                    Scripture compass: abyssal slate, terracotta star &amp; emerald sea teal
+                  </span>
+                </div>
+              </button>
+
+              {/* Option 7: Wisdom Bible Legacy */}
+              <button
+                type="button"
+                className={`picker-option ${prefs.theme === 'wisdom-legacy' ? 'active' : ''}`}
+                onClick={() => onUpdatePrefs({ theme: 'wisdom-legacy' })}
+                style={{ textAlign: 'left', padding: '12px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}
+              >
+                <img
+                  src="/themes/wisdom-legacy-banner.png"
+                  alt="Wisdom Bible Legacy"
+                  style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '8px',
+                    objectFit: 'cover',
+                    border: '1px solid #86efac',
+                    flexShrink: 0,
+                    boxShadow: '0 2px 8px rgba(77, 124, 77, 0.35)',
+                  }}
+                />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
+                    <strong style={{ fontSize: '13px' }}>🌿 Wisdom Bible Legacy</strong>
+                    <span style={{ fontSize: '11px', color: '#86efac', fontWeight: 700 }}>LEGACY</span>
+                  </div>
+                  <span style={{ display: 'block', fontSize: '11px', lineHeight: 1.4 }}>
+                    Original edition · Deep forest pine (#131d14), sage velvet &amp; serene green
+                  </span>
+                </div>
+              </button>
+
               {/* Option 5: Sacred Obsidian & Gold */}
               <button
                 type="button"

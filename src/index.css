@@ -770,7 +770,105 @@ input {
 }
 
 /* ==========================================================================
-   THEME 8: USER CUSTOM PALETTE (Interactive Theme Studio)
+   THEME 8: WISDOM BIBLE LEGACY (Contemplative Deep Forest & Sage Green)
+   Deep Forest Pine (#131d14), Midnight Pine Surface (#0a120b),
+   Contemplative Sage Green (#4d7c4d / #65a365), and Warm Ivory Script (#eef3ed).
+   ========================================================================== */
+.bible-app.theme-wisdom-legacy {
+  --paper: #131d14;
+  --surface: #0a120b;
+  --ink: #eef3ed;
+  --subtle: #88a886;
+  --line: rgba(101, 163, 101, 0.25);
+  --green: #4d7c4d;
+  --soft: #1b291c;
+  color-scheme: dark;
+}
+
+.bible-app.theme-wisdom-legacy .brand-icon {
+  background: rgba(77, 124, 77, 0.22);
+  border: 1px solid rgba(101, 163, 101, 0.65);
+  color: #86efac;
+  box-shadow: 0 0 16px rgba(101, 163, 101, 0.35);
+}
+
+.bible-app.theme-wisdom-legacy .reading-shell {
+  border: 1px solid rgba(101, 163, 101, 0.3);
+  box-shadow: 0 20px 50px rgba(10, 18, 11, 0.9);
+}
+
+.bible-app.theme-wisdom-legacy .chapter-intro h2 {
+  color: #f0fdf4;
+}
+
+.bible-app.theme-wisdom-legacy .chapter-intro h2 span {
+  color: #86efac;
+}
+
+.bible-app.theme-wisdom-legacy .add-column {
+  background: linear-gradient(135deg, #4d7c4d 0%, #2d5a2d 100%);
+  border-color: #86efac;
+  color: #ffffff;
+  box-shadow: 0 2px 14px rgba(77, 124, 77, 0.45);
+}
+
+.bible-app.theme-wisdom-legacy .add-column:hover:not(:disabled) {
+  background: linear-gradient(135deg, #65a365 0%, #4d7c4d 100%);
+  border-color: #bbf7d0;
+  color: #ffffff;
+}
+
+.bible-app.theme-wisdom-legacy .quiet-button.active-pill,
+.bible-app.theme-wisdom-legacy .preset-row button.active,
+.bible-app.theme-wisdom-legacy .languages-grid button.active,
+.bible-app.theme-wisdom-legacy .reader-tools button.settings-active {
+  background: #4d7c4d;
+  border-color: #86efac;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(77, 124, 77, 0.35);
+}
+
+.bible-app.theme-wisdom-legacy .edition-badge {
+  background: rgba(77, 124, 77, 0.22);
+  border: 1px solid rgba(101, 163, 101, 0.45);
+  color: #86efac;
+}
+
+.bible-app.theme-wisdom-legacy .verse-row.selected-row {
+  background: rgba(101, 163, 101, 0.14);
+}
+
+.bible-app.theme-wisdom-legacy .wisdom-toggle.on {
+  background: #4d7c4d;
+  border-color: #86efac;
+}
+
+.bible-app.theme-wisdom-legacy .wisdom-toggle.on .wisdom-toggle-knob {
+  background: #f0fdf4;
+}
+
+.bible-app.theme-wisdom-legacy .picker-dialog {
+  background: #131d14;
+  border: 1px solid rgba(101, 163, 101, 0.35);
+  color: #eef3ed;
+}
+
+.bible-app.theme-wisdom-legacy .picker-head h3 {
+  color: #f0fdf4;
+}
+
+.bible-app.theme-wisdom-legacy .picker-option.active {
+  background: rgba(77, 124, 77, 0.25);
+  border-color: #86efac;
+  color: #f0fdf4;
+}
+
+.bible-app.theme-wisdom-legacy .picker-option.active span {
+  color: #86efac;
+}
+
+/* ==========================================================================
+   THEME 9: USER CUSTOM PALETTE (Interactive Theme Studio)
    Uses dynamic CSS custom properties applied on .bible-app
    ========================================================================== */
 .bible-app.theme-custom .brand-icon {
@@ -912,6 +1010,73 @@ body:has(.theme-adubible-si) ::-webkit-scrollbar-thumb:hover {
   color: #0c0a09;
   font-weight: 700;
   box-shadow: 0 4px 14px rgba(212, 175, 55, 0.4);
+}
+
+body:has(.theme-architect-gold) {
+  background: #13040b;
+  color: #fbf6ee;
+}
+body:has(.theme-architect-gold) ::-webkit-scrollbar-track {
+  background: #13040b;
+}
+body:has(.theme-architect-gold) ::-webkit-scrollbar-thumb {
+  background: #3d1024;
+  border-color: #13040b;
+}
+body:has(.theme-architect-gold) ::-webkit-scrollbar-thumb:hover {
+  background: #c89e34;
+}
+
+body:has(.theme-covenant-atlas) {
+  background: #070e11;
+  color: #f4ede0;
+}
+body:has(.theme-covenant-atlas) ::-webkit-scrollbar-track {
+  background: #070e11;
+}
+body:has(.theme-covenant-atlas) ::-webkit-scrollbar-thumb {
+  background: #172c33;
+  border-color: #070e11;
+}
+body:has(.theme-covenant-atlas) ::-webkit-scrollbar-thumb:hover {
+  background: #2dd4bf;
+}
+
+body:has(.theme-wisdom-legacy) {
+  background: #0a120b;
+  color: #eef3ed;
+}
+body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-track {
+  background: #0a120b;
+}
+body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb {
+  background: #1a2d1c;
+  border-color: #0a120b;
+}
+body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
+  background: #65a365;
+}
+
+.bible-app.theme-architect-gold .canon-tab-btn.active {
+  background: linear-gradient(135deg, #c89e34, #9e791e);
+  border-color: #fde047;
+  color: #13040b;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(200, 158, 52, 0.4);
+}
+
+.bible-app.theme-covenant-atlas .canon-tab-btn.active {
+  background: linear-gradient(135deg, #1d7a74, #115e59);
+  border-color: #2dd4bf;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(45, 212, 191, 0.4);
+}
+
+.bible-app.theme-wisdom-legacy .canon-tab-btn.active {
+  background: linear-gradient(135deg, #4d7c4d, #2d5a2d);
+  border-color: #86efac;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(77, 124, 77, 0.4);
 }
 
 .masthead {
@@ -2668,133 +2833,138 @@ body:has(.theme-adubible-si) ::-webkit-scrollbar-thumb:hover {
 
 
 /* ==========================================================================
-   ADUBIBLE REGAL LOGO & SACRED BRAND IDENTITY
+   SIMPLE & ELEGANT ADUBIBLE LOGO (EDITORIAL LUXURY)
    ========================================================================== */
-.adubible-brand-lockup {
+.adubible-logo-mark {
   display: inline-flex;
   align-items: center;
-  gap: 11px;
+  gap: 10px;
   text-decoration: none;
   cursor: pointer;
   user-select: none;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease;
+  transition: opacity 0.15s ease;
 }
 
-.adubible-brand-lockup:hover {
-  transform: translateY(-1px);
+.adubible-logo-mark:hover {
+  opacity: 0.9;
 }
 
-.brand-emblem-wrapper {
-  position: relative;
+.logo-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
   border-radius: 8px;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 10px rgba(245, 158, 11, 0.28));
-  transition: filter 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
+  background: #381a62;
+  border: 1px solid rgba(192, 132, 252, 0.25);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 }
 
-.adubible-brand-lockup:hover .brand-emblem-wrapper {
-  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 16px rgba(245, 158, 11, 0.5));
-  transform: scale(1.04);
+.logo-badge .logo-icon {
+  width: 17px;
+  height: 17px;
+  color: #f8fafc;
+  stroke-width: 1.85px;
 }
 
-.brand-emblem-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
+/* Theme variations */
+.bible-app.theme-royal-purple .logo-badge {
+  background: #381a62;
+  border: 1px solid rgba(192, 132, 252, 0.35);
+}
+.bible-app.theme-royal-purple .logo-badge .logo-icon {
+  color: #f8fafc;
 }
 
-.brand-typography {
+.bible-app.theme-adubible-si .logo-badge {
+  background: #1c1917;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+}
+.bible-app.theme-adubible-si .logo-badge .logo-icon {
+  color: #fef08a;
+}
+
+.bible-app.theme-parchment .logo-badge {
+  background: #2a382c;
+  border: 1px solid rgba(42, 56, 44, 0.4);
+}
+.bible-app.theme-parchment .logo-badge .logo-icon {
+  color: #f5f5f0;
+}
+
+.bible-app.theme-daylight .logo-badge {
+  background: #1e293b;
+  border: 1px solid rgba(30, 41, 59, 0.2);
+}
+.bible-app.theme-daylight .logo-badge .logo-icon {
+  color: #ffffff;
+}
+
+/* Wordmark Typography: Simple, Regal, Editorial Serif */
+.logo-wordmark {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: baseline;
+  font-family: Georgia, "Iowan Old Style", "Palatino", "Times New Roman", serif;
+  font-size: 20px;
+  letter-spacing: -0.01em;
   line-height: 1;
 }
 
-.brand-wordmark {
-  display: flex;
-  align-items: baseline;
-  gap: 1px;
-}
-
-.brand-adu {
-  font-family: Georgia, "Cinzel", "Times New Roman", serif;
-  font-weight: 800;
-  font-size: 21px;
-  letter-spacing: 0.02em;
-  background: linear-gradient(135deg, #fffbeb 0%, #fef08a 25%, #f59e0b 65%, #d97706 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 2px 10px rgba(245, 158, 11, 0.25);
-}
-
-.bible-app.theme-royal-purple .brand-adu {
-  background: linear-gradient(135deg, #ffffff 0%, #fef08a 35%, #f59e0b 75%, #d97706 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.brand-bible {
-  font-family: Georgia, "Cinzel", "Times New Roman", serif;
+.logo-word-adu {
   font-weight: 700;
-  font-size: 21px;
-  letter-spacing: 0.03em;
-  color: var(--ink);
-  margin-left: 1px;
-  transition: color 0.15s ease;
+  color: #ffffff;
+  letter-spacing: -0.015em;
 }
 
-.adubible-brand-lockup:hover .brand-bible {
-  color: var(--green);
+.bible-app.theme-parchment .logo-word-adu,
+.bible-app.theme-daylight .logo-word-adu {
+  color: #0f172a;
 }
 
-.brand-spark {
-  font-size: 10px;
-  color: #f59e0b;
-  margin-left: 3px;
-  vertical-align: super;
-  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.7));
-  animation: aduSparklePulse 3s ease-in-out infinite alternate;
+.logo-word-bible {
+  font-weight: 400;
+  color: #cbd5e1;
+  margin-left: 4.5px;
+  letter-spacing: -0.01em;
 }
 
-@keyframes aduSparklePulse {
-  0% { opacity: 0.7; transform: scale(0.9); }
-  100% { opacity: 1; transform: scale(1.2); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.95)); }
+.bible-app.theme-royal-purple .logo-word-bible {
+  color: #c4b5fd;
 }
 
-.brand-subtitle {
-  font-size: 8px;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  color: var(--subtle);
-  text-transform: uppercase;
-  margin-top: 3px;
-  opacity: 0.85;
+.bible-app.theme-parchment .logo-word-bible,
+.bible-app.theme-daylight .logo-word-bible {
+  color: #475569;
 }
 
 /* SIZES */
-.adubible-brand-lockup.size-sm .brand-adu,
-.adubible-brand-lockup.size-sm .brand-bible {
+.adubible-logo-mark.size-sm .logo-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+}
+.adubible-logo-mark.size-sm .logo-badge .logo-icon {
+  width: 14px;
+  height: 14px;
+  stroke-width: 1.75px;
+}
+.adubible-logo-mark.size-sm .logo-wordmark {
   font-size: 17px;
 }
-.adubible-brand-lockup.size-sm .brand-subtitle {
-  font-size: 7.5px;
-}
 
-.adubible-brand-lockup.size-lg .brand-adu,
-.adubible-brand-lockup.size-lg .brand-bible {
-  font-size: 26px;
+.adubible-logo-mark.size-lg .logo-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
 }
-.adubible-brand-lockup.size-lg .brand-subtitle {
-  font-size: 9.5px;
+.adubible-logo-mark.size-lg .logo-badge .logo-icon {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.9px;
 }
-
-.adubible-brand-lockup.size-xl .brand-adu,
-.adubible-brand-lockup.size-xl .brand-bible {
-  font-size: 34px;
-}
-.adubible-brand-lockup.size-xl .brand-subtitle {
-  font-size: 11px;
+.adubible-logo-mark.size-lg .logo-wordmark {
+  font-size: 24px;
 }

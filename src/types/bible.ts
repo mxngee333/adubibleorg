@@ -242,6 +242,7 @@ export type ReadingTheme =
   | 'burgundy-gold'
   | 'architect-gold'
   | 'covenant-atlas'
+  | 'wisdom-legacy'
   | 'adubible-si'
   | 'sapphire-blue'
   | 'midnight'
