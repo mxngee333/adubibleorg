@@ -22,6 +22,8 @@ interface AudioBibleBarProps {
   onClose?: () => void;
 }
 
+const SAVED_VOICE_KEY = 'elohim_neural_voice_v1';
+
 export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   bookName,
   chapter,
@@ -38,7 +40,15 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoadingVerse, setIsLoadingVerse] = useState(false);
-  const [selectedVoice, setSelectedVoice] = useState<GoogleNeuralVoiceName>('Charon');
+  const [selectedVoice, setSelectedVoice] = useState<GoogleNeuralVoiceName>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(SAVED_VOICE_KEY);
+      if (saved && GOOGLE_NEURAL_VOICES.some((v) => v.id === saved)) {
+        return saved as GoogleNeuralVoiceName;
+      }
+    }
+    return 'Charon';
+  });
   const [rate, setRate] = useState(1.0);
   const [bilingualMode, setBilingualMode] = useState(false);
   const [useStudioMp3, setUseStudioMp3] = useState<boolean>(Boolean(audioUrl));
@@ -49,6 +59,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   const currentVerseIdxRef = useRef(0);
   const audioContextRef = useRef<AudioContext | null>(null);
   const activeSourceRef = useRef<AudioBufferSourceNode | null>(null);
+  const activeGainNodeRef = useRef<GainNode | null>(null);
   const studioAudioElRef = useRef<HTMLAudioElement | null>(null);
   const prefetchQueueActiveRef = useRef<boolean>(false);
 
@@ -85,6 +96,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   }, [verses, langCode, selectedVoice]);
 
   // Background Look-Ahead Pre-fetcher for Next Verses (N+1, N+2, N+3)
+  // Keeps character voice 100% consistent!
   const prefetchAhead = useCallback(
     async (fromIndex: number, depth = 3) => {
       try {
@@ -97,18 +109,17 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
               .catch(() => {});
           }
 
-          // In bilingual mode, also preload matching parallel verse ahead of time
+          // In bilingual mode, also preload matching parallel verse ahead of time with the SAME voice
           if (bilingualMode && parallelVerses && parallelVerses[i]) {
             const pV = parallelVerses[i];
             const pLang = parallelLangCode || 'tw';
-            const pVoice = selectedVoice === 'Charon' ? 'Kore' : 'Charon';
-            if (!isAudioBufferPreloaded(pV.text, pLang, pVoice)) {
-              getOrPreloadAudioBuffer(ctx, pV.text, pLang, pVoice).catch(() => {});
+            if (!isAudioBufferPreloaded(pV.text, pLang, selectedVoice)) {
+              getOrPreloadAudioBuffer(ctx, pV.text, pLang, selectedVoice).catch(() => {});
             }
           }
         }
       } catch {
-        // Non-blocking prefetch
+        // Non-blocking
       }
     },
     [
@@ -129,7 +140,6 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     prefetchQueueActiveRef.current = true;
 
     const startIdlePreload = async () => {
-      // Small pause to allow initial UI mount
       await new Promise((r) => setTimeout(r, 600));
       const ctx = getOrCreateAudioContext();
       for (let i = 0; i < verses.length; i++) {
@@ -138,7 +148,6 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
           try {
             await getOrPreloadAudioBuffer(ctx, v.text, langCode, selectedVoice);
             updateBufferedCount();
-            // Gentle pause between background preloads so network stays responsive
             await new Promise((r) => setTimeout(r, 350));
           } catch {
             // Ignore background failures
@@ -150,26 +159,36 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     startIdlePreload();
   }, [verses, langCode, selectedVoice, getOrCreateAudioContext, updateBufferedCount]);
 
+  // Clean, click-free stop with 35ms micro-fade to eliminate all glitch pops
   const stopPlayback = () => {
     setIsPlaying(false);
     setIsLoadingVerse(false);
     isPlayingRef.current = false;
     setStatusMessage('');
 
-    if (activeSourceRef.current) {
+    if (activeGainNodeRef.current && audioContextRef.current) {
+      const ctx = audioContextRef.current;
+      const gain = activeGainNodeRef.current;
       try {
-        activeSourceRef.current.stop();
+        gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 0.035);
       } catch {}
-      activeSourceRef.current = null;
     }
+
+    setTimeout(() => {
+      if (activeSourceRef.current) {
+        try {
+          activeSourceRef.current.stop();
+          activeSourceRef.current.disconnect();
+        } catch {}
+        activeSourceRef.current = null;
+      }
+      activeGainNodeRef.current = null;
+    }, 40);
 
     if (studioAudioElRef.current) {
       studioAudioElRef.current.pause();
       studioAudioElRef.current.currentTime = 0;
-    }
-
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
     }
   };
 
@@ -195,7 +214,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       return;
     }
 
-    // Immediately trigger parallel lookahead prefetch for next 3 verses!
+    // Trigger lookahead prefetch for next verses with consistent selected voice
     prefetchAhead(index, 3);
 
     const ctx = getOrCreateAudioContext();
@@ -205,13 +224,12 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       selectedVoice
     );
 
-    // If already in memory: 0ms INSTANT START (No loading indicator or pause!)
     if (!isAlreadyInMemory) {
       setIsLoadingVerse(true);
       setStatusMessage(
         langCode === 'tw' || langCode === 'ak'
-          ? `Synthesizing Asante Twi (24kHz Neural)…`
-          : `Buffering 24kHz Google Voice (${selectedVoice})…`
+          ? `Buffering Asante Twi (24kHz ${selectedVoice})…`
+          : `Buffering 24kHz (${selectedVoice})…`
       );
     }
 
@@ -232,48 +250,60 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       setStatusMessage('');
       updateBufferedCount();
 
+      // Clean audio pipeline via GainNode with anti-pop ramp
       const source = ctx.createBufferSource();
+      const gainNode = ctx.createGain();
+      gainNode.gain.setValueAtTime(0.001, ctx.currentTime);
+      gainNode.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 0.025);
+
       source.buffer = primaryBuffer;
       source.playbackRate.value = rate;
-      source.connect(ctx.destination);
-      activeSourceRef.current = source;
+      source.connect(gainNode);
+      gainNode.connect(ctx.destination);
 
-      // While primary verse is playing, ensure parallel verse is ready if in bilingual mode
+      activeSourceRef.current = source;
+      activeGainNodeRef.current = gainNode;
+
+      // While primary verse plays, ensure matching parallel verse is ready in bilingual mode
       if (bilingualMode && parallelVerses && parallelVerses[index]) {
         const pVerse = parallelVerses[index];
         const pLang = parallelLangCode || 'tw';
-        const pVoice = selectedVoice === 'Charon' ? 'Kore' : 'Charon';
-        getOrPreloadAudioBuffer(ctx, pVerse.text, pLang, pVoice).catch(() => {});
+        getOrPreloadAudioBuffer(ctx, pVerse.text, pLang, selectedVoice).catch(() => {});
       }
 
       source.onended = async () => {
         if (!isPlayingRef.current) return;
 
-        // Bilingual Mode: Immediately speak parallel language verse (e.g. English -> Twi)
+        // Bilingual Mode: Recite parallel verse with the SAME consistent voice
         if (bilingualMode && parallelVerses && parallelVerses[index]) {
           const pVerse = parallelVerses[index];
           const targetLang = parallelLangCode || 'tw';
-          const pVoice = selectedVoice === 'Charon' ? 'Kore' : 'Charon';
 
           try {
             const secBuffer = await getOrPreloadAudioBuffer(
               ctx,
               pVerse.text,
               targetLang,
-              pVoice
+              selectedVoice
             );
 
             if (!isPlayingRef.current) return;
 
             const secSource = ctx.createBufferSource();
+            const secGainNode = ctx.createGain();
+            secGainNode.gain.setValueAtTime(0.001, ctx.currentTime);
+            secGainNode.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 0.025);
+
             secSource.buffer = secBuffer;
             secSource.playbackRate.value = rate;
-            secSource.connect(ctx.destination);
+            secSource.connect(secGainNode);
+            secGainNode.connect(ctx.destination);
+
             activeSourceRef.current = secSource;
+            activeGainNodeRef.current = secGainNode;
 
             secSource.onended = () => {
               if (isPlayingRef.current) {
-                // Gapless cutover to next verse!
                 playVerseAtIndex(index + 1);
               }
             };
@@ -284,7 +314,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             }
           }
         } else {
-          // Direct 0ms gapless cutover to next verse!
+          // Direct 0ms gapless cutover to next verse
           playVerseAtIndex(index + 1);
         }
       };
@@ -293,22 +323,17 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       setIsPlaying(true);
       isPlayingRef.current = true;
     } catch (err) {
-      console.warn('[AudioBibleBar] 24kHz Neural fallback to browser speech:', err);
+      console.warn('[AudioBibleBar] 24kHz synthesis retry error:', err);
       setIsLoadingVerse(false);
-      setStatusMessage('');
+      setStatusMessage('Retrying 24kHz audio stream…');
 
-      // Browser TTS Fallback
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(verseObj.text);
-        utter.rate = rate;
-        utter.lang = langCode === 'tw' ? 'ak-GH' : langCode;
-        utter.onend = () => {
-          if (isPlayingRef.current) playVerseAtIndex(index + 1);
-        };
-        window.speechSynthesis.speak(utter);
-        setIsPlaying(true);
-        isPlayingRef.current = true;
+      // Resilient recovery: wait 800ms and retry pure 24kHz neural audio (NEVER robot speech)
+      if (isPlayingRef.current) {
+        setTimeout(() => {
+          if (isPlayingRef.current) {
+            playVerseAtIndex(index);
+          }
+        }, 800);
       }
     }
   };
@@ -340,6 +365,22 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     setIsPlaying(true);
     isPlayingRef.current = true;
     playVerseAtIndex(nextIdx);
+  };
+
+  const handleVoiceChange = (newVoice: GoogleNeuralVoiceName) => {
+    setSelectedVoice(newVoice);
+    try {
+      localStorage.setItem(SAVED_VOICE_KEY, newVoice);
+    } catch {}
+
+    if (isPlaying) {
+      stopPlayback();
+      setTimeout(() => {
+        setIsPlaying(true);
+        isPlayingRef.current = true;
+        playVerseAtIndex(currentVerseIdxRef.current);
+      }, 100);
+    }
   };
 
   return (
@@ -426,21 +467,10 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             gap: '8px',
           }}
         >
-          {/* Voice Picker (Charon, Kore, Puck, Aoede, Fenrir) */}
+          {/* Consistent Voice Selector */}
           <select
             value={selectedVoice}
-            onChange={(e) => {
-              const newVoice = e.target.value as GoogleNeuralVoiceName;
-              setSelectedVoice(newVoice);
-              if (isPlaying) {
-                stopPlayback();
-                setTimeout(() => {
-                  setIsPlaying(true);
-                  isPlayingRef.current = true;
-                  playVerseAtIndex(currentVerseIdxRef.current);
-                }, 100);
-              }
-            }}
+            onChange={(e) => handleVoiceChange(e.target.value as GoogleNeuralVoiceName)}
             style={{
               height: '36px',
               padding: '0 10px',
@@ -451,7 +481,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
               fontSize: '12px',
               cursor: 'pointer',
             }}
-            title="Select Google 24kHz Neural Voice"
+            title="Consistent Google 24kHz Voice Selection"
           >
             {GOOGLE_NEURAL_VOICES.map((v) => (
               <option key={v.id} value={v.id}>
@@ -509,7 +539,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
                 stopPlayback();
                 setBilingualMode(!bilingualMode);
               }}
-              title="Alternate reading primary & parallel language verse by verse"
+              title="Alternate reading primary & parallel language verse by verse with consistent voice"
             >
               ⇄ Bilingual ({versionName} + {parallelVersionName})
             </button>

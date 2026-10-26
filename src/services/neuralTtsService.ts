@@ -49,7 +49,8 @@ export const GOOGLE_NEURAL_VOICES: NeuralVoiceOption[] = [
   },
 ];
 
-const DB_NAME = 'elohim_tts_audio_cache_v1';
+// v2: Completely purged of any preamble prompts so audio begins straight from the first word
+const DB_NAME = 'elohim_tts_audio_cache_v2';
 const STORE_NAME = 'audio_tracks';
 const memoryAudioBufferCache = new Map<string, AudioBuffer>();
 
@@ -101,48 +102,35 @@ export async function setCachedTtsAudio(cacheKey: string, base64Audio: string): 
 }
 
 /**
- * Format prompt text to ensure natural, reverent pronunciation
- * For Twi (Asante / Akuapem), injects native phonetic instruction so tonal vowels (ɛ, ɔ)
- * and consonants (gy, tw, hy, dw, ny) are rendered authentically by Google Neural Audio.
+ * Clean verse text strictly for speech synthesis.
+ * Strips footnote markers [1], [2], parentheses, and special punctuation,
+ * returning ONLY the pure scripture text so speech starts IMMEDIATELY
+ * from the very first word with ZERO preamble or instruction reading!
  */
-function prepareTtsPrompt(text: string, langCode: string): string {
-  const clean = text.replace(/\[\d+\]/g, '').replace(/\s+/g, ' ').trim();
-  const lowerLang = (langCode || 'en').toLowerCase();
-
-  if (lowerLang === 'tw' || lowerLang === 'ak' || lowerLang.startsWith('twi')) {
-    return `In authentic native Asante Twi with reverent Akan cadence and exact phonetic pronunciation: ${clean}`;
-  }
-
-  if (lowerLang === 'yo') {
-    return `In authentic Yoruba with holy reverence and natural intonation: ${clean}`;
-  }
-
-  if (lowerLang === 'ha') {
-    return `In authentic Hausa with clear reverence: ${clean}`;
-  }
-
-  if (lowerLang === 'fr') {
-    return `Lisez avec révérence et clarté en français: ${clean}`;
-  }
-
-  if (lowerLang === 'es') {
-    return `Lea con reverencia y claridad en español: ${clean}`;
-  }
-
-  return `Read with sacred reverence, dignity, and clear pronunciation: ${clean}`;
+export function cleanVerseForSpeech(text: string): string {
+  return text
+    .replace(/\[\d+\]/g, '') // remove footnote tags [1], [2]
+    .replace(/\(\d+:\d+\)/g, '')
+    .replace(/[«»"]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 /**
- * Synthesizes 24kHz Google Neural Audio
- * Cascades from Edge Gateway -> Direct Gemini Multimodal API -> Cached in IndexedDB
+ * Synthesizes 24kHz Google Neural Audio with automatic multi-tier retry.
+ * NEVER falls back to robotic browser speech!
  */
 export async function synthesizeNeuralAudio(
-  text: string,
+  rawText: string,
   langCode: string,
   voiceName: GoogleNeuralVoiceName = 'Charon'
 ): Promise<string> {
-  const promptText = prepareTtsPrompt(text, langCode);
-  const cacheKey = `${langCode}:${voiceName}:${promptText}`;
+  const pureVerseText = cleanVerseForSpeech(rawText);
+  if (!pureVerseText) {
+    throw new Error('Empty verse text');
+  }
+
+  const cacheKey = `${langCode}:${voiceName}:${pureVerseText}`;
 
   // 1. Check local IndexedDB audio vault (0ms latency, zero bandwidth)
   const cached = await getCachedTtsAudio(cacheKey);
@@ -150,28 +138,34 @@ export async function synthesizeNeuralAudio(
     return cached;
   }
 
-  // 2. Call Edge Gateway (with R2 cache)
-  try {
-    const res = await fetch(EDGE_TTS_GATEWAY, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        text: promptText,
-        voiceName,
-      }),
-    });
+  // 2. Multi-attempt resilient synthesis from Edge Gateway with backoff
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(EDGE_TTS_GATEWAY, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: pureVerseText,
+          voiceName,
+        }),
+      });
 
-    if (res.ok) {
-      const data = await res.json();
-      if (data?.ok && data?.base64Audio) {
-        await setCachedTtsAudio(cacheKey, data.base64Audio);
-        return data.base64Audio;
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.ok && data?.base64Audio) {
+          await setCachedTtsAudio(cacheKey, data.base64Audio);
+          return data.base64Audio;
+        }
       }
+    } catch (edgeErr) {
+      console.warn(`[NeuralTTS] Edge Gateway attempt ${attempt + 1} failed:`, edgeErr);
     }
-  } catch (edgeErr) {
-    console.warn('[NeuralTTS] Edge Gateway fallback:', edgeErr);
+
+    if (attempt < 2) {
+      await new Promise((r) => setTimeout(r, 450 * (attempt + 1)));
+    }
   }
 
   // 3. Fallback to Direct Google Gemini Audio API
@@ -191,7 +185,7 @@ export async function synthesizeNeuralAudio(
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: promptText }] }],
+          contents: [{ parts: [{ text: pureVerseText }] }],
           generationConfig: {
             responseModalities: ['AUDIO'],
             speechConfig: {
@@ -212,11 +206,11 @@ export async function synthesizeNeuralAudio(
         }
       }
     } catch {
-      // try next
+      // try next model
     }
   }
 
-  throw new Error('Neural TTS synthesis failed');
+  throw new Error('Neural TTS synthesis failed after retries');
 }
 
 /**
@@ -253,10 +247,10 @@ export async function getOrPreloadAudioBuffer(
   langCode: string,
   voiceName: GoogleNeuralVoiceName = 'Charon'
 ): Promise<AudioBuffer> {
-  const promptText = prepareTtsPrompt(text, langCode);
-  const memKey = `${langCode}:${voiceName}:${promptText}`;
+  const pureVerseText = cleanVerseForSpeech(text);
+  const memKey = `${langCode}:${voiceName}:${pureVerseText}`;
 
-  // 1. Instant 0ms Memory Hit
+  // 1. Instant 0ms RAM Hit
   if (memoryAudioBufferCache.has(memKey)) {
     return memoryAudioBufferCache.get(memKey)!;
   }
@@ -273,8 +267,7 @@ export function isAudioBufferPreloaded(
   langCode: string,
   voiceName: GoogleNeuralVoiceName = 'Charon'
 ): boolean {
-  const promptText = prepareTtsPrompt(text, langCode);
-  const memKey = `${langCode}:${voiceName}:${promptText}`;
+  const pureVerseText = cleanVerseForSpeech(text);
+  const memKey = `${langCode}:${voiceName}:${pureVerseText}`;
   return memoryAudioBufferCache.has(memKey);
 }
-
