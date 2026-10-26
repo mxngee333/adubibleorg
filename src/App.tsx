@@ -66,6 +66,10 @@ import {
   LegalInstitutionalModal,
   LegalPageKey,
 } from './components/LegalInstitutionalModal';
+import { OmniSearchBar } from './components/OmniSearchBar';
+import { QuickVersionRibbon } from './components/QuickVersionRibbon';
+import { MobileBottomDock } from './components/MobileBottomDock';
+import { GrandSiteFooter } from './components/GrandSiteFooter';
 
 const COMPARE_PRESETS: Array<{ label: string; versions: string[] }> = [
   { label: 'KJV + Twi', versions: ['kjv', 'twi'] },
@@ -237,6 +241,7 @@ export function App() {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isBookModalOpen, setIsBookModalOpen] = useState<boolean>(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState<boolean>(false);
   const [isLangAddonModalOpen, setIsLangAddonModalOpen] =
     useState<boolean>(false);
   const [isStrongsModalOpen, setIsStrongsModalOpen] = useState<boolean>(false);
@@ -311,6 +316,13 @@ export function App() {
           if (cloud.notes?.length) {
             setNotes(cloud.notes);
             saveNotes(cloud.notes);
+          }
+          if (cloud.preferences?.theme) {
+            setPrefs((prev) => {
+              const merged = { ...prev, ...cloud.preferences };
+              savePreferences(merged);
+              return merged;
+            });
           }
         }
       }
@@ -502,6 +514,19 @@ export function App() {
       copy[idx] = copy[targetIdx];
       copy[targetIdx] = temp;
       return copy;
+    });
+  };
+
+  const handleToggleRibbonVersion = (vId: string) => {
+    setActiveVersionIds((prev) => {
+      if (prev.includes(vId)) {
+        if (prev.length <= 1) return prev;
+        return prev.filter((id) => id !== vId);
+      }
+      if (prev.length >= 4) {
+        return [...prev.slice(0, 3), vId];
+      }
+      return [...prev, vId];
     });
   };
 
@@ -780,319 +805,28 @@ export function App() {
     (prefs.showStrongsInline ? 1 : 0) + (prefs.showCommentaries ? 1 : 0);
 
   const renderSharedFooter = () => (
-    <footer
-      className="site-footer"
-      style={{
-        marginTop: '36px',
-        paddingTop: '24px',
-        paddingBottom: '32px',
-        borderTop: '1px solid var(--line)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '20px',
-        fontSize: '13px',
-        color: 'var(--subtle)',
+    <GrandSiteFooter
+      onOpenLegal={(page) => setLegalModalState({ open: true, page })}
+      onOpenSettings={() => setIsSettingsOpen(true)}
+      onGoHome={handleGoHome}
+      onSelectNavTab={(tab) => {
+        setActiveNavTab(tab);
+        if (typeof window !== 'undefined') {
+          if (tab === 'canonical') {
+            window.history.pushState(
+              {},
+              '',
+              `/${activeVersionIds[0] || 'kjv'}/${currentBookSlug}/${currentChapter}`
+            );
+          } else {
+            window.history.pushState({}, '', `/${tab}`);
+          }
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }}
-    >
-      {/* 1. CORNERSTONE THREE SCRIPTURE QUOTES */}
-      <div
-        className="footer-scripture-trio"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '14px',
-        }}
-      >
-        <div
-          style={{
-            padding: '14px 16px',
-            borderRadius: '12px',
-            background: 'var(--soft)',
-            border: '1px solid var(--line)',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          }}
-        >
-          <p
-            style={{
-              margin: '0 0 8px 0',
-              fontStyle: 'italic',
-              color: 'var(--ink)',
-              lineHeight: 1.5,
-              fontSize: '13px',
-            }}
-          >
-            &ldquo;Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ.&rdquo;
-          </p>
-          <div
-            style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: 'var(--green)',
-              letterSpacing: '0.04em',
-              textTransform: 'uppercase',
-            }}
-          >
-            Ephesians 1:3 · Efesofoɔ 1:3
-          </div>
-        </div>
-
-        <div
-          style={{
-            padding: '14px 16px',
-            borderRadius: '12px',
-            background: 'var(--soft)',
-            border: '1px solid var(--line)',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          }}
-        >
-          <p
-            style={{
-              margin: '0 0 8px 0',
-              fontStyle: 'italic',
-              color: 'var(--ink)',
-              lineHeight: 1.5,
-              fontSize: '13px',
-            }}
-          >
-            &ldquo;For the word of God is living and active, sharper than any two-edged sword, piercing to the division of soul and of spirit, of joints and of marrow.&rdquo;
-          </p>
-          <div
-            style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: 'var(--green)',
-              letterSpacing: '0.04em',
-              textTransform: 'uppercase',
-            }}
-          >
-            Hebrews 4:12 · Hebrifoɔ 4:12
-          </div>
-        </div>
-
-        <div
-          style={{
-            padding: '14px 16px',
-            borderRadius: '12px',
-            background: 'var(--soft)',
-            border: '1px solid var(--line)',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          }}
-        >
-          <p
-            style={{
-              margin: '0 0 8px 0',
-              fontStyle: 'italic',
-              color: 'var(--ink)',
-              lineHeight: 1.5,
-              fontSize: '13px',
-            }}
-          >
-            &ldquo;All Scripture is breathed out by God and profitable for teaching, for reproof, for correction, and for training in righteousness.&rdquo;
-          </p>
-          <div
-            style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: 'var(--green)',
-              letterSpacing: '0.04em',
-              textTransform: 'uppercase',
-            }}
-          >
-            2 Timothy 3:16 · 2 Timoteo 3:16
-          </div>
-        </div>
-      </div>
-
-      {/* 2. DEDICATION BANNER & VALUES */}
-      <div
-        style={{
-          padding: '14px 18px',
-          borderRadius: '12px',
-          border: '1px solid rgba(245, 158, 11, 0.28)',
-          background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(20, 16, 13, 0.6) 100%)',
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '12px',
-        }}
-      >
-        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
-          <span style={{ color: 'var(--green)', fontWeight: 700 }}>✦ Honoring the Legacy of Apostle Kwame Adu</span>
-          <span>·</span>
-          <a
-            href="https://nsuhia.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: 'var(--ink)',
-              textDecoration: 'underline',
-              fontWeight: 600,
-            }}
-            title="Visit Nsuhia, Ghana community portal"
-          >
-            Nsuhia, Ghana ↗
-          </a>
-          <span>·</span>
-          <a
-            href="https://adubible.org/"
-            style={{
-              color: 'var(--green)',
-              textDecoration: 'underline',
-              fontWeight: 700,
-            }}
-            title="AduBible — Adubible.org"
-          >
-            adubible.org
-          </a>
-        </div>
-
-        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px' }}>
-          <span
-            style={{
-              padding: '4px 12px',
-              borderRadius: '999px',
-              background: 'rgba(245, 158, 11, 0.18)',
-              border: '1px solid rgba(245, 158, 11, 0.35)',
-              color: 'var(--green)',
-              fontSize: '11px',
-              fontWeight: 700,
-              letterSpacing: '0.03em',
-              textTransform: 'uppercase',
-            }}
-          >
-            Dedicated to Humanity
-          </span>
-          <span
-            style={{
-              padding: '4px 12px',
-              borderRadius: '999px',
-              background: 'rgba(16, 185, 129, 0.16)',
-              border: '1px solid rgba(16, 185, 129, 0.35)',
-              color: '#34d399',
-              fontSize: '11px',
-              fontWeight: 700,
-              letterSpacing: '0.03em',
-              textTransform: 'uppercase',
-            }}
-          >
-            100% Ads-Free Reading Experience
-          </span>
-        </div>
-      </div>
-
-      {/* 3. NAVIGATION BAR & UTILITY LINKS */}
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '12px',
-          paddingTop: '6px',
-        }}
-      >
-        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
-          <a
-            href="/"
-            onClick={handleGoHome}
-            style={{
-              color: 'var(--ink)',
-              textDecoration: 'none',
-              fontWeight: 700,
-              cursor: 'pointer',
-              fontSize: '14px',
-            }}
-            title="AduBible — Home | Adubible.org"
-          >
-            AduBible
-          </a>
-          <span>· Parallel Scripture Sanctuary</span>
-          {!prefs.showStrongsInline && !prefs.showCommentaries && (
-            <span style={{ marginLeft: '6px' }}>
-              · Strong’s &amp; Commentaries:{' '}
-              <button
-                type="button"
-                style={{
-                  border: 0,
-                  background: 'transparent',
-                  color: 'var(--green)',
-                  textDecoration: 'underline',
-                  cursor: 'pointer',
-                  padding: 0,
-                }}
-                onClick={() => setIsSettingsOpen(true)}
-              >
-                Turn on in Settings
-              </button>
-            </span>
-          )}
-        </div>
-
-        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
-          <a
-            href="https://adubible.org/"
-            style={{
-              fontWeight: 700,
-              color: 'var(--green)',
-              textDecoration: 'none',
-            }}
-          >
-            Adubible.org
-          </a>
-          <a
-            href="/about/"
-            onClick={(e) => {
-              e.preventDefault();
-              setLegalModalState({ open: true, page: 'about' });
-            }}
-          >
-            About &amp; Memorial
-          </a>
-          <a
-            href="/how-to-use/"
-            onClick={(e) => {
-              e.preventDefault();
-              setLegalModalState({ open: true, page: 'how-to-use' });
-            }}
-          >
-            How to Use
-          </a>
-          <a
-            href="/privacy/"
-            onClick={(e) => {
-              e.preventDefault();
-              setLegalModalState({ open: true, page: 'privacy' });
-            }}
-          >
-            Privacy Policy
-          </a>
-          <a
-            href="/terms/"
-            onClick={(e) => {
-              e.preventDefault();
-              setLegalModalState({ open: true, page: 'terms' });
-            }}
-          >
-            Terms of Service
-          </a>
-          <a
-            href="https://nsuhia.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: 'var(--subtle)' }}
-          >
-            nsuhia.com ↗
-          </a>
-        </div>
-      </div>
-    </footer>
+      showStrongs={prefs.showStrongsInline}
+      showCommentaries={prefs.showCommentaries}
+    />
   );
 
   return (
@@ -1111,7 +845,17 @@ export function App() {
           <span>AduBible</span>
         </a>
 
-        <div className="mast-center">THE WORD, SIDE BY SIDE · 100% AD-FREE</div>
+        <div className="mast-search">
+          <OmniSearchBar
+            books={allHistoricalBooks}
+            currentBookSlug={currentBook.slug}
+            currentChapter={currentChapter}
+            onNavigate={(slug, ch, v) => {
+              handleSelectBookChapter(slug, ch);
+              if (v) setSelectedVerse(v);
+            }}
+          />
+        </div>
 
         <div className="mast-actions">
           <button
@@ -1222,6 +966,14 @@ export function App() {
           </button>
         </div>
       </nav>
+
+      {/* QUICK TRANSLATION VERSION RIBBON (BIBLEHUB-STYLE 1-TAP SWITCHER) */}
+      <QuickVersionRibbon
+        activeVersionIds={activeVersionIds}
+        allVersions={allVersions}
+        onToggleVersion={handleToggleRibbonVersion}
+        onOpenVersionPicker={() => setPickerSlot('add')}
+      />
 
       {/* 3. DEDICATED CANON VIEWS OR PARALLEL SCRIPTURE READER */}
       {activeNavTab === 'deuterocanon' ? (
@@ -1499,6 +1251,25 @@ export function App() {
               {activeVersionIds.length >= 2 && (
                 <button
                   type="button"
+                  className="quiet-button layout-toggle-btn"
+                  onClick={() =>
+                    updatePrefs({
+                      layoutMode:
+                        prefs.layoutMode === 'verse-by-verse-interlinear'
+                          ? 'parallel-columns'
+                          : 'verse-by-verse-interlinear',
+                    })
+                  }
+                  title="Toggle between Side-by-Side Columns and Mobile-Friendly Stacked Comparison"
+                >
+                  {prefs.layoutMode === 'verse-by-verse-interlinear'
+                    ? '⊞ Columns'
+                    : '☰ Stacked'}
+                </button>
+              )}
+              {activeVersionIds.length >= 2 && (
+                <button
+                  type="button"
                   className="swap-button"
                   onClick={handleSwapLanguages}
                   title={`Swap parallel languages (${activeVersionIds[0]?.toUpperCase()} ⇄ ${activeVersionIds[1]?.toUpperCase()})`}
@@ -1581,7 +1352,7 @@ export function App() {
 
           {/* PARALLEL COMPARISON TABLE */}
           <div
-            className="comparison"
+            className={`comparison ${prefs.layoutMode === 'verse-by-verse-interlinear' ? 'stacked-mode' : ''}`}
             style={
               {
                 '--columns': activeVersionIds.length,
@@ -1711,6 +1482,11 @@ export function App() {
                           <span className="mobile-cell-badge">
                             {verMeta.languageName} · {verMeta.shortName}
                           </span>
+                          {prefs.layoutMode === 'verse-by-verse-interlinear' && (
+                            <span className="stacked-version-pill">
+                              {verMeta.shortName}
+                            </span>
+                          )}
                           {prefs.showHeadings && verseObj?.heading ? (
                             <h3>{verseObj.heading}</h3>
                           ) : null}
@@ -2307,6 +2083,52 @@ export function App() {
         initialPage={legalModalState.page}
         onClose={() => setLegalModalState((prev) => ({ ...prev, open: false }))}
       />
+
+      {/* MOBILE BOTTOM THUMB NAVIGATION DOCK */}
+      <MobileBottomDock
+        onOpenBooks={() => setIsBookModalOpen(true)}
+        onOpenSearch={() => setIsMobileSearchOpen(true)}
+        onToggleAudio={() => setShowAudioBar((prev) => !prev)}
+        isAudioActive={showAudioBar}
+        onSwapLanguages={handleSwapLanguages}
+        canSwap={activeVersionIds.length >= 2}
+        onOpenSettings={() => setIsSettingsOpen(true)}
+        onOpenVault={() => {
+          setStudyVaultTab('pins');
+          setIsStudyVaultOpen(true);
+        }}
+        vaultCount={totalVaultCount}
+        currentBookName={currentBook.names.en}
+        currentChapter={currentChapter}
+      />
+
+      {/* MOBILE SEARCH OVERLAY MODAL */}
+      {isMobileSearchOpen && (
+        <div
+          className="mobile-search-overlay"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setIsMobileSearchOpen(false)}
+        >
+          <div
+            className="mobile-search-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <OmniSearchBar
+              books={allHistoricalBooks}
+              currentBookSlug={currentBook.slug}
+              currentChapter={currentChapter}
+              onNavigate={(slug, ch, v) => {
+                handleSelectBookChapter(slug, ch);
+                if (v) setSelectedVerse(v);
+                setIsMobileSearchOpen(false);
+              }}
+              onCloseMobile={() => setIsMobileSearchOpen(false)}
+              isOpenMobile={true}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -43,6 +43,122 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
         </p>
       </div>
 
+      {/* 3 CORNERSTONE SCRIPTURE QUOTES */}
+      <div
+        className="footer-scripture-trio"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '14px',
+          marginBottom: '32px',
+        }}
+      >
+        <div
+          style={{
+            padding: '14px 16px',
+            borderRadius: '12px',
+            background: 'var(--soft)',
+            border: '1px solid var(--line)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          <p
+            style={{
+              margin: '0 0 8px 0',
+              fontStyle: 'italic',
+              color: 'var(--ink)',
+              lineHeight: 1.5,
+              fontSize: '13px',
+            }}
+          >
+            &ldquo;Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ.&rdquo;
+          </p>
+          <div
+            style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: 'var(--green)',
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+            }}
+          >
+            Ephesians 1:3 · Efesofoɔ 1:3
+          </div>
+        </div>
+
+        <div
+          style={{
+            padding: '14px 16px',
+            borderRadius: '12px',
+            background: 'var(--soft)',
+            border: '1px solid var(--line)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          <p
+            style={{
+              margin: '0 0 8px 0',
+              fontStyle: 'italic',
+              color: 'var(--ink)',
+              lineHeight: 1.5,
+              fontSize: '13px',
+            }}
+          >
+            &ldquo;For the word of God is living and active, sharper than any two-edged sword, piercing to the division of soul and of spirit, of joints and of marrow.&rdquo;
+          </p>
+          <div
+            style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: 'var(--green)',
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+            }}
+          >
+            Hebrews 4:12 · Hebrifoɔ 4:12
+          </div>
+        </div>
+
+        <div
+          style={{
+            padding: '14px 16px',
+            borderRadius: '12px',
+            background: 'var(--soft)',
+            border: '1px solid var(--line)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          <p
+            style={{
+              margin: '0 0 8px 0',
+              fontStyle: 'italic',
+              color: 'var(--ink)',
+              lineHeight: 1.5,
+              fontSize: '13px',
+            }}
+          >
+            &ldquo;All Scripture is breathed out by God and profitable for teaching, for reproof, for correction, and for training in righteousness.&rdquo;
+          </p>
+          <div
+            style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: 'var(--green)',
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+            }}
+          >
+            2 Timothy 3:16 · 2 Timoteo 3:16
+          </div>
+        </div>
+      </div>
+
       <div className="footer-grid">
         {/* Column 1: Scriptures & Canons */}
         <div className="footer-col">

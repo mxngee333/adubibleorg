@@ -224,17 +224,33 @@ export interface UserProfile {
   chaptersRead: number;
 }
 
+export interface CustomThemePalette {
+  id: string;
+  name: string;
+  paper: string;
+  surface: string;
+  ink: string;
+  subtle: string;
+  line: string;
+  accent: string;
+  isDark?: boolean;
+}
+
 export type ReadingTheme =
   | 'royal-purple'
+  | 'lilac-light'
+  | 'burgundy-gold'
+  | 'adubible-si'
+  | 'sapphire-blue'
   | 'midnight'
   | 'parchment'
-  | 'lilac-light'
   | 'obsidian'
   | 'daylight'
-  | 'sapphire-blue';
+  | 'custom';
 
 export interface ReadingPreferences {
   theme: ReadingTheme;
+  customTheme?: CustomThemePalette;
   fontSize: number;
   lineHeight: number;
   fontFamily: 'serif' | 'sans' | 'mono';

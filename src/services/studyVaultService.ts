@@ -23,6 +23,17 @@ const LS_HISTORY = 'elohim_reading_history_v1';
 
 export const DEFAULT_PREFERENCES: ReadingPreferences = {
   theme: 'royal-purple',
+  customTheme: {
+    id: 'custom-user',
+    name: 'Custom Royal Palette',
+    paper: '#181424',
+    surface: '#100c1c',
+    ink: '#f5f0fa',
+    subtle: '#b1a1c9',
+    line: 'rgba(192, 132, 252, 0.25)',
+    accent: '#c084fc',
+    isDark: true,
+  },
   fontSize: 19,
   lineHeight: 1.72,
   fontFamily: 'serif',
