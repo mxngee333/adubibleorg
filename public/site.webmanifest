@@ -1,0 +1,17 @@
+{
+  "name": "Elohim Bible Hub — Multilingual Parallel Bible & Study Sync",
+  "short_name": "Elohim Bible",
+  "description": "Ad-Free Multilingual Parallel Bible with Twi (Twerɛ Kronkron), 35+ Languages, Strong's Concordance, Open-Source Commentaries, and Cloud Study Sync.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0a09",
+  "theme_color": "#0c0a09",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
