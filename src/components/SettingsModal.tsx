@@ -297,7 +297,38 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 marginBottom: '14px',
               }}
             >
-              {/* Option 1: Royal Tyrian Velvet (Purple Majesty Dark) */}
+              {/* Option 1: Wisdom Bible Legacy (Default) */}
+              <button
+                type="button"
+                className={`picker-option ${prefs.theme === 'wisdom-legacy' ? 'active' : ''}`}
+                onClick={() => onUpdatePrefs({ theme: 'wisdom-legacy' })}
+                style={{ textAlign: 'left', padding: '12px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}
+              >
+                <img
+                  src="/themes/wisdom-legacy-banner.png"
+                  alt="Wisdom Bible Legacy"
+                  style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '8px',
+                    objectFit: 'cover',
+                    border: '1px solid #b7c99f',
+                    flexShrink: 0,
+                    boxShadow: '0 2px 8px rgba(67, 85, 59, 0.45)',
+                  }}
+                />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
+                    <strong style={{ fontSize: '13px' }}>🌿 Wisdom Bible Legacy</strong>
+                    <span style={{ fontSize: '11px', color: '#b7c99f', fontWeight: 700 }}>DEFAULT</span>
+                  </div>
+                  <span style={{ display: 'block', fontSize: '11px', lineHeight: 1.4 }}>
+                    Authentic original edition · Contemplative deep pine (#171d17), warm ivory script (#e3e6d8) &amp; luminous sage (#b7c99f)
+                  </span>
+                </div>
+              </button>
+
+              {/* Option 2: Royal Tyrian Velvet (Purple Majesty Dark) */}
               <button
                 type="button"
                 className={`picker-option ${prefs.theme === 'royal-purple' ? 'active' : ''}`}
@@ -479,37 +510,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   </div>
                   <span style={{ display: 'block', fontSize: '11px', lineHeight: 1.4 }}>
                     Scripture compass: abyssal slate, terracotta star &amp; emerald sea teal
-                  </span>
-                </div>
-              </button>
-
-              {/* Option 7: Wisdom Bible Legacy */}
-              <button
-                type="button"
-                className={`picker-option ${prefs.theme === 'wisdom-legacy' ? 'active' : ''}`}
-                onClick={() => onUpdatePrefs({ theme: 'wisdom-legacy' })}
-                style={{ textAlign: 'left', padding: '12px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}
-              >
-                <img
-                  src="/themes/wisdom-legacy-banner.png"
-                  alt="Wisdom Bible Legacy"
-                  style={{
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '8px',
-                    objectFit: 'cover',
-                    border: '1px solid #86efac',
-                    flexShrink: 0,
-                    boxShadow: '0 2px 8px rgba(77, 124, 77, 0.35)',
-                  }}
-                />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
-                    <strong style={{ fontSize: '13px' }}>🌿 Wisdom Bible Legacy</strong>
-                    <span style={{ fontSize: '11px', color: '#86efac', fontWeight: 700 }}>LEGACY</span>
-                  </div>
-                  <span style={{ display: 'block', fontSize: '11px', lineHeight: 1.4 }}>
-                    Original edition · Deep forest pine (#131d14), sage velvet &amp; serene green
                   </span>
                 </div>
               </button>

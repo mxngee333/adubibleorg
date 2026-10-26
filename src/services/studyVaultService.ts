@@ -22,16 +22,16 @@ const LS_ADDONS_META = 'elohim_addons_meta_v1';
 const LS_HISTORY = 'elohim_reading_history_v1';
 
 export const DEFAULT_PREFERENCES: ReadingPreferences = {
-  theme: 'royal-purple',
+  theme: 'wisdom-legacy',
   customTheme: {
     id: 'custom-user',
-    name: 'Custom Royal Palette',
-    paper: '#181424',
-    surface: '#100c1c',
-    ink: '#f5f0fa',
-    subtle: '#b1a1c9',
-    line: 'rgba(192, 132, 252, 0.25)',
-    accent: '#c084fc',
+    name: 'Wisdom Sage Studio',
+    paper: '#20271f',
+    surface: '#171d17',
+    ink: '#e3e6d8',
+    subtle: '#a5ae9e',
+    line: '#394435',
+    accent: '#b7c99f',
     isDark: true,
   },
   fontSize: 19,
@@ -332,8 +332,21 @@ export function loadPreferences(): ReadingPreferences {
   if (typeof window === 'undefined') return DEFAULT_PREFERENCES;
   try {
     const raw = localStorage.getItem(LS_PREFS);
-    if (!raw) return DEFAULT_PREFERENCES;
-    return { ...DEFAULT_PREFERENCES, ...JSON.parse(raw) };
+    if (!raw) {
+      localStorage.setItem('wisdom_legacy_default_migrated_v1', 'true');
+      return DEFAULT_PREFERENCES;
+    }
+    const parsed = JSON.parse(raw);
+    const hasMigrated = localStorage.getItem('wisdom_legacy_default_migrated_v1');
+    if (!hasMigrated) {
+      localStorage.setItem('wisdom_legacy_default_migrated_v1', 'true');
+      // If the theme was the old initial default 'royal-purple', seamlessly migrate to the authentic 'wisdom-legacy'
+      if (parsed.theme === 'royal-purple') {
+        parsed.theme = 'wisdom-legacy';
+        localStorage.setItem(LS_PREFS, JSON.stringify({ ...DEFAULT_PREFERENCES, ...parsed }));
+      }
+    }
+    return { ...DEFAULT_PREFERENCES, ...parsed };
   } catch {
     return DEFAULT_PREFERENCES;
   }
