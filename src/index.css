@@ -1,24 +1,50 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 * {
   box-sizing: border-box;
 }
 
+/* Studio Sacred Obsidian & Amber Gold Scrollbars */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0c0a09;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #292524;
+  border-radius: 999px;
+  border: 2px solid #0c0a09;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #f59e0b;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #292524 #0c0a09;
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
-  background: #171d17;
-  color: #e3e6d8;
+  background: #0c0a09;
+  color: #f5f5f4;
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
   -webkit-tap-highlight-color: transparent;
+  color-scheme: dark;
 }
 
 a {
@@ -32,13 +58,13 @@ input {
 }
 
 .bible-app {
-  --paper: #fffefa;
-  --surface: #faf9f5;
-  --ink: #303629;
-  --subtle: #707666;
-  --line: #e2e4d9;
-  --green: #44583a;
-  --soft: #f0f2e9;
+  --paper: #ffffff;
+  --surface: #faf7f2;
+  --ink: #1c1917;
+  --subtle: #78716c;
+  --line: #e7e5e4;
+  --green: #d97706;
+  --soft: #f5efe6;
   min-height: 100vh;
   background: var(--surface);
   color: var(--ink);
@@ -46,13 +72,13 @@ input {
 }
 
 .bible-app.night {
-  --paper: #20271f;
-  --surface: #171d17;
-  --ink: #e3e6d8;
-  --subtle: #a5ae9e;
-  --line: #394435;
-  --green: #b7c99f;
-  --soft: #2d3729;
+  --paper: #14120e;
+  --surface: #0c0a09;
+  --ink: #f5f5f4;
+  --subtle: #a8a29e;
+  --line: rgba(245, 158, 11, 0.16);
+  --green: #f59e0b;
+  --soft: #1f1a14;
   color-scheme: dark;
 }
 
@@ -78,18 +104,24 @@ input {
   color: var(--ink);
   text-decoration: none;
   cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.brand:hover {
+  color: var(--green);
 }
 
 .brand-icon {
   width: 28px;
   height: 28px;
-  border-radius: 6px;
+  border-radius: 7px;
   display: grid;
   place-items: center;
-  background: var(--soft);
-  border: 1px solid var(--line);
-  color: var(--green);
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: #f59e0b;
   font-size: 15px;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
 }
 
 .mast-center,
@@ -125,17 +157,20 @@ input {
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
 }
 
 .quiet-button:hover {
   border-color: var(--green);
+  color: var(--green);
 }
 
 .quiet-button.active-pill {
-  background: #43583a;
-  border-color: #43583a;
-  color: #f7f5dd;
+  background: #f59e0b;
+  border-color: #f59e0b;
+  color: #0c0a09;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.35);
 }
 
 .workspace {
@@ -166,11 +201,11 @@ input {
 }
 
 .reading-shell {
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  border-radius: 14px;
   background: var(--paper);
   overflow: hidden;
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
 }
 
 .passage-toolbar {
@@ -253,9 +288,11 @@ input {
 }
 
 .reader-tools button.settings-active {
-  background: #43583a;
-  border-color: #43583a;
-  color: #f7f5dd;
+  background: #f59e0b;
+  border-color: #f59e0b;
+  color: #0c0a09;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.35);
 }
 
 .chapter-intro {
@@ -274,6 +311,7 @@ input {
   font-weight: 400;
   font-size: clamp(28px, 3vw, 42px);
   line-height: 1.08;
+  color: #fef3c7;
 }
 
 .chapter-intro h2 span {
@@ -296,17 +334,21 @@ input {
 .add-column {
   height: 40px;
   padding: 0 14px;
-  border: 1px solid #43583a;
+  border: 1px solid #f59e0b;
   border-radius: 6px;
-  background: #43583a;
-  color: #fff;
+  background: #f59e0b;
+  color: #0c0a09;
   cursor: pointer;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 700;
+  box-shadow: 0 2px 12px rgba(245, 158, 11, 0.28);
+  transition: all 0.15s ease;
 }
 
 .add-column:hover:not(:disabled) {
-  background: #4e6644;
+  background: #fbbf24;
+  border-color: #fbbf24;
+  color: #0c0a09;
 }
 
 .add-column:disabled {
@@ -342,19 +384,22 @@ input {
   color: var(--ink);
   font-size: 13px;
   cursor: pointer;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, color 0.15s ease;
 }
 
 .preset-row button:hover,
 .languages-grid button:hover {
   border-color: var(--green);
+  color: var(--green);
 }
 
 .preset-row button.active,
 .languages-grid button.active {
-  background: #43583a;
-  border-color: #43583a;
-  color: #f7f5dd;
+  background: #f59e0b;
+  border-color: #f59e0b;
+  color: #0c0a09;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35);
 }
 
 .chapter-search {
@@ -436,34 +481,36 @@ input {
 .edition-badge {
   display: inline-flex;
   width: fit-content;
-  padding: 4px 7px;
-  border-radius: 4px;
-  background: var(--soft);
+  padding: 4px 8px;
+  border-radius: 5px;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
   color: var(--green);
+  font-weight: 700;
 }
 
 .edition-badge.tone-1 {
-  color: #9b7a2f;
+  color: #fbbf24;
 }
 
 .bible-app.night .edition-badge.tone-1 {
-  color: #dfbe73;
+  color: #fbbf24;
 }
 
 .edition-badge.tone-2 {
-  color: #38657f;
+  color: #38bdf8;
 }
 
 .bible-app.night .edition-badge.tone-2 {
-  color: #8bc4e2;
+  color: #7dd3fc;
 }
 
 .edition-badge.tone-3 {
-  color: #72517d;
+  color: #c084fc;
 }
 
 .bible-app.night .edition-badge.tone-3 {
-  color: #cfa9dc;
+  color: #d8b4fe;
 }
 
 .edition-name {
@@ -475,6 +522,7 @@ input {
   font-weight: 600;
   font-size: 15px;
   cursor: pointer;
+  transition: color 0.15s ease;
 }
 
 .edition-name:hover {
@@ -508,6 +556,7 @@ input {
   color: var(--subtle);
   cursor: pointer;
   flex-shrink: 0;
+  transition: all 0.15s ease;
 }
 
 .icon-button:hover {
@@ -521,7 +570,7 @@ input {
 }
 
 .verse-row.selected-row {
-  background: rgba(67, 88, 58, 0.12);
+  background: rgba(245, 158, 11, 0.08);
 }
 
 .verse-cell {
@@ -746,8 +795,8 @@ input {
   position: fixed;
   inset: 0;
   z-index: 60;
-  background: rgba(18, 22, 18, 0.58);
-  backdrop-filter: blur(3px);
+  background: rgba(12, 10, 9, 0.85);
+  backdrop-filter: blur(8px);
   display: grid;
   place-items: center;
   padding: 20px;
@@ -757,12 +806,12 @@ input {
   width: min(760px, 100%);
   max-height: min(82vh, 720px);
   overflow: auto;
-  border-radius: 8px;
-  border: 1px solid var(--line);
-  background: var(--paper);
-  color: var(--ink);
-  padding: 20px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  border-radius: 14px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: #14120e;
+  color: #f5f5f4;
+  padding: 22px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
 }
 
 .picker-head {
@@ -778,9 +827,9 @@ input {
   font-family: Georgia, "Times New Roman", serif;
   font-weight: 400;
   font-size: 26px;
+  color: #fef3c7;
 }
 
-.picker- dialog .picker-search,
 .picker-dialog .picker-search {
   width: 100%;
   margin-bottom: 16px;
@@ -820,6 +869,7 @@ input {
   cursor: pointer;
   display: grid;
   gap: 3px;
+  transition: all 0.15s ease;
 }
 
 .picker-option:hover:not(:disabled) {
@@ -827,9 +877,9 @@ input {
 }
 
 .picker-option.active {
-  background: #43553b;
-  border-color: #43553b;
-  color: #f7f5dd;
+  background: rgba(245, 158, 11, 0.18);
+  border-color: #f59e0b;
+  color: #fde68a;
 }
 
 .picker-option span {
@@ -838,7 +888,7 @@ input {
 }
 
 .picker-option.active span {
-  color: #dedbc2;
+  color: #fef3c7;
 }
 
 /* Toggle Switch for Settings Modal */
@@ -856,8 +906,8 @@ input {
 }
 
 .wisdom-toggle.on {
-  background: #43583a;
-  border-color: #638256;
+  background: #f59e0b;
+  border-color: #f59e0b;
 }
 
 .wisdom-toggle-knob {
@@ -871,7 +921,7 @@ input {
 
 .wisdom-toggle.on .wisdom-toggle-knob {
   transform: translateX(20px);
-  background: #fffefa;
+  background: #0c0a09;
 }
 
 @media (max-width: 900px) {

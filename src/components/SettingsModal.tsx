@@ -141,16 +141,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 className={`picker-option ${isNight ? 'active' : ''}`}
                 onClick={() => onUpdatePrefs({ theme: 'midnight' })}
               >
-                <strong>Night Botanical (Default)</strong>
-                <span>Deep forest slate (#171d17) &amp; sage</span>
+                <strong>Sacred Obsidian &amp; Gold (Default)</strong>
+                <span>Deep obsidian (#0c0a09) &amp; royal amber gold</span>
               </button>
               <button
                 type="button"
                 className={`picker-option ${!isNight ? 'active' : ''}`}
                 onClick={() => onUpdatePrefs({ theme: 'parchment' })}
               >
-                <strong>Warm Paper (Light)</strong>
-                <span>Cream editorial parchment (#fffefa)</span>
+                <strong>Warm Parchment (Light)</strong>
+                <span>Cream editorial scroll (#faf7f2) &amp; amber</span>
               </button>
             </div>
 
