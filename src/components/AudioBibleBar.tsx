@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { VerseData } from '../types/bible';
 import {
   GOOGLE_NEURAL_VOICES,
   GoogleNeuralVoiceName,
-  decodePcm24kToAudioBuffer,
-  synthesizeNeuralAudio,
+  getOrPreloadAudioBuffer,
+  isAudioBufferPreloaded,
 } from '../services/neuralTtsService';
 
 interface AudioBibleBarProps {
@@ -43,12 +43,14 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   const [bilingualMode, setBilingualMode] = useState(false);
   const [useStudioMp3, setUseStudioMp3] = useState<boolean>(Boolean(audioUrl));
   const [statusMessage, setStatusMessage] = useState<string>('');
+  const [bufferedCount, setBufferedCount] = useState<number>(0);
 
   const isPlayingRef = useRef(false);
   const currentVerseIdxRef = useRef(0);
   const audioContextRef = useRef<AudioContext | null>(null);
   const activeSourceRef = useRef<AudioBufferSourceNode | null>(null);
   const studioAudioElRef = useRef<HTMLAudioElement | null>(null);
+  const prefetchQueueActiveRef = useRef<boolean>(false);
 
   useEffect(() => {
     setUseStudioMp3(Boolean(audioUrl));
@@ -60,7 +62,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     };
   }, []);
 
-  const getOrCreateAudioContext = (): AudioContext => {
+  const getOrCreateAudioContext = useCallback((): AudioContext => {
     if (!audioContextRef.current) {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
       audioContextRef.current = new AudioCtx();
@@ -69,7 +71,84 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       audioContextRef.current.resume();
     }
     return audioContextRef.current;
-  };
+  }, []);
+
+  // Update count of preloaded verses in memory
+  const updateBufferedCount = useCallback(() => {
+    let count = 0;
+    for (const v of verses) {
+      if (isAudioBufferPreloaded(v.text, langCode, selectedVoice)) {
+        count++;
+      }
+    }
+    setBufferedCount(count);
+  }, [verses, langCode, selectedVoice]);
+
+  // Background Look-Ahead Pre-fetcher for Next Verses (N+1, N+2, N+3)
+  const prefetchAhead = useCallback(
+    async (fromIndex: number, depth = 3) => {
+      try {
+        const ctx = getOrCreateAudioContext();
+        for (let i = fromIndex + 1; i <= Math.min(fromIndex + depth, verses.length - 1); i++) {
+          const v = verses[i];
+          if (v && !isAudioBufferPreloaded(v.text, langCode, selectedVoice)) {
+            getOrPreloadAudioBuffer(ctx, v.text, langCode, selectedVoice)
+              .then(() => updateBufferedCount())
+              .catch(() => {});
+          }
+
+          // In bilingual mode, also preload matching parallel verse ahead of time
+          if (bilingualMode && parallelVerses && parallelVerses[i]) {
+            const pV = parallelVerses[i];
+            const pLang = parallelLangCode || 'tw';
+            const pVoice = selectedVoice === 'Charon' ? 'Kore' : 'Charon';
+            if (!isAudioBufferPreloaded(pV.text, pLang, pVoice)) {
+              getOrPreloadAudioBuffer(ctx, pV.text, pLang, pVoice).catch(() => {});
+            }
+          }
+        }
+      } catch {
+        // Non-blocking prefetch
+      }
+    },
+    [
+      verses,
+      langCode,
+      selectedVoice,
+      bilingualMode,
+      parallelVerses,
+      parallelLangCode,
+      getOrCreateAudioContext,
+      updateBufferedCount,
+    ]
+  );
+
+  // Background whole-chapter idle preloader so reading stays 100% fluid
+  useEffect(() => {
+    if (prefetchQueueActiveRef.current) return;
+    prefetchQueueActiveRef.current = true;
+
+    const startIdlePreload = async () => {
+      // Small pause to allow initial UI mount
+      await new Promise((r) => setTimeout(r, 600));
+      const ctx = getOrCreateAudioContext();
+      for (let i = 0; i < verses.length; i++) {
+        const v = verses[i];
+        if (v && !isAudioBufferPreloaded(v.text, langCode, selectedVoice)) {
+          try {
+            await getOrPreloadAudioBuffer(ctx, v.text, langCode, selectedVoice);
+            updateBufferedCount();
+            // Gentle pause between background preloads so network stays responsive
+            await new Promise((r) => setTimeout(r, 350));
+          } catch {
+            // Ignore background failures
+          }
+        }
+      }
+    };
+
+    startIdlePreload();
+  }, [verses, langCode, selectedVoice, getOrCreateAudioContext, updateBufferedCount]);
 
   const stopPlayback = () => {
     setIsPlaying(false);
@@ -116,16 +195,29 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       return;
     }
 
-    setIsLoadingVerse(true);
-    setStatusMessage(
-      langCode === 'tw' || langCode === 'ak'
-        ? `Synthesizing Asante Twi (24kHz Neural Voice)…`
-        : `Loading 24kHz Google Voice (${selectedVoice})…`
+    // Immediately trigger parallel lookahead prefetch for next 3 verses!
+    prefetchAhead(index, 3);
+
+    const ctx = getOrCreateAudioContext();
+    const isAlreadyInMemory = isAudioBufferPreloaded(
+      verseObj.text,
+      langCode,
+      selectedVoice
     );
 
+    // If already in memory: 0ms INSTANT START (No loading indicator or pause!)
+    if (!isAlreadyInMemory) {
+      setIsLoadingVerse(true);
+      setStatusMessage(
+        langCode === 'tw' || langCode === 'ak'
+          ? `Synthesizing Asante Twi (24kHz Neural)…`
+          : `Buffering 24kHz Google Voice (${selectedVoice})…`
+      );
+    }
+
     try {
-      const ctx = getOrCreateAudioContext();
-      const base64Primary = await synthesizeNeuralAudio(
+      const primaryBuffer = await getOrPreloadAudioBuffer(
+        ctx,
         verseObj.text,
         langCode,
         selectedVoice
@@ -138,13 +230,21 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
       setIsLoadingVerse(false);
       setStatusMessage('');
+      updateBufferedCount();
 
-      const primaryBuffer = decodePcm24kToAudioBuffer(ctx, base64Primary);
       const source = ctx.createBufferSource();
       source.buffer = primaryBuffer;
       source.playbackRate.value = rate;
       source.connect(ctx.destination);
       activeSourceRef.current = source;
+
+      // While primary verse is playing, ensure parallel verse is ready if in bilingual mode
+      if (bilingualMode && parallelVerses && parallelVerses[index]) {
+        const pVerse = parallelVerses[index];
+        const pLang = parallelLangCode || 'tw';
+        const pVoice = selectedVoice === 'Charon' ? 'Kore' : 'Charon';
+        getOrPreloadAudioBuffer(ctx, pVerse.text, pLang, pVoice).catch(() => {});
+      }
 
       source.onended = async () => {
         if (!isPlayingRef.current) return;
@@ -153,29 +253,18 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
         if (bilingualMode && parallelVerses && parallelVerses[index]) {
           const pVerse = parallelVerses[index];
           const targetLang = parallelLangCode || 'tw';
-          setIsLoadingVerse(true);
-          setStatusMessage(
-            targetLang === 'tw' || targetLang === 'ak'
-              ? `Synthesizing Twi parallel (24kHz)…`
-              : `Synthesizing parallel verse (24kHz)…`
-          );
+          const pVoice = selectedVoice === 'Charon' ? 'Kore' : 'Charon';
 
           try {
-            const base64Secondary = await synthesizeNeuralAudio(
+            const secBuffer = await getOrPreloadAudioBuffer(
+              ctx,
               pVerse.text,
               targetLang,
-              selectedVoice === 'Charon' ? 'Kore' : 'Charon'
+              pVoice
             );
 
-            if (!isPlayingRef.current) {
-              setIsLoadingVerse(false);
-              return;
-            }
+            if (!isPlayingRef.current) return;
 
-            setIsLoadingVerse(false);
-            setStatusMessage('');
-
-            const secBuffer = decodePcm24kToAudioBuffer(ctx, base64Secondary);
             const secSource = ctx.createBufferSource();
             secSource.buffer = secBuffer;
             secSource.playbackRate.value = rate;
@@ -184,17 +273,18 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
             secSource.onended = () => {
               if (isPlayingRef.current) {
+                // Gapless cutover to next verse!
                 playVerseAtIndex(index + 1);
               }
             };
             secSource.start();
           } catch {
-            setIsLoadingVerse(false);
             if (isPlayingRef.current) {
               playVerseAtIndex(index + 1);
             }
           }
         } else {
+          // Direct 0ms gapless cutover to next verse!
           playVerseAtIndex(index + 1);
         }
       };
@@ -207,7 +297,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       setIsLoadingVerse(false);
       setStatusMessage('');
 
-      // Browser TTS Emergency Fallback
+      // Browser TTS Fallback
       if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utter = new SpeechSynthesisUtterance(verseObj.text);
@@ -303,6 +393,21 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
                   <span style={{ color: 'var(--green)', fontWeight: 500 }}>
                     Google 24kHz ({selectedVoice})
                   </span>
+                  {bufferedCount > 0 && (
+                    <span
+                      style={{
+                        marginLeft: '8px',
+                        padding: '1px 6px',
+                        borderRadius: '4px',
+                        background: 'var(--soft)',
+                        fontSize: '11px',
+                        color: 'var(--green)',
+                      }}
+                      title="Verses preloaded in memory for 0ms gapless playback"
+                    >
+                      ⚡ Buffered {bufferedCount}/{verses.length}
+                    </span>
+                  )}
                   {bilingualMode && parallelVersionName
                     ? ` ⇄ ${parallelVersionName}`
                     : ''}
@@ -368,10 +473,10 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             type="button"
             className="add-column"
             onClick={handleTogglePlay}
-            style={{ minWidth: '96px' }}
+            style={{ minWidth: '100px' }}
           >
             {isLoadingVerse
-              ? 'Loading…'
+              ? 'Buffering…'
               : isPlaying
                 ? '⏸ Pause'
                 : '▶ Listen 24kHz'}

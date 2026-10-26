@@ -51,6 +51,7 @@ export const GOOGLE_NEURAL_VOICES: NeuralVoiceOption[] = [
 
 const DB_NAME = 'elohim_tts_audio_cache_v1';
 const STORE_NAME = 'audio_tracks';
+const memoryAudioBufferCache = new Map<string, AudioBuffer>();
 
 function openTtsCacheDb(): Promise<IDBDatabase | null> {
   if (typeof window === 'undefined' || !window.indexedDB) return Promise.resolve(null);
@@ -242,3 +243,38 @@ export function decodePcm24kToAudioBuffer(
   audioBuffer.getChannelData(0).set(float32Data);
   return audioBuffer;
 }
+
+/**
+ * High-Speed Lookahead Pre-fetching & RAM Caching for 0ms Gapless Playback
+ */
+export async function getOrPreloadAudioBuffer(
+  audioContext: AudioContext,
+  text: string,
+  langCode: string,
+  voiceName: GoogleNeuralVoiceName = 'Charon'
+): Promise<AudioBuffer> {
+  const promptText = prepareTtsPrompt(text, langCode);
+  const memKey = `${langCode}:${voiceName}:${promptText}`;
+
+  // 1. Instant 0ms Memory Hit
+  if (memoryAudioBufferCache.has(memKey)) {
+    return memoryAudioBufferCache.get(memKey)!;
+  }
+
+  // 2. Fetch base64 (from IndexedDB or network)
+  const base64Audio = await synthesizeNeuralAudio(text, langCode, voiceName);
+  const buffer = decodePcm24kToAudioBuffer(audioContext, base64Audio);
+  memoryAudioBufferCache.set(memKey, buffer);
+  return buffer;
+}
+
+export function isAudioBufferPreloaded(
+  text: string,
+  langCode: string,
+  voiceName: GoogleNeuralVoiceName = 'Charon'
+): boolean {
+  const promptText = prepareTtsPrompt(text, langCode);
+  const memKey = `${langCode}:${voiceName}:${promptText}`;
+  return memoryAudioBufferCache.has(memKey);
+}
+
