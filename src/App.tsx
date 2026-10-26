@@ -72,6 +72,8 @@ import { QuickVersionRibbon } from './components/QuickVersionRibbon';
 import { MobileBottomDock } from './components/MobileBottomDock';
 import { GrandSiteFooter } from './components/GrandSiteFooter';
 import { AduBibleLogo } from './components/AduBibleLogo';
+import { AskAduBibleModal } from './components/AskAduBibleModal';
+import { AskAduBibleContext } from './services/askAduBibleService';
 
 const COMPARE_PRESETS: Array<{ label: string; versions: string[] }> = [
   { label: 'KJV + Twi', versions: ['kjv', 'twi'] },
@@ -262,6 +264,7 @@ export function App() {
     'pins' | 'highlights' | 'bookmarks' | 'notes'
   >('pins');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [isAskAduBibleOpen, setIsAskAduBibleOpen] = useState<boolean>(false);
   const [verseCardTarget, setVerseCardTarget] = useState<{
     verse: number;
     primaryText: string;
@@ -585,6 +588,7 @@ export function App() {
     setIsStrongsModalOpen(false);
     setIsStudyVaultOpen(false);
     setIsAuthModalOpen(false);
+    setIsAskAduBibleOpen(false);
     setPickerSlot(null);
     setVerseCardTarget(null);
     setActiveVerseActionBar(null);
@@ -793,6 +797,21 @@ export function App() {
     [primaryChapterData]
   );
 
+  const askAduBibleContext: AskAduBibleContext = useMemo(() => {
+    const selectedVerseObj = primaryChapterData?.verses.find(
+      (v) => v.verse === selectedVerse
+    );
+    return {
+      bookNameEn: currentBook.names.en,
+      bookNameTw: currentBook.names.tw,
+      bookSlug: currentBook.slug,
+      chapter: currentChapter,
+      selectedVerse: selectedVerse || 1,
+      selectedVerseText: selectedVerseObj?.text,
+      activeVersions: activeVersionIds,
+    };
+  }, [currentBook, currentChapter, selectedVerse, primaryChapterData, activeVersionIds]);
+
   const filteredVerseNumbers = useMemo(() => {
     const maxV = Math.max(
       primaryVerses.length,
@@ -912,6 +931,18 @@ export function App() {
         </div>
 
         <div className="mast-actions">
+          {/* ✦ ASK ADUBIBLE AI SCHOLAR BUTTON - RADIANT & HIGHLY VISIBLE */}
+          <button
+            type="button"
+            className={`quiet-button ask-adubible-mast-btn ${isAskAduBibleOpen ? 'active-pill' : ''}`}
+            onClick={() => setIsAskAduBibleOpen(true)}
+            title="Ask AduBible — AI Exegetical Scripture Scholar & Language Companion"
+          >
+            <span className="ask-sparkle">✦</span>
+            <span className="ask-title">Ask AduBible</span>
+            <span className="ask-ai-badge">AI</span>
+          </button>
+
           <button
             type="button"
             className={`quiet-button ${showSearchSanctuary ? 'active-pill' : ''}`}
@@ -1128,6 +1159,7 @@ export function App() {
                 const target = document.getElementById('reading-shell');
                 target?.scrollIntoView({ behavior: 'smooth' });
               }}
+              onOpenAskAi={() => setIsAskAduBibleOpen(true)}
             />
           )}
 
@@ -2206,6 +2238,23 @@ export function App() {
                                 ✦ Share Card
                               </button>
 
+                              <button
+                                type="button"
+                                className="verse-quick-btn"
+                                style={{
+                                  color: '#f59e0b',
+                                  borderColor: 'rgba(245, 158, 11, 0.45)',
+                                  fontWeight: 700,
+                                }}
+                                onClick={() => {
+                                  setSelectedVerse(verseNumber);
+                                  setIsAskAduBibleOpen(true);
+                                }}
+                                title="Ask AduBible AI Exegetical Companion about this verse"
+                              >
+                                ✦ Ask AI
+                              </button>
+
                               {!prefs.showStrongsInline && (
                                 <button
                                   type="button"
@@ -2667,10 +2716,35 @@ export function App() {
         onClose={() => setLegalModalState((prev) => ({ ...prev, open: false }))}
       />
 
+      {/* ASK ADUBIBLE AI EXEGESIS COMPANION MODAL */}
+      <AskAduBibleModal
+        isOpen={isAskAduBibleOpen}
+        onClose={() => setIsAskAduBibleOpen(false)}
+        context={askAduBibleContext}
+        onNavigateToVerse={(slug, ch, v) => {
+          handleSelectBookChapter(slug, ch);
+          if (v) setSelectedVerse(v);
+        }}
+        onSaveToVaultNotes={(title, noteBody) => {
+          const newNote: VerseNote = {
+            id: `ai-note-${Date.now()}`,
+            verseKey: `${currentBook.slug.toUpperCase()}.${currentChapter}.${selectedVerse || 1}`,
+            bookId: currentBook.id,
+            bookSlug: currentBook.slug,
+            chapter: currentChapter,
+            verse: selectedVerse || 1,
+            text: `${title}\n\n${noteBody}`,
+            createdAt: Date.now(),
+          };
+          handleSaveNote(newNote);
+        }}
+      />
+
       {/* MOBILE BOTTOM THUMB NAVIGATION DOCK */}
       <MobileBottomDock
         onOpenBooks={() => setIsBookModalOpen(true)}
         onOpenSearch={() => setIsMobileSearchOpen(true)}
+        onOpenAskAi={() => setIsAskAduBibleOpen(true)}
         onToggleAudio={() => setShowAudioBar((prev) => !prev)}
         isAudioActive={showAudioBar}
         onSwapLanguages={handleSwapLanguages}

@@ -1,9 +1,10 @@
 import React from 'react';
-import { BookOpen, Search, Headphones, Repeat, Grid, Settings, Bookmark } from 'lucide-react';
+import { BookOpen, Search, Headphones, Repeat, Grid, Settings, Bookmark, Sparkles } from 'lucide-react';
 
 interface MobileBottomDockProps {
   onOpenBooks: () => void;
   onOpenSearch: () => void;
+  onOpenAskAi?: () => void;
   onToggleAudio: () => void;
   isAudioActive: boolean;
   onSwapLanguages: () => void;
@@ -18,6 +19,7 @@ interface MobileBottomDockProps {
 export const MobileBottomDock: React.FC<MobileBottomDockProps> = ({
   onOpenBooks,
   onOpenSearch,
+  onOpenAskAi,
   onToggleAudio,
   isAudioActive,
   onSwapLanguages,
@@ -44,16 +46,28 @@ export const MobileBottomDock: React.FC<MobileBottomDockProps> = ({
           </span>
         </button>
 
-        {/* 2. Omni-Search */}
-        <button
-          type="button"
-          className="dock-item"
-          onClick={onOpenSearch}
-          aria-label="Search scripture or topic"
-        >
-          <Search className="dock-icon" />
-          <span className="dock-label">Search</span>
-        </button>
+        {/* 2. Ask AduBible AI Button (Prominent) */}
+        {onOpenAskAi ? (
+          <button
+            type="button"
+            className="dock-item ask-ai-dock"
+            onClick={onOpenAskAi}
+            aria-label="Ask AduBible AI Scripture Companion"
+          >
+            <Sparkles className="dock-icon text-amber-400" />
+            <span className="dock-label font-bold text-amber-400">Ask AI</span>
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="dock-item"
+            onClick={onOpenSearch}
+            aria-label="Search scripture or topic"
+          >
+            <Search className="dock-icon" />
+            <span className="dock-label">Search</span>
+          </button>
+        )}
 
         {/* 3. Center Highlighted Audio Button */}
         <button
