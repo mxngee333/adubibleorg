@@ -67,7 +67,6 @@ import {
   LegalPageKey,
 } from './components/LegalInstitutionalModal';
 import { OmniSearchBar } from './components/OmniSearchBar';
-import { SearchSanctuaryLander } from './components/SearchSanctuaryLander';
 import { QuickVersionRibbon } from './components/QuickVersionRibbon';
 import { MobileBottomDock } from './components/MobileBottomDock';
 import { GrandSiteFooter } from './components/GrandSiteFooter';
@@ -202,11 +201,6 @@ export function App() {
     return [primary, 'twi'];
   });
 
-  // Search Sanctuary Lander visibility (Defaults to true on homepage adubible.org /)
-  const [showSearchSanctuary, setShowSearchSanctuary] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return true;
-    return window.location.pathname === '/' || window.location.pathname === '';
-  });
 
   // Custom Add-on Packs
   const [customAddons, setCustomAddons] = useState<CustomBibleAddon[]>([]);
@@ -600,7 +594,6 @@ export function App() {
     setCurrentChapter(1);
     setSelectedVerse(1);
     setActiveVersionIds(['kjv', 'twi']);
-    setShowSearchSanctuary(true);
 
     // Update browser URL to / if not already there
     if (typeof window !== 'undefined' && window.location.pathname !== '/') {
@@ -932,22 +925,6 @@ export function App() {
         </div>
 
         <div className="mast-actions">
-
-
-          <button
-            type="button"
-            className={`quiet-button ${showSearchSanctuary ? 'active-pill' : ''}`}
-            onClick={() => {
-              setShowSearchSanctuary((prev) => !prev);
-              if (!showSearchSanctuary) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }
-            }}
-            title="Thematic Search Sanctuary and Topic Directory"
-          >
-            <span>✦ Sanctuary</span>
-          </button>
-
           <button
             type="button"
             className="quiet-button"
@@ -1142,55 +1119,118 @@ export function App() {
         />
       ) : (
         <main id="reader" className="workspace">
-          {/* SEARCH SANCTUARY LANDER (for visitors on adubible.org / adubible.com) */}
-          {showSearchSanctuary && (
-            <SearchSanctuaryLander
-              books={allHistoricalBooks}
-              currentBookSlug={currentBook.slug}
-              currentChapter={currentChapter}
-              onNavigate={(slug, ch, v) => {
-                handleSelectBookChapter(slug, ch);
-                if (v) setSelectedVerse(v);
-                const target = document.getElementById('reading-shell');
-                target?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              onLaunchPreset={(versions, bSlug, chNum) => {
-                if (bSlug) setCurrentBookSlug(bSlug);
-                if (chNum) setCurrentChapter(chNum);
-                setActiveVersionIds(versions);
-                const target = document.getElementById('reading-shell');
-                target?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              onSelectNavTab={(tab) => {
-                setActiveNavTab(tab);
-                if (typeof window !== 'undefined') {
-                  window.history.pushState({}, '', tab === 'canonical' ? '/' : `/${tab}`);
-                }
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              onEnterReader={() => {
-                const target = document.getElementById('reading-shell');
-                target?.scrollIntoView({ behavior: 'smooth' });
-              }}
-            />
-          )}
-
           <section className="page-heading">
-            <p className="eyebrow">
-              {currentBook.testament === 'DC'
-                ? 'DEUTEROCANONICAL SCRIPTURE · 16 HISTORICAL BOOKS · 24KHZ NEURAL AUDIO'
-                : currentBook.testament === 'PSEUD'
-                ? 'APOCRYPHA & APOSTOLIC FATHERS · 25 ANCIENT TEXTS · 24KHZ NEURAL AUDIO'
-                : `${currentBook.category ? `${currentBook.category.toUpperCase()} · ` : ''}100% AD-FREE · 66 CANONICAL BOOKS · 24KHZ NEURAL AUDIO`}
-            </p>
             <h1>{currentBook.names.en} {currentChapter}</h1>
-            <p>
-              {currentBook.canonStatus || 'One passage. Different translations. A wider understanding.'}
-            </p>
           </section>
 
         {/* 3. READING SHELL */}
         <section id="reading-shell" className="reading-shell" aria-busy={loadingChapters}>
+          {/* MOBILE BIBLEHUB COMPACT BAR (Visible on mobile <= 768px) */}
+          <div className="mobile-biblehub-bar" aria-label="Mobile Chapter Navigation">
+            <button
+              type="button"
+              className="mobile-chapter-step-btn"
+              onClick={() => handleStepChapter(-1)}
+              disabled={
+                currentBook.id === activeCollectionBooks[0]?.id && currentChapter <= 1
+              }
+              aria-label="Previous chapter"
+              title="Previous chapter"
+            >
+              ◀
+            </button>
+
+            <button
+              type="button"
+              className="mobile-chapter-title-trigger"
+              onClick={() => setIsBookModalOpen(true)}
+              aria-label="Select Book and Chapter"
+              title="Select Book and Chapter"
+            >
+              <span className="mobile-book-name">{currentBook.names.en}</span>
+              <span className="mobile-chapter-num">{currentChapter}</span>
+              {currentBook.names.tw && currentBook.names.tw !== currentBook.names.en && (
+                <span className="mobile-twi-tag">({currentBook.names.tw})</span>
+              )}
+              <span className="mobile-caret">▾</span>
+            </button>
+
+            <button
+              type="button"
+              className="mobile-chapter-step-btn"
+              onClick={() => handleStepChapter(1)}
+              disabled={
+                currentBook.id ===
+                  activeCollectionBooks[activeCollectionBooks.length - 1]?.id &&
+                currentChapter >= currentBook.chapters
+              }
+              aria-label="Next chapter"
+              title="Next chapter"
+            >
+              ▶
+            </button>
+
+            <div className="mobile-bar-quick-actions">
+              {activeVersionIds.length >= 2 && (
+                <button
+                  type="button"
+                  className="mobile-quick-btn swap"
+                  onClick={handleSwapLanguages}
+                  title="Swap parallel languages"
+                  aria-label="Swap parallel languages"
+                >
+                  ⇄
+                </button>
+              )}
+              <button
+                type="button"
+                className={`mobile-quick-btn ${showAudioBar ? 'active' : ''}`}
+                onClick={() => setShowAudioBar((prev) => !prev)}
+                title="Audio Bible"
+                aria-label="Audio Bible"
+              >
+                Audio
+              </button>
+              <button
+                type="button"
+                className="mobile-quick-btn add-btn"
+                onClick={() => setPickerSlot('add')}
+                disabled={activeVersionIds.length >= 4}
+                title="Add translation column"
+              >
+                + Add
+              </button>
+            </div>
+          </div>
+
+          {/* FLOATING SIDE CHAPTER NAV ARROWS (BibleHub Style) */}
+          <button
+            type="button"
+            className="biblehub-edge-arrow left"
+            onClick={() => handleStepChapter(-1)}
+            disabled={
+              currentBook.id === activeCollectionBooks[0]?.id && currentChapter <= 1
+            }
+            aria-label="Previous chapter"
+            title="Previous chapter"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            className="biblehub-edge-arrow right"
+            onClick={() => handleStepChapter(1)}
+            disabled={
+              currentBook.id ===
+                activeCollectionBooks[activeCollectionBooks.length - 1]?.id &&
+              currentChapter >= currentBook.chapters
+            }
+            aria-label="Next chapter"
+            title="Next chapter"
+          >
+            ›
+          </button>
+
           {/* PASSAGE TOOLBAR */}
           <div className="passage-toolbar">
             <div className="passage-controls">
@@ -1949,86 +1989,96 @@ export function App() {
             </label>
           </div>
 
-          {/* PARALLEL COMPARISON TABLE */}
-          <div
-            className={`comparison ${prefs.layoutMode === 'verse-by-verse-interlinear' ? 'stacked-mode' : ''}`}
-            style={
-              {
-                '--columns': activeVersionIds.length,
-                '--reading-size': `${prefs.fontSize}px`,
-              } as React.CSSProperties
-            }
-          >
-            {/* STICKY EDITION HEADERS */}
-            <div className="edition-heads">
-              {activeVersionIds.map((vId, idx) => {
-                const verMeta =
-                  allVersions.find((v) => v.id === vId) || allVersions[0];
-                const chData = chaptersByVersion[vId];
-                const licenseHref =
-                  chData?.licenseUrl ||
-                  (verMeta.helloaoId
-                    ? `https://bible.helloao.org/api/${verMeta.helloaoId}/${currentBook.id}/${currentChapter}.json`
-                    : undefined);
-
-                return (
-                  <div className="edition-head" key={`${vId}-${idx}`}>
-                    <div className="edition-meta">
-                      <span className={`edition-badge tone-${idx % 4}`}>
-                        {verMeta.languageName} · {verMeta.shortName}
-                      </span>
-                      <button
-                        type="button"
-                        className="edition-name"
-                        onClick={() => setPickerSlot(idx)}
-                        title="Click to switch translation for this column"
-                      >
-                        {verMeta.name}
-                      </button>
-                      <span className="edition-detail">
-                        {verMeta.nativeLanguageName}
-                        {licenseHref && (
-                          <>
-                            {' · '}
-                            <a
-                              href={licenseHref}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              Source &amp; license ↗
-                            </a>
-                          </>
-                        )}
-                      </span>
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
-                      {activeVersionIds.length >= 2 && (
-                        <button
-                          type="button"
-                          className="icon-button swap-col-btn"
-                          onClick={() => handleSwapColumn(idx)}
-                          title={`Swap position of ${verMeta.shortName}`}
-                          aria-label={`Swap position of ${verMeta.shortName}`}
-                        >
-                          ⇄
-                        </button>
-                      )}
-                      {activeVersionIds.length > 1 && (
-                        <button
-                          type="button"
-                          className="icon-button"
-                          onClick={() => handleRemoveColumn(idx)}
-                          aria-label={`Remove ${verMeta.name}`}
-                        >
-                          ×
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+          {/* BIBLEHUB SWIPE HINT */}
+          {activeVersionIds.length >= 2 && (
+            <div className="biblehub-swipe-hint">
+              <span>« swipe to see more →</span>
             </div>
+          )}
+
+          {/* PARALLEL COMPARISON TABLE (BIBLEHUB SCROLL-SYNCHRONIZED) */}
+          <div className="biblehub-parallel-scroll-box">
+            <div
+              className={`comparison biblehub-sync-table ${prefs.layoutMode === 'verse-by-verse-interlinear' ? 'stacked-mode' : ''}`}
+              style={
+                {
+                  '--columns': activeVersionIds.length,
+                  '--reading-size': `${prefs.fontSize}px`,
+                } as React.CSSProperties
+              }
+            >
+              {/* STICKY EDITION HEADERS */}
+              <div className="edition-heads">
+                {/* 1. Sticky Corner Cell (Top-left above verse numbers) */}
+                <div className="edition-head-corner" aria-hidden="true">
+                  <span>#</span>
+                </div>
+
+                {/* 2. Translation Columns */}
+                {activeVersionIds.map((vId, idx) => {
+                  const verMeta =
+                    allVersions.find((v) => v.id === vId) || allVersions[0];
+
+                  return (
+                    <div className="edition-head" key={`${vId}-${idx}`}>
+                      <div className="edition-head-top">
+                        <button
+                          type="button"
+                          className="edition-name-trigger"
+                          onClick={() => setPickerSlot(idx)}
+                          title="Click to switch translation for this column"
+                        >
+                          <span className="edition-code">{verMeta.shortName}</span>
+                          <span className="edition-caret">▾</span>
+                        </button>
+
+                        <div className="edition-head-actions">
+                          {activeVersionIds.length >= 2 && (
+                            <button
+                              type="button"
+                              className="icon-button swap-col-btn"
+                              onClick={() => handleSwapColumn(idx)}
+                              title={`Swap position of ${verMeta.shortName}`}
+                              aria-label={`Swap position of ${verMeta.shortName}`}
+                            >
+                              ⇄
+                            </button>
+                          )}
+                          {activeVersionIds.length > 1 && (
+                            <button
+                              type="button"
+                              className="icon-button close-col-btn"
+                              onClick={() => handleRemoveColumn(idx)}
+                              title={`Remove ${verMeta.name}`}
+                              aria-label={`Remove ${verMeta.name}`}
+                            >
+                              ×
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="edition-sub-name" title={verMeta.name}>
+                        {verMeta.name}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* 3. Right Header: "+ Add" Button (BibleHub Style) */}
+                <div className="edition-head-add">
+                  <button
+                    type="button"
+                    className="biblehub-add-col-btn"
+                    onClick={() => setPickerSlot('add')}
+                    disabled={activeVersionIds.length >= 4}
+                    title="Add translation column"
+                  >
+                    <span className="add-icon">+</span>
+                    <span>Add</span>
+                  </button>
+                </div>
+              </div>
 
             {/* VERSE ROWS */}
             <div className="verse-rows">
@@ -2050,16 +2100,33 @@ export function App() {
                       verseNumber
                     )
                   : undefined;
+                const primaryVerseText =
+                  primaryChapterData?.verses.find((v) => v.verse === verseNumber)?.text || '';
 
                 return (
                   <div
                     className={`verse-row ${isActionOpen ? 'selected-row' : ''}`}
                     key={verseNumber}
                   >
+                    {/* Sticky Left Verse Number Gutter (BibleHub Style) */}
+                    <div
+                      className="verse-gutter"
+                      onClick={() => {
+                        setSelectedVerse(verseNumber);
+                        setActiveVerseActionBar((prev) => (prev === verseNumber ? null : verseNumber));
+                      }}
+                      title={`Verse ${verseNumber} — Click for study actions`}
+                    >
+                      <span className="gutter-num">{verseNumber}</span>
+                      {prefs.showStudyBadges && (isPinned || isBookmarked || verseNotes.length > 0) && (
+                        <span className="gutter-badge">•</span>
+                      )}
+                    </div>
+
+                    {/* Translation Verse Cells */}
                     {activeVersionIds.map((vId, colIdx) => {
                       const verMeta =
-                        allVersions.find((v) => v.id === vId) ||
-                        allVersions[0];
+                        allVersions.find((v) => v.id === vId) || allVersions[0];
                       const chData = chaptersByVersion[vId];
                       const verseObj = chData?.verses.find(
                         (v) => v.verse === verseNumber
@@ -2078,30 +2145,11 @@ export function App() {
                             );
                           }}
                         >
-                          <span className="mobile-cell-badge">
-                            {verMeta.languageName} · {verMeta.shortName}
-                          </span>
-                          {prefs.layoutMode === 'verse-by-verse-interlinear' && (
-                            <span className="stacked-version-pill">
-                              {verMeta.shortName}
-                            </span>
-                          )}
                           {prefs.showHeadings && verseObj?.heading ? (
-                            <h3>{verseObj.heading}</h3>
+                            <h3 className="verse-heading">{verseObj.heading}</h3>
                           ) : null}
 
-                          <div className="verse-content">
-                            <span
-                              className="verse-number"
-                              title="Click verse to highlight, pin, bookmark, or add a note"
-                            >
-                              {verseNumber}
-                              {prefs.showStudyBadges &&
-                              isPrimaryCol &&
-                              (isPinned || isBookmarked || verseNotes.length > 0)
-                                ? '•'
-                                : ''}
-                            </span>
+                          <div className="verse-text-body">
                             <p
                               style={{
                                 textDecoration: hl?.underline
@@ -2121,20 +2169,13 @@ export function App() {
                             </p>
                           </div>
 
-                          {/* Optional Strong's Interlinear Ribbon (ONLY shown when toggled ON in Settings!) */}
+                          {/* Optional Strong's Interlinear Ribbon */}
                           {prefs.showStrongsInline &&
                             isPrimaryCol &&
                             interlinearWords &&
                             interlinearWords.length > 0 && (
                               <div
-                                style={{
-                                  marginTop: '10px',
-                                  paddingTop: '8px',
-                                  borderTop: '1px dashed var(--line)',
-                                  display: 'flex',
-                                  flexWrap: 'wrap',
-                                  gap: '6px',
-                                }}
+                                className="verse-interlinear-ribbon"
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 {interlinearWords.map((w, wIdx) => (
@@ -2162,132 +2203,138 @@ export function App() {
                                 ))}
                               </div>
                             )}
-
-                          {/* Subtle Study Action Bar on Primary Column when user clicks a verse */}
-                          {isActionOpen && isPrimaryCol && verseObj && (
-                            <div
-                              className="verse-quick-bar"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              {HIGHLIGHT_COLORS.map((c) => (
-                                <button
-                                  key={c.id}
-                                  type="button"
-                                  className={`verse-quick-btn ${hl?.color === c.id ? 'active' : ''}`}
-                                  onClick={() =>
-                                    handleApplyHighlight(
-                                      verseNumber,
-                                      verseObj.text,
-                                      c.id
-                                    )
-                                  }
-                                  title={`Highlight ${c.label}`}
-                                >
-                                  <span
-                                    style={{
-                                      width: '8px',
-                                      height: '8px',
-                                      borderRadius: '50%',
-                                      background: c.dotColor,
-                                      display: 'inline-block',
-                                    }}
-                                  />
-                                  {c.label}
-                                </button>
-                              ))}
-
-                              <button
-                                type="button"
-                                className={`verse-quick-btn ${isPinned ? 'active' : ''}`}
-                                onClick={() =>
-                                  handleTogglePin(verseNumber, verseObj.text)
-                                }
-                              >
-                                {isPinned ? '★ Pinned' : '☆ Pin'}
-                              </button>
-
-                              <button
-                                type="button"
-                                className={`verse-quick-btn ${isBookmarked ? 'active' : ''}`}
-                                onClick={() =>
-                                  handleToggleBookmark(
-                                    verseNumber,
-                                    verseObj.text
-                                  )
-                                }
-                              >
-                                {isBookmarked ? '✓ Bookmarked' : '+ Bookmark'}
-                              </button>
-
-                              <button
-                                type="button"
-                                className="verse-quick-btn"
-                                onClick={() => {
-                                  setStudyVaultTab('notes');
-                                  setIsStudyVaultOpen(true);
-                                }}
-                              >
-                                ✎ Note ({verseNotes.length})
-                              </button>
-
-                              <button
-                                type="button"
-                                className="verse-quick-btn"
-                                onClick={() => {
-                                  const secVerId = activeVersionIds[1];
-                                  const secText = secVerId
-                                    ? chaptersByVersion[secVerId]?.verses.find(
-                                        (x) => x.verse === verseNumber
-                                      )?.text
-                                    : undefined;
-                                  setVerseCardTarget({
-                                    verse: verseNumber,
-                                    primaryText: verseObj.text,
-                                    secondaryText: secText,
-                                  });
-                                }}
-                              >
-                                ✦ Share Card
-                              </button>
-
-                              <button
-                                type="button"
-                                className="verse-quick-btn"
-                                style={{
-                                  color: '#f59e0b',
-                                  borderColor: 'rgba(245, 158, 11, 0.45)',
-                                  fontWeight: 700,
-                                }}
-                                onClick={() => {
-                                  setSelectedVerse(verseNumber);
-                                  setIsAskAduBibleOpen(true);
-                                }}
-                                title="Ask AduBible AI Exegetical Companion about this verse"
-                              >
-                                ✦ Ask AI
-                              </button>
-
-                              {!prefs.showStrongsInline && (
-                                <button
-                                  type="button"
-                                  className="verse-quick-btn"
-                                  onClick={() =>
-                                    updatePrefs({ showStrongsInline: true })
-                                  }
-                                >
-                                  Enable Strong’s
-                                </button>
-                              )}
-                            </div>
-                          )}
                         </article>
                       );
                     })}
+
+                    {/* Spacer cell matching the + Add header column */}
+                    <div className="verse-add-spacer" aria-hidden="true" />
+
+                    {/* Inline Sticky Action Bar on Active Verse */}
+                    {isActionOpen && (
+                      <div className="verse-quick-bar-wrapper">
+                        <div
+                          className="verse-quick-bar"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {HIGHLIGHT_COLORS.map((c) => (
+                            <button
+                              key={c.id}
+                              type="button"
+                              className={`verse-quick-btn ${hl?.color === c.id ? 'active' : ''}`}
+                              onClick={() =>
+                                handleApplyHighlight(
+                                  verseNumber,
+                                  primaryVerseText,
+                                  c.id
+                                )
+                              }
+                              title={`Highlight ${c.label}`}
+                            >
+                              <span
+                                style={{
+                                  width: '8px',
+                                  height: '8px',
+                                  borderRadius: '50%',
+                                  background: c.dotColor,
+                                  display: 'inline-block',
+                                }}
+                              />
+                              {c.label}
+                            </button>
+                          ))}
+
+                          <button
+                            type="button"
+                            className={`verse-quick-btn ${isPinned ? 'active' : ''}`}
+                            onClick={() =>
+                              handleTogglePin(verseNumber, primaryVerseText)
+                            }
+                          >
+                            {isPinned ? '★ Pinned' : '☆ Pin'}
+                          </button>
+
+                          <button
+                            type="button"
+                            className={`verse-quick-btn ${isBookmarked ? 'active' : ''}`}
+                            onClick={() =>
+                              handleToggleBookmark(
+                                verseNumber,
+                                primaryVerseText
+                              )
+                            }
+                          >
+                            {isBookmarked ? '✓ Bookmarked' : '+ Bookmark'}
+                          </button>
+
+                          <button
+                            type="button"
+                            className="verse-quick-btn"
+                            onClick={() => {
+                              setStudyVaultTab('notes');
+                              setIsStudyVaultOpen(true);
+                            }}
+                          >
+                            ✎ Note ({verseNotes.length})
+                          </button>
+
+                          <button
+                            type="button"
+                            className="verse-quick-btn"
+                            onClick={() => {
+                              const secVerId = activeVersionIds[1];
+                              const secText = secVerId
+                                ? chaptersByVersion[secVerId]?.verses.find(
+                                    (x) => x.verse === verseNumber
+                                  )?.text
+                                : undefined;
+                              setVerseCardTarget({
+                                verse: verseNumber,
+                                primaryText: primaryVerseText,
+                                secondaryText: secText,
+                              });
+                            }}
+                          >
+                            ✦ Share Card
+                          </button>
+
+                          <button
+                            type="button"
+                            className="verse-quick-btn"
+                            style={{
+                              color: '#f59e0b',
+                              borderColor: 'rgba(245, 158, 11, 0.45)',
+                              fontWeight: 700,
+                            }}
+                            onClick={() => {
+                              setSelectedVerse(verseNumber);
+                              setIsAskAduBibleOpen(true);
+                            }}
+                            title="Ask AduBible AI Exegetical Companion about this verse"
+                          >
+                            ✦ Ask AI
+                          </button>
+
+                          {!prefs.showStrongsInline && (
+                            <button
+                              type="button"
+                              className="verse-quick-btn"
+                              onClick={() =>
+                                updatePrefs({ showStrongsInline: true })
+                              }
+                            >
+                              Enable Strong’s
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               })}
             </div>
           </div>
+        </div>
 
           {/* READING END BAR */}
           <div className="reading-end">

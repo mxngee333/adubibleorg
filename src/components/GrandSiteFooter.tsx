@@ -1,6 +1,5 @@
 import React from 'react';
 import { LegalPageKey } from './LegalInstitutionalModal';
-import { AduBibleLogo } from './AduBibleLogo';
 
 interface GrandSiteFooterProps {
   onOpenLegal: (page: LegalPageKey) => void;
@@ -21,27 +20,6 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
 }) => {
   return (
     <footer className="grand-site-footer" role="contentinfo">
-      <div className="footer-top-brand">
-        <div className="footer-brand-title">
-          <a href="/" onClick={onGoHome} className="footer-logo">
-            <AduBibleLogo size="lg" />
-          </a>
-          <span className="footer-motto">The Word, Side by Side · 100% Ad-Free Exegetical Sanctuary</span>
-        </div>
-
-        <p className="footer-dedication-lead">
-          Dedicated to Humanity in honor of the Generational Gospel Legacy of <strong>Apostle Kwame Adu</strong> (1938–2015) of{' '}
-          <a
-            href="https://nsuhia.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-highlight-link"
-          >
-            Nsuhia, Ghana (nsuhia.com ↗)
-          </a>.
-          Committed to preserving the unadulterated Word of God in Asante Twi, English, and world languages with zero ads and zero behavioral trackers.
-        </p>
-      </div>
 
       {/* 3 CORNERSTONE SCRIPTURE QUOTES */}
       <div
