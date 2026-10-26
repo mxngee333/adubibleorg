@@ -20,6 +20,8 @@ const LS_NOTES = 'elohim_notes_v1';
 const LS_PREFS = 'elohim_prefs_v2';
 const LS_ADDONS_META = 'elohim_addons_meta_v1';
 const LS_HISTORY = 'elohim_reading_history_v1';
+const LS_ACTIVE_VERSIONS = 'adubible_active_versions_v1';
+const LS_PRIMARY_VERSION = 'adubible_primary_version_v1';
 
 export const DEFAULT_PREFERENCES: ReadingPreferences = {
   theme: 'wisdom-legacy',
@@ -34,9 +36,9 @@ export const DEFAULT_PREFERENCES: ReadingPreferences = {
     accent: '#b7c99f',
     isDark: true,
   },
-  fontSize: 19,
-  lineHeight: 1.72,
-  fontFamily: 'serif',
+  fontSize: 17, // BibleHub default font size
+  lineHeight: 1.68,
+  fontFamily: 'sans', // BibleHub default clean sans-serif
   layoutMode: 'parallel-columns',
   showStrongsInline: false,
   showCommentaries: false,
@@ -45,6 +47,7 @@ export const DEFAULT_PREFERENCES: ReadingPreferences = {
   showCrossRefs: true,
   showHeadings: true,
   zenMode: false,
+  preferredVersionId: 'nkjv',
 };
 
 function openVaultDB(): Promise<IDBDatabase> {
@@ -343,8 +346,20 @@ export function loadPreferences(): ReadingPreferences {
       // If the theme was the old initial default 'royal-purple', seamlessly migrate to the authentic 'wisdom-legacy'
       if (parsed.theme === 'royal-purple') {
         parsed.theme = 'wisdom-legacy';
-        localStorage.setItem(LS_PREFS, JSON.stringify({ ...DEFAULT_PREFERENCES, ...parsed }));
       }
+    }
+
+    // BibleHub Default Font & Size Migration (17px + Sans-Serif)
+    const hasBiblehubFontMigrated = localStorage.getItem('biblehub_font_migrated_v1');
+    if (!hasBiblehubFontMigrated) {
+      localStorage.setItem('biblehub_font_migrated_v1', 'true');
+      if (!parsed.fontFamily || parsed.fontFamily === 'serif') {
+        parsed.fontFamily = 'sans';
+      }
+      if (parsed.fontSize === 19 || !parsed.fontSize) {
+        parsed.fontSize = 17;
+      }
+      localStorage.setItem(LS_PREFS, JSON.stringify({ ...DEFAULT_PREFERENCES, ...parsed }));
     }
     return { ...DEFAULT_PREFERENCES, ...parsed };
   } catch {
@@ -382,3 +397,56 @@ export function recordReadingHistory(entry: ReadingHistoryEntry): ReadingHistory
 export function getReadingHistory(): ReadingHistoryEntry[] {
   return readJsonList<ReadingHistoryEntry>(LS_HISTORY, []);
 }
+
+/**
+ * Load the user's latest stored version IDs from localStorage.
+ * Returns null if the user has never changed versions (new/visiting user).
+ */
+export function loadSavedVersionIds(): string[] | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(LS_ACTIVE_VERSIONS);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      const valid = parsed.filter(
+        (id): id is string => typeof id === 'string' && id.trim().length > 0
+      );
+      return valid.length > 0 ? valid : null;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Persist active version IDs to localStorage as the locally latest stored versions.
+ * Also stores the primary translation ID for instant single-version lookups.
+ */
+export function saveActiveVersionIds(versionIds: string[]): void {
+  if (typeof window === 'undefined') return;
+  try {
+    if (Array.isArray(versionIds) && versionIds.length > 0) {
+      localStorage.setItem(LS_ACTIVE_VERSIONS, JSON.stringify(versionIds));
+      if (versionIds[0]) {
+        localStorage.setItem(LS_PRIMARY_VERSION, versionIds[0]);
+      }
+    }
+  } catch {
+    // Ignore quota or security errors
+  }
+}
+
+/**
+ * Load the single primary version ID stored locally, if any.
+ */
+export function loadPrimaryVersionId(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return localStorage.getItem(LS_PRIMARY_VERSION) || null;
+  } catch {
+    return null;
+  }
+}
+

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   BibleVersion,
   ChapterData,
@@ -31,6 +31,8 @@ import {
   saveNotes,
   savePins,
   savePreferences,
+  loadSavedVersionIds,
+  saveActiveVersionIds,
   loadAllCustomAddons,
   saveCustomAddon,
   deleteCustomAddon,
@@ -77,11 +79,12 @@ import { Search, User } from 'lucide-react';
 import { AskAduBibleContext } from './services/askAduBibleService';
 
 const COMPARE_PRESETS: Array<{ label: string; versions: string[] }> = [
-  { label: 'KJV + BSB', versions: ['kjv', 'bsb'] },
   { label: 'NKJV + KJV', versions: ['nkjv', 'kjv'] },
+  { label: 'NKJV + Twi', versions: ['nkjv', 'twi'] },
+  { label: 'KJV + BSB', versions: ['kjv', 'bsb'] },
   { label: 'English Quad', versions: ['nkjv', 'kjv', 'bsb', 'asv'] },
-  { label: 'English Major', versions: ['kjv', 'bsb', 'web'] },
-  { label: 'Greek/Hebrew + KJV', versions: ['tr-gk', 'kjv'] },
+  { label: 'English Major', versions: ['nkjv', 'kjv', 'bsb'] },
+  { label: 'Greek/Hebrew + NKJV', versions: ['tr-gk', 'nkjv'] },
   { label: 'Septuagint LXX + KJV', versions: ['lxx', 'kjv-apoc'] },
   { label: 'Catholic Douay-Rheims', versions: ['dra', 'kjv-apoc'] },
   { label: 'KJV + Twi', versions: ['kjv', 'twi'] },
@@ -150,7 +153,7 @@ export function App() {
     () =>
       typeof window !== 'undefined'
         ? parseBibleHubUrlPath(window.location.pathname)
-        : { versionId: 'kjv', bookSlug: 'genesis', chapter: 1 },
+        : { versionId: 'nkjv', bookSlug: 'genesis', chapter: 1 },
     []
   );
 
@@ -176,6 +179,7 @@ export function App() {
   });
 
   const [activeVersionIds, setActiveVersionIds] = useState<string[]>(() => {
+    // 1. Explicit query param (e.g., ?versions=nkjv,kjv or deep links) has highest precedence
     if (typeof window !== 'undefined') {
       const q = new URLSearchParams(window.location.search);
       const qVersions = (q.get('versions') || '')
@@ -186,21 +190,42 @@ export function App() {
         return qVersions.slice(0, 4);
       }
     }
-    const primary = initialRoute.versionId || 'kjv';
+
+    const pathname =
+      typeof window !== 'undefined' ? window.location.pathname.toLowerCase() : '';
+    const isRootOrGeneric =
+      !pathname || pathname === '/' || pathname === '/parallel' || pathname === '/parallel/';
+
+    // 2. If the user previously changed to another version or language, restore their latest locally stored preference!
+    if (typeof window !== 'undefined') {
+      const saved = loadSavedVersionIds();
+      if (saved && saved.length > 0) {
+        if (isRootOrGeneric) {
+          return saved;
+        }
+      }
+    }
+
+    // 3. For new and visiting users: Default version is NKJV
+    const primary = initialRoute.versionId || 'nkjv';
     if (initialRoute.isParallelRoute) {
-      return ['kjv', 'bsb'];
+      return ['nkjv', 'kjv'];
     }
     if (primary === 'twi') {
-      return ['twi', 'kjv'];
+      return ['twi', 'nkjv'];
     }
-    if (
-      typeof window !== 'undefined' &&
-      (window.location.pathname === '/' || window.location.pathname === '')
-    ) {
-      return ['kjv', 'bsb'];
+    if (isRootOrGeneric) {
+      return ['nkjv', 'kjv'];
     }
     return [primary];
   });
+
+  // Automatically keep the latest chosen version(s) / language saved in localStorage
+  useEffect(() => {
+    if (activeVersionIds && activeVersionIds.length > 0) {
+      saveActiveVersionIds(activeVersionIds);
+    }
+  }, [activeVersionIds]);
 
 
   // Custom Add-on Packs
@@ -241,12 +266,23 @@ export function App() {
   const [showAudioBar, setShowAudioBar] = useState<boolean>(false);
   const [copiedNotice, setCopiedNotice] = useState<boolean>(false);
   const [themeSyncNotice, setThemeSyncNotice] = useState<string>('');
+  const scrollBoxRef = useRef<HTMLDivElement | null>(null);
+
+  const handleSwipeScroll = (direction: 'left' | 'right') => {
+    if (!scrollBoxRef.current) return;
+    const colWidth = Math.max(140, (window.innerWidth - 28) / 2);
+    scrollBoxRef.current.scrollBy({
+      left: direction === 'right' ? colWidth : -colWidth,
+      behavior: 'smooth',
+    });
+  };
 
   // Wisdom Bible column translation picker state ('add' | column index | null)
   const [pickerSlot, setPickerSlot] = useState<number | 'add' | null>(null);
   const [pickerSearch, setPickerSearch] = useState<string>('');
 
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+  const [isThemePickerOpen, setIsThemePickerOpen] = useState<boolean>(false);
   const [settingsInitialSection, setSettingsInitialSection] = useState<'general' | 'theme' | 'commentaries' | 'api'>('general');
   const [isBookModalOpen, setIsBookModalOpen] = useState<boolean>(false);
   const [bookPickerTab, setBookPickerTab] = useState<'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD'>('CANONICAL');
@@ -372,7 +408,7 @@ export function App() {
           bookId: currentBook.id,
           bookSlug: currentBook.slug,
           chapter: currentChapter,
-          versionId: activeVersionIds[0] || 'kjv',
+          versionId: activeVersionIds[0] || 'nkjv',
           timestamp: Date.now(),
         });
       }
@@ -386,16 +422,14 @@ export function App() {
   // Sync browser URL in BibleHub format without page reload
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const primaryVer = activeVersionIds[0] || 'kjv';
+    const primaryVer = activeVersionIds[0] || 'nkjv';
     const nextUrl = `/${primaryVer}/${currentBook.slug}/${currentChapter}/`;
 
     // Retain clean '/' root URL when resting on homepage default sanctuary state
     const isAtHomeState =
-      currentBook.slug === 'ephesians' &&
+      currentBook.slug === 'genesis' &&
       currentChapter === 1 &&
-      activeVersionIds.length === 2 &&
-      activeVersionIds[0] === 'kjv' &&
-      activeVersionIds[1] === 'bsb';
+      (activeVersionIds[0] === 'nkjv' || !activeVersionIds[0]);
 
     if (window.location.pathname === '/' && isAtHomeState) {
       document.title =
@@ -423,7 +457,8 @@ export function App() {
         setCurrentBookSlug('genesis');
         setCurrentChapter(1);
         setSelectedVerse(1);
-        setActiveVersionIds(['kjv', 'bsb']);
+        const saved = loadSavedVersionIds();
+        setActiveVersionIds(saved && saved.length > 0 ? saved : ['nkjv', 'kjv']);
         return;
       }
       const route = parseBibleHubUrlPath(window.location.pathname);
@@ -598,12 +633,17 @@ export function App() {
     setVerseCardTarget(null);
     setActiveVerseActionBar(null);
 
-    // Reset to default home sanctuary reading state (Genesis 1, KJV + BSB)
+    // Reset to home sanctuary reading state (Genesis 1, retaining latest stored version)
     setActiveNavTab('canonical');
     setCurrentBookSlug('genesis');
     setCurrentChapter(1);
     setSelectedVerse(1);
-    setActiveVersionIds(['kjv', 'bsb']);
+    const savedHomeVersions = loadSavedVersionIds();
+    setActiveVersionIds(
+      savedHomeVersions && savedHomeVersions.length > 0
+        ? savedHomeVersions
+        : ['nkjv', 'kjv']
+    );
 
     // Update browser URL to / if not already there
     if (typeof window !== 'undefined' && window.location.pathname !== '/') {
@@ -640,7 +680,12 @@ export function App() {
         ['charles', 'lightfoot'].includes(id)
       );
       if (onlyApocryphaVersions) {
-        setActiveVersionIds(['kjv', 'bsb']);
+        const savedCanonicalVersions = loadSavedVersionIds();
+        setActiveVersionIds(
+          savedCanonicalVersions && savedCanonicalVersions.length > 0
+            ? savedCanonicalVersions
+            : ['nkjv', 'kjv']
+        );
       }
     }
 
@@ -687,7 +732,7 @@ export function App() {
 
   const handleCopyShareLink = async () => {
     if (typeof window === 'undefined') return;
-    const shareUrl = `${window.location.origin}/${activeVersionIds[0] || 'kjv'}/${currentBook.slug}/${currentChapter}/?versions=${activeVersionIds.join(',')}`;
+    const shareUrl = `${window.location.origin}/${activeVersionIds[0] || 'nkjv'}/${currentBook.slug}/${currentChapter}/?versions=${activeVersionIds.join(',')}`;
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopiedNotice(true);
@@ -717,7 +762,7 @@ export function App() {
         bookSlug: currentBook.slug,
         chapter: currentChapter,
         verse: verseNum,
-        versionId: activeVersionIds[0] || 'kjv',
+        versionId: activeVersionIds[0] || 'nkjv',
         text,
         color,
         underline: toggleUnderline ? !existing?.underline : existing?.underline,
@@ -733,7 +778,7 @@ export function App() {
 
   const handleTogglePin = (verseNum: number, text: string) => {
     const verseKey = `${currentBook.id}.${currentChapter}.${verseNum}`;
-    const primaryVer = activeVersionIds[0] || 'kjv';
+    const primaryVer = activeVersionIds[0] || 'nkjv';
     const existing = pins.find(
       (p) => p.verseKey === verseKey && p.versionId === primaryVer
     );
@@ -774,7 +819,7 @@ export function App() {
         bookSlug: currentBook.slug,
         chapter: currentChapter,
         verse: verseNum,
-        versionId: activeVersionIds[0] || 'kjv',
+        versionId: activeVersionIds[0] || 'nkjv',
         text,
         folder: 'Favorite Scriptures',
         createdAt: Date.now(),
@@ -794,7 +839,7 @@ export function App() {
   };
 
   // Determine verse rows across active versions
-  const primaryVersionId = activeVersionIds[0] || 'kjv';
+  const primaryVersionId = activeVersionIds[0] || 'nkjv';
   const primaryChapterData = chaptersByVersion[primaryVersionId];
   const primaryVerses = useMemo(
     () => primaryChapterData?.verses || [],
@@ -881,7 +926,7 @@ export function App() {
             window.history.pushState(
               {},
               '',
-              `/${activeVersionIds[0] || 'kjv'}/${currentBookSlug}/${currentChapter}`
+              `/${activeVersionIds[0] || 'nkjv'}/${currentBookSlug}/${currentChapter}`
             );
           } else {
             window.history.pushState({}, '', `/${tab}`);
@@ -903,19 +948,28 @@ export function App() {
 
   return (
     <div
-      className={`bible-app theme-${prefs.theme} ${isNight ? 'night' : ''}`}
+      className={`bible-app theme-${prefs.theme} font-${prefs.fontFamily || 'sans'} ${isNight ? 'night' : ''}`}
       style={
-        prefs.theme === 'custom' && prefs.customTheme
-          ? ({
-              '--paper': prefs.customTheme.paper,
-              '--surface': prefs.customTheme.surface,
-              '--ink': prefs.customTheme.ink,
-              '--subtle': prefs.customTheme.subtle,
-              '--line': prefs.customTheme.line,
-              '--green': prefs.customTheme.accent,
-              '--soft': prefs.customTheme.surface,
-            } as React.CSSProperties)
-          : undefined
+        {
+          ...(prefs.theme === 'custom' && prefs.customTheme
+            ? {
+                '--paper': prefs.customTheme.paper,
+                '--surface': prefs.customTheme.surface,
+                '--ink': prefs.customTheme.ink,
+                '--subtle': prefs.customTheme.subtle,
+                '--line': prefs.customTheme.line,
+                '--green': prefs.customTheme.accent,
+                '--soft': prefs.customTheme.surface,
+              }
+            : {}),
+          '--font-reading':
+            prefs.fontFamily === 'serif'
+              ? 'Georgia, "Times New Roman", serif'
+              : prefs.fontFamily === 'mono'
+                ? '"SF Mono", Menlo, Consolas, Monaco, monospace'
+                : 'Arial, Helvetica, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          '--reading-size': `${prefs.fontSize || 17}px`,
+        } as React.CSSProperties
       }
     >
       {/* 1. TOP MASTHEAD (AduBible) */}
@@ -1002,7 +1056,7 @@ export function App() {
             aria-label="Select translations"
             title="Active Bible Translations"
           >
-            <span>{activeVersionIds.length > 1 ? `${activeVersionIds.length} Versions` : activeVersionIds[0]?.toUpperCase() || 'KJV'}</span>
+            <span>{activeVersionIds.length > 1 ? `${activeVersionIds.length} Versions` : activeVersionIds[0]?.toUpperCase() || 'NKJV'}</span>
           </button>
 
           <button
@@ -2088,21 +2142,47 @@ export function App() {
             </label>
           </div>
 
-          {/* BIBLEHUB SWIPE HINT */}
-          {activeVersionIds.length >= 2 && (
-            <div className="biblehub-swipe-hint">
-              <span>« swipe to see more →</span>
+          {/* BIBLEHUB 2-COLUMN MOBILE SWIPE BAR (When > 2 versions are active) */}
+          {activeVersionIds.length > 2 && (
+            <div className="biblehub-swipe-bar">
+              <button
+                type="button"
+                className="swipe-nav-btn"
+                onClick={() => handleSwipeScroll('left')}
+                aria-label="Scroll left to previous translation"
+                title="Previous translation"
+              >
+                ◀ Prev
+              </button>
+              <span className="swipe-info">
+                ⇄ Showing 2 of {activeVersionIds.length} versions · Swipe for more
+              </span>
+              <button
+                type="button"
+                className="swipe-nav-btn"
+                onClick={() => handleSwipeScroll('right')}
+                aria-label="Scroll right to next translation"
+                title="Next translation"
+              >
+                Next ▶
+              </button>
             </div>
           )}
 
           {/* PARALLEL COMPARISON TABLE (BIBLEHUB SCROLL-SYNCHRONIZED) */}
-          <div className="biblehub-parallel-scroll-box">
+          <div className="biblehub-parallel-scroll-box" ref={scrollBoxRef}>
             <div
               className={`comparison biblehub-sync-table cols-${activeVersionIds.length} ${prefs.layoutMode === 'verse-by-verse-interlinear' ? 'stacked-mode' : ''}`}
               style={
                 {
                   '--columns': activeVersionIds.length,
-                  '--reading-size': `${prefs.fontSize}px`,
+                  '--reading-size': `${prefs.fontSize || 17}px`,
+                  '--font-reading':
+                    prefs.fontFamily === 'serif'
+                      ? 'Georgia, "Times New Roman", serif'
+                      : prefs.fontFamily === 'mono'
+                        ? '"SF Mono", Menlo, Consolas, Monaco, monospace'
+                        : 'Arial, Helvetica, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                 } as React.CSSProperties
               }
             >
@@ -2554,7 +2634,7 @@ export function App() {
                   (v) => v.languageCode === lang.code
                 );
                 const defaultVer =
-                  matchingVersions.find((v) => v.id === 'kjv') ||
+                  matchingVersions.find((v) => v.id === 'nkjv') ||
                   matchingVersions[0] ||
                   allVersions[0];
                 const isSelected = matchingVersions.some((v) =>
@@ -2746,7 +2826,7 @@ export function App() {
           chapter={currentChapter}
           versionName={
             allVersions.find((v) => v.id === primaryVersionId)?.shortName ||
-            'KJV'
+            'NKJV'
           }
           langCode={
             allVersions.find((v) => v.id === primaryVersionId)?.languageCode ||
@@ -2955,7 +3035,7 @@ export function App() {
             bookSlug: currentBook.slug,
             chapter: currentChapter,
             verse: selectedVerse || 1,
-            versionId: activeVersionIds[0] || 'kjv',
+            versionId: activeVersionIds[0] || 'nkjv',
             verseText: '',
             title: title,
             body: noteBody,

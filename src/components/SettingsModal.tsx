@@ -893,6 +893,58 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               )}
             </div>
 
+            {/* Typography & Font Family Selector */}
+            <div
+              style={{
+                padding: '12px 14px',
+                borderRadius: '6px',
+                border: '1px solid var(--line)',
+                background: 'var(--surface)',
+                display: 'grid',
+                gap: '8px',
+                marginBottom: '10px',
+              }}
+            >
+              <div>
+                <strong style={{ display: 'block', fontSize: '14px', marginBottom: '3px' }}>
+                  Scripture Font Style
+                </strong>
+                <span style={{ fontSize: '12px', color: 'var(--subtle)' }}>
+                  BibleHub clean sans-serif is default for maximum clarity on mobile and desktop
+                </span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px' }}>
+                <button
+                  type="button"
+                  className={`picker-option ${prefs.fontFamily === 'sans' || !prefs.fontFamily ? 'active' : ''}`}
+                  onClick={() => onUpdatePrefs({ fontFamily: 'sans' })}
+                  style={{ padding: '8px 10px', textAlign: 'left', fontFamily: 'Arial, Helvetica, sans-serif' }}
+                >
+                  <strong style={{ fontSize: '13px', display: 'block' }}>BibleHub Sans</strong>
+                  <span style={{ fontSize: '11px', color: 'var(--subtle)' }}>Arial / Clean (Default)</span>
+                </button>
+                <button
+                  type="button"
+                  className={`picker-option ${prefs.fontFamily === 'serif' ? 'active' : ''}`}
+                  onClick={() => onUpdatePrefs({ fontFamily: 'serif' })}
+                  style={{ padding: '8px 10px', textAlign: 'left', fontFamily: 'Georgia, serif' }}
+                >
+                  <strong style={{ fontSize: '13px', display: 'block' }}>Classic Serif</strong>
+                  <span style={{ fontSize: '11px', color: 'var(--subtle)' }}>Georgia / Literary</span>
+                </button>
+                <button
+                  type="button"
+                  className={`picker-option ${prefs.fontFamily === 'mono' ? 'active' : ''}`}
+                  onClick={() => onUpdatePrefs({ fontFamily: 'mono' })}
+                  style={{ padding: '8px 10px', textAlign: 'left', fontFamily: 'monospace' }}
+                >
+                  <strong style={{ fontSize: '13px', display: 'block' }}>Monospace</strong>
+                  <span style={{ fontSize: '11px', color: 'var(--subtle)' }}>SF Mono / Study</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Scripture Font Size */}
             <div
               style={{
                 padding: '12px 14px',
@@ -908,29 +960,42 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             >
               <div>
                 <strong style={{ display: 'block', fontSize: '14px' }}>
-                  Scripture Font Size ({prefs.fontSize}px)
+                  BibleHub Reading Size ({prefs.fontSize || 17}px)
                 </strong>
                 <span style={{ fontSize: '12px', color: 'var(--subtle)' }}>
-                  Adjust Georgia serif reading size across all parallel columns
+                  Standard BibleHub default is 17px with comfortable line height
                 </span>
               </div>
-              <div className="step-buttons">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <button
                   type="button"
-                  onClick={() =>
-                    onUpdatePrefs({ fontSize: Math.max(15, prefs.fontSize - 1) })
-                  }
+                  className="quiet-button"
+                  onClick={() => onUpdatePrefs({ fontSize: 17 })}
+                  style={{ fontSize: '11px', padding: '4px 8px' }}
+                  title="Reset to BibleHub default 17px"
                 >
-                  T-
+                  Reset (17px)
                 </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    onUpdatePrefs({ fontSize: Math.min(26, prefs.fontSize + 1) })
-                  }
-                >
-                  T+
-                </button>
+                <div className="step-buttons">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onUpdatePrefs({ fontSize: Math.max(14, (prefs.fontSize || 17) - 1) })
+                    }
+                    title="Smaller text"
+                  >
+                    T-
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onUpdatePrefs({ fontSize: Math.min(26, (prefs.fontSize || 17) + 1) })
+                    }
+                    title="Larger text"
+                  >
+                    T+
+                  </button>
+                </div>
               </div>
             </div>
 

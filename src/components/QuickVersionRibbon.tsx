@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Layers, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { BibleVersion } from '../types/bible';
 
 interface QuickVersionRibbonProps {
@@ -9,24 +9,52 @@ interface QuickVersionRibbonProps {
   onOpenVersionPicker: () => void;
 }
 
-// Curated high-impact versions with universal cross-platform symbols
-// (Avoiding Windows Chromium 2-letter country flag box fallback: GH, US, FR, etc.)
-const CURATED_RIBBON_VERSIONS: Array<{ id: string; short: string; symbol?: string; name: string }> = [
-  { id: 'twi', short: 'TWI', symbol: '⭐', name: 'Asante Twi (Twerɛ Kronkron)' },
-  { id: 'ak-twi', short: 'AK-TWI', symbol: '🌿', name: 'Akuapem Twi' },
-  { id: 'kjv', short: 'KJV', symbol: '👑', name: 'King James Version 1769' },
-  { id: 'nkjv', short: 'NKJV', symbol: '📖', name: 'New King James Version' },
-  { id: 'bsb', short: 'BSB', symbol: '📜', name: 'Berean Standard Bible' },
-  { id: 'asv', short: 'ASV', symbol: '🕊️', name: 'American Standard Version' },
-  { id: 'web', short: 'WEB', symbol: '🌐', name: 'World English Bible' },
-  { id: 'fr-lsg', short: 'FR-LSG', symbol: '⚜️', name: 'Louis Segond Français' },
-  { id: 'es-rvr', short: 'ES-RVR', symbol: '☀️', name: 'Reina-Valera 1909' },
-  { id: 'ha', short: 'HAUSA', symbol: '🌍', name: 'Hausa (Littafi Mai Tsarki)' },
-  { id: 'yo', short: 'YORÙBÁ', symbol: '👑', name: 'Èdè Yorùbá (Bíbélì Mímọ́)' },
-  { id: 'sw', short: 'SWAHILI', symbol: '🌅', name: 'Kiswahili Union Version' },
-  { id: 'de-lut', short: 'DE-LUT', symbol: '🛡️', name: 'Lutherbibel Deutsch' },
-  { id: 'tr-gk', short: 'GREEK', symbol: '🏛️', name: 'Textus Receptus Greek' },
-  { id: 'wlc-he', short: 'HEBREW', symbol: '✡️', name: 'Westminster Leningrad Codex' },
+// Complete BibleHub Canonical Editions + Ghanaian & Classical Heritage
+export const BIBLEHUB_RIBBON_VERSIONS: Array<{ id: string; short: string; name: string; tag?: string }> = [
+  // ── Ghanaian Heritage Jewels ──
+  { id: 'twi', short: 'TWI', name: 'Asante Twi (Twerɛ Kronkron)', tag: 'GH' },
+  { id: 'ak-twi', short: 'AK-TWI', name: 'Akuapem Twi (Kyerew Kronkron)', tag: 'GH' },
+
+  // ── 29 BibleHub Exact Canonical Editions (Matching BibleHub Lineup) ──
+  { id: 'niv', short: 'NIV', name: 'New International Version (1984 / 2011)' },
+  { id: 'nlt', short: 'NLT', name: 'New Living Translation (2015)' },
+  { id: 'esv', short: 'ESV', name: 'English Standard Version (2016)' },
+  { id: 'bsb', short: 'BSB', name: 'Berean Standard Bible' },
+  { id: 'kjv', short: 'KJV', name: 'King James Version 1769' },
+  { id: 'nkjv', short: 'NKJ', name: 'New King James Version' },
+  { id: 'nasb', short: 'NAS', name: 'New American Standard Bible (1995)' },
+  { id: 'amp', short: 'AMP', name: 'Amplified Bible (2015)' },
+  { id: 'csb', short: 'CSB', name: 'Christian Standard Bible (2017)' },
+  { id: 'hcsb', short: 'HCS', name: 'Holman Christian Standard Bible' },
+  { id: 'lsb', short: 'LSB', name: 'Legacy Standard Bible (2021)' },
+  { id: 'net', short: 'NET', name: 'New English Translation (NET Bible)' },
+  { id: 'cev', short: 'CEV', name: 'Contemporary English Version' },
+  { id: 'gnt', short: 'GNT', name: 'Good News Translation' },
+  { id: 'ara', short: 'ARA', name: 'Almeida Revista e Atualizada (Português)' },
+  { id: 'asv', short: 'ASV', name: 'American Standard Version (1901)' },
+  { id: 'dbt', short: 'DBT', name: 'Darby Bible Translation (1890)' },
+  { id: 'drb', short: 'DRB', name: 'Douay-Rheims Bible (Challoner Revision)' },
+  { id: 'erv', short: 'ERV', name: 'Easy-to-Read Version' },
+  { id: 'gwt', short: 'GWT', name: "GOD'S WORD Translation" },
+  { id: 'isr', short: 'ISR', name: 'The Scriptures (ISR 2009)' },
+  { id: 'isv', short: 'ISV', name: 'International Standard Version' },
+  { id: 'kjp', short: 'KJP', name: 'King James 2000' },
+  { id: 'rfp', short: 'RFP', name: 'Almeida Revista e Fiel' },
+  { id: 'nhe', short: 'NHE', name: 'New Heart English Bible' },
+  { id: 'ojb', short: 'OJB', name: 'Orthodox Jewish Bible' },
+  { id: 'web', short: 'WEB', name: 'World English Bible' },
+  { id: 'wbt', short: 'WBT', name: 'Webster Bible (1833)' },
+  { id: 'wyc', short: 'WYC', name: "Wycliffe's Bible (1395)" },
+
+  // ── African & Classical Translations ──
+  { id: 'ee', short: 'EWE', name: 'Eʋegbe Biblia (Ghana / Togo)' },
+  { id: 'gaa', short: 'GA', name: 'Gã Ŋmalɛ Krɔŋkrɔŋ (Accra, Ghana)' },
+  { id: 'yo', short: 'YOR', name: 'Èdè Yorùbá (Bíbélì Mímọ́)' },
+  { id: 'ha', short: 'HAU', name: 'Hausa (Littafi Mai Tsarki)' },
+  { id: 'sw', short: 'SWA', name: 'Kiswahili Union Version' },
+  { id: 'tr-gk', short: 'GRK', name: 'Textus Receptus Greek' },
+  { id: 'wlc', short: 'HEB', name: 'Westminster Leningrad Codex Hebrew' },
+  { id: 'vul', short: 'VUL', name: 'Biblia Sacra Vulgata' },
 ];
 
 export const QuickVersionRibbon: React.FC<QuickVersionRibbonProps> = ({
@@ -39,31 +67,26 @@ export const QuickVersionRibbon: React.FC<QuickVersionRibbonProps> = ({
 
   const handleScroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
-      const scrollAmount = direction === 'left' ? -260 : 260;
+      const scrollAmount = direction === 'left' ? -320 : 320;
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
   return (
-    <div className="version-ribbon-bar" aria-label="Quick Translation Switcher">
-      <div className="ribbon-label">
-        <Layers className="h-3.5 w-3.5" aria-hidden="true" />
-        <span>PARALLEL EDITIONS:</span>
-      </div>
-
+    <nav className="version-ribbon-bar biblehub-sky-ribbon" aria-label="BibleHub Quick Translation Ribbon">
       <div className="ribbon-scroll-wrapper">
         <button
           type="button"
           className="ribbon-nav-btn left"
           onClick={() => handleScroll('left')}
           title="Scroll translations left"
-          aria-label="Scroll left"
+          aria-label="Scroll translations left"
         >
-          <ChevronLeft className="h-3.5 w-3.5" />
+          <ChevronLeft className="h-4 w-4" />
         </button>
 
         <div ref={scrollRef} className="ribbon-scroll-container">
-          {CURATED_RIBBON_VERSIONS.map((item) => {
+          {BIBLEHUB_RIBBON_VERSIONS.map((item) => {
             const activeIndex = activeVersionIds.indexOf(item.id);
             const isActive = activeIndex !== -1;
             const isPrimary = activeIndex === 0;
@@ -74,14 +97,13 @@ export const QuickVersionRibbon: React.FC<QuickVersionRibbonProps> = ({
                 key={item.id}
                 className={`ribbon-pill ${isActive ? 'active' : ''} ${isPrimary ? 'primary' : ''}`}
                 onClick={() => onToggleVersion(item.id)}
-                title={`${item.name} · Click to ${isActive ? 'remove from' : 'add to'} parallel reading`}
+                title={`${item.name} · Click to ${isActive ? 'remove from' : 'add to'} parallel comparison`}
                 aria-pressed={isActive}
               >
-                {item.symbol && <span className="pill-flag">{item.symbol}</span>}
                 <span className="pill-code">{item.short}</span>
                 {isActive && (
                   <span className="pill-status">
-                    {isPrimary ? 'Col 1' : `Col ${activeIndex + 1}`}
+                    {isPrimary ? '1' : `${activeIndex + 1}`}
                   </span>
                 )}
               </button>
@@ -92,10 +114,10 @@ export const QuickVersionRibbon: React.FC<QuickVersionRibbonProps> = ({
             type="button"
             className="ribbon-pill add-more"
             onClick={onOpenVersionPicker}
-            title="Browse all 35+ languages & Bible translations"
+            title="Browse all 35+ global languages & editions"
           >
-            <Plus className="h-3.5 w-3.5" />
-            <span>More (35+)</span>
+            <Plus className="h-3 w-3" />
+            <span>MORE</span>
           </button>
         </div>
 
@@ -104,11 +126,11 @@ export const QuickVersionRibbon: React.FC<QuickVersionRibbonProps> = ({
           className="ribbon-nav-btn right"
           onClick={() => handleScroll('right')}
           title="Scroll translations right"
-          aria-label="Scroll right"
+          aria-label="Scroll translations right"
         >
-          <ChevronRight className="h-3.5 w-3.5" />
+          <ChevronRight className="h-4 w-4" />
         </button>
       </div>
-    </div>
+    </nav>
   );
 };

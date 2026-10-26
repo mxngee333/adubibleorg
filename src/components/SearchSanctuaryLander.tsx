@@ -550,22 +550,6 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
         </span>
         <button
           type="button"
-          onClick={() => onLaunchPreset(['kjv', 'twi'])}
-          style={{
-            padding: '5px 12px',
-            borderRadius: '6px',
-            border: '1px solid var(--line)',
-            background: 'var(--soft)',
-            color: 'var(--ink)',
-            fontSize: '12px',
-            fontWeight: 600,
-            cursor: 'pointer',
-          }}
-        >
-          🇬🇭 KJV + Asante Twi
-        </button>
-        <button
-          type="button"
           onClick={() => onLaunchPreset(['nkjv', 'twi'])}
           style={{
             padding: '5px 12px',
@@ -579,6 +563,22 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
           }}
         >
           🇬🇭 NKJV + Asante Twi
+        </button>
+        <button
+          type="button"
+          onClick={() => onLaunchPreset(['kjv', 'twi'])}
+          style={{
+            padding: '5px 12px',
+            borderRadius: '6px',
+            border: '1px solid var(--line)',
+            background: 'var(--soft)',
+            color: 'var(--ink)',
+            fontSize: '12px',
+            fontWeight: 600,
+            cursor: 'pointer',
+          }}
+        >
+          🇬🇭 KJV + Asante Twi
         </button>
         <button
           type="button"

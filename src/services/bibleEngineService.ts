@@ -567,7 +567,7 @@ export function parseBibleHubUrlPath(pathname: string): {
     .trim();
 
   if (!cleanPath) {
-    return { versionId: 'kjv', bookSlug: 'genesis', chapter: 1 };
+    return { versionId: 'nkjv', bookSlug: 'genesis', chapter: 1 };
   }
 
   const lower = cleanPath.toLowerCase();
@@ -660,5 +660,5 @@ export function parseBibleHubUrlPath(pathname: string): {
     }
   }
 
-  return { versionId: 'kjv', bookSlug: 'genesis', chapter: 1 };
+  return { versionId: 'nkjv', bookSlug: 'genesis', chapter: 1 };
 }

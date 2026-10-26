@@ -265,4 +265,5 @@ export interface ReadingPreferences {
   showCrossRefs: boolean;
   showHeadings: boolean;
   zenMode: boolean;
+  preferredVersionId?: string;
 }
