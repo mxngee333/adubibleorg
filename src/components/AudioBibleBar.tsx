@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { VerseData } from '../types/bible';
+import {
+  GOOGLE_NEURAL_VOICES,
+  GoogleNeuralVoiceName,
+  decodePcm24kToAudioBuffer,
+  synthesizeNeuralAudio,
+} from '../services/neuralTtsService';
 
 interface AudioBibleBarProps {
   bookName: string;
@@ -31,12 +37,18 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   onClose,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoadingVerse, setIsLoadingVerse] = useState(false);
+  const [selectedVoice, setSelectedVoice] = useState<GoogleNeuralVoiceName>('Charon');
   const [rate, setRate] = useState(1.0);
   const [bilingualMode, setBilingualMode] = useState(false);
   const [useStudioMp3, setUseStudioMp3] = useState<boolean>(Boolean(audioUrl));
+  const [statusMessage, setStatusMessage] = useState<string>('');
+
   const isPlayingRef = useRef(false);
   const currentVerseIdxRef = useRef(0);
-  const audioElRef = useRef<HTMLAudioElement | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const activeSourceRef = useRef<AudioBufferSourceNode | null>(null);
+  const studioAudioElRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     setUseStudioMp3(Boolean(audioUrl));
@@ -44,80 +56,176 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
   useEffect(() => {
     return () => {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
-      if (audioElRef.current) {
-        audioElRef.current.pause();
-      }
+      stopPlayback();
     };
   }, []);
 
-  const speakVerseAtIndex = (index: number) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+  const getOrCreateAudioContext = (): AudioContext => {
+    if (!audioContextRef.current) {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      audioContextRef.current = new AudioCtx();
+    }
+    if (audioContextRef.current.state === 'suspended') {
+      audioContextRef.current.resume();
+    }
+    return audioContextRef.current;
+  };
+
+  const stopPlayback = () => {
+    setIsPlaying(false);
+    setIsLoadingVerse(false);
+    isPlayingRef.current = false;
+    setStatusMessage('');
+
+    if (activeSourceRef.current) {
+      try {
+        activeSourceRef.current.stop();
+      } catch {}
+      activeSourceRef.current = null;
+    }
+
+    if (studioAudioElRef.current) {
+      studioAudioElRef.current.pause();
+      studioAudioElRef.current.currentTime = 0;
+    }
+
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
+  const playVerseAtIndex = async (index: number) => {
     if (index < 0 || index >= verses.length) {
-      setIsPlaying(false);
-      isPlayingRef.current = false;
+      stopPlayback();
       return;
     }
 
-    window.speechSynthesis.cancel();
     const verseObj = verses[index];
     currentVerseIdxRef.current = index;
     onVerseChange(verseObj.verse);
 
-    const utterPrimary = new SpeechSynthesisUtterance(
-      `Verse ${verseObj.verse}. ${verseObj.text}`
-    );
-    utterPrimary.rate = rate;
-    utterPrimary.lang = langCode === 'tw' ? 'ak-GH' : langCode;
-
-    utterPrimary.onend = () => {
-      if (!isPlayingRef.current) return;
-      if (bilingualMode && parallelVerses && parallelVerses[index]) {
-        const pVerse = parallelVerses[index];
-        const utterSecondary = new SpeechSynthesisUtterance(pVerse.text);
-        utterSecondary.rate = rate;
-        utterSecondary.lang =
-          parallelLangCode === 'tw' ? 'ak-GH' : parallelLangCode || 'en-US';
-        utterSecondary.onend = () => {
-          if (isPlayingRef.current) {
-            speakVerseAtIndex(index + 1);
-          }
-        };
-        window.speechSynthesis.speak(utterSecondary);
-      } else {
-        speakVerseAtIndex(index + 1);
-      }
-    };
-
-    window.speechSynthesis.speak(utterPrimary);
-  };
-
-  const handleTogglePlay = () => {
-    if (useStudioMp3 && audioUrl && audioElRef.current && !bilingualMode) {
-      if (isPlaying) {
-        audioElRef.current.pause();
-        setIsPlaying(false);
-        isPlayingRef.current = false;
-      } else {
-        audioElRef.current.playbackRate = rate;
-        audioElRef.current.play().catch(() => {
-          // Fallback to TTS if stream blocked
-          setUseStudioMp3(false);
-        });
-        setIsPlaying(true);
-        isPlayingRef.current = true;
-      }
+    // If Studio MP3 Narration is active and not in bilingual mode, play HTML5 audio
+    if (useStudioMp3 && audioUrl && studioAudioElRef.current && !bilingualMode) {
+      studioAudioElRef.current.playbackRate = rate;
+      studioAudioElRef.current.play().catch(() => {
+        setUseStudioMp3(false);
+        playVerseAtIndex(index);
+      });
+      setIsPlaying(true);
+      isPlayingRef.current = true;
       return;
     }
 
-    if (isPlaying) {
-      setIsPlaying(false);
-      isPlayingRef.current = false;
+    setIsLoadingVerse(true);
+    setStatusMessage(
+      langCode === 'tw' || langCode === 'ak'
+        ? `Synthesizing Asante Twi (24kHz Neural Voice)…`
+        : `Loading 24kHz Google Voice (${selectedVoice})…`
+    );
+
+    try {
+      const ctx = getOrCreateAudioContext();
+      const base64Primary = await synthesizeNeuralAudio(
+        verseObj.text,
+        langCode,
+        selectedVoice
+      );
+
+      if (!isPlayingRef.current) {
+        setIsLoadingVerse(false);
+        return;
+      }
+
+      setIsLoadingVerse(false);
+      setStatusMessage('');
+
+      const primaryBuffer = decodePcm24kToAudioBuffer(ctx, base64Primary);
+      const source = ctx.createBufferSource();
+      source.buffer = primaryBuffer;
+      source.playbackRate.value = rate;
+      source.connect(ctx.destination);
+      activeSourceRef.current = source;
+
+      source.onended = async () => {
+        if (!isPlayingRef.current) return;
+
+        // Bilingual Mode: Immediately speak parallel language verse (e.g. English -> Twi)
+        if (bilingualMode && parallelVerses && parallelVerses[index]) {
+          const pVerse = parallelVerses[index];
+          const targetLang = parallelLangCode || 'tw';
+          setIsLoadingVerse(true);
+          setStatusMessage(
+            targetLang === 'tw' || targetLang === 'ak'
+              ? `Synthesizing Twi parallel (24kHz)…`
+              : `Synthesizing parallel verse (24kHz)…`
+          );
+
+          try {
+            const base64Secondary = await synthesizeNeuralAudio(
+              pVerse.text,
+              targetLang,
+              selectedVoice === 'Charon' ? 'Kore' : 'Charon'
+            );
+
+            if (!isPlayingRef.current) {
+              setIsLoadingVerse(false);
+              return;
+            }
+
+            setIsLoadingVerse(false);
+            setStatusMessage('');
+
+            const secBuffer = decodePcm24kToAudioBuffer(ctx, base64Secondary);
+            const secSource = ctx.createBufferSource();
+            secSource.buffer = secBuffer;
+            secSource.playbackRate.value = rate;
+            secSource.connect(ctx.destination);
+            activeSourceRef.current = secSource;
+
+            secSource.onended = () => {
+              if (isPlayingRef.current) {
+                playVerseAtIndex(index + 1);
+              }
+            };
+            secSource.start();
+          } catch {
+            setIsLoadingVerse(false);
+            if (isPlayingRef.current) {
+              playVerseAtIndex(index + 1);
+            }
+          }
+        } else {
+          playVerseAtIndex(index + 1);
+        }
+      };
+
+      source.start();
+      setIsPlaying(true);
+      isPlayingRef.current = true;
+    } catch (err) {
+      console.warn('[AudioBibleBar] 24kHz Neural fallback to browser speech:', err);
+      setIsLoadingVerse(false);
+      setStatusMessage('');
+
+      // Browser TTS Emergency Fallback
       if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
         window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(verseObj.text);
+        utter.rate = rate;
+        utter.lang = langCode === 'tw' ? 'ak-GH' : langCode;
+        utter.onend = () => {
+          if (isPlayingRef.current) playVerseAtIndex(index + 1);
+        };
+        window.speechSynthesis.speak(utter);
+        setIsPlaying(true);
+        isPlayingRef.current = true;
       }
+    }
+  };
+
+  const handleTogglePlay = () => {
+    if (isPlaying) {
+      stopPlayback();
     } else {
       const startIndex = Math.max(
         0,
@@ -125,23 +233,12 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       );
       setIsPlaying(true);
       isPlayingRef.current = true;
-      speakVerseAtIndex(startIndex >= 0 ? startIndex : 0);
-    }
-  };
-
-  const handleStop = () => {
-    setIsPlaying(false);
-    isPlayingRef.current = false;
-    if (audioElRef.current) {
-      audioElRef.current.pause();
-      audioElRef.current.currentTime = 0;
-    }
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
+      playVerseAtIndex(startIndex >= 0 ? startIndex : 0);
     }
   };
 
   const handleStep = (delta: number) => {
+    stopPlayback();
     const nextIdx = Math.min(
       verses.length - 1,
       Math.max(0, currentVerseIdxRef.current + delta)
@@ -150,9 +247,9 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     if (verses[nextIdx]) {
       onVerseChange(verses[nextIdx].verse);
     }
-    if (isPlayingRef.current && (!useStudioMp3 || bilingualMode)) {
-      speakVerseAtIndex(nextIdx);
-    }
+    setIsPlaying(true);
+    isPlayingRef.current = true;
+    playVerseAtIndex(nextIdx);
   };
 
   return (
@@ -168,50 +265,54 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     >
       {audioUrl && (
         <audio
-          ref={audioElRef}
+          ref={studioAudioElRef}
           src={audioUrl}
-          onEnded={() => {
-            setIsPlaying(false);
-            isPlayingRef.current = false;
-          }}
+          onEnded={() => stopPlayback()}
         />
       )}
 
       <div
         style={{
-          padding: '12px 18px',
+          padding: '14px 20px',
           borderRadius: '8px',
           border: '1px solid var(--line)',
           background: 'var(--paper)',
           color: 'var(--ink)',
-          boxShadow: '0 14px 36px rgba(0, 0, 0, 0.28)',
+          boxShadow: '0 18px 48px rgba(0, 0, 0, 0.32)',
           display: 'flex',
           flexWrap: 'wrap',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '12px',
+          gap: '14px',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {/* Left: Indicator & Track Metadata */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: '220px' }}>
           <span className="brand-icon" aria-hidden="true">
-            ♫
+            {isLoadingVerse ? '⏳' : isPlaying ? '🔊' : '♫'}
           </span>
           <div>
             <div style={{ fontSize: '13px', fontWeight: 600 }}>
-              Audio Scripture Reader · {bookName} {chapter}:{activeVerse}
+              Audio Scripture · {bookName} {chapter}:{activeVerse}
             </div>
             <div style={{ fontSize: '12px', color: 'var(--subtle)' }}>
-              {versionName}
-              {useStudioMp3 && audioUrl && !bilingualMode
-                ? ' · Studio Narration'
-                : ' · Voice Reader'}
-              {bilingualMode && parallelVersionName
-                ? ` + Parallel (${parallelVersionName})`
-                : ''}
+              {statusMessage || (
+                <>
+                  {versionName}
+                  {' · '}
+                  <span style={{ color: 'var(--green)', fontWeight: 500 }}>
+                    Google 24kHz ({selectedVoice})
+                  </span>
+                  {bilingualMode && parallelVersionName
+                    ? ` ⇄ ${parallelVersionName}`
+                    : ''}
+                </>
+              )}
             </div>
           </div>
         </div>
 
+        {/* Center/Right: Voice Selector & Playback Controls */}
         <div
           style={{
             display: 'flex',
@@ -220,6 +321,40 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             gap: '8px',
           }}
         >
+          {/* Voice Picker (Charon, Kore, Puck, Aoede, Fenrir) */}
+          <select
+            value={selectedVoice}
+            onChange={(e) => {
+              const newVoice = e.target.value as GoogleNeuralVoiceName;
+              setSelectedVoice(newVoice);
+              if (isPlaying) {
+                stopPlayback();
+                setTimeout(() => {
+                  setIsPlaying(true);
+                  isPlayingRef.current = true;
+                  playVerseAtIndex(currentVerseIdxRef.current);
+                }, 100);
+              }
+            }}
+            style={{
+              height: '36px',
+              padding: '0 10px',
+              borderRadius: '6px',
+              border: '1px solid var(--line)',
+              background: 'var(--surface)',
+              color: 'var(--ink)',
+              fontSize: '12px',
+              cursor: 'pointer',
+            }}
+            title="Select Google 24kHz Neural Voice"
+          >
+            {GOOGLE_NEURAL_VOICES.map((v) => (
+              <option key={v.id} value={v.id}>
+                {v.name}
+              </option>
+            ))}
+          </select>
+
           <button
             type="button"
             className="quiet-button"
@@ -233,15 +368,19 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             type="button"
             className="add-column"
             onClick={handleTogglePlay}
-            style={{ minWidth: '88px' }}
+            style={{ minWidth: '96px' }}
           >
-            {isPlaying ? '⏸ Pause' : '▶ Listen'}
+            {isLoadingVerse
+              ? 'Loading…'
+              : isPlaying
+                ? '⏸ Pause'
+                : '▶ Listen 24kHz'}
           </button>
 
           <button
             type="button"
             className="quiet-button"
-            onClick={handleStop}
+            onClick={stopPlayback}
             title="Stop"
           >
             ⏹
@@ -256,12 +395,13 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             ⏭
           </button>
 
+          {/* Bilingual Alternate Toggle (English ↔ Twi) */}
           {parallelVerses && parallelVerses.length > 0 && (
             <button
               type="button"
               className={`quiet-button ${bilingualMode ? 'active-pill' : ''}`}
               onClick={() => {
-                handleStop();
+                stopPlayback();
                 setBilingualMode(!bilingualMode);
               }}
               title="Alternate reading primary & parallel language verse by verse"
@@ -270,18 +410,36 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             </button>
           )}
 
+          {/* Studio MP3 toggle when pre-recorded narration is available */}
+          {audioUrl && !bilingualMode && (
+            <button
+              type="button"
+              className={`quiet-button ${useStudioMp3 ? 'active-pill' : ''}`}
+              onClick={() => {
+                stopPlayback();
+                setUseStudioMp3(!useStudioMp3);
+              }}
+              title="Switch between Studio Recorded MP3 and Google 24kHz Neural Voice"
+            >
+              {useStudioMp3 ? 'Studio MP3' : '24kHz Neural'}
+            </button>
+          )}
+
           <select
             value={rate}
             onChange={(e) => {
               const nextRate = Number(e.target.value);
               setRate(nextRate);
-              if (audioElRef.current) {
-                audioElRef.current.playbackRate = nextRate;
+              if (activeSourceRef.current) {
+                activeSourceRef.current.playbackRate.value = nextRate;
+              }
+              if (studioAudioElRef.current) {
+                studioAudioElRef.current.playbackRate = nextRate;
               }
             }}
             style={{
               height: '36px',
-              padding: '0 10px',
+              padding: '0 8px',
               borderRadius: '6px',
               border: '1px solid var(--line)',
               background: 'var(--surface)',
@@ -291,7 +449,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             aria-label="Playback speed"
           >
             <option value={0.85}>0.85x</option>
-            <option value={1}>1.0x</option>
+            <option value={1.0}>1.0x</option>
             <option value={1.15}>1.15x</option>
             <option value={1.3}>1.3x</option>
           </select>
@@ -301,7 +459,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
               type="button"
               className="icon-button"
               onClick={() => {
-                handleStop();
+                stopPlayback();
                 onClose();
               }}
               aria-label="Close Audio Reader"

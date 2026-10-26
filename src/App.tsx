@@ -323,6 +323,21 @@ export function App() {
     if (typeof window === 'undefined') return;
     const primaryVer = activeVersionIds[0] || 'kjv';
     const nextUrl = `/${primaryVer}/${currentBook.slug}/${currentChapter}/`;
+
+    // Retain clean '/' root URL when resting on homepage default sanctuary state
+    const isAtHomeState =
+      currentBook.slug === 'ephesians' &&
+      currentChapter === 1 &&
+      activeVersionIds.length === 2 &&
+      activeVersionIds[0] === 'kjv' &&
+      activeVersionIds[1] === 'twi';
+
+    if (window.location.pathname === '/' && isAtHomeState) {
+      document.title =
+        "Wisdom Bible — Ad-Free Multilingual Parallel Bible, Twi & 35+ Languages";
+      return;
+    }
+
     if (
       window.location.pathname !== nextUrl &&
       !['about', 'how-to-use', 'privacy', 'terms'].some((p) =>
@@ -333,6 +348,38 @@ export function App() {
     }
     document.title = `${currentBook.names.en} ${currentChapter} (${currentBook.names.tw || currentBook.names.en}) — Wisdom Bible Parallel Reader`;
   }, [activeVersionIds, currentBook, currentChapter]);
+
+  // Listen for browser back / forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      if (typeof window === 'undefined') return;
+      if (window.location.pathname === '/' || window.location.pathname === '') {
+        setLegalModalState((prev) => ({ ...prev, open: false }));
+        setCurrentBookSlug('ephesians');
+        setCurrentChapter(1);
+        setSelectedVerse(1);
+        setActiveVersionIds(['kjv', 'twi']);
+        return;
+      }
+      const route = parseBibleHubUrlPath(window.location.pathname);
+      if (route.legalPage) {
+        setLegalModalState({ open: true, page: route.legalPage });
+      } else {
+        setLegalModalState((prev) => ({ ...prev, open: false }));
+        if (route.bookSlug) setCurrentBookSlug(route.bookSlug);
+        if (route.chapter) setCurrentChapter(route.chapter);
+        if (route.versionId) {
+          setActiveVersionIds((prev) =>
+            prev.includes(route.versionId!)
+              ? prev
+              : [route.versionId!, ...prev].slice(0, 4)
+          );
+        }
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Auto-sync study data to cloud when signed in
   const syncToCloudIfSignedIn = useCallback(
@@ -396,6 +443,38 @@ export function App() {
   const handleRemoveColumn = (idx: number) => {
     if (activeVersionIds.length <= 1) return;
     setActiveVersionIds((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleGoHome = (e?: React.MouseEvent) => {
+    if (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
+        return; // Allow native open in new tab/window
+      }
+      e.preventDefault();
+    }
+    // Close all open modals & drawers
+    setLegalModalState((prev) => ({ ...prev, open: false }));
+    setIsSettingsOpen(false);
+    setIsBookModalOpen(false);
+    setIsLangAddonModalOpen(false);
+    setIsStrongsModalOpen(false);
+    setIsStudyVaultOpen(false);
+    setIsAuthModalOpen(false);
+    setPickerSlot(null);
+    setVerseCardTarget(null);
+    setActiveVerseActionBar(null);
+
+    // Reset to default home sanctuary reading state (Ephesians 1, KJV + Asante Twi)
+    setCurrentBookSlug('ephesians');
+    setCurrentChapter(1);
+    setSelectedVerse(1);
+    setActiveVersionIds(['kjv', 'twi']);
+
+    // Update browser URL to / if not already there
+    if (typeof window !== 'undefined' && window.location.pathname !== '/') {
+      window.history.pushState({}, '', '/');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSelectBookChapter = (bookSlug: string, chapter: number) => {
@@ -614,12 +693,10 @@ export function App() {
       {/* 1. TOP MASTHEAD (Matches Wisdom Bible Screenshot) */}
       <header className="masthead">
         <a
-          href="#reader"
+          href="/"
           className="brand"
-          onClick={(e) => {
-            e.preventDefault();
-            handleSelectBookChapter('ephesians', 1);
-          }}
+          onClick={handleGoHome}
+          title="Wisdom Bible — Home"
         >
           <span className="brand-icon" aria-hidden="true">
             ✦
