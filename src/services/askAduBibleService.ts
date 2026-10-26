@@ -86,11 +86,11 @@ The **Deuterocanonical books** (16 books including Wisdom of Solomon, Sirach, To
 **Core Theological Themes:**
 1. **Sovereignty & Grace**: God's eternal redemptive plan unfolded through Jesus Christ for humanity.
 2. **Spiritual Equipping**: The living Word (*Hebrews 4:12*) actively searches the human heart and equips every believer (*2 Timothy 3:16-17*).
-3. **Universal Scope**: Available 100% ad-free across all tongues, uniting Asante Twi, English, and the original Greek/Hebrew text.
+3. **Universal Scope**: Available 100% ad-free across all tongues, uniting major world translations with the original Greek and Hebrew texts.
 
 **Practical Application:**
 - Meditate on God's promises in ${book} ${ch}.
-- Compare verses side-by-side with Asante Twi to gain deeper devotional understanding.`;
+- Compare verses side-by-side across parallel translations to gain deeper devotional understanding.`;
 }
 
 /**

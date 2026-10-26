@@ -35,6 +35,9 @@ export const ListOfSixtyHubPage: React.FC<ListOfSixtyHubPageProps> = ({
     [books]
   );
 
+  const [quickBookSlug, setQuickBookSlug] = useState<string>(() => pseudBooks[0]?.slug || 'enoch');
+  const [quickChapter, setQuickChapter] = useState<number>(1);
+
   const filteredBooks = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     return pseudBooks.filter((b) => {
@@ -170,6 +173,98 @@ export const ListOfSixtyHubPage: React.FC<ListOfSixtyHubPageProps> = ({
         </div>
       </div>
 
+      {/* 2.5 QUICK APOCRYPHA (LIST OF 60) BOOK & CHAPTER DROPDOWN NAVIGATOR */}
+      <div
+        className="hub-dropdown-navigator"
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '16px',
+          padding: '16px 20px',
+          borderRadius: '12px',
+          border: '1px solid rgba(168, 85, 247, 0.35)',
+          background: 'var(--paper)',
+          marginBottom: '20px',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '8px',
+              background: 'rgba(168, 85, 247, 0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '18px',
+              color: '#c084fc',
+            }}
+          >
+            🏺
+          </div>
+          <div>
+            <strong style={{ fontSize: '14px', color: 'var(--ink)' }}>
+              Apocrypha &amp; Pseudepigrapha Book Dropdown
+            </strong>
+            <span style={{ display: 'block', fontSize: '12px', color: 'var(--subtle)' }}>
+              Instantly choose any of the 25 ancient texts and jump into the synchronized parallel reader
+            </span>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <label className="field" style={{ margin: 0 }}>
+            <span>Book</span>
+            <select
+              value={quickBookSlug}
+              onChange={(e) => {
+                setQuickBookSlug(e.target.value);
+                setQuickChapter(1);
+              }}
+              style={{ minWidth: '180px' }}
+            >
+              {pseudBooks.map((b) => (
+                <option key={b.id} value={b.slug}>
+                  {b.names.en}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="field compact" style={{ margin: 0 }}>
+            <span>Chapter</span>
+            <select
+              value={quickChapter}
+              onChange={(e) => setQuickChapter(Number(e.target.value))}
+            >
+              {Array.from(
+                {
+                  length:
+                    pseudBooks.find((b) => b.slug === quickBookSlug)?.chapters || 1,
+                },
+                (_, idx) => idx + 1
+              ).map((ch) => (
+                <option key={ch} value={ch}>
+                  {ch}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <button
+            type="button"
+            className="primary-button"
+            style={{ height: '38px', padding: '0 18px', fontSize: '13px', fontWeight: 700 }}
+            onClick={() => onSelectBookChapter(quickBookSlug, quickChapter)}
+          >
+            Read in Parallel →
+          </button>
+        </div>
+      </div>
+
       {/* 3. FILTER & SEARCH BAR */}
       <div
         style={{
@@ -241,7 +336,7 @@ export const ListOfSixtyHubPage: React.FC<ListOfSixtyHubPageProps> = ({
             <optgroup label="── 25 List of Sixty & Apocrypha Books ──">
               {pseudBooks.map((b) => (
                 <option key={b.id} value={b.slug}>
-                  {b.names.en} ({b.names.tw || b.id})
+                  {b.names.en}
                 </option>
               ))}
             </optgroup>
@@ -332,9 +427,11 @@ export const ListOfSixtyHubPage: React.FC<ListOfSixtyHubPageProps> = ({
                   {book.names.en}
                 </h3>
 
-                <div style={{ fontSize: '13px', color: 'var(--green)', fontWeight: 600, marginBottom: '8px' }}>
-                  🇬🇭 {book.names.tw} {book.names.ge ? `· 🇪🇹 ${book.names.ge}` : ''}
-                </div>
+                {book.names.ge || book.names.el ? (
+                  <div style={{ fontSize: '13px', color: 'var(--green)', fontWeight: 600, marginBottom: '8px' }}>
+                    {book.names.el ? `🇬🇷 ${book.names.el}` : ''} {book.names.ge ? `· 🇪🇹 ${book.names.ge}` : ''}
+                  </div>
+                ) : null}
 
                 <p style={{ margin: '0 0 8px', fontSize: '12px', color: 'var(--subtle)', lineHeight: 1.5 }}>
                   🏛️ <strong>Provenance:</strong> {book.canonStatus}

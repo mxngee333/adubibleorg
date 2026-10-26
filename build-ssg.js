@@ -14,21 +14,21 @@ const CANONICAL_ROUTES = [
     route: '/',
     priority: '1.0',
     changefreq: 'weekly',
-    title: "AduBible.org — Ad-Free Multilingual Parallel Bible, Genesis 1, Asante Twi & Strong's Concordance",
+    title: "AduBible.org — Free Multilingual Parallel Bible Hub, Genesis 1, Strong's Concordance & Global Study",
     description:
-      "Read Genesis 1 and the Holy Bible in parallel across Asante Twi (Twerɛ Kronkron), NKJV, KJV, Hebrew, Greek, and 35+ world languages on AduBible (Adubible.org). Dedicated to Humanity in honor of the Legacy of Apostle Kwame Adu · Nsuhia, Ghana (https://nsuhia.com/). 100% Ads-Free Reading Experience with Strong's Concordance and Cloud Study Sync.",
+      "Read Genesis 1 and the Holy Bible in parallel across 35+ languages including KJV, NKJV, BSB, Hebrew, Greek, French, Spanish, German, and Twi on AduBible (Adubible.org). Dedicated to Humanity in honor of the Legacy of Apostle Kwame Adu · Nsuhia, Ghana (https://nsuhia.com/). 100% Ads-Free Reading Experience with Strong's Concordance and Cloud Study Sync.",
     heading: 'Genesis Chapter 1 (Genesis 1) — In the Beginning God Created the Heavens and the Earth',
     excerpt:
-      'In the beginning God created the heaven and the earth. And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of God moved upon the face of the waters. And God said, Let there be light: and there was light (Genesis 1:1–3). Mfitiaseɛ no Onyankopɔn bɔɔ ɔsoro ne asase... Honoring the Legacy of Apostle Kwame Adu · Nsuhia, Ghana (https://nsuhia.com/) · adubible.org · Dedicated to Humanity · 100% Ads-Free Reading Experience.',
+      'In the beginning God created the heaven and the earth. And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of God moved upon the face of the waters. And God said, Let there be light: and there was light (Genesis 1:1–3). Honoring the Legacy of Apostle Kwame Adu · Nsuhia, Ghana (https://nsuhia.com/) · adubible.org · Dedicated to Humanity · 100% Ads-Free Reading Experience.',
   },
   {
     route: '/nkjv/ephesians/1/',
     priority: '0.9',
     changefreq: 'monthly',
-    title: "Ephesians 1 NKJV & Asante Twi Parallel Bible — Strong's Concordance & Matthew Henry Commentary | AduBible",
+    title: "Ephesians 1 NKJV Parallel Bible — Strong's Concordance & Matthew Henry Commentary | AduBible",
     description:
-      "Study Ephesians Chapter 1 ( verses 1–23 ) in NKJV, KJV, Asante Twi (Efesofoɔ 1), and Original Greek Interlinear with Strong's numbers (G2128 eulogētos, G4309 proorizō) and Matthew Henry Commentary on AduBible.",
-    heading: 'Ephesians Chapter 1 (Efesofoɔ 1) — Parallel Study, Greek Interlinear & Commentaries',
+      "Study Ephesians Chapter 1 (verses 1–23) in NKJV, KJV, BSB, and Original Greek Interlinear with Strong's numbers (G2128 eulogētos, G4309 proorizō) and Matthew Henry Commentary on AduBible.",
+    heading: 'Ephesians Chapter 1 (NKJV) — Parallel Study, Greek Interlinear & Commentaries',
     excerpt:
       'Paul, an apostle of Jesus Christ by the will of God, To the saints who are in Ephesus, and faithful in Christ Jesus: Grace to you and peace from God our Father and the Lord Jesus Christ. Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ.',
   },
@@ -47,9 +47,9 @@ const CANONICAL_ROUTES = [
     route: '/kjv/ephesians/1/',
     priority: '0.9',
     changefreq: 'monthly',
-    title: "Ephesians 1 KJV with Strong's Concordance & Parallel Twi | AduBible",
+    title: "Ephesians 1 KJV with Strong's Concordance & Parallel Study | AduBible",
     description:
-      "Read Ephesians 1 in the Authorized King James Version (KJV) alongside Asante Twi, Greek Textus Receptus, and Strong's Exhaustive Concordance on AduBible.",
+      "Read Ephesians 1 in the Authorized King James Version (KJV) with Greek Textus Receptus and Strong's Exhaustive Concordance on AduBible.",
     heading: 'Ephesians Chapter 1 (KJV 1769) — Exhaustive Strong’s Concordance Edition',
     excerpt:
       'Blessed be the God and Father of our Lord Jesus Christ, who hath blessed us with all spiritual blessings in heavenly places in Christ: According as he hath chosen us in him before the foundation of the world.',
@@ -58,54 +58,54 @@ const CANONICAL_ROUTES = [
     route: '/parallel/ephesians/1/',
     priority: '0.9',
     changefreq: 'monthly',
-    title: 'Ephesians 1 Multi-Language Parallel Bible (NKJV, Twi, Greek, French, Spanish) | AduBible',
+    title: 'Ephesians 1 Multi-Language Parallel Bible (KJV, BSB, Greek, French, Spanish) | AduBible',
     description:
-      'Compare Ephesians 1 verse-by-verse across NKJV, KJV, Asante Twi, Koine Greek, French Louis Segond, Spanish Reina-Valera, and 35+ global languages on AduBible.',
+      'Compare Ephesians 1 verse-by-verse across KJV, BSB, NKJV, Koine Greek, French Louis Segond, Spanish Reina-Valera, and 35+ global languages on AduBible.',
     heading: 'Ephesians 1 — Synchronized Multi-Language Parallel Reader',
     excerpt:
-      'Side-by-side comparison of Ephesians 1:1–23 across English, Asante Twi, Original Greek, French, Spanish, German, Arabic, Swahili, Yoruba, and Hausa.',
+      'Side-by-side comparison of Ephesians 1:1–23 across English, Original Greek, French, Spanish, German, Arabic, Swahili, Yoruba, and global editions.',
   },
   {
     route: '/nkjv/genesis/1/',
     priority: '0.9',
     changefreq: 'monthly',
-    title: "Genesis 1 NKJV, Hebrew WLC & Asante Twi (Gyenesis 1) Parallel Bible | AduBible",
+    title: "Genesis 1 NKJV, Hebrew WLC & KJV Parallel Bible | AduBible",
     description:
-      "In the beginning God (Elohim H430) created the heavens and the earth. Read Genesis 1 in parallel across NKJV, KJV, Asante Twi, and Westminster Leningrad Codex Hebrew on AduBible.",
-    heading: 'Genesis Chapter 1 (Gyenesis 1) — Creation Account in Parallel & Hebrew Interlinear',
+      "In the beginning God (Elohim H430) created the heavens and the earth. Read Genesis 1 in parallel across NKJV, KJV, BSB, and Westminster Leningrad Codex Hebrew on AduBible.",
+    heading: 'Genesis Chapter 1 (NKJV) — Creation Account in Parallel & Hebrew Interlinear',
     excerpt:
-      'In the beginning God created the heavens and the earth. Mfitiaseɛ no Onyankopɔn bɔɔ ɔsoro ne asase. בְּרֵאשִׁית בָּרָא אֱלֹהִים אֵת הַשָּׁמַיִם וְאֵת הָאָרֶץ׃',
+      'In the beginning God created the heavens and the earth. בְּרֵאשִׁית בָּרָא אֱלֹהִים אֵת הַשָּׁמַיִם וְאֵת הָאָרֶץ׃',
   },
   {
     route: '/nkjv/psalms/23/',
     priority: '0.9',
     changefreq: 'monthly',
-    title: 'Psalm 23 NKJV & Asante Twi (Dwom 23) Parallel Bible — The LORD Is My Shepherd | AduBible',
+    title: 'Psalm 23 NKJV & KJV Parallel Bible — The LORD Is My Shepherd | AduBible',
     description:
-      'The LORD is my shepherd; I shall not want (Awurade ne me hwɛfoɔ, hwee renni me bammɔ). Study Psalm 23 in NKJV, KJV, Asante Twi, Hebrew, and Matthew Henry Commentary on AduBible.',
-    heading: 'Psalm 23 (Dwom 23) — Parallel Shepherd Psalm & Exegesis',
+      'The LORD is my shepherd; I shall not want. Study Psalm 23 in NKJV, KJV, Hebrew, and Matthew Henry Commentary on AduBible.',
+    heading: 'Psalm 23 (NKJV) — Parallel Shepherd Psalm & Exegesis',
     excerpt:
-      'The LORD is my shepherd; I shall not want. Awurade ne me hwɛfoɔ, hwee renni me bammɔ. Ɔma meda adidibea frɔmfrɔm so, ɔgya me kɔ nsuo a ɛtena komm ho.',
+      'The LORD is my shepherd; I shall not want. He makes me to lie down in green pastures; He leads me beside the still waters.',
   },
   {
     route: '/nkjv/john/1/',
     priority: '0.9',
     changefreq: 'monthly',
-    title: 'John 1 NKJV, Greek Interlinear & Asante Twi (Yohane 1) Parallel Bible | AduBible',
+    title: 'John 1 NKJV, Greek Interlinear & KJV Parallel Bible | AduBible',
     description:
       'In the beginning was the Word (Logos G3056), and the Word was with God, and the Word was God. Study John 1 in parallel with Strong’s Greek Lexicon on AduBible.',
-    heading: 'John Chapter 1 (Yohane 1) — The Eternal Logos in Parallel & Greek Interlinear',
+    heading: 'John Chapter 1 (NKJV) — The Eternal Logos in Parallel & Greek Interlinear',
     excerpt:
-      'In the beginning was the Word, and the Word was with God, and the Word was God. Mfitiaseɛ no na Asɛm no wɔ hɔ, na Asɛm no ne Onyankopɔn na ɛwɔ hɔ, na Asɛm no yɛ Onyankopɔn.',
+      'In the beginning was the Word, and the Word was with God, and the Word was God. The same was in the beginning with God. All things were made by him; and without him was not any thing made that was made.',
   },
   {
     route: '/nkjv/romans/8/',
     priority: '0.9',
     changefreq: 'monthly',
-    title: 'Romans 8 NKJV & Asante Twi (Romafoɔ 8) Parallel Bible Study | AduBible',
+    title: 'Romans 8 NKJV & KJV Parallel Bible Study | AduBible',
     description:
-      'There is therefore now no condemnation to those who are in Christ Jesus. Read Romans 8 in parallel across NKJV, KJV, Asante Twi, and Open-Source Commentaries on AduBible.',
-    heading: 'Romans Chapter 8 (Romafoɔ 8) — Life in the Spirit & More Than Conquerors',
+      'There is therefore now no condemnation to those who are in Christ Jesus. Read Romans 8 in parallel across NKJV, KJV, and Open-Source Commentaries on AduBible.',
+    heading: 'Romans Chapter 8 (NKJV) — Life in the Spirit & More Than Conquerors',
     excerpt:
       'There is therefore now no condemnation to those who are in Christ Jesus, who do not walk according to the flesh, but according to the Spirit.',
   },
@@ -221,7 +221,7 @@ for (const loc of MEGA_LOCALES) {
     priority: '0.8',
     changefreq: 'weekly',
     title: `AduBible (${loc.name}) — Parallel Bible, Strong's Concordance & Study Sync | Adubible.org`,
-    description: `Read and study the Holy Bible in ${loc.name} alongside English (NKJV/KJV), Asante Twi, and Original Hebrew & Greek on AduBible with Strong's Concordance and zero ads.`,
+    description: `Read and study the Holy Bible in ${loc.name} alongside English (NKJV/KJV/BSB) and Original Hebrew & Greek on AduBible with Strong's Concordance and zero ads.`,
     heading: `${loc.name} — Parallel Scripture & Exegetical Study Edition`,
     excerpt: `Read ${loc.name} in synchronized parallel columns with Strong's Exhaustive Concordance, Matthew Henry Commentary, and cloud-synced bookmarks, pins, highlights, and notes on AduBible.`,
   });

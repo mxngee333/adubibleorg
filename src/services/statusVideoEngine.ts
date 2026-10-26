@@ -1,7 +1,7 @@
 /**
  * ADUBIBLE STATUS VIDEO ENGINE (60fps Canvas + 24kHz Neural Audio + MediaRecorder)
  * Generates pristine 10-second animated video status reels for WhatsApp, Instagram, TikTok, YouTube Shorts, X & Facebook.
- * Features kinetic typography, particle shaders, sacred 432Hz audio pad, and prominent Adubible.org watermark.
+ * Features 3:4 High-Impact Portrait Ratio, Illuminated Scripture Plaque, Kinetic Typography, 432Hz Sacred Pad, and Adubible.org Watermark.
  */
 
 import {
@@ -10,7 +10,7 @@ import {
   GoogleNeuralVoiceName,
 } from './neuralTtsService';
 
-export type VideoAspectRatio = '9:16' | '1:1' | '16:9';
+export type VideoAspectRatio = '3:4' | '9:16' | '1:1' | '16:9';
 
 export interface StatusVideoTheme {
   id: string;
@@ -32,8 +32,8 @@ export const STATUS_THEMES: StatusVideoTheme[] = [
     id: 'celestial',
     name: 'Celestial Dawn',
     description: 'Radiant golden sunbeams & divine morning glow',
-    bgStart: '#0d0905',
-    bgEnd: '#2c1808',
+    bgStart: '#0c0804',
+    bgEnd: '#291606',
     accent: '#f59e0b',
     accentGlow: 'rgba(245, 158, 11, 0.45)',
     textMain: '#fafaf9',
@@ -46,8 +46,8 @@ export const STATUS_THEMES: StatusVideoTheme[] = [
     id: 'candlelight',
     name: 'Sacred Flame & Parchment',
     description: 'Deep amber warmth and flickering holy sanctuary glow',
-    bgStart: '#140c06',
-    bgEnd: '#331b0c',
+    bgStart: '#120a05',
+    bgEnd: '#30180a',
     accent: '#fb923c',
     accentGlow: 'rgba(251, 146, 60, 0.45)',
     textMain: '#fff7ed',
@@ -60,8 +60,8 @@ export const STATUS_THEMES: StatusVideoTheme[] = [
     id: 'clouds',
     name: 'Clouds of Glory',
     description: 'Ethereal rolling mist, heavenly azure & majestic peaks',
-    bgStart: '#081426',
-    bgEnd: '#162e4c',
+    bgStart: '#061020',
+    bgEnd: '#132842',
     accent: '#38bdf8',
     accentGlow: 'rgba(56, 189, 248, 0.45)',
     textMain: '#f0f9ff',
@@ -74,8 +74,8 @@ export const STATUS_THEMES: StatusVideoTheme[] = [
     id: 'obsidian',
     name: 'Royal Obsidian & Gold Dust',
     description: 'Deep velvet night with shimmering celestial gold stars',
-    bgStart: '#09080d',
-    bgEnd: '#1e142b',
+    bgStart: '#08060c',
+    bgEnd: '#1a1026',
     accent: '#c084fc',
     accentGlow: 'rgba(192, 132, 252, 0.4)',
     textMain: '#faf5ff',
@@ -88,8 +88,8 @@ export const STATUS_THEMES: StatusVideoTheme[] = [
     id: 'covenant',
     name: 'Covenant Living Waters',
     description: 'Emerald sanctuary with gentle aquatic ripples of grace',
-    bgStart: '#041611',
-    bgEnd: '#093326',
+    bgStart: '#03120e',
+    bgEnd: '#082b20',
     accent: '#34d399',
     accentGlow: 'rgba(52, 211, 153, 0.45)',
     textMain: '#ecfdf5',
@@ -125,11 +125,37 @@ interface Particle {
   phase: number;
 }
 
+function drawRoundedRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number
+) {
+  if (typeof ctx.roundRect === 'function') {
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, r);
+  } else {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+}
+
 export class StatusVideoRenderer {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
-  private width: number = 720;
-  private height: number = 1280;
+  private width: number = 1080;
+  private height: number = 1440;
   private particles: Particle[] = [];
   private options: StatusVideoOptions;
   private words: string[] = [];
@@ -141,12 +167,10 @@ export class StatusVideoRenderer {
   // Web Audio pipeline
   private audioCtx: AudioContext | null = null;
   private audioDest: MediaStreamAudioDestinationNode | null = null;
-  private analyser: AnalyserNode | null = null;
   private speechBuffer: AudioBuffer | null = null;
   private speechSource: AudioBufferSourceNode | null = null;
   private ambientOscillators: OscillatorNode[] = [];
   private ambientGain: GainNode | null = null;
-  private analyserData: Uint8Array | null = null;
 
   constructor(canvas: HTMLCanvasElement, options: StatusVideoOptions) {
     this.canvas = canvas;
@@ -175,17 +199,22 @@ export class StatusVideoRenderer {
   }
 
   private setDimensions(ratio: VideoAspectRatio): void {
-    if (ratio === '9:16') {
-      // 720x1280 crisp HD mobile status standard
-      this.width = 720;
-      this.height = 1280;
+    if (ratio === '3:4') {
+      // 1080x1440 Crisp QHD Portrait (Social Feeds, Reels, WhatsApp Status)
+      this.width = 1080;
+      this.height = 1440;
+    } else if (ratio === '9:16') {
+      // 1080x1920 Full HD Vertical Story/Reel
+      this.width = 1080;
+      this.height = 1920;
     } else if (ratio === '1:1') {
+      // 1080x1080 Square Feed
       this.width = 1080;
       this.height = 1080;
     } else {
-      // 16:9 Landscape
-      this.width = 1280;
-      this.height = 720;
+      // 1920x1080 Landscape
+      this.width = 1920;
+      this.height = 1080;
     }
     this.canvas.width = this.width;
     this.canvas.height = this.height;
@@ -198,14 +227,14 @@ export class StatusVideoRenderer {
 
   private initParticles(): void {
     this.particles = [];
-    const count = 45;
+    const count = 60;
     for (let i = 0; i < count; i++) {
       this.particles.push({
         x: Math.random() * this.width,
         y: Math.random() * this.height,
-        radius: Math.random() * 2.5 + 1.0,
-        speedY: -(Math.random() * 0.4 + 0.2),
-        speedX: (Math.random() - 0.5) * 0.3,
+        radius: Math.random() * 2.8 + 1.2,
+        speedY: -(Math.random() * 0.5 + 0.25),
+        speedX: (Math.random() - 0.5) * 0.35,
         alpha: Math.random() * 0.5 + 0.2,
         maxAlpha: Math.random() * 0.6 + 0.3,
         phase: Math.random() * Math.PI * 2,
@@ -236,7 +265,7 @@ export class StatusVideoRenderer {
       }
       return false;
     } catch (err) {
-      console.warn('[StatusVideoEngine] Speech preload non-fatal notice:', err);
+      console.warn('[StatusVideoEngine] Speech preload notice:', err);
       return false;
     }
   }
@@ -251,7 +280,7 @@ export class StatusVideoRenderer {
       const now = this.audioCtx.currentTime;
       this.ambientGain = this.audioCtx.createGain();
       this.ambientGain.gain.setValueAtTime(0.001, now);
-      // Gentle swell to 0.12 (warm, quiet underneath voice)
+      // Gentle swell to warm, quiet underneath voice
       this.ambientGain.gain.exponentialRampToValueAtTime(0.12, now + 1.5);
       this.ambientGain.connect(destNode);
 
@@ -264,7 +293,6 @@ export class StatusVideoRenderer {
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, now);
 
-        // Gentle subtle vibrato / detuning for sacred warmth
         const detune = (Math.random() - 0.5) * 4;
         osc.detune.setValueAtTime(detune, now);
 
@@ -305,6 +333,7 @@ export class StatusVideoRenderer {
 
   /**
    * Draws a single frame at timestamp `elapsedSeconds`.
+   * High-impact 3:4 & 9:16 layout with illuminated scripture plaque, kinetic gold typography, and luxury watermark.
    */
   public drawFrame(elapsed: number): void {
     const W = this.width;
@@ -313,125 +342,143 @@ export class StatusVideoRenderer {
     const theme = this.options.theme;
     const progress = Math.min(1.0, elapsed / this.duration);
 
-    // 1. Background Cinematic Gradient
+    // 1. Cinematic Multi-Stop Background Gradient
     const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
     bgGrad.addColorStop(0, theme.bgStart);
-    bgGrad.addColorStop(0.5, theme.bgEnd);
+    bgGrad.addColorStop(0.3, theme.bgEnd);
+    bgGrad.addColorStop(0.7, theme.bgEnd);
     bgGrad.addColorStop(1, theme.bgStart);
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, W, H);
 
-    // 2. Divine Ray / Ambient Glow from Top
+    // 2. Cinematic Vignette Overlay
+    const vignette = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.35, W / 2, H / 2, Math.max(W, H) * 0.75);
+    vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
+    vignette.addColorStop(1, 'rgba(0, 0, 0, 0.65)');
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, W, H);
+
+    // 3. Divine Celestial God-Ray Bloom from Top Center
     const rayPulse = 0.85 + Math.sin(elapsed * 1.8) * 0.15;
-    const radialGlow = ctx.createRadialGradient(W / 2, H * 0.15, 20, W / 2, H * 0.35, W * 0.8);
+    const radialGlow = ctx.createRadialGradient(W / 2, H * 0.12, 30, W / 2, H * 0.38, W * 0.85);
     radialGlow.addColorStop(0, theme.accentGlow);
-    radialGlow.addColorStop(0.6, 'rgba(0,0,0,0)');
+    radialGlow.addColorStop(0.65, 'rgba(0, 0, 0, 0)');
     ctx.fillStyle = radialGlow;
     ctx.globalAlpha = rayPulse;
     ctx.fillRect(0, 0, W, H);
     ctx.globalAlpha = 1.0;
 
-    // 3. Shimmering Floating Particles (Divine Dust)
+    // 4. Shimmering Floating Divine Dust & Embers
     for (const p of this.particles) {
       p.y += p.speedY;
-      p.x += Math.sin(elapsed * 2 + p.phase) * 0.25;
+      p.x += Math.sin(elapsed * 2 + p.phase) * 0.3;
       if (p.y < 0) {
         p.y = H + 10;
         p.x = Math.random() * W;
       }
       const alpha = (p.alpha + Math.sin(elapsed * 3 + p.phase) * 0.2) * p.maxAlpha;
       ctx.fillStyle = theme.particleColor;
-      ctx.globalAlpha = Math.max(0.05, Math.min(0.9, alpha));
+      ctx.globalAlpha = Math.max(0.08, Math.min(0.9, alpha));
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.globalAlpha = 1.0;
 
-    // 4. Subtle Luxury Border & Corner Accents
+    // 5. Luxury Regal Outer Hairline Frame & Corner Brackets
+    const frameInset = 34;
     ctx.strokeStyle = theme.accent;
     ctx.lineWidth = 1.5;
-    ctx.globalAlpha = 0.45;
-    ctx.strokeRect(28, 28, W - 56, H - 56);
+    ctx.globalAlpha = 0.35;
+    ctx.strokeRect(frameInset, frameInset, W - frameInset * 2, H - frameInset * 2);
+
+    // Delicate inner hairline
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(frameInset + 8, frameInset + 8, W - (frameInset + 8) * 2, H - (frameInset + 8) * 2);
 
     // Corner Ornaments
-    const cornerSize = 24;
+    const cornerSize = 32;
+    ctx.strokeStyle = theme.accent;
     ctx.lineWidth = 3;
-    ctx.globalAlpha = 0.8;
+    ctx.globalAlpha = 0.85;
+
     // Top-Left
     ctx.beginPath();
-    ctx.moveTo(28, 28 + cornerSize);
-    ctx.lineTo(28, 28);
-    ctx.lineTo(28 + cornerSize, 28);
+    ctx.moveTo(frameInset, frameInset + cornerSize);
+    ctx.lineTo(frameInset, frameInset);
+    ctx.lineTo(frameInset + cornerSize, frameInset);
     ctx.stroke();
+
     // Top-Right
     ctx.beginPath();
-    ctx.moveTo(W - 28 - cornerSize, 28);
-    ctx.lineTo(W - 28, 28);
-    ctx.lineTo(W - 28, 28 + cornerSize);
+    ctx.moveTo(W - frameInset - cornerSize, frameInset);
+    ctx.lineTo(W - frameInset, frameInset);
+    ctx.lineTo(W - frameInset, frameInset + cornerSize);
     ctx.stroke();
+
     // Bottom-Left
     ctx.beginPath();
-    ctx.moveTo(28, H - 28 - cornerSize);
-    ctx.lineTo(28, H - 28);
-    ctx.lineTo(28 + cornerSize, H - 28);
+    ctx.moveTo(frameInset, H - frameInset - cornerSize);
+    ctx.lineTo(frameInset, H - frameInset);
+    ctx.lineTo(frameInset + cornerSize, H - frameInset);
     ctx.stroke();
+
     // Bottom-Right
     ctx.beginPath();
-    ctx.moveTo(W - 28 - cornerSize, H - 28);
-    ctx.lineTo(W - 28, H - 28);
-    ctx.lineTo(W - 28, H - 28 - cornerSize);
+    ctx.moveTo(W - frameInset - cornerSize, H - frameInset);
+    ctx.lineTo(W - frameInset, H - frameInset);
+    ctx.lineTo(W - frameInset, H - frameInset - cornerSize);
     ctx.stroke();
     ctx.globalAlpha = 1.0;
 
-    // 5. Header Sanctuary Badge
-    const headerFade = Math.min(1.0, elapsed / 0.8);
+    // 6. Top Sanctuary Masthead
+    const headerFade = Math.min(1.0, elapsed / 0.6);
     ctx.save();
     ctx.globalAlpha = headerFade;
     ctx.textAlign = 'center';
     ctx.fillStyle = theme.accent;
-    ctx.font = '700 13px Georgia, serif';
-    ctx.letterSpacing = '3px';
-    ctx.fillText('✦ ADUBIBLE • SCRIPTURE SANCTUARY ✦', W / 2, 74);
-
-    // Reference Pill & Translation
-    const refText = `${this.options.reference.toUpperCase()} • ${this.options.versionName}`;
-    ctx.font = '700 24px Georgia, serif';
-    ctx.fillStyle = theme.textMain;
-    ctx.shadowColor = theme.accentGlow;
-    ctx.shadowBlur = 12;
-    ctx.fillText(refText, W / 2, 115);
+    ctx.font = '700 15px "Cinzel", Georgia, serif';
+    ctx.letterSpacing = '4px';
+    ctx.shadowColor = theme.accent;
+    ctx.shadowBlur = 8;
+    ctx.fillText('✦ ADUBIBLE • SCRIPTURE SANCTUARY ✦', W / 2, 76);
     ctx.shadowBlur = 0;
+
+    ctx.font = '600 11px sans-serif';
+    ctx.fillStyle = theme.textSub;
+    ctx.letterSpacing = '2.5px';
+    ctx.globalAlpha = headerFade * 0.75;
+    ctx.fillText('THE LIVING WORD • PARALLEL REEL', W / 2, 98);
     ctx.restore();
 
-    // 6. Kinetic Typography (Scripture Text Pacing)
-    // Words reveal smoothly between 1.0s and 8.2s, then hold radiant until 10.0s
-    const textStartTime = 1.0;
-    const textEndTime = 8.2;
-    const activeTextDuration = textEndTime - textStartTime;
+    // 7. Calculate Typography & Kinetic Plaque Dimensions
+    const plaqueMargin = Math.max(50, Math.floor(W * 0.06));
+    const plaqueW = W - plaqueMargin * 2;
+    const maxTextWidth = plaqueW - 100;
 
-    const totalWords = this.words.length;
-    let revealedWordCount = totalWords;
-    if (elapsed < textStartTime) {
-      revealedWordCount = 0;
-    } else if (elapsed < textEndTime) {
-      const textProgress = (elapsed - textStartTime) / activeTextDuration;
-      revealedWordCount = Math.floor(textProgress * totalWords) + 1;
-      revealedWordCount = Math.min(totalWords, Math.max(1, revealedWordCount));
+    // Dynamic High-Impact Font Sizing (Tuned for 1080p canvas)
+    const textLen = this.options.verseText.length;
+    let fontSize = 48;
+    if (textLen < 60) fontSize = 56;
+    else if (textLen < 120) fontSize = 46;
+    else if (textLen < 200) fontSize = 40;
+    else if (textLen < 320) fontSize = 34;
+    else fontSize = 28;
+
+    if (H <= 1080) {
+      fontSize = Math.floor(fontSize * 0.88);
     }
+    const lineHeight = Math.round(fontSize * 1.55);
 
-    // Measure and render wrapped scripture text centered vertically
-    const maxTextWidth = W - 110;
-    const fontSize = this.computeOptimalFontSize(maxTextWidth, H * 0.48);
-    const lineHeight = fontSize * 1.5;
+    const serifStack = '"Cinzel", "Cormorant Garamond", "Playfair Display", Georgia, "Times New Roman", serif';
+    ctx.font = `600 ${fontSize}px ${serifStack}`;
 
-    ctx.font = `600 ${fontSize}px Georgia, "Times New Roman", serif`;
-    ctx.textAlign = 'center';
-
-    // Break into lines
+    // Break text into balanced lines
     const lines: { text: string; wordsInLine: { word: string; index: number }[] }[] = [];
     let currentLineWords: { word: string; index: number }[] = [];
     let currentLineText = '';
+    const totalWords = this.words.length;
 
     for (let i = 0; i < totalWords; i++) {
       const word = this.words[i];
@@ -451,70 +498,224 @@ export class StatusVideoRenderer {
       lines.push({ text: currentLineText, wordsInLine: currentLineWords });
     }
 
-    // Vertically center the text block in the upper-mid area
-    const totalBlockHeight = lines.length * lineHeight;
-    const startY = Math.max(170, (H - totalBlockHeight) / 2 - 30);
+    const totalTextHeight = lines.length * lineHeight;
+    const hasSecondary = Boolean(this.options.secondaryText && this.options.secondaryVersionName);
+
+    // Compute Plaque Height & Vertical Centering
+    const topQuoteH = 46;
+    const spacingUnderQuote = 20;
+    const spacingUnderText = 24;
+    const dividerH = 22;
+    const refH = 34;
+    const versionH = 22;
+    const secondaryH = hasSecondary ? 46 : 0;
+    const plaquePaddingTop = 40;
+    const plaquePaddingBottom = 38;
+
+    const plaqueH =
+      plaquePaddingTop +
+      topQuoteH +
+      spacingUnderQuote +
+      totalTextHeight +
+      spacingUnderText +
+      dividerH +
+      refH +
+      versionH +
+      secondaryH +
+      plaquePaddingBottom;
+
+    const topSafeZone = 126;
+    const bottomSafeZone = 190;
+    const availableMidHeight = H - topSafeZone - bottomSafeZone;
+    const plaqueX = plaqueMargin;
+    const plaqueY = Math.max(topSafeZone + 10, topSafeZone + (availableMidHeight - plaqueH) / 2);
+
+    // 8. Draw Central Illuminated Scripture Plaque / Card
+    ctx.save();
+    // Drop shadow
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+    ctx.shadowBlur = 32;
+    ctx.shadowOffsetY = 10;
+
+    // Glassmorphic Plaque Background
+    const plaqueGrad = ctx.createLinearGradient(0, plaqueY, 0, plaqueY + plaqueH);
+    plaqueGrad.addColorStop(0, 'rgba(12, 9, 6, 0.75)');
+    plaqueGrad.addColorStop(0.5, 'rgba(22, 16, 10, 0.82)');
+    plaqueGrad.addColorStop(1, 'rgba(12, 9, 6, 0.75)');
+    ctx.fillStyle = plaqueGrad;
+    drawRoundedRect(ctx, plaqueX, plaqueY, plaqueW, plaqueH, 26);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+
+    // Golden Filigree Plaque Border
+    ctx.strokeStyle = theme.accent;
+    ctx.lineWidth = 1.75;
+    ctx.globalAlpha = 0.45;
+    drawRoundedRect(ctx, plaqueX, plaqueY, plaqueW, plaqueH, 26);
+    ctx.stroke();
+
+    // Inner Delicate Filament
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.35;
+    drawRoundedRect(ctx, plaqueX + 6, plaqueY + 6, plaqueW - 12, plaqueH - 12, 20);
+    ctx.stroke();
+    ctx.restore();
+
+    // 9. Decorative Opening Quote Mark Inside Plaque
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = theme.accent;
+    ctx.font = '700 52px Georgia, serif';
+    ctx.globalAlpha = 0.75;
+    ctx.shadowColor = theme.accent;
+    ctx.shadowBlur = 14;
+    ctx.fillText('“', W / 2, plaqueY + plaquePaddingTop + 30);
+    ctx.restore();
+
+    // 10. Kinetic Typography Rendering
+    const textStartTime = 0.8;
+    const textEndTime = 8.2;
+    const activeTextDuration = textEndTime - textStartTime;
+
+    let revealedWordCount = totalWords;
+    if (elapsed < textStartTime) {
+      revealedWordCount = 0;
+    } else if (elapsed < textEndTime) {
+      const textProgress = (elapsed - textStartTime) / activeTextDuration;
+      revealedWordCount = Math.floor(textProgress * totalWords) + 1;
+      revealedWordCount = Math.min(totalWords, Math.max(1, revealedWordCount));
+    }
+
+    const textStartY = plaqueY + plaquePaddingTop + topQuoteH + spacingUnderQuote + fontSize * 0.95;
+    const isHoldPhase = elapsed >= textEndTime;
 
     lines.forEach((lineObj, lineIdx) => {
-      const lineY = startY + lineIdx * lineHeight;
+      const lineY = textStartY + lineIdx * lineHeight;
 
-      // Draw word by word in line to apply kinetic reveal & active highlight
-      const lineTotalWidth = ctx.measureText(lineObj.text).width;
-      let curX = (W - lineTotalWidth) / 2;
+      ctx.font = `600 ${fontSize}px ${serifStack}`;
+      const spaceWidth = ctx.measureText(' ').width;
+      const wordMetrics = lineObj.wordsInLine.map((item) => ({
+        ...item,
+        width: ctx.measureText(item.word).width,
+      }));
+      const totalLineWidth =
+        wordMetrics.reduce((sum, item) => sum + item.width, 0) +
+        spaceWidth * (wordMetrics.length - 1);
 
-      for (const item of lineObj.wordsInLine) {
+      let curX = (W - totalLineWidth) / 2;
+
+      wordMetrics.forEach((item) => {
         const isRevealed = item.index < revealedWordCount;
-        const isCurrentActive = item.index === revealedWordCount - 1 && elapsed < textEndTime;
+        const isCurrentActive =
+          item.index === revealedWordCount - 1 && elapsed >= textStartTime && elapsed < textEndTime;
 
         ctx.save();
-        if (!isRevealed) {
-          // Dim / hidden word
-          ctx.globalAlpha = 0.08;
+        ctx.textAlign = 'left';
+
+        if (isHoldPhase) {
+          // Glorious synchronized holding finale
+          const holdPulse = Math.sin((elapsed - textEndTime) * 4) * 0.08;
+          ctx.globalAlpha = 0.95 + holdPulse;
           ctx.fillStyle = theme.textMain;
+          ctx.shadowColor = theme.accent;
+          ctx.shadowBlur = 14;
         } else if (isCurrentActive) {
-          // Active speaking word glow
+          // Active spoken word: radiant golden sunlight
           ctx.globalAlpha = 1.0;
           ctx.fillStyle = theme.textHighlight;
           ctx.shadowColor = theme.accent;
-          ctx.shadowBlur = 18;
+          ctx.shadowBlur = 24;
+
+          // Glowing underline beneath active word
+          ctx.strokeStyle = theme.accent;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(curX, lineY + 6);
+          ctx.lineTo(curX + item.width, lineY + 6);
+          ctx.stroke();
+        } else if (isRevealed) {
+          // Already read word: crisp luminous cream
+          ctx.globalAlpha = 0.98;
+          ctx.fillStyle = theme.textMain;
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+          ctx.shadowBlur = 8;
         } else {
-          // Already read word
-          ctx.globalAlpha = 0.95;
+          // Unrevealed word: elegant readable parchment
+          ctx.globalAlpha = 0.38;
           ctx.fillStyle = theme.textMain;
         }
 
-        ctx.textAlign = 'left';
         ctx.fillText(item.word, curX, lineY);
         ctx.restore();
 
-        const wordWidth = ctx.measureText(item.word + ' ').width;
-        curX += wordWidth;
-      }
+        curX += item.width + spaceWidth;
+      });
     });
 
-    // 7. Secondary Translation Excerpt (if parallel study selected)
-    if (this.options.secondaryText && this.options.secondaryVersionName) {
+    // 11. Ornate Divider Inside Plaque
+    const dividerY = textStartY + totalTextHeight + spacingUnderText - 6;
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = theme.accent;
+    ctx.font = '600 15px sans-serif';
+    ctx.letterSpacing = '4px';
+    ctx.globalAlpha = 0.65;
+    ctx.fillText('━━━━ ✦ ━━━━', W / 2, dividerY);
+    ctx.restore();
+
+    // 12. Scripture Reference & Translation Attribution
+    const refY = dividerY + refH;
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.fillStyle = theme.accent;
+    ctx.font = '700 28px "Cinzel", Georgia, serif';
+    ctx.letterSpacing = '4px';
+    ctx.shadowColor = theme.accent;
+    ctx.shadowBlur = 12;
+    ctx.fillText(this.options.reference.toUpperCase(), W / 2, refY);
+    ctx.shadowBlur = 0;
+
+    // Translation name
+    ctx.font = '700 13px sans-serif';
+    ctx.fillStyle = theme.textSub;
+    ctx.letterSpacing = '2.5px';
+    ctx.globalAlpha = 0.85;
+    const versionLabel = this.options.versionName.toUpperCase();
+    ctx.fillText(versionLabel, W / 2, refY + versionH);
+    ctx.restore();
+
+    // 13. Secondary Translation Excerpt (if parallel study selected)
+    if (hasSecondary && this.options.secondaryText) {
+      const secY = refY + versionH + 34;
       ctx.save();
       ctx.textAlign = 'center';
       ctx.fillStyle = theme.textSub;
-      ctx.globalAlpha = Math.min(0.85, Math.max(0, (elapsed - 2.5) / 1.5));
-      ctx.font = 'italic 16px Georgia, serif';
-      const secExcerpt = `"${this.options.secondaryText.slice(0, 95)}..." — ${this.options.secondaryVersionName}`;
-      ctx.fillText(secExcerpt, W / 2, startY + totalBlockHeight + 40);
+      ctx.globalAlpha = Math.min(0.85, Math.max(0, (elapsed - 2.0) / 1.5));
+      ctx.font = 'italic 18px Georgia, serif';
+      const cleanSec = this.options.secondaryText.slice(0, 85).trim();
+      const secExcerpt = `"${cleanSec}..." — ${this.options.secondaryVersionName}`;
+      ctx.fillText(secExcerpt, W / 2, secY);
       ctx.restore();
     }
 
-    // 8. Animated Waveform Audio Visualizer (Live audio pulse)
-    this.drawAudioVisualizer(elapsed, W, H, theme);
+    // 14. Animated Waveform Audio Visualizer (Live audio pulse)
+    const waveY = Math.min(H - 128, plaqueY + plaqueH + 42);
+    this.drawAudioVisualizer(elapsed, W, waveY, theme);
 
-    // 9. 10-Second Progress Line
-    const progressBarY = H - 98;
+    // 15. 10-Second Golden Progress Rail
+    const progressBarY = H - 86;
+    const barMargin = Math.max(60, Math.floor(W * 0.08));
+    const barWidth = W - barMargin * 2;
+
     ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
-    ctx.fillRect(48, progressBarY, W - 96, 3);
+    ctx.fillRect(barMargin, progressBarY, barWidth, 3);
+
     ctx.fillStyle = theme.accent;
     ctx.shadowColor = theme.accent;
     ctx.shadowBlur = 8;
-    ctx.fillRect(48, progressBarY, (W - 96) * progress, 3);
+    ctx.fillRect(barMargin, progressBarY, barWidth * progress, 3);
     ctx.shadowBlur = 0;
 
     // Time Indicator (0:00 / 0:10)
@@ -523,46 +724,37 @@ export class StatusVideoRenderer {
     ctx.fillStyle = theme.textSub;
     ctx.font = '600 12px monospace';
     ctx.textAlign = 'right';
-    ctx.fillText(timeStr, W - 52, progressBarY - 8);
+    ctx.fillText(timeStr, barMargin + barWidth, progressBarY - 8);
 
-    // 10. LUXURY PERMANENT WATERMARK OF ADUBIBLE.ORG (The Golden Requirement)
+    // 16. LUXURY PERMANENT WATERMARK OF ADUBIBLE.ORG
     this.drawLuxuryWatermark(W, H, theme, elapsed);
-  }
-
-  private computeOptimalFontSize(maxWidth: number, maxHeight: number): number {
-    // Dynamic sizing based on length of text
-    const textLen = this.options.verseText.length;
-    if (textLen < 60) return Math.min(36, Math.floor(maxWidth / 12));
-    if (textLen < 120) return Math.min(28, Math.floor(maxWidth / 15));
-    if (textLen < 220) return Math.min(24, Math.floor(maxWidth / 18));
-    return Math.min(20, Math.max(16, Math.floor(maxWidth / 22)));
   }
 
   private drawAudioVisualizer(
     elapsed: number,
     W: number,
-    H: number,
+    waveY: number,
     theme: StatusVideoTheme
   ): void {
     const ctx = this.ctx;
-    const barCount = 36;
-    const waveY = H - 128;
-    const totalWaveWidth = W - 180;
-    const barWidth = totalWaveWidth / barCount - 2;
+    const barCount = 32;
+    const totalWaveWidth = Math.min(W - 200, 440);
+    const spacing = 4;
+    const barWidth = (totalWaveWidth - spacing * (barCount - 1)) / barCount;
 
     ctx.save();
     ctx.fillStyle = theme.waveColor;
 
     for (let i = 0; i < barCount; i++) {
-      // Harmonic procedural pulse or real analyser data
-      const norm = Math.sin((i / barCount) * Math.PI);
-      const wavePhase = elapsed * 5 + i * 0.35;
+      const norm = Math.sin((i / (barCount - 1)) * Math.PI);
+      const wavePhase = elapsed * 5.5 + i * 0.4;
       const heightMultiplier = Math.sin(wavePhase) * 0.5 + 0.5;
-      const barHeight = Math.max(3, norm * heightMultiplier * 26 + Math.cos(elapsed * 3 + i) * 6);
+      const barHeight = Math.max(4, norm * heightMultiplier * 32 + Math.cos(elapsed * 3.2 + i * 0.8) * 6);
 
-      const x = W / 2 - totalWaveWidth / 2 + i * (barWidth + 2);
-      ctx.globalAlpha = 0.4 + norm * 0.45;
-      ctx.fillRect(x, waveY - barHeight / 2, barWidth, barHeight);
+      const x = W / 2 - totalWaveWidth / 2 + i * (barWidth + spacing);
+      ctx.globalAlpha = 0.45 + norm * 0.45;
+      drawRoundedRect(ctx, x, waveY - barHeight / 2, barWidth, barHeight, barWidth / 2);
+      ctx.fill();
     }
     ctx.restore();
   }
@@ -578,45 +770,45 @@ export class StatusVideoRenderer {
     elapsed: number
   ): void {
     const ctx = this.ctx;
-    const watermarkY = H - 52;
-    const watermarkPulse = 0.9 + Math.sin(elapsed * 2) * 0.1;
+    const watermarkY = H - 42;
+    const watermarkPulse = 0.92 + Math.sin(elapsed * 2) * 0.08;
 
     ctx.save();
     ctx.textAlign = 'center';
 
-    // Golden Halo Glow under watermark pill
-    const pillWidth = 320;
-    const pillHeight = 32;
+    const pillWidth = 370;
+    const pillHeight = 34;
     const pillX = (W - pillWidth) / 2;
-    const pillY = watermarkY - 20;
+    const pillY = watermarkY - 22;
 
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    ctx.beginPath();
-    ctx.roundRect(pillX, pillY, pillWidth, pillHeight, 16);
+    // Dark glass pill backdrop
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+    drawRoundedRect(ctx, pillX, pillY, pillWidth, pillHeight, 17);
     ctx.fill();
 
+    // Golden halo rim
     ctx.strokeStyle = theme.accent;
-    ctx.lineWidth = 1;
-    ctx.globalAlpha = 0.65;
-    ctx.beginPath();
-    ctx.roundRect(pillX, pillY, pillWidth, pillHeight, 16);
+    ctx.lineWidth = 1.25;
+    ctx.globalAlpha = 0.7;
+    drawRoundedRect(ctx, pillX, pillY, pillWidth, pillHeight, 17);
     ctx.stroke();
 
-    // Text: ADUBIBLE.ORG
+    // Main Brand: ADUBIBLE.ORG
     ctx.globalAlpha = watermarkPulse;
     ctx.fillStyle = theme.accent;
-    ctx.font = '700 13px Georgia, serif';
-    ctx.letterSpacing = '2px';
+    ctx.font = '700 13px "Cinzel", Georgia, serif';
+    ctx.letterSpacing = '2.5px';
     ctx.shadowColor = theme.accent;
     ctx.shadowBlur = 10;
-    ctx.fillText('✦ ADUBIBLE.ORG • FREE SANCTUARY ✦', W / 2, watermarkY);
+    ctx.fillText('✦ ADUBIBLE.ORG • FREE SCRIPTURE SANCTUARY ✦', W / 2, watermarkY - 4);
     ctx.shadowBlur = 0;
 
     // Subtitle tagline
-    ctx.font = '600 10px sans-serif';
+    ctx.font = '600 9.5px sans-serif';
     ctx.fillStyle = theme.textSub;
-    ctx.globalAlpha = 0.8;
-    ctx.fillText('Read & Listen in 35+ Languages & Twi', W / 2, watermarkY + 14);
+    ctx.letterSpacing = '1px';
+    ctx.globalAlpha = 0.85;
+    ctx.fillText('Read & Listen in 35+ Global Languages', W / 2, watermarkY + 9);
 
     ctx.restore();
   }
@@ -643,10 +835,8 @@ export class StatusVideoRenderer {
       }
 
       if (this.audioCtx) {
-        // Play ambient pad through speakers
         this.startAmbientPad(this.audioCtx.destination);
 
-        // Play speech buffer through speakers if available
         if (this.speechBuffer) {
           this.speechSource = this.audioCtx.createBufferSource();
           this.speechSource.buffer = this.speechBuffer;
@@ -688,7 +878,7 @@ export class StatusVideoRenderer {
   }
 
   /**
-   * Records exactly 10.0 seconds of canvas video + synthesized audio into an MP4/WebM Blob.
+   * Records exactly 10.0 seconds of canvas video + synthesized audio into an MP4/WebM Blob at high 8 Mbps bitrate.
    */
   public async exportVideo(
     onProgress?: (progressPercent: number) => void
@@ -753,7 +943,7 @@ export class StatusVideoRenderer {
       try {
         const recorder = new MediaRecorder(combinedStream, {
           mimeType: selectedMime,
-          videoBitsPerSecond: 6_000_000, // 6 Mbps crystal clear
+          videoBitsPerSecond: 8_000_000, // 8 Mbps crystal clear
         });
 
         const chunks: Blob[] = [];
@@ -772,7 +962,7 @@ export class StatusVideoRenderer {
           reject(err);
         };
 
-        recorder.start(100); // 100ms slice chunks
+        recorder.start(100);
 
         const recordStart = performance.now();
         const durationMs = this.duration * 1000;

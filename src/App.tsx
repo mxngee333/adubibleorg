@@ -188,7 +188,7 @@ export function App() {
     }
     const primary = initialRoute.versionId || 'kjv';
     if (initialRoute.isParallelRoute) {
-      return ['kjv', 'twi', 'bsb'];
+      return ['kjv', 'bsb'];
     }
     if (primary === 'twi') {
       return ['twi', 'kjv'];
@@ -197,9 +197,9 @@ export function App() {
       typeof window !== 'undefined' &&
       (window.location.pathname === '/' || window.location.pathname === '')
     ) {
-      return ['kjv', 'twi'];
+      return ['kjv', 'bsb'];
     }
-    return [primary, 'twi'];
+    return [primary];
   });
 
 
@@ -240,7 +240,6 @@ export function App() {
   const [chapterSearchQuery, setChapterSearchQuery] = useState<string>('');
   const [showAudioBar, setShowAudioBar] = useState<boolean>(false);
   const [copiedNotice, setCopiedNotice] = useState<boolean>(false);
-  const [isThemePickerOpen, setIsThemePickerOpen] = useState<boolean>(false);
   const [themeSyncNotice, setThemeSyncNotice] = useState<string>('');
 
   // Wisdom Bible column translation picker state ('add' | column index | null)
@@ -248,6 +247,7 @@ export function App() {
   const [pickerSearch, setPickerSearch] = useState<string>('');
 
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+  const [settingsInitialSection, setSettingsInitialSection] = useState<'general' | 'theme' | 'commentaries' | 'api'>('general');
   const [isBookModalOpen, setIsBookModalOpen] = useState<boolean>(false);
   const [bookPickerTab, setBookPickerTab] = useState<'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD'>('CANONICAL');
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState<boolean>(false);
@@ -395,11 +395,11 @@ export function App() {
       currentChapter === 1 &&
       activeVersionIds.length === 2 &&
       activeVersionIds[0] === 'kjv' &&
-      activeVersionIds[1] === 'twi';
+      activeVersionIds[1] === 'bsb';
 
     if (window.location.pathname === '/' && isAtHomeState) {
       document.title =
-        "AduBible.org — Ad-Free Multilingual Parallel Bible, Twi & 35+ Languages";
+        "AduBible.org — Free Multilingual Parallel Bible Hub in 35+ Languages";
       return;
     }
 
@@ -411,7 +411,7 @@ export function App() {
     ) {
       window.history.replaceState({}, '', nextUrl);
     }
-    document.title = `${currentBook.names.en} ${currentChapter} (${currentBook.names.tw || currentBook.names.en}) — AduBible.org Parallel Reader`;
+    document.title = `${currentBook.names.en} ${currentChapter} — AduBible.org Parallel Bible Reader`;
   }, [activeVersionIds, currentBook, currentChapter]);
 
   // Listen for browser back / forward navigation
@@ -423,7 +423,7 @@ export function App() {
         setCurrentBookSlug('genesis');
         setCurrentChapter(1);
         setSelectedVerse(1);
-        setActiveVersionIds(['kjv', 'twi']);
+        setActiveVersionIds(['kjv', 'bsb']);
         return;
       }
       const route = parseBibleHubUrlPath(window.location.pathname);
@@ -598,12 +598,12 @@ export function App() {
     setVerseCardTarget(null);
     setActiveVerseActionBar(null);
 
-    // Reset to default home sanctuary reading state (Genesis 1, KJV + Asante Twi)
+    // Reset to default home sanctuary reading state (Genesis 1, KJV + BSB)
     setActiveNavTab('canonical');
     setCurrentBookSlug('genesis');
     setCurrentChapter(1);
     setSelectedVerse(1);
-    setActiveVersionIds(['kjv', 'twi']);
+    setActiveVersionIds(['kjv', 'bsb']);
 
     // Update browser URL to / if not already there
     if (typeof window !== 'undefined' && window.location.pathname !== '/') {
@@ -623,24 +623,24 @@ export function App() {
     const targetBook = allHistoricalBooks.find((b) => b.slug === bookSlug);
     if (targetBook?.testament === 'DC') {
       const hasDCVersion = activeVersionIds.some((id) =>
-        ['kjv-apoc', 'twi-apoc', 'dra', 'lxx', 'vulgate'].includes(id)
+        ['kjv-apoc', 'dra', 'lxx', 'vulgate'].includes(id)
       );
       if (!hasDCVersion) {
-        setActiveVersionIds(['kjv-apoc', 'twi-apoc']);
+        setActiveVersionIds(['kjv-apoc', 'dra']);
       }
     } else if (targetBook?.testament === 'PSEUD') {
       const hasPseudVersion = activeVersionIds.some((id) =>
-        ['charles', 'lightfoot', 'twi-apoc', 'kjv-apoc'].includes(id)
+        ['charles', 'lightfoot', 'kjv-apoc'].includes(id)
       );
       if (!hasPseudVersion) {
-        setActiveVersionIds(['charles', 'twi-apoc']);
+        setActiveVersionIds(['charles', 'lightfoot']);
       }
     } else if (targetBook?.testament === 'OT' || targetBook?.testament === 'NT') {
       const onlyApocryphaVersions = activeVersionIds.every((id) =>
         ['charles', 'lightfoot'].includes(id)
       );
       if (onlyApocryphaVersions) {
-        setActiveVersionIds(['nkjv', 'twi']);
+        setActiveVersionIds(['kjv', 'bsb']);
       }
     }
 
@@ -1015,6 +1015,75 @@ export function App() {
           </button>
         </div>
       </header>
+
+      {/* 2. CANON NAVIGATION BAR (Canonical 66, Deuterocanon 16, Apocrypha 25, Ask AduBible AI) */}
+      <nav className="canon-nav-bar" aria-label="Biblical Collections and Ancient Manuscripts">
+        <div className="canon-nav-container">
+          <button
+            type="button"
+            className={`canon-tab-btn ${activeNavTab === 'canonical' ? 'active' : ''}`}
+            onClick={() => {
+              setActiveNavTab('canonical');
+              if (typeof window !== 'undefined' && window.location.pathname !== '/') {
+                window.history.pushState({}, '', '/');
+              }
+            }}
+            title="Read 66 Accepted Canonical Scriptures in Parallel"
+          >
+            <span>📖</span>
+            <span>Holy Scripture</span>
+            <span className="tab-badge">66 Books</span>
+          </button>
+
+          <button
+            type="button"
+            className={`canon-tab-btn ${activeNavTab === 'deuterocanon' ? 'active' : ''}`}
+            onClick={() => {
+              setActiveNavTab('deuterocanon');
+              if (typeof window !== 'undefined') {
+                window.history.pushState({}, '', '/deuterocanon/');
+              }
+            }}
+            title="Read 16 Deuterocanonical Books (Tobit, Judith, Wisdom, Sirach, Baruch, 1-2 Maccabees...)"
+          >
+            <span>📜</span>
+            <span>Deuterocanon</span>
+            <span className="tab-badge">16 Books</span>
+          </button>
+
+          <button
+            type="button"
+            className={`canon-tab-btn ${activeNavTab === 'list-of-sixty' ? 'active' : ''}`}
+            onClick={() => {
+              setActiveNavTab('list-of-sixty');
+              if (typeof window !== 'undefined') {
+                window.history.pushState({}, '', '/list-of-sixty/');
+              }
+            }}
+            title="Explore 25 Ancient Apocrypha &amp; Pseudepigrapha Texts (1 Enoch, Jasher, Jubilees, Didache...)"
+          >
+            <span>🏺</span>
+            <span>Apocrypha (List of 60)</span>
+            <span className="tab-badge">25 Books</span>
+          </button>
+
+          <button
+            type="button"
+            className="canon-tab-btn"
+            style={{
+              borderColor: 'rgba(245, 158, 11, 0.45)',
+              background: 'rgba(245, 158, 11, 0.08)',
+              color: '#f59e0b',
+              fontWeight: 700,
+            }}
+            onClick={() => setIsAskAduBibleOpen(true)}
+            title="Ask AduBible AI Exegetical Companion"
+          >
+            <span>✨</span>
+            <span>Ask AduBible AI</span>
+          </button>
+        </div>
+      </nav>
 
       {/* ISOLATED HISTORICAL ZONE BANNER (Only visible when user explicitly visits /deuterocanon or /list-of-sixty) */}
       {activeNavTab !== 'canonical' && (

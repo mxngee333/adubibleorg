@@ -36,8 +36,8 @@ const QUICK_PROMPTS = [
   },
   {
     icon: Languages,
-    label: 'Asante Twi Meaning',
-    prompt: 'Explain the deeper Asante Twi (Twerɛ Kronkron) linguistic and theological meaning of the key words in this passage.',
+    label: 'Key Word Nuances',
+    prompt: 'Explain the deeper linguistic and theological nuances of the key words in this passage across global translations.',
   },
   {
     icon: Scroll,
@@ -85,7 +85,7 @@ You are currently reading **${context.bookNameEn} ${context.chapter}** ${
           context.bookNameTw ? `(*${context.bookNameTw}*)` : ''
         }.
 
-Ask any question about this passage, explore the original **Greek (Textus Receptus)** and **Hebrew (Masoretic)** root words, or uncover the rich theological depth of **Asante Twi (Twerɛ Kronkron)**. Tap any quick topic below or type your inquiry!`,
+Ask any question about this passage, explore the original **Greek (Textus Receptus)** and **Hebrew (Masoretic)** root words, or compare across parallel world translations. Tap any quick topic below or type your inquiry!`,
         bookContext: `${context.bookNameEn} ${context.chapter}`,
       };
       setMessages([welcome]);
@@ -426,7 +426,7 @@ Ready for your next question on **${context.bookNameEn} ${context.chapter}** (${
           {isLoading && (
             <div className="flex items-center gap-2 text-stone-400 text-xs py-2 px-3 rounded-xl bg-stone-900/60 border border-stone-800 w-fit animate-pulse">
               <Sparkles className="h-4 w-4 text-amber-400 animate-spin" />
-              <span>Ask AduBible is examining the Greek, Hebrew, and Asante Twi scriptures...</span>
+              <span>Ask AduBible is examining the Greek, Hebrew, and parallel scriptures...</span>
             </div>
           )}
         </div>

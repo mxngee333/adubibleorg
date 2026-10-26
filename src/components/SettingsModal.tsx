@@ -13,6 +13,7 @@ interface SettingsModalProps {
   onUpdatePrefs: (next: Partial<ReadingPreferences>) => void;
   onOpenLanguageAddonModal: () => void;
   user?: UserProfile | null;
+  initialSection?: 'general' | 'theme' | 'commentaries' | 'api';
 }
 
 const PRESET_CUSTOM_PALETTES: Array<{
@@ -119,6 +120,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onUpdatePrefs,
   onOpenLanguageAddonModal,
   user,
+  initialSection = 'general',
 }) => {
   const [apiKeyInput, setApiKeyInput] = useState<string>(() => getStoredGeminiKey());
   const [isKeyVisible, setIsKeyVisible] = useState(false);
@@ -127,6 +129,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [showCustomStudio, setShowCustomStudio] = useState<boolean>(
     prefs.theme === 'custom'
   );
+
+  React.useEffect(() => {
+    if (isOpen && initialSection === 'theme') {
+      const el = document.getElementById('settings-theme-section');
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 80);
+      }
+    }
+  }, [isOpen, initialSection]);
 
   if (!isOpen) return null;
 
@@ -283,7 +294,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
 
           {/* 2. Reading Appearance & Theme */}
-          <div className="picker-group">
+          <div className="picker-group" id="settings-theme-section">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
               <div className="picker-language">Appearance, Palettes &amp; Themes</div>
               <div

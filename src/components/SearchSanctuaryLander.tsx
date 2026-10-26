@@ -104,7 +104,7 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
         const validCh = Math.min(Math.max(1, chPart), matchedBook.chapters);
         results.push({
           label: `${matchedBook.names.en} ${validCh}${vPart ? `:${vPart}` : ''}`,
-          sublabel: `${matchedBook.names.tw ? `${matchedBook.names.tw} · ` : ''}${matchedBook.chapters} chapters`,
+          sublabel: `${matchedBook.chapters} chapters`,
           bookSlug: matchedBook.slug,
           chapter: validCh,
           verse: vPart,
@@ -124,7 +124,7 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
     for (const b of matchedBooks) {
       if (!results.some((r) => r.bookSlug === b.slug)) {
         results.push({
-          label: `${b.names.en} ${b.names.tw ? `(${b.names.tw})` : ''}`,
+          label: b.names.en,
           sublabel: `${b.testament === 'OT' ? 'Old Testament (39)' : b.testament === 'NT' ? 'New Testament (27)' : b.testament === 'DC' ? 'Deuterocanonical (16)' : 'Apocrypha (25)'} · ${b.chapters} Chapters`,
           bookSlug: b.slug,
           chapter: 1,

@@ -157,7 +157,7 @@ export const OmniSearchBar: React.FC<OmniSearchBarProps> = ({
         results.push({
           type: 'reference',
           label: `${matchedBook.names.en} ${chNum}${vPart ? `:${vPart}` : ''}`,
-          sublabel: `${matchedBook.names.tw ? `${matchedBook.names.tw} · ` : ''}${matchedBook.testament === 'OT' ? 'Old Testament' : matchedBook.testament === 'NT' ? 'New Testament' : 'Historical Book'} (${matchedBook.chapters} chapters)`,
+          sublabel: `${matchedBook.testament === 'OT' ? 'Old Testament' : matchedBook.testament === 'NT' ? 'New Testament' : 'Historical Book'} (${matchedBook.chapters} chapters)`,
           bookSlug: matchedBook.slug,
           chapter: chNum,
           verse: vPart,
@@ -177,7 +177,7 @@ export const OmniSearchBar: React.FC<OmniSearchBarProps> = ({
       if (!results.some((r) => r.bookSlug === b.slug)) {
         results.push({
           type: 'book',
-          label: `${b.names.en} ${b.names.tw ? `(${b.names.tw})` : ''}`,
+          label: b.names.en,
           sublabel: `${b.category} · ${b.chapters} Chapters`,
           bookSlug: b.slug,
           chapter: 1,

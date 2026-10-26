@@ -627,7 +627,7 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
                       >
                         {books.map((b) => (
                           <option key={b.id} value={b.id}>
-                            {b.names.en} ({b.names.tw || b.id})
+                            {b.names.en} ({b.id})
                           </option>
                         ))}
                       </select>

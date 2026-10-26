@@ -33,12 +33,12 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
   useEffect(() => {
     if (isOpen) {
       const cur = books.find((b) => b.id === currentBookId);
-      if (initialTestamentFilter) {
-        setTestamentFilter(initialTestamentFilter);
-      } else if (cur?.testament === 'DC') {
+      if (cur?.testament === 'DC') {
         setTestamentFilter('DC');
       } else if (cur?.testament === 'PSEUD') {
         setTestamentFilter('PSEUD');
+      } else if (initialTestamentFilter) {
+        setTestamentFilter(initialTestamentFilter);
       } else if (cur?.testament === 'OT') {
         setTestamentFilter('OT');
       } else if (cur?.testament === 'NT') {
@@ -293,12 +293,13 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                       <span className="font-bold text-sm truncate">{book.names.en}</span>
                     </div>
                     <div className="text-[11px] text-amber-300/80 truncate mt-0.5">
-                      🇬🇭 {book.names.tw || book.names.en}
-                      {uiLanguageCode !== 'en' &&
-                      uiLanguageCode !== 'tw' &&
-                      book.names[uiLanguageCode]
-                        ? ` • ${book.names[uiLanguageCode]}`
-                        : ''}
+                      {uiLanguageCode === 'tw' ? (
+                        `🇬🇭 ${book.names.tw || book.names.en}`
+                      ) : uiLanguageCode !== 'en' && book.names[uiLanguageCode] ? (
+                        book.names[uiLanguageCode]
+                      ) : (
+                        `${book.category} • ${book.chapters} ch`
+                      )}
                     </div>
                   </div>
                   <span className="shrink-0 rounded-lg bg-stone-800/90 px-2 py-1 text-[11px] font-mono text-stone-400">
@@ -330,7 +331,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                       : 'List of Sixty & Apocrypha'}
                   </div>
                   <h3 className="text-lg font-bold text-white mt-0.5">
-                    {activeBook.names.en} ({activeBook.names.tw})
+                    {activeBook.names.en} {uiLanguageCode === 'tw' && activeBook.names.tw ? `(${activeBook.names.tw})` : ''}
                   </h3>
                   {activeBook.canonStatus && (
                     <p className="text-[11px] text-amber-300/80 mt-0.5 leading-relaxed">

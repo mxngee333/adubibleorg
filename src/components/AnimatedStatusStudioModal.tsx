@@ -119,7 +119,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
 
   // Video customization state
   const [selectedTheme, setSelectedTheme] = useState<StatusVideoTheme>(STATUS_THEMES[0]);
-  const [aspectRatio, setAspectRatio] = useState<VideoAspectRatio>('9:16');
+  const [aspectRatio, setAspectRatio] = useState<VideoAspectRatio>('3:4');
   const [voiceName, setVoiceName] = useState<GoogleNeuralVoiceName>('Charon');
   const [includeAmbientMusic, setIncludeAmbientMusic] = useState<boolean>(true);
 
@@ -284,7 +284,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
 
       // Trigger instant automatic download
       const cleanRef = reference.replace(/[^a-zA-Z0-9_-]/g, '_');
-      const filename = `AduBible_${cleanRef}_10s_Status.${blob.type.includes('mp4') ? 'mp4' : 'webm'}`;
+      const filename = `AduBible_${cleanRef}_${aspectRatio.replace(':', 'x')}_10s_Status.${blob.type.includes('mp4') ? 'mp4' : 'webm'}`;
       const a = document.createElement('a');
       a.href = url;
       a.download = filename;
@@ -304,7 +304,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
 
   // Direct Social Share Handlers
   const getShareText = () => {
-    return `"${verseText}" — ${reference} (${versionName})\n\n✨ Created with AduBible Status Sanctuary • 100% Free & Ad-Free Parallel Bible in 35+ Languages & Asante Twi at https://adubible.org/`;
+    return `"${verseText}" — ${reference} (${versionName})\n\n✨ Created with AduBible Status Sanctuary • 100% Free & Ad-Free Parallel Bible in 35+ Languages at https://adubible.org/`;
   };
 
   const handleShareWhatsApp = () => {
@@ -482,7 +482,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
               {/* Quick Inspiration Pills */}
               <div className="space-y-1.5 pt-1">
                 <div className="flex items-center justify-between text-[11px] text-stone-400">
-                  <span className="font-semibold">Quick Inspirations &amp; Twi Passages:</span>
+                  <span className="font-semibold">Quick Scripture Inspirations:</span>
                   <div className="flex items-center gap-1">
                     <Search className="w-3 h-3 text-stone-500" />
                     <input
@@ -617,35 +617,52 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
             </div>
 
             {/* 4. Aspect Ratio & Format */}
-            <div className="flex items-center justify-between bg-stone-950/60 p-3 rounded-xl border border-stone-800">
-              <span className="text-xs font-bold text-stone-400 uppercase tracking-wider">Canvas Format:</span>
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-stone-950/60 p-3 rounded-xl border border-stone-800 gap-2">
+              <span className="text-xs font-bold text-stone-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                Canvas Format:
+              </span>
+              <div className="flex flex-wrap items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setAspectRatio('3:4')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                    aspectRatio === '3:4'
+                      ? 'bg-amber-500 text-stone-950 shadow-md shadow-amber-500/25 ring-2 ring-amber-400/40'
+                      : 'bg-stone-900 text-stone-300 hover:bg-stone-800'
+                  }`}
+                >
+                  <span className="px-1.5 py-0.5 rounded bg-amber-950/40 text-[9px] text-amber-200 uppercase font-extrabold tracking-wider">
+                    Best
+                  </span>
+                  3:4 (Portrait Feed / Status)
+                </button>
                 <button
                   type="button"
                   onClick={() => setAspectRatio('9:16')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
                     aspectRatio === '9:16'
                       ? 'bg-amber-500 text-stone-950 shadow-md shadow-amber-500/20'
                       : 'bg-stone-900 text-stone-300 hover:bg-stone-800'
                   }`}
                 >
-                  9:16 (Status / Story / Reel)
+                  9:16 (Story / Reel)
                 </button>
                 <button
                   type="button"
                   onClick={() => setAspectRatio('1:1')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
                     aspectRatio === '1:1'
                       ? 'bg-amber-500 text-stone-950 shadow-md shadow-amber-500/20'
                       : 'bg-stone-900 text-stone-300 hover:bg-stone-800'
                   }`}
                 >
-                  1:1 (Square Feed)
+                  1:1 (Square)
                 </button>
                 <button
                   type="button"
                   onClick={() => setAspectRatio('16:9')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
                     aspectRatio === '16:9'
                       ? 'bg-amber-500 text-stone-950 shadow-md shadow-amber-500/20'
                       : 'bg-stone-900 text-stone-300 hover:bg-stone-800'
@@ -662,10 +679,24 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
             {/* Live Canvas Stage */}
             <div className="relative w-full flex items-center justify-center bg-stone-950 p-2 sm:p-3 rounded-2xl border border-stone-800 shadow-inner">
               <div
-                className="relative overflow-hidden rounded-xl shadow-2xl border border-stone-800/80 bg-black flex items-center justify-center"
+                className="relative overflow-hidden rounded-xl shadow-2xl border border-stone-800/80 bg-black flex items-center justify-center transition-all duration-200"
                 style={{
-                  width: aspectRatio === '9:16' ? '252px' : aspectRatio === '1:1' ? '290px' : '340px',
-                  height: aspectRatio === '9:16' ? '448px' : aspectRatio === '1:1' ? '290px' : '191px',
+                  width:
+                    aspectRatio === '3:4'
+                      ? '285px'
+                      : aspectRatio === '9:16'
+                      ? '240px'
+                      : aspectRatio === '1:1'
+                      ? '290px'
+                      : '340px',
+                  height:
+                    aspectRatio === '3:4'
+                      ? '380px'
+                      : aspectRatio === '9:16'
+                      ? '426px'
+                      : aspectRatio === '1:1'
+                      ? '290px'
+                      : '191px',
                 }}
               >
                 <canvas
