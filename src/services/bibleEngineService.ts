@@ -36,6 +36,23 @@ function parseHelloaoChapterPayload(
   validChapter: number,
   sourceLabel: string
 ): ChapterData | null {
+  // If json is already in normalized ChapterData format
+  if (json && Array.isArray(json.verses) && json.verses.length > 0) {
+    return {
+      versionId,
+      bookId: book.id,
+      bookSlug: book.slug,
+      bookLocalName: json.bookLocalName || book.names.en,
+      chapter: validChapter,
+      verses: json.verses,
+      chapterFootnotes: json.chapterFootnotes || [],
+      audioUrl: json.audioUrl,
+      source: sourceLabel,
+      licenseUrl: json.licenseUrl,
+      licenseText: json.licenseText,
+    };
+  }
+
   const contentArr = json?.chapter?.content;
   if (!Array.isArray(contentArr)) return null;
 
@@ -332,7 +349,84 @@ export async function resolveChapterData(
     return cached;
   }
 
-  // 4A. Try Free Use Bible API (bible.helloao.org)
+  // Helper for resilient timeout-bounded fetch
+  const fetchWithTimeout = async (url: string, timeoutMs = 2500): Promise<Response> => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timer);
+      return res;
+    } catch (e) {
+      clearTimeout(timer);
+      throw e;
+    }
+  };
+
+  // 4A. Cloudflare Planetary Edge & R2 Zero-Egress Vault (Scale: 4 Billion Readers)
+  const edgeBaseUrl = (
+    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_CLOUDFLARE_EDGE_URL) ||
+    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_R2_SCRIPTURE_URL) ||
+    ''
+  ).trim().replace(/\/$/, '');
+
+  if (edgeBaseUrl) {
+    try {
+      const edgeUrl = `${edgeBaseUrl}/api/v1/chapters/${encodeURIComponent(versionId.toLowerCase())}/${encodeURIComponent(book.id.toUpperCase())}/${validChapter}.json`;
+      const edgeRes = await fetchWithTimeout(edgeUrl, 2500);
+      if (edgeRes.ok) {
+        const edgeJson = await edgeRes.json();
+        const parsed = parseHelloaoChapterPayload(
+          edgeJson,
+          versionId,
+          helloaoId || versionId,
+          book,
+          validChapter,
+          'Cloudflare Planetary Edge (R2 Zero-Egress Vault)'
+        );
+        if (parsed) {
+          memoryCache.set(memKey, parsed);
+          await setCachedChapter(parsed);
+          return parsed;
+        }
+      }
+    } catch {
+      // Fall through to Hetzner Origin
+    }
+  }
+
+  // 4B. Hetzner Dedicated Origin Cluster (Bare-Metal High-Throughput Fallback)
+  const hetznerBaseUrl = (
+    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_HETZNER_ORIGIN_URL) ||
+    ''
+  ).trim().replace(/\/$/, '');
+
+  if (hetznerBaseUrl) {
+    try {
+      const hetznerUrl = `${hetznerBaseUrl}/api/v1/chapters/${encodeURIComponent(versionId.toLowerCase())}/${encodeURIComponent(book.id.toUpperCase())}/${validChapter}`;
+      const hetznerRes = await fetchWithTimeout(hetznerUrl, 3000);
+      if (hetznerRes.ok) {
+        const hetznerJson = await hetznerRes.json();
+        const parsed = parseHelloaoChapterPayload(
+          hetznerJson,
+          versionId,
+          helloaoId || versionId,
+          book,
+          validChapter,
+          'Hetzner High-Throughput Origin Cluster'
+        );
+        if (parsed) {
+          memoryCache.set(memKey, parsed);
+          await setCachedChapter(parsed);
+          return parsed;
+        }
+      }
+    } catch {
+      // Fall through to public APIs
+    }
+  }
+
+  // 4C. Try Free Use Bible API (bible.helloao.org)
   if (helloaoId) {
     try {
       const res = await fetch(

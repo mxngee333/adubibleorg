@@ -1,0 +1,55 @@
+# ====================================================================
+# ADUBIBLE / ELOHIM BIBLE HUB — HETZNER DOCKER COMPOSE ORCHESTRATION
+# Deployable via Docker Compose or Hetzner Coolify
+# Target Scale: 4 Billion Readers Worldwide
+# ====================================================================
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: hetzner-cluster/Dockerfile
+    container_name: adubible-origin-app
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOST=0.0.0.0
+      - WORKERS=8
+    deploy:
+      resources:
+        limits:
+          cpus: '8.0'
+          memory: 8192M
+        reservations:
+          cpus: '2.0'
+          memory: 2048M
+    networks:
+      - adubible-net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/healthz"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+
+  nginx:
+    image: nginx:alpine
+    container_name: adubible-origin-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - nginx-cache:/var/cache/nginx
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      - adubible-net
+
+networks:
+  adubible-net:
+    driver: bridge
+
+volumes:
+  nginx-cache:

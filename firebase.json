@@ -25,6 +25,24 @@
         ]
       },
       {
+        "source": "/seed/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(jpg|jpeg|gif|png|webp|svg|woff|woff2|ttf|eot)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
+          }
+        ]
+      },
+      {
         "source": "**",
         "headers": [
           {
@@ -34,6 +52,10 @@
           {
             "key": "X-Content-Type-Options",
             "value": "nosniff"
+          },
+          {
+            "key": "Strict-Transport-Security",
+            "value": "max-age=31536000; includeSubDomains; preload"
           }
         ]
       }

@@ -1,0 +1,32 @@
+name = "adubible-edge-worker"
+main = "worker.ts"
+compatibility_date = "2024-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Cloudflare Global Network Placement (Runs at all 330+ Edge PoPs)
+[placement]
+mode = "smart"
+
+# Environment Variables
+[vars]
+ENVIRONMENT = "production"
+HETZNER_ORIGIN_URL = "https://origin.adubible.org"
+ALLOWED_ORIGINS = "https://adubible.org,https://elohimbible.web.app,https://elohimbible.firebaseapp.com"
+
+# Cloudflare R2 Bucket Binding (Zero Egress Scripture & Audio Vault)
+# Run: npx wrangler r2 bucket create adubible-scripture-vault
+[[r2_buckets]]
+binding = "SCRIPTURE_BUCKET"
+bucket_name = "adubible-scripture-vault"
+
+# Cloudflare D1 Distributed Edge Database
+# Run: npx wrangler d1 create adubible-edge-db
+[[d1_databases]]
+binding = "DB"
+database_name = "adubible-edge-db"
+database_id = "adubible-d1-placeholder-id"
+
+# Route binding (optional custom edge domain, e.g., edge.adubible.org/* or api.adubible.org/*)
+# routes = [
+#   { pattern = "edge.adubible.org/*", zone_name = "adubible.org" }
+# ]

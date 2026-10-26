@@ -1,6 +1,8 @@
 node_modules
 dist
+dist-r2
 .DS_Store
 *.local
+.env
 .firebase
 firebase-debug.log
