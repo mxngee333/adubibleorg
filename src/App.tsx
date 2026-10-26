@@ -1170,6 +1170,66 @@ export function App() {
         />
       ) : (
         <main id="reader" className="workspace">
+          {/* VIRAL 10s ANIMATED VIDEO STATUS PROMO STRIP */}
+          <div
+            className="status-studio-strip"
+            style={{
+              maxWidth: '1100px',
+              margin: '0 auto 16px',
+              padding: '10px 16px',
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.10), rgba(20, 16, 12, 0.6))',
+              border: '1px solid rgba(245, 158, 11, 0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '12px',
+              flexWrap: 'wrap',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '18px' }}>🎬</span>
+              <div>
+                <strong style={{ fontSize: '12.5px', color: 'var(--ink)' }}>
+                  10s Animated Scripture Status &amp; Video Studio
+                </strong>
+                <span style={{ display: 'block', fontSize: '11px', color: 'var(--subtle)' }}>
+                  Animate {currentBook.names.en} {currentChapter} with 24kHz Google neural voice for WhatsApp Status, Reels &amp; TikTok with <strong>Adubible.org</strong> watermark
+                </span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                const firstVerse = chaptersByVersion[primaryVersionId]?.verses[0]?.text;
+                setStatusStudioTarget({
+                  reference: `${currentBook.names.en} ${currentChapter}:1`,
+                  primaryText: firstVerse || 'For the word of God is living and active...',
+                  primaryVersion: primaryVersionId.toUpperCase(),
+                });
+                setIsStatusStudioOpen(true);
+              }}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '8px',
+                background: 'var(--green)',
+                color: '#0c0a09',
+                fontSize: '11.5px',
+                fontWeight: 800,
+                cursor: 'pointer',
+                border: 0,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                boxShadow: '0 2px 10px rgba(245, 158, 11, 0.25)',
+              }}
+            >
+              <span>Create 10s Video</span>
+              <span>✦</span>
+            </button>
+          </div>
+
           <section className="page-heading">
             <h1>{currentBook.names.en} {currentChapter}</h1>
           </section>
