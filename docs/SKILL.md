@@ -62,29 +62,29 @@ A complete, battle-tested production blueprint for building generational, 100% a
 
 ### Native Asante & Akuapem Twi Phonetic Speech Conditioning:
 ```typescript
-function prepareTtsPrompt(text: string, langCode: string): string {
-  const clean = text.replace(/\[\d+\]/g, '').replace(/\s+/g, ' ').trim();
-  const lower = (langCode || 'en').toLowerCase();
-
-  if (lower === 'tw' || lower === 'ak' || lower.startsWith('twi')) {
-    // Condition the neural model with native Asante Twi phonetics & tonal inflection
-    return `In authentic native Asante Twi with reverent Akan cadence and exact phonetic pronunciation: ${clean}`;
-  }
-  if (lower === 'yo') {
-    return `In authentic Yoruba with holy reverence and natural intonation: ${clean}`;
-  }
-  if (lower === 'ha') {
-    return `In authentic Hausa with clear reverence: ${clean}`;
-  }
-  if (lower === 'fr') {
-    return `Lisez avec révérence et clarté en français: ${clean}`;
-  }
-  if (lower === 'es') {
-    return `Lea con reverencia y claridad en español: ${clean}`;
-  }
-  return `Read with sacred reverence, dignity, and clear pronunciation: ${clean}`;
+/**
+ * Clean verse text strictly for speech synthesis.
+ * Strips footnote markers [1], [2], parentheses, and special punctuation,
+ * returning ONLY the pure scripture text so speech starts IMMEDIATELY
+ * from the very first word with ZERO preamble or instruction reading!
+ */
+export function cleanVerseForSpeech(text: string): string {
+  return text
+    .replace(/\[\d+\]/g, '') // remove footnote tags [1], [2]
+    .replace(/\(\d+:\d+\)/g, '')
+    .replace(/[«»"]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 ```
+> [!IMPORTANT]
+> **Preamble Eradication Rule**: Never embed instructional preambles like *"Read with sacred reverence:"* or *"In authentic native Asante Twi:"* into the synthesized text string, because neural TTS models will speak the instruction out loud before the verse. Only pass the pure, cleaned scripture text.
+
+### Anti-Glitch GainNode Pipeline & Robotic Fallback Ban:
+- **Zero Digital Pops/Clicks**: Route all Web Audio API playback through a `GainNode` with a 35ms micro-fade (`gain.linearRampToValueAtTime`) on stop, skip, or cutover. Never call `source.stop()` abruptly.
+- **Permanent Ban on Browser `window.speechSynthesis`**: Never fall back to browser speech synthesis when a network hiccup occurs. It sounds robotic, unnatural, and garbles African languages. Instead, implement exponential neural retries and keep the player in a clean buffering state until the genuine 24kHz Google neural voice is ready.
+- **Character Voice Consistency**: Maintain the user's selected voice (`Charon`, `Kore`, `Puck`, `Aoede`, `Fenrir`) consistently across every single verse, including parallel verses in Bilingual Mode. Never flip voices unexpectedly.
+
 
 ### Raw 24kHz PCM to Web Audio API Decoding:
 Google Gemini Audio returns base64-encoded raw 16-bit signed linear PCM at 24,000 Hz. Decode it directly to `AudioBuffer`:
