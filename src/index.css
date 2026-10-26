@@ -718,16 +718,22 @@ body:has(.theme-adubible-si) ::-webkit-scrollbar-thumb:hover {
 }
 
 .masthead {
-  height: 88px;
-  padding: 0 36px;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  height: 64px;
+  min-height: 64px;
+  padding: 0 24px;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   border-bottom: 1px solid var(--line);
   background: var(--surface);
   position: sticky;
   top: 0;
   z-index: 40;
+}
+
+.masthead .brand {
+  flex-shrink: 0;
 }
 
 /* ==========================================================================
@@ -736,7 +742,7 @@ body:has(.theme-adubible-si) ::-webkit-scrollbar-thumb:hover {
 .canon-nav-bar {
   background: var(--surface);
   border-bottom: 1px solid var(--line);
-  padding: 8px 36px;
+  padding: 6px 24px;
 }
 
 .canon-nav-container {
@@ -744,20 +750,23 @@ body:has(.theme-adubible-si) ::-webkit-scrollbar-thumb:hover {
   margin: 0 auto;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   overflow-x: auto;
-  scrollbar-width: none;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
 .canon-nav-container::-webkit-scrollbar {
-  display: none;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .canon-tab-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 7px;
+  padding: 6px 14px;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: var(--paper);
@@ -861,11 +870,10 @@ body:has(.theme-adubible-si) ::-webkit-scrollbar-thumb:hover {
 }
 
 .mast-actions {
-  justify-self: end;
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .quiet-button {
@@ -1751,9 +1759,16 @@ body:has(.theme-adubible-si) ::-webkit-scrollbar-thumb:hover {
 @media (max-width: 900px) {
   .masthead {
     height: auto;
-    padding: 14px 18px;
-    grid-template-columns: 1fr auto;
+    min-height: 54px;
+    padding: 10px 14px;
+    flex-wrap: wrap;
     gap: 10px;
+  }
+  .mast-search {
+    order: 3;
+    width: 100%;
+    max-width: 100%;
+    margin: 4px 0 0;
   }
 
   .mast-center {
@@ -1810,8 +1825,9 @@ body:has(.theme-adubible-si) ::-webkit-scrollbar-thumb:hover {
   justify-content: center;
   align-items: center;
   flex: 1;
-  max-width: 580px;
-  margin: 0 16px;
+  max-width: 600px;
+  min-width: 200px;
+  margin: 0;
 }
 
 .omni-search-container {
@@ -2033,21 +2049,12 @@ body:has(.theme-adubible-si) ::-webkit-scrollbar-thumb:hover {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 24px;
+  padding: 6px 20px;
   background: var(--paper);
   border-bottom: 1px solid var(--line);
-  overflow-x: auto;
-  white-space: nowrap;
-  scrollbar-width: thin;
-}
-
-.version-ribbon-bar::-webkit-scrollbar {
-  height: 4px;
-}
-
-.version-ribbon-bar::-webkit-scrollbar-thumb {
-  background: var(--line);
-  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+  min-height: 44px;
 }
 
 .ribbon-label {
@@ -2059,6 +2066,39 @@ body:has(.theme-adubible-si) ::-webkit-scrollbar-thumb:hover {
   letter-spacing: 0.08em;
   color: var(--subtle);
   flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.ribbon-scroll-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ribbon-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--subtle);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+  z-index: 2;
+}
+
+.ribbon-nav-btn:hover {
+  border-color: #a855f7;
+  color: #f3e8ff;
+  background: rgba(147, 51, 234, 0.2);
 }
 
 .ribbon-scroll-container {
@@ -2066,7 +2106,21 @@ body:has(.theme-adubible-si) ::-webkit-scrollbar-thumb:hover {
   align-items: center;
   gap: 6px;
   overflow-x: auto;
-  padding: 2px 0;
+  overflow-y: hidden;
+  padding: 2px 4px;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.ribbon-scroll-container::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .ribbon-pill {

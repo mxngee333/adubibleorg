@@ -917,9 +917,9 @@ export function App() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }
             }}
-            title="Toggle Search Sanctuary Lander"
+            title="Thematic Search Sanctuary and Topic Directory"
           >
-            <span>✦ Search Sanctuary</span>
+            <span>✦ Sanctuary</span>
           </button>
 
           <button
@@ -963,17 +963,7 @@ export function App() {
             <span>{user ? user.displayName || 'Synced' : 'Sign in'}</span>
           </button>
 
-          <button
-            type="button"
-            className="quiet-button"
-            onClick={() => {
-              setCurrentBookSlug('ephesians');
-              setCurrentChapter(1);
-              setActiveVersionIds(['kjv', 'twi']);
-            }}
-          >
-            Ephesians 1
-          </button>
+
         </div>
       </header>
 
