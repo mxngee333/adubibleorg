@@ -52,10 +52,30 @@ export interface InterlinearWord {
   morphology?: string;
 }
 
+export type VersePiece =
+  | string
+  | {
+      text?: string;
+      lineBreak?: boolean;
+      noteId?: number;
+      heading?: string;
+    };
+
+export interface ChapterFootnote {
+  noteId: number;
+  caller?: string;
+  text: string;
+  reference?: {
+    chapter?: number;
+    verse?: number;
+  };
+}
+
 export interface VerseData {
   verse: number;
   text: string;
   heading?: string;
+  pieces?: VersePiece[];
   words?: InterlinearWord[];
   footnotes?: string[];
   crossRefs?: string[];
@@ -65,10 +85,14 @@ export interface ChapterData {
   versionId: string;
   bookId: string;
   bookSlug: string;
+  bookLocalName?: string;
   chapter: number;
   verses: VerseData[];
+  chapterFootnotes?: ChapterFootnote[];
   audioUrl?: string;
   source?: string;
+  licenseUrl?: string;
+  licenseText?: string;
 }
 
 export interface StrongsLexiconEntry {
@@ -204,6 +228,8 @@ export interface ReadingPreferences {
   fontFamily: 'serif' | 'sans' | 'mono';
   layoutMode: 'parallel-columns' | 'verse-by-verse-interlinear' | 'single-flowing';
   showStrongsInline: boolean;
+  showCommentaries: boolean;
+  showStudyBadges: boolean;
   showMorphology: boolean;
   showCrossRefs: boolean;
   showHeadings: boolean;

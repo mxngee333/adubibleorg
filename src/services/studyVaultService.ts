@@ -17,17 +17,19 @@ const LS_HIGHLIGHTS = 'elohim_highlights_v1';
 const LS_BOOKMARKS = 'elohim_bookmarks_v1';
 const LS_PINS = 'elohim_pins_v1';
 const LS_NOTES = 'elohim_notes_v1';
-const LS_PREFS = 'elohim_prefs_v1';
+const LS_PREFS = 'elohim_prefs_v2';
 const LS_ADDONS_META = 'elohim_addons_meta_v1';
 const LS_HISTORY = 'elohim_reading_history_v1';
 
 export const DEFAULT_PREFERENCES: ReadingPreferences = {
-  theme: 'parchment',
-  fontSize: 18,
-  lineHeight: 1.75,
+  theme: 'midnight',
+  fontSize: 19,
+  lineHeight: 1.72,
   fontFamily: 'serif',
   layoutMode: 'parallel-columns',
-  showStrongsInline: true,
+  showStrongsInline: false,
+  showCommentaries: false,
+  showStudyBadges: true,
   showMorphology: false,
   showCrossRefs: true,
   showHeadings: true,

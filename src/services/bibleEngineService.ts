@@ -12,17 +12,115 @@ import {
   getPrebundledChapter,
   adaptVerseToLanguage,
 } from '../data/featuredChaptersCorpus';
+import licensesJson from '../data/wisdom/licenses.json';
 import {
   BibleBook,
   BibleVersion,
   ChapterData,
+  ChapterFootnote,
   CustomBibleAddon,
   LanguageMetadata,
   VerseData,
+  VersePiece,
 } from '../types/bible';
 import { getCachedChapter, setCachedChapter } from './studyVaultService';
 
+const licensesMap = licensesJson as Record<string, { url: string; text: string }>;
 const memoryCache = new Map<string, ChapterData>();
+
+function parseHelloaoChapterPayload(
+  json: any,
+  versionId: string,
+  helloaoId: string,
+  book: { id: string; slug: string; names: Record<string, string> },
+  validChapter: number,
+  sourceLabel: string
+): ChapterData | null {
+  const contentArr = json?.chapter?.content;
+  if (!Array.isArray(contentArr)) return null;
+
+  const verses: VerseData[] = [];
+  let pendingHeading: string | undefined;
+
+  for (const item of contentArr) {
+    if (item.type === 'heading' && Array.isArray(item.content)) {
+      pendingHeading = item.content
+        .map((c: any) => (typeof c === 'string' ? c : c?.text || ''))
+        .join(' ')
+        .trim();
+    } else if (item.type === 'verse' && Array.isArray(item.content)) {
+      const textParts: string[] = [];
+      const pieces: VersePiece[] = [];
+      for (const piece of item.content) {
+        if (typeof piece === 'string') {
+          textParts.push(piece);
+          pieces.push(piece);
+        } else if (piece && typeof piece === 'object') {
+          if ('text' in piece && piece.text) {
+            textParts.push(String(piece.text));
+            pieces.push({
+              text: String(piece.text),
+              lineBreak: Boolean(piece.lineBreak),
+            });
+          } else if (piece.lineBreak) {
+            textParts.push(' ');
+            pieces.push({ lineBreak: true });
+          } else if (typeof piece.noteId === 'number') {
+            pieces.push({ noteId: piece.noteId });
+          } else if (piece.heading) {
+            textParts.push(String(piece.heading));
+            pieces.push({ heading: String(piece.heading) });
+          }
+        }
+      }
+      const joined = textParts.join(' ').replace(/\s+/g, ' ').trim();
+      if (joined || pieces.length > 0) {
+        verses.push({
+          verse: Number(item.number) || verses.length + 1,
+          text: joined,
+          heading: pendingHeading,
+          pieces,
+        });
+        pendingHeading = undefined;
+      }
+    }
+  }
+
+  if (verses.length === 0) return null;
+
+  const rawFootnotes = Array.isArray(json?.chapter?.footnotes)
+    ? json.chapter.footnotes
+    : [];
+  const chapterFootnotes: ChapterFootnote[] = rawFootnotes.map((fn: any, idx: number) => ({
+    noteId: typeof fn.noteId === 'number' ? fn.noteId : idx,
+    caller: fn.caller || '+',
+    text: String(fn.text || ''),
+    reference: fn.reference,
+  }));
+
+  const audioLinks = json?.thisChapterAudioLinks || {};
+  const firstAudioUrl =
+    typeof audioLinks === 'object' && audioLinks !== null
+      ? (Object.values(audioLinks)[0] as string | undefined)
+      : undefined;
+
+  const lic = licensesMap[helloaoId];
+
+  return {
+    versionId,
+    bookId: book.id,
+    bookSlug: book.slug,
+    bookLocalName:
+      json?.book?.commonName || json?.book?.name || book.names.en,
+    chapter: validChapter,
+    verses,
+    chapterFootnotes,
+    audioUrl: firstAudioUrl,
+    source: sourceLabel,
+    licenseUrl: lic?.url || json?.translation?.licenseUrl || json?.translation?.website,
+    licenseText: lic?.text,
+  };
+}
 
 export function getAllCanonicalBooks(): BibleBook[] {
   return BIBLE_BOOKS.map((b) => ({
@@ -145,7 +243,46 @@ export async function resolveChapterData(
     }
   }
 
-  // 2. Check 0ms Pre-bundled Corpus (Ephesians 1, Genesis 1, Psalm 23, John 1, John 3, Romans 8)
+  const verMeta = getVersionById(versionId);
+  const helloaoId =
+    customAddon && customAddon.id.startsWith('helloao-')
+      ? customAddon.code
+      : verMeta?.helloaoId;
+  const bollsId = verMeta?.bollsId;
+  const licInfo = helloaoId ? licensesMap[helloaoId] : undefined;
+
+  // 2A. For Ephesians 1, check local 28-edition Wisdom Bible Seed JSON (/seed/${helloaoId}.json) first!
+  // (Except for NKJV which uses our dedicated NKJV Study Corpus)
+  if (
+    book.id === 'EPH' &&
+    validChapter === 1 &&
+    helloaoId &&
+    versionId !== 'nkjv' &&
+    typeof window !== 'undefined'
+  ) {
+    try {
+      const seedRes = await fetch(`/seed/${encodeURIComponent(helloaoId)}.json`);
+      if (seedRes.ok) {
+        const seedJson = await seedRes.json();
+        const parsedSeed = parseHelloaoChapterPayload(
+          seedJson,
+          versionId,
+          helloaoId,
+          book,
+          validChapter,
+          `Wisdom Seed Corpus (${helloaoId})`
+        );
+        if (parsedSeed) {
+          memoryCache.set(memKey, parsedSeed);
+          return parsedSeed;
+        }
+      }
+    } catch {
+      // Fall through to prebundled corpus
+    }
+  }
+
+  // 2B. Check 0ms Pre-bundled Corpus (Ephesians 1, Genesis 1, Psalm 23, John 1, John 3, Romans 8)
   const prebundled = getPrebundledChapter(book.slug, validChapter, versionId);
   if (prebundled && prebundled.length > 0) {
     const verses: VerseData[] = prebundled.map((v) => ({
@@ -159,9 +296,12 @@ export async function resolveChapterData(
       versionId,
       bookId: book.id,
       bookSlug: book.slug,
+      bookLocalName: book.names[verMeta.langCode] || book.names.en,
       chapter: validChapter,
       verses,
       source: 'Elohim Bundled Parallel Corpus (0ms)',
+      licenseUrl: licInfo?.url,
+      licenseText: licInfo?.text || verMeta.copyright,
     };
     memoryCache.set(memKey, result);
     return result;
@@ -174,14 +314,6 @@ export async function resolveChapterData(
     return cached;
   }
 
-  // 4. Live Multi-API Open-Source Bible Stream
-  const verMeta = getVersionById(versionId);
-  const helloaoId =
-    customAddon && customAddon.id.startsWith('helloao-')
-      ? customAddon.code
-      : verMeta?.helloaoId;
-  const bollsId = verMeta?.bollsId;
-
   // 4A. Try Free Use Bible API (bible.helloao.org)
   if (helloaoId) {
     try {
@@ -190,46 +322,18 @@ export async function resolveChapterData(
       );
       if (res.ok) {
         const json = await res.json();
-        const contentArr = json?.chapter?.content;
-        if (Array.isArray(contentArr)) {
-          const verses: VerseData[] = [];
-          let pendingHeading: string | undefined;
-          for (const item of contentArr) {
-            if (item.type === 'heading' && Array.isArray(item.content)) {
-              pendingHeading = item.content.join(' ').trim();
-            } else if (item.type === 'verse' && Array.isArray(item.content)) {
-              const textParts: string[] = [];
-              for (const piece of item.content) {
-                if (typeof piece === 'string') {
-                  textParts.push(piece);
-                } else if (piece && typeof piece === 'object' && 'text' in piece) {
-                  textParts.push(String((piece as { text: string }).text));
-                }
-              }
-              const joined = textParts.join(' ').replace(/\s+/g, ' ').trim();
-              if (joined) {
-                verses.push({
-                  verse: Number(item.number) || verses.length + 1,
-                  text: joined,
-                  heading: pendingHeading,
-                });
-                pendingHeading = undefined;
-              }
-            }
-          }
-          if (verses.length > 0) {
-            const result: ChapterData = {
-              versionId,
-              bookId: book.id,
-              bookSlug: book.slug,
-              chapter: validChapter,
-              verses,
-              source: `Free Use Bible Cloud (${helloaoId})`,
-            };
-            memoryCache.set(memKey, result);
-            await setCachedChapter(result);
-            return result;
-          }
+        const parsed = parseHelloaoChapterPayload(
+          json,
+          versionId,
+          helloaoId,
+          book,
+          validChapter,
+          `Free Use Bible Cloud (${helloaoId})`
+        );
+        if (parsed) {
+          memoryCache.set(memKey, parsed);
+          await setCachedChapter(parsed);
+          return parsed;
         }
       }
     } catch {
