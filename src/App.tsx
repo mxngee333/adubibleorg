@@ -67,6 +67,7 @@ import {
   LegalPageKey,
 } from './components/LegalInstitutionalModal';
 import { OmniSearchBar } from './components/OmniSearchBar';
+import { SearchSanctuaryLander } from './components/SearchSanctuaryLander';
 import { QuickVersionRibbon } from './components/QuickVersionRibbon';
 import { MobileBottomDock } from './components/MobileBottomDock';
 import { GrandSiteFooter } from './components/GrandSiteFooter';
@@ -195,6 +196,12 @@ export function App() {
       return ['kjv', 'twi'];
     }
     return [primary, 'twi'];
+  });
+
+  // Search Sanctuary Lander visibility (Defaults to true on homepage adubible.org /)
+  const [showSearchSanctuary, setShowSearchSanctuary] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true;
+    return window.location.pathname === '/' || window.location.pathname === '';
   });
 
   // Custom Add-on Packs
@@ -581,6 +588,7 @@ export function App() {
     setCurrentChapter(1);
     setSelectedVerse(1);
     setActiveVersionIds(['kjv', 'twi']);
+    setShowSearchSanctuary(true);
 
     // Update browser URL to / if not already there
     if (typeof window !== 'undefined' && window.location.pathname !== '/') {
@@ -902,6 +910,20 @@ export function App() {
         <div className="mast-actions">
           <button
             type="button"
+            className={`quiet-button ${showSearchSanctuary ? 'active-pill' : ''}`}
+            onClick={() => {
+              setShowSearchSanctuary((prev) => !prev);
+              if (!showSearchSanctuary) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+            title="Toggle Search Sanctuary Lander"
+          >
+            <span>✦ Search Sanctuary</span>
+          </button>
+
+          <button
+            type="button"
             className="quiet-button"
             onClick={() => {
               setStudyVaultTab('pins');
@@ -1082,6 +1104,39 @@ export function App() {
         />
       ) : (
         <main id="reader" className="workspace">
+          {/* SEARCH SANCTUARY LANDER (for visitors on adubible.org / adubible.com) */}
+          {showSearchSanctuary && (
+            <SearchSanctuaryLander
+              books={allHistoricalBooks}
+              currentBookSlug={currentBook.slug}
+              currentChapter={currentChapter}
+              onNavigate={(slug, ch, v) => {
+                handleSelectBookChapter(slug, ch);
+                if (v) setSelectedVerse(v);
+                const target = document.getElementById('reading-shell');
+                target?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              onLaunchPreset={(versions, bSlug, chNum) => {
+                if (bSlug) setCurrentBookSlug(bSlug);
+                if (chNum) setCurrentChapter(chNum);
+                setActiveVersionIds(versions);
+                const target = document.getElementById('reading-shell');
+                target?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              onSelectNavTab={(tab) => {
+                setActiveNavTab(tab);
+                if (typeof window !== 'undefined') {
+                  window.history.pushState({}, '', tab === 'canonical' ? '/' : `/${tab}`);
+                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onEnterReader={() => {
+                const target = document.getElementById('reading-shell');
+                target?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            />
+          )}
+
           <section className="page-heading">
             <p className="eyebrow">
               {currentBook.testament === 'DC'
@@ -1097,7 +1152,7 @@ export function App() {
           </section>
 
         {/* 3. READING SHELL */}
-        <section className="reading-shell" aria-busy={loadingChapters}>
+        <section id="reading-shell" className="reading-shell" aria-busy={loadingChapters}>
           {/* PASSAGE TOOLBAR */}
           <div className="passage-toolbar">
             <div className="passage-controls">
