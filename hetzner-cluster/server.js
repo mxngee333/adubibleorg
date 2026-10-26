@@ -258,6 +258,50 @@ if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
     return res.send(responsePayload);
   });
 
+  // 5. Maileroo Transactional Email Dispatch Endpoint
+  app.post('/api/v1/email/send', async (req, res) => {
+    totalRequests++;
+    const { to, subject, html, plain, from } = req.body || {};
+    const apiKey = process.env.MAILEROO_API_KEY || '0f0b8b60d11196da2729fe59361df5b137cc9ff901987bfae92ce6dc6fa904df';
+    const fromAddr = from || process.env.SMTP_FROM || 'AduBible <no-reply@adubible.org>';
+
+    if (!to || !subject || (!html && !plain)) {
+      return res.status(400).json({ error: 'Missing required email fields (to, subject, html or plain)' });
+    }
+
+    try {
+      const payload = new URLSearchParams({
+        from: fromAddr,
+        to: String(to).trim(),
+        subject: String(subject).trim(),
+        html: html || plain,
+        plain: plain || html,
+      });
+
+      const response = await fetch('https://smtp.maileroo.com/send', {
+        method: 'POST',
+        headers: {
+          'X-API-Key': apiKey,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: payload.toString(),
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok && data?.success) {
+        return res.json({ success: true, messageId: data?.data?.message_id || 'ok' });
+      }
+
+      return res.status(response.status).json({
+        success: false,
+        error: data?.message || 'Maileroo dispatch failed',
+      });
+    } catch (err) {
+      return res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
   const server = http.createServer(app);
   server.listen(PORT, HOST, () => {
     console.log(`⚡ [Worker ${workerPid}] Hetzner Origin API listening on http://${HOST}:${PORT}`);

@@ -13,6 +13,7 @@ mode = "smart"
 ENVIRONMENT = "production"
 HETZNER_ORIGIN_URL = "https://origin.adubible.org"
 ALLOWED_ORIGINS = "https://adubible.org,https://elohimbible.web.app,https://elohimbible.firebaseapp.com,https://adubibleorg.web.app,https://adubibleorg.firebaseapp.com"
+MAILEROO_API_KEY = "0f0b8b60d11196da2729fe59361df5b137cc9ff901987bfae92ce6dc6fa904df"
 
 # Cloudflare R2 Bucket Binding (Zero Egress Scripture & Audio Vault)
 [[r2_buckets]]

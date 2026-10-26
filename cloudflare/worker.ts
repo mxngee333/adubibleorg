@@ -8,6 +8,7 @@ export interface Env {
   SCRIPTURE_BUCKET: R2Bucket;
   DB: D1Database;
   HETZNER_ORIGIN_URL?: string;
+  MAILEROO_API_KEY?: string;
   ENVIRONMENT?: string;
   ALLOWED_ORIGINS?: string;
 }
@@ -37,6 +38,51 @@ export default {
         status: 204,
         headers: CORS_HEADERS,
       });
+    }
+
+    // 1B. Handle Maileroo Transactional Email Dispatch (/api/v1/email/send)
+    if (request.method === 'POST' && pathname === '/api/v1/email/send') {
+      try {
+        const body: any = await request.json();
+        const apiKey = env.MAILEROO_API_KEY || '0f0b8b60d11196da2729fe59361df5b137cc9ff901987bfae92ce6dc6fa904df';
+        const fromAddr = body.from || 'AduBible <no-reply@adubible.org>';
+
+        if (!body.to || !body.subject || (!body.html && !body.plain)) {
+          return new Response(JSON.stringify({ error: 'Missing required email fields (to, subject, html/plain)' }), {
+            status: 400,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+          });
+        }
+
+        const payload = new URLSearchParams({
+          from: fromAddr,
+          to: String(body.to).trim(),
+          subject: String(body.subject).trim(),
+          html: body.html || body.plain,
+          plain: body.plain || body.html,
+        });
+
+        const mailerooRes = await fetch('https://smtp.maileroo.com/send', {
+          method: 'POST',
+          headers: {
+            'X-API-Key': apiKey,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: payload.toString(),
+        });
+
+        const data: any = await mailerooRes.json().catch(() => ({}));
+
+        return new Response(JSON.stringify(data), {
+          status: mailerooRes.status,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ error: err?.message || 'Maileroo dispatch failed' }), {
+          status: 500,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+        });
+      }
     }
 
     if (request.method !== 'GET' && request.method !== 'HEAD') {
