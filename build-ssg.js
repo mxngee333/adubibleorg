@@ -289,16 +289,29 @@ ${sitemapEntries}
 `;
   fs.writeFileSync(path.join(DIST_DIR, 'sitemap.xml'), sitemapXml, 'utf-8');
 
-  // Ensure robots.txt in dist
-  const robotsTxt = `User-agent: *
+  // Preserve the canonical Googlebot-Image compliant robots.txt
+  try {
+    const publicRobots = fs.readFileSync(path.join(__dirname, 'public', 'robots.txt'), 'utf-8');
+    fs.writeFileSync(path.join(DIST_DIR, 'robots.txt'), publicRobots, 'utf-8');
+  } catch (err) {
+    const fallbackRobots = `User-agent: *
 Allow: /
 
 User-agent: Googlebot-Image
 Allow: /
+Allow: /favicon.ico
+Allow: /favicon.svg
+Allow: /favicon-48x48.png
+Allow: /favicon-96x96.png
+Allow: /apple-touch-icon.png
+Allow: /og-image.jpg
+Allow: /icons/
+Allow: /images/
 
 Sitemap: ${BASE_URL}/sitemap.xml
 `;
-  fs.writeFileSync(path.join(DIST_DIR, 'robots.txt'), robotsTxt, 'utf-8');
+    fs.writeFileSync(path.join(DIST_DIR, 'robots.txt'), fallbackRobots, 'utf-8');
+  }
 
   console.log(
     `[ADUBIBLE SSG] Generated ${CANONICAL_ROUTES.length} static routes + sitemap.xml + robots.txt in dist/ for ${BASE_URL}`
