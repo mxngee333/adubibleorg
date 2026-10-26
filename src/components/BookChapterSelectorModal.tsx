@@ -21,7 +21,12 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
   uiLanguageCode,
   onSelectBookChapter,
 }) => {
-  const [testamentFilter, setTestamentFilter] = useState<'ALL' | 'OT' | 'NT' | 'DC' | 'PSEUD'>('ALL');
+  const [testamentFilter, setTestamentFilter] = useState<'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD'>(() => {
+    const cur = books.find((b) => b.id === currentBookId);
+    if (cur?.testament === 'DC') return 'DC';
+    if (cur?.testament === 'PSEUD') return 'PSEUD';
+    return 'CANONICAL';
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBook, setSelectedBook] = useState<BibleBook | null>(
     () => books.find((b) => b.id === currentBookId) || books[0] || null
@@ -31,7 +36,11 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
   const filteredBooks = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     return books.filter((b) => {
-      if (testamentFilter !== 'ALL' && b.testament !== testamentFilter) return false;
+      if (testamentFilter === 'CANONICAL') {
+        if (b.testament !== 'OT' && b.testament !== 'NT') return false;
+      } else if (b.testament !== testamentFilter) {
+        return false;
+      }
       if (!q) return true;
       const enName = (b.names.en || '').toLowerCase();
       const twName = (b.names.tw || '').toLowerCase();
@@ -61,10 +70,18 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
             </div>
             <div>
               <h2 className="text-base font-bold text-amber-200">
-                107 Sacred Books &amp; Chapters Navigator
+                {testamentFilter === 'DC'
+                  ? '16 Deuterocanonical Books Navigator'
+                  : testamentFilter === 'PSEUD'
+                  ? '25 List of Sixty & Apocrypha Navigator'
+                  : '66 Accepted Canonical Books Navigator'}
               </h2>
               <p className="text-xs text-stone-400">
-                Canonical (66) · Deuterocanonicals (16) · List of Sixty &amp; Ancient Apocrypha (25)
+                {testamentFilter === 'DC'
+                  ? 'Catholic & Orthodox Canons (16 Historical Books)'
+                  : testamentFilter === 'PSEUD'
+                  ? '7th-Century Manuscript Canon & Apostolic Fathers (25 Books)'
+                  : 'Old Testament (39) · New Testament (27) · Accepted Holy Scripture'}
               </p>
             </div>
           </div>
@@ -81,16 +98,17 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
           <div className="flex flex-wrap items-center gap-1.5">
             <button
               onClick={() => {
-                setTestamentFilter('ALL');
+                setTestamentFilter('CANONICAL');
                 setStep('books');
               }}
               className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
-                testamentFilter === 'ALL'
+                testamentFilter === 'CANONICAL'
                   ? 'bg-amber-500 text-stone-950'
                   : 'bg-stone-800 text-stone-300 hover:text-white'
               }`}
+              title="66 Accepted Canonical Books (OT 39 + NT 27)"
             >
-              All 107
+              Accepted Canon (66)
             </button>
             <button
               onClick={() => {

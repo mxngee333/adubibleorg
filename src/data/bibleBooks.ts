@@ -3152,6 +3152,17 @@ export function getAdjacentChapter(
   let prev: { bookSlug: string; bookId: string; bookName: string; chapter: number } | null = null;
   let next: { bookSlug: string; bookId: string; bookName: string; chapter: number } | null = null;
 
+  // Bound chapters strictly to their respective canon/collection
+  let minBookNum = 1;
+  let maxBookNum = 66;
+  if (currentBook.testament === 'DC') {
+    minBookNum = 67;
+    maxBookNum = 82;
+  } else if (currentBook.testament === 'PSEUD') {
+    minBookNum = 83;
+    maxBookNum = 107;
+  }
+
   if (chapter > 1) {
     prev = {
       bookSlug: currentBook.slug,
@@ -3159,7 +3170,7 @@ export function getAdjacentChapter(
       bookName: getLocalizedBookName(currentBook.id, langCode),
       chapter: chapter - 1,
     };
-  } else if (currentBook.number > 1) {
+  } else if (currentBook.number > minBookNum) {
     const prevBook = getBookByNumber(currentBook.number - 1);
     if (prevBook) {
       prev = {
@@ -3178,7 +3189,7 @@ export function getAdjacentChapter(
       bookName: getLocalizedBookName(currentBook.id, langCode),
       chapter: chapter + 1,
     };
-  } else if (currentBook.number < 107) {
+  } else if (currentBook.number < maxBookNum) {
     const nextBook = getBookByNumber(currentBook.number + 1);
     if (nextBook) {
       next = {

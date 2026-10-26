@@ -15,6 +15,7 @@ import {
 import {
   getAllBibleVersions,
   getAllCanonicalBooks,
+  getAllHistoricalBooks,
   getAllLanguagesMetadata,
   parseBibleHubUrlPath,
   resolveChapterData,
@@ -132,6 +133,7 @@ function renderVersePieces(
 
 export function App() {
   const canonicalBooks = useMemo(() => getAllCanonicalBooks(), []);
+  const allHistoricalBooks = useMemo(() => getAllHistoricalBooks(), []);
   const allLanguages = useMemo(() => getAllLanguagesMetadata(), []);
 
   // Parse initial URL (supports /nkjv/ephesians/1.htm, /kjv/ephesians/1, /twi/ephesians/1, etc.)
@@ -260,11 +262,23 @@ export function App() {
 
   const currentBook = useMemo(
     () =>
+      allHistoricalBooks.find((b) => b.slug === currentBookSlug) ||
       canonicalBooks.find((b) => b.slug === currentBookSlug) ||
       canonicalBooks.find((b) => b.slug === 'ephesians') ||
       canonicalBooks[0],
-    [canonicalBooks, currentBookSlug]
+    [allHistoricalBooks, canonicalBooks, currentBookSlug]
   );
+
+  // Strictly isolate collection books so Apocrypha & Deuterocanon NEVER bleed into the accepted canon
+  const activeCollectionBooks = useMemo(() => {
+    if (currentBook?.testament === 'DC') {
+      return allHistoricalBooks.filter((b) => b.testament === 'DC');
+    }
+    if (currentBook?.testament === 'PSEUD') {
+      return allHistoricalBooks.filter((b) => b.testament === 'PSEUD');
+    }
+    return canonicalBooks; // Strictly the 66 accepted canonical books (OT 39 + NT 27)
+  }, [currentBook?.testament, allHistoricalBooks, canonicalBooks]);
 
   // Load custom addons on mount
   useEffect(() => {
@@ -539,14 +553,14 @@ export function App() {
       handleSelectBookChapter(currentBook.slug, nextCh);
       return;
     }
-    const currentBookIdx = canonicalBooks.findIndex(
+    const currentBookIdx = activeCollectionBooks.findIndex(
       (b) => b.id === currentBook.id
     );
-    if (delta > 0 && currentBookIdx < canonicalBooks.length - 1) {
-      const nextBook = canonicalBooks[currentBookIdx + 1];
+    if (delta > 0 && currentBookIdx < activeCollectionBooks.length - 1) {
+      const nextBook = activeCollectionBooks[currentBookIdx + 1];
       handleSelectBookChapter(nextBook.slug, 1);
     } else if (delta < 0 && currentBookIdx > 0) {
-      const prevBook = canonicalBooks[currentBookIdx - 1];
+      const prevBook = activeCollectionBooks[currentBookIdx - 1];
       handleSelectBookChapter(prevBook.slug, prevBook.chapters);
     }
   };
@@ -559,7 +573,7 @@ export function App() {
     const rawBookName = match[1].trim().toLowerCase().replace(/\s+/g, '-');
     const chNum = parseInt(match[2], 10) || 1;
     const vNum = match[3] ? parseInt(match[3], 10) : 1;
-    const foundBook = canonicalBooks.find(
+    const foundBook = allHistoricalBooks.find(
       (b) =>
         b.slug === rawBookName ||
         b.names.en.toLowerCase() === match[1].trim().toLowerCase()
@@ -1071,7 +1085,7 @@ export function App() {
           <span>AduBible</span>
         </a>
 
-        <div className="mast-center">100% AD-FREE · 107 BOOKS · NEURAL AUDIO</div>
+        <div className="mast-center">THE WORD, SIDE BY SIDE · 100% AD-FREE</div>
 
         <div className="mast-actions">
           <button
@@ -1186,7 +1200,7 @@ export function App() {
       {/* 3. DEDICATED CANON VIEWS OR PARALLEL SCRIPTURE READER */}
       {activeNavTab === 'deuterocanon' ? (
         <DeuterocanonicalHubPage
-          books={canonicalBooks}
+          books={allHistoricalBooks}
           uiLanguageCode="en"
           onSelectBookChapter={(slug, chapter) => {
             handleSelectBookChapter(slug, chapter);
@@ -1217,7 +1231,7 @@ export function App() {
         />
       ) : activeNavTab === 'list-of-sixty' ? (
         <ListOfSixtyHubPage
-          books={canonicalBooks}
+          books={allHistoricalBooks}
           uiLanguageCode="en"
           onSelectBookChapter={(slug, chapter) => {
             handleSelectBookChapter(slug, chapter);
@@ -1250,8 +1264,11 @@ export function App() {
         <main id="reader" className="workspace">
           <section className="page-heading">
             <p className="eyebrow">
-              {currentBook.category ? `${currentBook.category.toUpperCase()} · ` : ''}
-              100% AD-FREE · {canonicalBooks.length} BOOKS · 24KHZ NEURAL AUDIO
+              {currentBook.testament === 'DC'
+                ? 'DEUTEROCANONICAL SCRIPTURE · 16 HISTORICAL BOOKS · 24KHZ NEURAL AUDIO'
+                : currentBook.testament === 'PSEUD'
+                ? 'APOCRYPHA & APOSTOLIC FATHERS · 25 ANCIENT TEXTS · 24KHZ NEURAL AUDIO'
+                : `${currentBook.category ? `${currentBook.category.toUpperCase()} · ` : ''}100% AD-FREE · 66 CANONICAL BOOKS · 24KHZ NEURAL AUDIO`}
             </p>
             <h1>{currentBook.names.en} {currentChapter}</h1>
             <p>
@@ -1270,7 +1287,7 @@ export function App() {
                   value={currentBook.slug}
                   onChange={(e) => handleSelectBookChapter(e.target.value, 1)}
                 >
-                  {canonicalBooks.map((item) => (
+                  {activeCollectionBooks.map((item) => (
                     <option key={item.id} value={item.slug}>
                       {item.names.en} ({item.names.tw || item.id})
                     </option>
@@ -1305,7 +1322,7 @@ export function App() {
                   type="button"
                   onClick={() => handleStepChapter(-1)}
                   disabled={
-                    currentBook.number === 1 && currentChapter <= 1
+                    currentBook.id === activeCollectionBooks[0]?.id && currentChapter <= 1
                   }
                   aria-label="Previous chapter"
                 >
@@ -1315,7 +1332,7 @@ export function App() {
                   type="button"
                   onClick={() => handleStepChapter(1)}
                   disabled={
-                    currentBook.number === canonicalBooks.length &&
+                    currentBook.id === activeCollectionBooks[activeCollectionBooks.length - 1]?.id &&
                     currentChapter >= currentBook.chapters
                   }
                   aria-label="Next chapter"
@@ -1328,9 +1345,19 @@ export function App() {
                 <button
                   type="button"
                   onClick={() => setIsBookModalOpen(true)}
-                  title="Browse all 107 Canonical, Deuterocanonical & Apocryphal Books"
+                  title={
+                    currentBook.testament === 'DC'
+                      ? 'Browse 16 Deuterocanonical Books'
+                      : currentBook.testament === 'PSEUD'
+                      ? 'Browse 25 List of Sixty & Apocrypha Books'
+                      : 'Browse all 66 Accepted Canonical Books in English & Twi'
+                  }
                 >
-                  All 107 Books
+                  {currentBook.testament === 'DC'
+                    ? 'Deuterocanon (16)'
+                    : currentBook.testament === 'PSEUD'
+                    ? 'Apocrypha (25)'
+                    : 'All 66 Books'}
                 </button>
               </div>
             </div>
@@ -1360,19 +1387,23 @@ export function App() {
                   if (prefs.theme === 'royal-purple') {
                     updatePrefs({ theme: 'lilac-light' });
                   } else if (prefs.theme === 'lilac-light') {
-                    updatePrefs({ theme: 'royal-purple' });
+                    updatePrefs({ theme: 'sapphire-blue' });
+                  } else if (prefs.theme === 'sapphire-blue') {
+                    updatePrefs({ theme: 'midnight' });
                   } else if (prefs.theme === 'midnight') {
                     updatePrefs({ theme: 'parchment' });
                   } else {
-                    updatePrefs({ theme: 'midnight' });
+                    updatePrefs({ theme: 'sapphire-blue' });
                   }
                 }}
-                title="Toggle between Dark and Light mode (or open Settings for all palettes)"
+                title="Cycle through palettes (Royal Velvet, Lilac, Celestial Sapphire Blue, Obsidian Gold, Daylight)"
               >
                 {prefs.theme === 'royal-purple'
                   ? '💜 Velvet'
                   : prefs.theme === 'lilac-light'
                   ? '🌸 Lilac'
+                  : prefs.theme === 'sapphire-blue'
+                  ? '🌊 Sapphire'
                   : isNight
                   ? '🌙 Night'
                   : '☀️ Light'}
@@ -2099,11 +2130,11 @@ export function App() {
         />
       )}
 
-      {/* 66-BOOK CANONICAL SELECTOR MODAL */}
+      {/* CANONICAL & SCRIPTURE SELECTOR MODAL */}
       <BookChapterSelectorModal
         isOpen={isBookModalOpen}
         onClose={() => setIsBookModalOpen(false)}
-        books={canonicalBooks}
+        books={allHistoricalBooks}
         currentBookId={currentBook.id}
         currentChapter={currentChapter}
         uiLanguageCode="en"

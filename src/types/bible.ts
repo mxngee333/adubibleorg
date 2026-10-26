@@ -230,7 +230,8 @@ export type ReadingTheme =
   | 'parchment'
   | 'lilac-light'
   | 'obsidian'
-  | 'daylight';
+  | 'daylight'
+  | 'sapphire-blue';
 
 export interface ReadingPreferences {
   theme: ReadingTheme;

@@ -268,6 +268,33 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </div>
                 <span>Editorial Scroll · Warm daylight cream scroll (#faf7f2) &amp; deep ink</span>
               </button>
+
+              {/* Option 5: Celestial Sapphire Blue */}
+              <button
+                type="button"
+                className={`picker-option ${prefs.theme === 'sapphire-blue' ? 'active' : ''}`}
+                onClick={() => onUpdatePrefs({ theme: 'sapphire-blue' })}
+                style={{ textAlign: 'left', padding: '12px' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                  <strong style={{ fontSize: '13px' }}>🌊 Celestial Sapphire Blue</strong>
+                  <div
+                    style={{
+                      width: '28px',
+                      height: '16px',
+                      borderRadius: '4px',
+                      background: '#0c192c',
+                      border: '1px solid #38bdf8',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#38bdf8' }} />
+                  </div>
+                </div>
+                <span>Exodus 28:31 · Tekhelet (תְּכֵלֶת) sanctuary blue, starlight silver &amp; ocean sapphire</span>
+              </button>
             </div>
 
             <div

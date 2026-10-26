@@ -123,6 +123,21 @@ function parseHelloaoChapterPayload(
 }
 
 export function getAllCanonicalBooks(): BibleBook[] {
+  return BIBLE_BOOKS.filter((b) => b.testament === 'OT' || b.testament === 'NT').map((b) => ({
+    id: b.id,
+    slug: b.slug,
+    number: b.number,
+    testament: b.testament,
+    category: b.category,
+    chapters: b.chapters,
+    author: b.author,
+    canonStatus: b.canonStatus,
+    historicalEra: b.historicalEra,
+    names: b.names,
+  }));
+}
+
+export function getAllHistoricalBooks(): BibleBook[] {
   return BIBLE_BOOKS.map((b) => ({
     id: b.id,
     slug: b.slug,

@@ -277,7 +277,122 @@ input {
   color: #6b21a8;
 }
 
+/* ==========================================================================
+   THEME 3: CELESTIAL SAPPHIRE BLUE (High Priest Tekhelet & Throne of God)
+   Hebrew: Tekhelet (תְּכֵלֶת) · Sappîr (סַפִּיר) · Greek: Sappheiros (σάπφειρος)
+   Exodus 28:31, Exodus 24:10, Ezekiel 1:26
+   Deep Ocean Midnight (#0c192c), Abyssal Sky Black (#070f1e),
+   Luminous Starlight Silver (#f0f6fc), and Celestial Sky Cyan (#38bdf8).
+   ========================================================================== */
+.bible-app.theme-sapphire-blue {
+  --paper: #0c192c;
+  --surface: #070f1e;
+  --ink: #f0f6fc;
+  --subtle: #8ba2c4;
+  --line: rgba(56, 189, 248, 0.22);
+  --green: #38bdf8;
+  --soft: #112240;
+  color-scheme: dark;
+}
+
+.bible-app.theme-sapphire-blue .brand-icon {
+  background: rgba(56, 189, 248, 0.2);
+  border: 1px solid rgba(56, 189, 248, 0.55);
+  color: #38bdf8;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+}
+
+.bible-app.theme-sapphire-blue .reading-shell {
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  box-shadow: 0 20px 50px rgba(7, 15, 30, 0.85);
+}
+
+.bible-app.theme-sapphire-blue .chapter-intro h2 {
+  color: #e0f2fe;
+}
+
+.bible-app.theme-sapphire-blue .chapter-intro h2 span {
+  color: #38bdf8;
+}
+
+.bible-app.theme-sapphire-blue .add-column {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 2px 14px rgba(2, 132, 199, 0.45);
+}
+
+.bible-app.theme-sapphire-blue .add-column:hover:not(:disabled) {
+  background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+  border-color: #bae6fd;
+}
+
+.bible-app.theme-sapphire-blue .quiet-button.active-pill,
+.bible-app.theme-sapphire-blue .preset-row button.active,
+.bible-app.theme-sapphire-blue .languages-grid button.active,
+.bible-app.theme-sapphire-blue .reader-tools button.settings-active {
+  background: #0284c7;
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(56, 189, 248, 0.4);
+}
+
+.bible-app.theme-sapphire-blue .edition-badge {
+  background: rgba(56, 189, 248, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  color: #7dd3fc;
+}
+
+.bible-app.theme-sapphire-blue .verse-row.selected-row {
+  background: rgba(56, 189, 248, 0.12);
+}
+
+.bible-app.theme-sapphire-blue .wisdom-toggle.on {
+  background: #0284c7;
+  border-color: #38bdf8;
+}
+
+.bible-app.theme-sapphire-blue .wisdom-toggle.on .wisdom-toggle-knob {
+  background: #ffffff;
+}
+
+.bible-app.theme-sapphire-blue .picker-dialog {
+  background: #0c192c;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #f0f6fc;
+}
+
+.bible-app.theme-sapphire-blue .picker-head h3 {
+  color: #e0f2fe;
+}
+
+.bible-app.theme-sapphire-blue .picker-option.active {
+  background: rgba(2, 132, 199, 0.25);
+  border-color: #38bdf8;
+  color: #e0f2fe;
+}
+
+.bible-app.theme-sapphire-blue .picker-option.active span {
+  color: #7dd3fc;
+}
+
 /* Dynamic Body & Scrollbars across palettes */
+body:has(.theme-sapphire-blue) {
+  background: #070f1e;
+  color: #f0f6fc;
+}
+
+body:has(.theme-sapphire-blue) ::-webkit-scrollbar-track {
+  background: #070f1e;
+}
+body:has(.theme-sapphire-blue) ::-webkit-scrollbar-thumb {
+  background: #1e3a5f;
+  border-color: #070f1e;
+}
+body:has(.theme-sapphire-blue) ::-webkit-scrollbar-thumb:hover {
+  background: #38bdf8;
+}
+
 body:has(.theme-royal-purple) {
   background: #10081a;
   color: #f5f0fa;
@@ -389,6 +504,13 @@ body:has(.theme-lilac-light) ::-webkit-scrollbar-thumb:hover {
   border-color: #7e22ce;
   color: #ffffff;
   box-shadow: 0 4px 12px rgba(126, 34, 206, 0.3);
+}
+
+.bible-app.theme-sapphire-blue .canon-tab-btn.active {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.4);
 }
 
 .tab-badge {
