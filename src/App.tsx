@@ -445,6 +445,31 @@ export function App() {
     setActiveVersionIds((prev) => prev.filter((_, i) => i !== idx));
   };
 
+  const handleSwapLanguages = () => {
+    setActiveVersionIds((prev) => {
+      if (prev.length < 2) return prev;
+      if (prev.length === 2) {
+        return [prev[1], prev[0]];
+      }
+      return [prev[1], prev[0], ...prev.slice(2)];
+    });
+  };
+
+  const handleSwapColumn = (idx: number) => {
+    setActiveVersionIds((prev) => {
+      if (prev.length < 2) return prev;
+      const copy = [...prev];
+      if (prev.length === 2) {
+        return [copy[1], copy[0]];
+      }
+      const targetIdx = idx === prev.length - 1 ? idx - 1 : idx + 1;
+      const temp = copy[idx];
+      copy[idx] = copy[targetIdx];
+      copy[targetIdx] = temp;
+      return copy;
+    });
+  };
+
   const handleGoHome = (e?: React.MouseEvent) => {
     if (e) {
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
@@ -682,14 +707,17 @@ export function App() {
     return Array.from(groups.entries());
   }, [allVersions, pickerSearch]);
 
-  const isNight = prefs.theme !== 'parchment' && prefs.theme !== 'daylight';
+  const isNight =
+    prefs.theme !== 'parchment' &&
+    prefs.theme !== 'daylight' &&
+    prefs.theme !== 'lilac-light';
   const totalVaultCount =
     pins.length + highlights.length + bookmarks.length + notes.length;
   const studyLayersActiveCount =
     (prefs.showStrongsInline ? 1 : 0) + (prefs.showCommentaries ? 1 : 0);
 
   return (
-    <div className={`bible-app ${isNight ? 'night' : ''}`}>
+    <div className={`bible-app theme-${prefs.theme} ${isNight ? 'night' : ''}`}>
       {/* 1. TOP MASTHEAD (Matches Wisdom Bible Screenshot) */}
       <header className="masthead">
         <a
@@ -869,13 +897,26 @@ export function App() {
               </button>
               <button
                 type="button"
-                onClick={() =>
-                  updatePrefs({
-                    theme: isNight ? 'parchment' : 'midnight',
-                  })
-                }
+                onClick={() => {
+                  if (prefs.theme === 'royal-purple') {
+                    updatePrefs({ theme: 'lilac-light' });
+                  } else if (prefs.theme === 'lilac-light') {
+                    updatePrefs({ theme: 'royal-purple' });
+                  } else if (prefs.theme === 'midnight') {
+                    updatePrefs({ theme: 'parchment' });
+                  } else {
+                    updatePrefs({ theme: 'midnight' });
+                  }
+                }}
+                title="Toggle between Dark and Light mode (or open Settings for all palettes)"
               >
-                {isNight ? 'Light' : 'Night'}
+                {prefs.theme === 'royal-purple'
+                  ? '💜 Velvet'
+                  : prefs.theme === 'lilac-light'
+                  ? '🌸 Lilac'
+                  : isNight
+                  ? '🌙 Night'
+                  : '☀️ Light'}
               </button>
               <button
                 type="button"
@@ -916,6 +957,20 @@ export function App() {
             </div>
 
             <div className="intro-actions">
+              {activeVersionIds.length >= 2 && (
+                <button
+                  type="button"
+                  className="swap-button"
+                  onClick={handleSwapLanguages}
+                  title={`Swap parallel languages (${activeVersionIds[0]?.toUpperCase()} ⇄ ${activeVersionIds[1]?.toUpperCase()})`}
+                  aria-label="Swap parallel languages"
+                >
+                  <span className="swap-icon" aria-hidden="true">
+                    ⇄
+                  </span>
+                  <span>Swap</span>
+                </button>
+              )}
               <button
                 type="button"
                 className="quiet-button"
@@ -938,6 +993,19 @@ export function App() {
           <div className="quick-controls">
             <div className="preset-row" aria-label="Comparison presets">
               <span>Compare</span>
+              {activeVersionIds.length >= 2 && (
+                <button
+                  type="button"
+                  className="preset-swap-btn"
+                  onClick={handleSwapLanguages}
+                  title={`Swap languages (${activeVersionIds[0]?.toUpperCase()} ⇄ ${activeVersionIds[1]?.toUpperCase()})`}
+                >
+                  <span style={{ fontSize: '15px', fontWeight: 800 }} aria-hidden="true">
+                    ⇄
+                  </span>
+                  <span>Swap</span>
+                </button>
+              )}
               {COMPARE_PRESETS.map((preset) => {
                 const isActive =
                   preset.versions.join(',') === activeVersionIds.join(',');
@@ -1025,16 +1093,29 @@ export function App() {
                       </span>
                     </div>
 
-                    {activeVersionIds.length > 1 && (
-                      <button
-                        type="button"
-                        className="icon-button"
-                        onClick={() => handleRemoveColumn(idx)}
-                        aria-label={`Remove ${verMeta.name}`}
-                      >
-                        ×
-                      </button>
-                    )}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+                      {activeVersionIds.length >= 2 && (
+                        <button
+                          type="button"
+                          className="icon-button swap-col-btn"
+                          onClick={() => handleSwapColumn(idx)}
+                          title={`Swap position of ${verMeta.shortName}`}
+                          aria-label={`Swap position of ${verMeta.shortName}`}
+                        >
+                          ⇄
+                        </button>
+                      )}
+                      {activeVersionIds.length > 1 && (
+                        <button
+                          type="button"
+                          className="icon-button"
+                          onClick={() => handleRemoveColumn(idx)}
+                          aria-label={`Remove ${verMeta.name}`}
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
                   </div>
                 );
               })}

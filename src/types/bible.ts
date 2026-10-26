@@ -221,8 +221,16 @@ export interface UserProfile {
   chaptersRead: number;
 }
 
+export type ReadingTheme =
+  | 'royal-purple'
+  | 'midnight'
+  | 'parchment'
+  | 'lilac-light'
+  | 'obsidian'
+  | 'daylight';
+
 export interface ReadingPreferences {
-  theme: 'parchment' | 'midnight' | 'obsidian' | 'daylight';
+  theme: ReadingTheme;
   fontSize: number;
   lineHeight: number;
   fontFamily: 'serif' | 'sans' | 'mono';

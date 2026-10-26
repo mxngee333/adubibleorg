@@ -22,7 +22,7 @@ const LS_ADDONS_META = 'elohim_addons_meta_v1';
 const LS_HISTORY = 'elohim_reading_history_v1';
 
 export const DEFAULT_PREFERENCES: ReadingPreferences = {
-  theme: 'midnight',
+  theme: 'royal-purple',
   fontSize: 19,
   lineHeight: 1.72,
   fontFamily: 'serif',

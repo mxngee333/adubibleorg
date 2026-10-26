@@ -18,7 +18,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const isNight = prefs.theme !== 'parchment' && prefs.theme !== 'daylight';
+  const isNight =
+    prefs.theme !== 'parchment' &&
+    prefs.theme !== 'daylight' &&
+    prefs.theme !== 'lilac-light';
 
   return (
     <div
@@ -131,26 +134,117 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
                 gap: '10px',
-                marginBottom: '12px',
+                marginBottom: '14px',
               }}
             >
+              {/* Option 1: Royal Tyrian Velvet (Purple Majesty Dark) */}
               <button
                 type="button"
-                className={`picker-option ${isNight ? 'active' : ''}`}
-                onClick={() => onUpdatePrefs({ theme: 'midnight' })}
+                className={`picker-option ${prefs.theme === 'royal-purple' ? 'active' : ''}`}
+                onClick={() => onUpdatePrefs({ theme: 'royal-purple' })}
+                style={{ textAlign: 'left', padding: '12px' }}
               >
-                <strong>Sacred Obsidian &amp; Gold (Default)</strong>
-                <span>Deep obsidian (#0c0a09) &amp; royal amber gold</span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                  <strong style={{ fontSize: '13px' }}>👑 Royal Tyrian Velvet</strong>
+                  <div
+                    style={{
+                      width: '28px',
+                      height: '16px',
+                      borderRadius: '4px',
+                      background: '#160d24',
+                      border: '1px solid #c084fc',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#c084fc' }} />
+                  </div>
+                </div>
+                <span>Exodus 28:5 · Deep imperial violet, alabaster silk &amp; sacred amethyst</span>
               </button>
+
+              {/* Option 2: Sacred Lilac Parchment (Purple Light) */}
               <button
                 type="button"
-                className={`picker-option ${!isNight ? 'active' : ''}`}
-                onClick={() => onUpdatePrefs({ theme: 'parchment' })}
+                className={`picker-option ${prefs.theme === 'lilac-light' ? 'active' : ''}`}
+                onClick={() => onUpdatePrefs({ theme: 'lilac-light' })}
+                style={{ textAlign: 'left', padding: '12px' }}
               >
-                <strong>Warm Parchment (Light)</strong>
-                <span>Cream editorial scroll (#faf7f2) &amp; amber</span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                  <strong style={{ fontSize: '13px' }}>🌸 Sacred Lilac Parchment</strong>
+                  <div
+                    style={{
+                      width: '28px',
+                      height: '16px',
+                      borderRadius: '4px',
+                      background: '#fdfcfe',
+                      border: '1px solid #7e22ce',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#7e22ce' }} />
+                  </div>
+                </div>
+                <span>Proverbs 31:22 · Holy morning lavender paper &amp; deep aubergine ink</span>
+              </button>
+
+              {/* Option 3: Sacred Obsidian & Gold */}
+              <button
+                type="button"
+                className={`picker-option ${prefs.theme === 'midnight' ? 'active' : ''}`}
+                onClick={() => onUpdatePrefs({ theme: 'midnight' })}
+                style={{ textAlign: 'left', padding: '12px' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                  <strong style={{ fontSize: '13px' }}>🌙 Obsidian &amp; Amber Gold</strong>
+                  <div
+                    style={{
+                      width: '28px',
+                      height: '16px',
+                      borderRadius: '4px',
+                      background: '#0c0a09',
+                      border: '1px solid #f59e0b',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#f59e0b' }} />
+                  </div>
+                </div>
+                <span>Temple Night · Deep obsidian (#0c0a09) &amp; glowing candlelight gold</span>
+              </button>
+
+              {/* Option 4: Warm Daylight Parchment */}
+              <button
+                type="button"
+                className={`picker-option ${prefs.theme === 'parchment' ? 'active' : ''}`}
+                onClick={() => onUpdatePrefs({ theme: 'parchment' })}
+                style={{ textAlign: 'left', padding: '12px' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                  <strong style={{ fontSize: '13px' }}>☀️ Warm Daylight Parchment</strong>
+                  <div
+                    style={{
+                      width: '28px',
+                      height: '16px',
+                      borderRadius: '4px',
+                      background: '#faf7f2',
+                      border: '1px solid #78716c',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#d97706' }} />
+                  </div>
+                </div>
+                <span>Editorial Scroll · Warm daylight cream scroll (#faf7f2) &amp; deep ink</span>
               </button>
             </div>
 

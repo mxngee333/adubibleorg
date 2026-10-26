@@ -7,7 +7,7 @@ import {
   ScrollText,
   Layers,
 } from 'lucide-react';
-import { CommentarySource, VerseCommentary } from '../types/bible';
+import { CommentarySource, VerseCommentary, ReadingTheme } from '../types/bible';
 
 interface CommentaryPanelProps {
   bookId: string;
@@ -19,7 +19,7 @@ interface CommentaryPanelProps {
   bundledCommentaries: VerseCommentary[];
   onSelectStrongCode?: (code: string) => void;
   onJumpToReference?: (ref: string) => void;
-  themeMode: 'parchment' | 'midnight' | 'obsidian' | 'daylight';
+  themeMode: ReadingTheme;
 }
 
 export const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
@@ -119,7 +119,10 @@ export const CommentaryPanel: React.FC<CommentaryPanelProps> = ({
       (activeSourceId === 'all' || c.sourceId === activeSourceId)
   );
 
-  const isLight = themeMode === 'parchment' || themeMode === 'daylight';
+  const isLight =
+    themeMode === 'parchment' ||
+    themeMode === 'daylight' ||
+    themeMode === 'lilac-light';
 
   // Helper to make Strong's codes like G2128 or H430 clickable inside commentary text
   const renderFormattedCommentary = (text: string) => {
