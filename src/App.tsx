@@ -71,6 +71,7 @@ import { SearchSanctuaryLander } from './components/SearchSanctuaryLander';
 import { QuickVersionRibbon } from './components/QuickVersionRibbon';
 import { MobileBottomDock } from './components/MobileBottomDock';
 import { GrandSiteFooter } from './components/GrandSiteFooter';
+import { AduBibleLogo } from './components/AduBibleLogo';
 
 const COMPARE_PRESETS: Array<{ label: string; versions: string[] }> = [
   { label: 'KJV + Twi', versions: ['kjv', 'twi'] },
@@ -889,10 +890,7 @@ export function App() {
           onClick={handleGoHome}
           title="AduBible — Home | Adubible.org"
         >
-          <span className="brand-icon" aria-hidden="true">
-            ✦
-          </span>
-          <span>AduBible</span>
+          <AduBibleLogo size="md" variant="full" />
         </a>
 
         <div className="mast-search">

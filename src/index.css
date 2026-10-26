@@ -573,7 +573,204 @@ input {
 }
 
 /* ==========================================================================
-   THEME 6: USER CUSTOM PALETTE (Interactive Theme Studio)
+   THEME 6: SACRED ARCHITECT & ROYAL MAROON (Master Mason Gold & Sacred Geometry)
+   Imperial Deep Wine Maroon (#200813), Obsidian Void (#13040b),
+   Compass Pure Gold (#c89e34 / #e5b84c), and Alabaster Ivory Script (#fbf6ee).
+   ========================================================================== */
+.bible-app.theme-architect-gold {
+  --paper: #200813;
+  --surface: #13040b;
+  --ink: #fbf6ee;
+  --subtle: #c89e34;
+  --line: rgba(200, 158, 52, 0.28);
+  --green: #c89e34;
+  --soft: #2a0c1a;
+  color-scheme: dark;
+}
+
+.bible-app.theme-architect-gold .brand-icon {
+  background: rgba(200, 158, 52, 0.16);
+  border: 1px solid rgba(200, 158, 52, 0.65);
+  color: #e5b84c;
+  box-shadow: 0 0 16px rgba(200, 158, 52, 0.35);
+}
+
+.bible-app.theme-architect-gold .reading-shell {
+  border: 1px solid rgba(200, 158, 52, 0.3);
+  box-shadow: 0 20px 50px rgba(19, 4, 11, 0.9);
+}
+
+.bible-app.theme-architect-gold .chapter-intro h2 {
+  color: #fef3c7;
+}
+
+.bible-app.theme-architect-gold .chapter-intro h2 span {
+  color: #e5b84c;
+}
+
+.bible-app.theme-architect-gold .add-column {
+  background: linear-gradient(135deg, #c89e34 0%, #9e791e 100%);
+  border-color: #fde047;
+  color: #13040b;
+  font-weight: 700;
+  box-shadow: 0 2px 14px rgba(200, 158, 52, 0.4);
+}
+
+.bible-app.theme-architect-gold .add-column:hover:not(:disabled) {
+  background: linear-gradient(135deg, #e5b84c 0%, #c89e34 100%);
+  border-color: #fef08a;
+}
+
+.bible-app.theme-architect-gold .quiet-button.active-pill,
+.bible-app.theme-architect-gold .preset-row button.active,
+.bible-app.theme-architect-gold .languages-grid button.active,
+.bible-app.theme-architect-gold .reader-tools button.settings-active {
+  background: #c89e34;
+  border-color: #fde047;
+  color: #13040b;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(200, 158, 52, 0.35);
+}
+
+.bible-app.theme-architect-gold .edition-badge {
+  background: rgba(200, 158, 52, 0.2);
+  border: 1px solid rgba(200, 158, 52, 0.45);
+  color: #fde047;
+}
+
+.bible-app.theme-architect-gold .verse-row.selected-row {
+  background: rgba(200, 158, 52, 0.14);
+}
+
+.bible-app.theme-architect-gold .wisdom-toggle.on {
+  background: #c89e34;
+  border-color: #fde047;
+}
+
+.bible-app.theme-architect-gold .wisdom-toggle.on .wisdom-toggle-knob {
+  background: #13040b;
+}
+
+.bible-app.theme-architect-gold .picker-dialog {
+  background: #200813;
+  border: 1px solid rgba(200, 158, 52, 0.35);
+  color: #fbf6ee;
+}
+
+.bible-app.theme-architect-gold .picker-head h3 {
+  color: #fef3c7;
+}
+
+.bible-app.theme-architect-gold .picker-option.active {
+  background: rgba(200, 158, 52, 0.22);
+  border-color: #c89e34;
+  color: #ffffff;
+}
+
+.bible-app.theme-architect-gold .picker-option.active span {
+  color: #fde047;
+}
+
+/* ==========================================================================
+   THEME 7: COVENANT ATLAS (Scripture Compass, Terracotta Star & Sea Teal)
+   Abyssal Compass Slate (#0e181c), Deep Ocean Void (#070e11),
+   Ancient Manuscript Cream (#f4ede0), Terracotta Star (#c05638) & Sea Teal (#1d7a74).
+   ========================================================================== */
+.bible-app.theme-covenant-atlas {
+  --paper: #0e181c;
+  --surface: #070e11;
+  --ink: #f4ede0;
+  --subtle: #7ea2a6;
+  --line: rgba(45, 212, 191, 0.25);
+  --green: #1d7a74;
+  --soft: #14242b;
+  color-scheme: dark;
+}
+
+.bible-app.theme-covenant-atlas .brand-icon {
+  background: rgba(29, 122, 116, 0.22);
+  border: 1px solid rgba(45, 212, 191, 0.65);
+  color: #2dd4bf;
+  box-shadow: 0 0 16px rgba(45, 212, 191, 0.35);
+}
+
+.bible-app.theme-covenant-atlas .reading-shell {
+  border: 1px solid rgba(45, 212, 191, 0.3);
+  box-shadow: 0 20px 50px rgba(7, 14, 17, 0.9);
+}
+
+.bible-app.theme-covenant-atlas .chapter-intro h2 {
+  color: #f4ede0;
+}
+
+.bible-app.theme-covenant-atlas .chapter-intro h2 span {
+  color: #2dd4bf;
+}
+
+.bible-app.theme-covenant-atlas .add-column {
+  background: linear-gradient(135deg, #1d7a74 0%, #115e59 100%);
+  border-color: #2dd4bf;
+  color: #ffffff;
+  box-shadow: 0 2px 14px rgba(29, 122, 116, 0.45);
+}
+
+.bible-app.theme-covenant-atlas .add-column:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2dd4bf 0%, #1d7a74 100%);
+  border-color: #99f6e4;
+  color: #070e11;
+}
+
+.bible-app.theme-covenant-atlas .quiet-button.active-pill,
+.bible-app.theme-covenant-atlas .preset-row button.active,
+.bible-app.theme-covenant-atlas .languages-grid button.active,
+.bible-app.theme-covenant-atlas .reader-tools button.settings-active {
+  background: #1d7a74;
+  border-color: #2dd4bf;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(45, 212, 191, 0.35);
+}
+
+.bible-app.theme-covenant-atlas .edition-badge {
+  background: rgba(29, 122, 116, 0.22);
+  border: 1px solid rgba(45, 212, 191, 0.45);
+  color: #2dd4bf;
+}
+
+.bible-app.theme-covenant-atlas .verse-row.selected-row {
+  background: rgba(45, 212, 191, 0.12);
+}
+
+.bible-app.theme-covenant-atlas .wisdom-toggle.on {
+  background: #1d7a74;
+  border-color: #2dd4bf;
+}
+
+.bible-app.theme-covenant-atlas .wisdom-toggle.on .wisdom-toggle-knob {
+  background: #f4ede0;
+}
+
+.bible-app.theme-covenant-atlas .picker-dialog {
+  background: #0e181c;
+  border: 1px solid rgba(45, 212, 191, 0.35);
+  color: #f4ede0;
+}
+
+.bible-app.theme-covenant-atlas .picker-head h3 {
+  color: #f4ede0;
+}
+
+.bible-app.theme-covenant-atlas .picker-option.active {
+  background: rgba(29, 122, 116, 0.25);
+  border-color: #2dd4bf;
+  color: #f4ede0;
+}
+
+.bible-app.theme-covenant-atlas .picker-option.active span {
+  color: #2dd4bf;
+}
+
+/* ==========================================================================
+   THEME 8: USER CUSTOM PALETTE (Interactive Theme Studio)
    Uses dynamic CSS custom properties applied on .bible-app
    ========================================================================== */
 .bible-app.theme-custom .brand-icon {
@@ -2354,9 +2551,9 @@ body:has(.theme-adubible-si) ::-webkit-scrollbar-thumb:hover {
 .footer-brand-title {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 12px;
-  margin-bottom: 10px;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
 }
 
 .footer-logo {
@@ -2467,4 +2664,137 @@ body:has(.theme-adubible-si) ::-webkit-scrollbar-thumb:hover {
 .footer-security-note {
   font-weight: 600;
   color: var(--green);
+}
+
+
+/* ==========================================================================
+   ADUBIBLE REGAL LOGO & SACRED BRAND IDENTITY
+   ========================================================================== */
+.adubible-brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease;
+}
+
+.adubible-brand-lockup:hover {
+  transform: translateY(-1px);
+}
+
+.brand-emblem-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 8px;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 10px rgba(245, 158, 11, 0.28));
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.adubible-brand-lockup:hover .brand-emblem-wrapper {
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 16px rgba(245, 158, 11, 0.5));
+  transform: scale(1.04);
+}
+
+.brand-emblem-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.brand-typography {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1;
+}
+
+.brand-wordmark {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+}
+
+.brand-adu {
+  font-family: Georgia, "Cinzel", "Times New Roman", serif;
+  font-weight: 800;
+  font-size: 21px;
+  letter-spacing: 0.02em;
+  background: linear-gradient(135deg, #fffbeb 0%, #fef08a 25%, #f59e0b 65%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 10px rgba(245, 158, 11, 0.25);
+}
+
+.bible-app.theme-royal-purple .brand-adu {
+  background: linear-gradient(135deg, #ffffff 0%, #fef08a 35%, #f59e0b 75%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-bible {
+  font-family: Georgia, "Cinzel", "Times New Roman", serif;
+  font-weight: 700;
+  font-size: 21px;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  margin-left: 1px;
+  transition: color 0.15s ease;
+}
+
+.adubible-brand-lockup:hover .brand-bible {
+  color: var(--green);
+}
+
+.brand-spark {
+  font-size: 10px;
+  color: #f59e0b;
+  margin-left: 3px;
+  vertical-align: super;
+  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.7));
+  animation: aduSparklePulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes aduSparklePulse {
+  0% { opacity: 0.7; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1.2); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.95)); }
+}
+
+.brand-subtitle {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: var(--subtle);
+  text-transform: uppercase;
+  margin-top: 3px;
+  opacity: 0.85;
+}
+
+/* SIZES */
+.adubible-brand-lockup.size-sm .brand-adu,
+.adubible-brand-lockup.size-sm .brand-bible {
+  font-size: 17px;
+}
+.adubible-brand-lockup.size-sm .brand-subtitle {
+  font-size: 7.5px;
+}
+
+.adubible-brand-lockup.size-lg .brand-adu,
+.adubible-brand-lockup.size-lg .brand-bible {
+  font-size: 26px;
+}
+.adubible-brand-lockup.size-lg .brand-subtitle {
+  font-size: 9.5px;
+}
+
+.adubible-brand-lockup.size-xl .brand-adu,
+.adubible-brand-lockup.size-xl .brand-bible {
+  font-size: 34px;
+}
+.adubible-brand-lockup.size-xl .brand-subtitle {
+  font-size: 11px;
 }

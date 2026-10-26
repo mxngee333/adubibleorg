@@ -1,5 +1,6 @@
 import React from 'react';
 import { LegalPageKey } from './LegalInstitutionalModal';
+import { AduBibleLogo } from './AduBibleLogo';
 
 interface GrandSiteFooterProps {
   onOpenLegal: (page: LegalPageKey) => void;
@@ -23,8 +24,7 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
       <div className="footer-top-brand">
         <div className="footer-brand-title">
           <a href="/" onClick={onGoHome} className="footer-logo">
-            <span className="brand-icon" aria-hidden="true">✦</span>
-            <span>AduBible</span>
+            <AduBibleLogo size="lg" variant="full" />
           </a>
           <span className="footer-motto">The Word, Side by Side · 100% Ad-Free Exegetical Sanctuary</span>
         </div>

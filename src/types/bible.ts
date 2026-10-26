@@ -240,6 +240,8 @@ export type ReadingTheme =
   | 'royal-purple'
   | 'lilac-light'
   | 'burgundy-gold'
+  | 'architect-gold'
+  | 'covenant-atlas'
   | 'adubible-si'
   | 'sapphire-blue'
   | 'midnight'
