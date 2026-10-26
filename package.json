@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node build-ssg.js",
+    "build": "node scripts/generate-favicons.cjs && vite build && node build-ssg.js",
+    "generate-favicons": "node scripts/generate-favicons.cjs",
     "start": "vite preview --host 0.0.0.0 --port 3000",
     "preview": "vite preview --host 0.0.0.0 --port 3000"
   },

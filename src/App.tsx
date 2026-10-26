@@ -1513,9 +1513,12 @@ export function App() {
               <div style={{ position: 'relative' }}>
                 <button
                   type="button"
-                  className={isThemePickerOpen ? 'settings-active' : ''}
-                  onClick={() => setIsThemePickerOpen((prev) => !prev)}
-                  title="Choose reading palette or design custom theme"
+                  className={prefs.theme !== 'wisdom-legacy' ? 'settings-active' : ''}
+                  onClick={() => {
+                    setSettingsInitialSection('theme');
+                    setIsSettingsOpen(true);
+                  }}
+                  title="Open Theme & Appearance Dashboard (Settings)"
                   style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 >
                   {prefs.theme === 'royal-purple' ? (
