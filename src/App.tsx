@@ -234,6 +234,8 @@ export function App() {
   const [chapterSearchQuery, setChapterSearchQuery] = useState<string>('');
   const [showAudioBar, setShowAudioBar] = useState<boolean>(false);
   const [copiedNotice, setCopiedNotice] = useState<boolean>(false);
+  const [isThemePickerOpen, setIsThemePickerOpen] = useState<boolean>(false);
+  const [themeSyncNotice, setThemeSyncNotice] = useState<string>('');
 
   // Wisdom Bible column translation picker state ('add' | column index | null)
   const [pickerSlot, setPickerSlot] = useState<number | 'add' | null>(null);
@@ -456,6 +458,30 @@ export function App() {
     setPrefs(next);
     savePreferences(next);
     syncToCloudIfSignedIn(highlights, bookmarks, pins, notes, next);
+    if (partial.theme || partial.customTheme) {
+      const themeLabel =
+        next.theme === 'custom'
+          ? (next.customTheme?.name || 'Custom Palette')
+          : next.theme === 'royal-purple'
+          ? 'Royal Tyrian Velvet'
+          : next.theme === 'lilac-light'
+          ? 'Sacred Lilac Parchment'
+          : next.theme === 'burgundy-gold'
+          ? 'Burgundy Leather KJV'
+          : next.theme === 'adubible-si'
+          ? 'AduBible SI Sovereign'
+          : next.theme === 'sapphire-blue'
+          ? 'Celestial Sapphire'
+          : next.theme === 'midnight'
+          ? 'Obsidian & Gold'
+          : 'Warm Daylight';
+      setThemeSyncNotice(
+        user
+          ? `☁️ Theme "${themeLabel}" synced to cloud profile (${user.displayName || user.email?.split('@')[0]})`
+          : `💾 Theme "${themeLabel}" synced locally to this device`
+      );
+      setTimeout(() => setThemeSyncNotice(''), 3500);
+    }
   };
 
   // Toggle a version in the parallel reader (1 to 4 panes)
@@ -798,7 +824,8 @@ export function App() {
   const isNight =
     prefs.theme !== 'parchment' &&
     prefs.theme !== 'daylight' &&
-    prefs.theme !== 'lilac-light';
+    prefs.theme !== 'lilac-light' &&
+    (prefs.theme !== 'custom' || (prefs.customTheme?.isDark ?? true));
   const totalVaultCount =
     pins.length + highlights.length + bookmarks.length + notes.length;
   const studyLayersActiveCount =
@@ -830,7 +857,22 @@ export function App() {
   );
 
   return (
-    <div className={`bible-app theme-${prefs.theme} ${isNight ? 'night' : ''}`}>
+    <div
+      className={`bible-app theme-${prefs.theme} ${isNight ? 'night' : ''}`}
+      style={
+        prefs.theme === 'custom' && prefs.customTheme
+          ? ({
+              '--paper': prefs.customTheme.paper,
+              '--surface': prefs.customTheme.surface,
+              '--ink': prefs.customTheme.ink,
+              '--subtle': prefs.customTheme.subtle,
+              '--line': prefs.customTheme.line,
+              '--green': prefs.customTheme.accent,
+              '--soft': prefs.customTheme.surface,
+            } as React.CSSProperties)
+          : undefined
+      }
+    >
       {/* 1. TOP MASTHEAD (AduBible) */}
       <header className="masthead">
         <a
@@ -1182,33 +1224,386 @@ export function App() {
               >
                 T+
               </button>
-              <button
-                type="button"
-                onClick={() => {
-                  if (prefs.theme === 'royal-purple') {
-                    updatePrefs({ theme: 'lilac-light' });
-                  } else if (prefs.theme === 'lilac-light') {
-                    updatePrefs({ theme: 'sapphire-blue' });
-                  } else if (prefs.theme === 'sapphire-blue') {
-                    updatePrefs({ theme: 'midnight' });
-                  } else if (prefs.theme === 'midnight') {
-                    updatePrefs({ theme: 'parchment' });
-                  } else {
-                    updatePrefs({ theme: 'sapphire-blue' });
-                  }
-                }}
-                title="Cycle through palettes (Royal Velvet, Lilac, Celestial Sapphire Blue, Obsidian Gold, Daylight)"
-              >
-                {prefs.theme === 'royal-purple'
-                  ? '💜 Velvet'
-                  : prefs.theme === 'lilac-light'
-                  ? '🌸 Lilac'
-                  : prefs.theme === 'sapphire-blue'
-                  ? '🌊 Sapphire'
-                  : isNight
-                  ? '🌙 Night'
-                  : '☀️ Light'}
-              </button>
+              <div style={{ position: 'relative' }}>
+                <button
+                  type="button"
+                  className={isThemePickerOpen ? 'settings-active' : ''}
+                  onClick={() => setIsThemePickerOpen((prev) => !prev)}
+                  title="Choose reading palette or design custom theme"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                >
+                  {prefs.theme === 'royal-purple' ? (
+                    <>
+                      <img src="/themes/royal-open-bible.png" alt="Royal" style={{ width: '18px', height: '18px', borderRadius: '4px', objectFit: 'cover' }} />
+                      <span>Velvet</span>
+                    </>
+                  ) : prefs.theme === 'lilac-light' ? (
+                    <>
+                      <img src="/themes/lilac-bible.png" alt="Lilac" style={{ width: '18px', height: '18px', borderRadius: '4px', objectFit: 'cover' }} />
+                      <span>Lilac</span>
+                    </>
+                  ) : prefs.theme === 'burgundy-gold' ? (
+                    <>
+                      <img src="/themes/burgundy-kjv-bible.png" alt="Burgundy" style={{ width: '18px', height: '18px', borderRadius: '4px', objectFit: 'cover' }} />
+                      <span>Burgundy</span>
+                    </>
+                  ) : prefs.theme === 'adubible-si' ? (
+                    <>
+                      <img src="/themes/adubible-si-banner.png" alt="SI Gold" style={{ width: '22px', height: '14px', borderRadius: '3px', objectFit: 'cover' }} />
+                      <span>SI Gold</span>
+                    </>
+                  ) : prefs.theme === 'custom' ? (
+                    <>
+                      <span
+                        style={{
+                          width: '14px',
+                          height: '14px',
+                          borderRadius: '50%',
+                          background: prefs.customTheme?.accent || '#c084fc',
+                          border: '1px solid #ffffff',
+                        }}
+                      />
+                      <span>Custom</span>
+                    </>
+                  ) : prefs.theme === 'sapphire-blue' ? (
+                    <>🌊 Sapphire</>
+                  ) : prefs.theme === 'midnight' ? (
+                    <>🌙 Obsidian</>
+                  ) : (
+                    <>☀️ Daylight</>
+                  )}
+                  <span style={{ fontSize: '10px', opacity: 0.7 }}>▾</span>
+                </button>
+
+                {isThemePickerOpen && (
+                  <>
+                    <div
+                      style={{
+                        position: 'fixed',
+                        inset: 0,
+                        zIndex: 49,
+                      }}
+                      onClick={() => setIsThemePickerOpen(false)}
+                    />
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: '100%',
+                        right: 0,
+                        marginTop: '8px',
+                        width: '320px',
+                        background: 'var(--paper)',
+                        border: '1px solid var(--line)',
+                        borderRadius: '10px',
+                        boxShadow: '0 16px 40px rgba(0, 0, 0, 0.45)',
+                        padding: '12px',
+                        zIndex: 50,
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          borderBottom: '1px solid var(--line)',
+                          paddingBottom: '8px',
+                          marginBottom: '10px',
+                        }}
+                      >
+                        <strong style={{ fontSize: '13px', color: 'var(--ink)' }}>Scripture Palettes</strong>
+                        <span
+                          style={{
+                            fontSize: '10px',
+                            padding: '2px 6px',
+                            borderRadius: '999px',
+                            background: 'rgba(212, 175, 55, 0.15)',
+                            color: 'var(--green)',
+                            fontWeight: 600,
+                          }}
+                        >
+                          {user ? '☁️ Cloud' : '💾 Local'}
+                        </span>
+                      </div>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '340px', overflowY: 'auto' }}>
+                        {/* 1. Royal Tyrian Velvet */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updatePrefs({ theme: 'royal-purple' });
+                            setIsThemePickerOpen(false);
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '8px 10px',
+                            borderRadius: '6px',
+                            border: `1px solid ${prefs.theme === 'royal-purple' ? '#c084fc' : 'transparent'}`,
+                            background: prefs.theme === 'royal-purple' ? 'rgba(147, 51, 234, 0.15)' : 'transparent',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            color: 'var(--ink)',
+                          }}
+                        >
+                          <img
+                            src="/themes/royal-open-bible.png"
+                            alt="Royal"
+                            style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover' }}
+                          />
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '12px', fontWeight: 600 }}>👑 Royal Tyrian Velvet</div>
+                            <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Deep violet &amp; gold ribbon</div>
+                          </div>
+                          {prefs.theme === 'royal-purple' && <span style={{ color: '#c084fc', fontSize: '12px' }}>✓</span>}
+                        </button>
+
+                        {/* 2. Sacred Lilac Parchment */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updatePrefs({ theme: 'lilac-light' });
+                            setIsThemePickerOpen(false);
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '8px 10px',
+                            borderRadius: '6px',
+                            border: `1px solid ${prefs.theme === 'lilac-light' ? '#7e22ce' : 'transparent'}`,
+                            background: prefs.theme === 'lilac-light' ? 'rgba(126, 34, 206, 0.12)' : 'transparent',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            color: 'var(--ink)',
+                          }}
+                        >
+                          <img
+                            src="/themes/lilac-bible.png"
+                            alt="Lilac"
+                            style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover' }}
+                          />
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '12px', fontWeight: 600 }}>🌸 Sacred Lilac Parchment</div>
+                            <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Light morning lavender</div>
+                          </div>
+                          {prefs.theme === 'lilac-light' && <span style={{ color: '#7e22ce', fontSize: '12px' }}>✓</span>}
+                        </button>
+
+                        {/* 3. Burgundy Leather KJV */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updatePrefs({ theme: 'burgundy-gold' });
+                            setIsThemePickerOpen(false);
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '8px 10px',
+                            borderRadius: '6px',
+                            border: `1px solid ${prefs.theme === 'burgundy-gold' ? '#f59e0b' : 'transparent'}`,
+                            background: prefs.theme === 'burgundy-gold' ? 'rgba(185, 28, 28, 0.2)' : 'transparent',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            color: 'var(--ink)',
+                          }}
+                        >
+                          <img
+                            src="/themes/burgundy-kjv-bible.png"
+                            alt="Burgundy KJV"
+                            style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover' }}
+                          />
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '12px', fontWeight: 600 }}>📖 Burgundy Leather KJV</div>
+                            <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Wine leather &amp; gold leaf</div>
+                          </div>
+                          {prefs.theme === 'burgundy-gold' && <span style={{ color: '#f59e0b', fontSize: '12px' }}>✓</span>}
+                        </button>
+
+                        {/* 4. AduBible SI Sovereign */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updatePrefs({ theme: 'adubible-si' });
+                            setIsThemePickerOpen(false);
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '8px 10px',
+                            borderRadius: '6px',
+                            border: `1px solid ${prefs.theme === 'adubible-si' ? '#d4af37' : 'transparent'}`,
+                            background: prefs.theme === 'adubible-si' ? 'rgba(212, 175, 55, 0.15)' : 'transparent',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            color: 'var(--ink)',
+                          }}
+                        >
+                          <img
+                            src="/themes/adubible-si-banner.png"
+                            alt="AduBible SI"
+                            style={{ width: '32px', height: '20px', borderRadius: '4px', objectFit: 'cover' }}
+                          />
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '12px', fontWeight: 600 }}>⚡ AduBible SI Sovereign</div>
+                            <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Obsidian &amp; sovereign gold</div>
+                          </div>
+                          {prefs.theme === 'adubible-si' && <span style={{ color: '#d4af37', fontSize: '12px' }}>✓</span>}
+                        </button>
+
+                        {/* 5. Celestial Sapphire */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updatePrefs({ theme: 'sapphire-blue' });
+                            setIsThemePickerOpen(false);
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '8px 10px',
+                            borderRadius: '6px',
+                            border: `1px solid ${prefs.theme === 'sapphire-blue' ? '#38bdf8' : 'transparent'}`,
+                            background: prefs.theme === 'sapphire-blue' ? 'rgba(56, 189, 248, 0.15)' : 'transparent',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            color: 'var(--ink)',
+                          }}
+                        >
+                          <span style={{ fontSize: '18px', width: '32px', textAlign: 'center' }}>🌊</span>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '12px', fontWeight: 600 }}>Celestial Sapphire</div>
+                            <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Tekhelet sanctuary blue</div>
+                          </div>
+                          {prefs.theme === 'sapphire-blue' && <span style={{ color: '#38bdf8', fontSize: '12px' }}>✓</span>}
+                        </button>
+
+                        {/* 6. Obsidian & Amber Gold */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updatePrefs({ theme: 'midnight' });
+                            setIsThemePickerOpen(false);
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '8px 10px',
+                            borderRadius: '6px',
+                            border: `1px solid ${prefs.theme === 'midnight' ? '#f59e0b' : 'transparent'}`,
+                            background: prefs.theme === 'midnight' ? 'rgba(245, 158, 11, 0.15)' : 'transparent',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            color: 'var(--ink)',
+                          }}
+                        >
+                          <span style={{ fontSize: '18px', width: '32px', textAlign: 'center' }}>🌙</span>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '12px', fontWeight: 600 }}>Obsidian &amp; Amber Gold</div>
+                            <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Temple night &amp; candlelight</div>
+                          </div>
+                          {prefs.theme === 'midnight' && <span style={{ color: '#f59e0b', fontSize: '12px' }}>✓</span>}
+                        </button>
+
+                        {/* 7. Warm Daylight Parchment */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updatePrefs({ theme: 'parchment' });
+                            setIsThemePickerOpen(false);
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '8px 10px',
+                            borderRadius: '6px',
+                            border: `1px solid ${prefs.theme === 'parchment' ? '#d97706' : 'transparent'}`,
+                            background: prefs.theme === 'parchment' ? 'rgba(217, 119, 6, 0.15)' : 'transparent',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            color: 'var(--ink)',
+                          }}
+                        >
+                          <span style={{ fontSize: '18px', width: '32px', textAlign: 'center' }}>☀️</span>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '12px', fontWeight: 600 }}>Warm Daylight Parchment</div>
+                            <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Classic editorial cream scroll</div>
+                          </div>
+                          {prefs.theme === 'parchment' && <span style={{ color: '#d97706', fontSize: '12px' }}>✓</span>}
+                        </button>
+
+                        {/* 8. Custom Palette Studio */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updatePrefs({ theme: 'custom' });
+                            setIsThemePickerOpen(false);
+                            setIsSettingsOpen(true);
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '8px 10px',
+                            borderRadius: '6px',
+                            border: `1px solid ${prefs.theme === 'custom' ? (prefs.customTheme?.accent || '#c084fc') : 'transparent'}`,
+                            background: prefs.theme === 'custom' ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            color: 'var(--ink)',
+                          }}
+                        >
+                          <span style={{ fontSize: '18px', width: '32px', textAlign: 'center' }}>🎨</span>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '12px', fontWeight: 600 }}>Design Custom Palette...</div>
+                            <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Pick your own colors &amp; swatches</div>
+                          </div>
+                          {prefs.theme === 'custom' && <span style={{ color: prefs.customTheme?.accent || '#c084fc', fontSize: '12px' }}>✓</span>}
+                        </button>
+                      </div>
+
+                      <div
+                        style={{
+                          borderTop: '1px solid var(--line)',
+                          paddingTop: '8px',
+                          marginTop: '8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <span style={{ fontSize: '10px', color: 'var(--subtle)' }}>
+                          {user ? '✓ Auto-synced to cloud' : '✓ Saved locally'}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsThemePickerOpen(false);
+                            setIsSettingsOpen(true);
+                          }}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'var(--green)',
+                            fontSize: '11px',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            padding: '2px 4px',
+                          }}
+                        >
+                          Studio Settings →
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
               <button
                 type="button"
                 className={studyLayersActiveCount > 0 ? 'settings-active' : ''}
@@ -1915,7 +2310,35 @@ export function App() {
         prefs={prefs}
         onUpdatePrefs={updatePrefs}
         onOpenLanguageAddonModal={() => setIsLangAddonModalOpen(true)}
+        user={user}
       />
+
+      {/* THEME & PALETTE SYNC TOAST */}
+      {themeSyncNotice && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '24px',
+            right: '24px',
+            background: 'var(--surface)',
+            color: 'var(--ink)',
+            border: '1px solid var(--green)',
+            borderRadius: '8px',
+            padding: '10px 16px',
+            fontSize: '13px',
+            fontWeight: 600,
+            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.55)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            pointerEvents: 'none',
+          }}
+        >
+          <span style={{ color: 'var(--green)' }}>✦</span>
+          <span>{themeSyncNotice}</span>
+        </div>
+      )}
 
       {/* AUDIO BIBLE PLAYER BAR */}
       {showAudioBar && (

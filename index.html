@@ -51,6 +51,23 @@
         }
       }
     </script>
+
+    <!-- Firebase SDK v11 & Google Analytics (adubibleorg) -->
+    <script type="module">
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
+      import { getAnalytics } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js';
+      const firebaseConfig = {
+        apiKey: "AIzaSyCMEPYcdjWZPZ-c1CovJbcgITMEWW2HpWM",
+        authDomain: "adubibleorg.firebaseapp.com",
+        projectId: "adubibleorg",
+        storageBucket: "adubibleorg.firebasestorage.app",
+        messagingSenderId: "467937293003",
+        appId: "1:467937293003:web:26512de111c74c59d9e14e",
+        measurementId: "G-SW560WBLL0"
+      };
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+    </script>
   </head>
   <body class="bg-stone-950 text-stone-100 antialiased selection:bg-amber-500/30 selection:text-amber-200">
     <div id="root"></div>

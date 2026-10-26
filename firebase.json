@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "elohimbible",
+    "site": "adubibleorg",
     "public": "dist",
     "ignore": [
       "firebase.json",
