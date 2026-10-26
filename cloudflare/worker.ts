@@ -85,6 +85,79 @@ export default {
       }
     }
 
+    // 1C. Handle 10s Scripture Status Video Presets & Fal.ai Prompt Generator
+    if (pathname === '/api/v1/status-video/presets' || pathname === '/api/v1/status-video/ai-prompt') {
+      const presets = [
+        {
+          id: 'celestial',
+          name: 'Celestial Dawn',
+          falPrompt: 'cinematic ethereal morning sunbeams piercing ancient sacred sanctuary, golden dust floating in radiant light, 4k 60fps slow gentle motion background',
+        },
+        {
+          id: 'candlelight',
+          name: 'Sacred Flame & Parchment',
+          falPrompt: 'warm flickering candlelight in an ancient stone chapel, gentle amber shadows dancing on sacred manuscript, peaceful prayer ambience',
+        },
+        {
+          id: 'clouds',
+          name: 'Clouds of Glory',
+          falPrompt: 'majestic mountain peaks above rolling heavenly clouds, divine azure sky and golden godrays breaking through mist, aerial slow motion',
+        },
+        {
+          id: 'obsidian',
+          name: 'Royal Obsidian & Gold Dust',
+          falPrompt: 'deep velvet cosmic starlight, slow drifting golden celestial particles, royal deep purple nebula, reverent holy majesty',
+        },
+        {
+          id: 'covenant',
+          name: 'Covenant Living Waters',
+          falPrompt: 'crystal clear living water ripples over smooth river stones, lush serene emerald garden of Eden, soft morning light reflections',
+        },
+      ];
+
+      if (request.method === 'POST') {
+        try {
+          const body: any = await request.json().catch(() => ({}));
+          const verse = body.verse || 'John 3:16';
+          const theme = body.theme || 'celestial';
+          const matched = presets.find((p) => p.id === theme) || presets[0];
+
+          return new Response(
+            JSON.stringify({
+              verse,
+              theme: matched.id,
+              recommendedFalPrompt: `${matched.falPrompt}, sacred biblical atmosphere for scripture text overlay of ${verse}`,
+              watermark: 'Adubible.org',
+              durationSeconds: 10,
+              aspectRatio: body.aspectRatio || '9:16',
+            }),
+            {
+              headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+            }
+          );
+        } catch {
+          // fallback
+        }
+      }
+
+      return new Response(
+        JSON.stringify({
+          presets,
+          watermark: 'Adubible.org',
+          supportedRatios: ['9:16', '1:1', '16:9'],
+          defaultDurationSeconds: 10,
+          socialTargets: ['WhatsApp Status', 'Instagram Stories/Reels', 'TikTok', 'YouTube Shorts', 'X', 'Facebook'],
+        }),
+        {
+          headers: {
+            ...CORS_HEADERS,
+            'Content-Type': 'application/json',
+            'Cache-Control': METADATA_CACHE_CONTROL,
+          },
+        }
+      );
+    }
+
     if (request.method !== 'GET' && request.method !== 'HEAD') {
       return new Response(JSON.stringify({ error: 'Method Not Allowed' }), {
         status: 405,

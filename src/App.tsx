@@ -57,6 +57,7 @@ import { StrongsPopoverModal } from './components/StrongsPopoverModal';
 import { StudyVaultDrawer } from './components/StudyVaultDrawer';
 import { AuthSyncModal } from './components/AuthSyncModal';
 import { VerseCardStudioModal } from './components/VerseCardStudioModal';
+import { AnimatedStatusStudioModal } from './components/AnimatedStatusStudioModal';
 import { CommentaryPanel } from './components/CommentaryPanel';
 import { AudioBibleBar } from './components/AudioBibleBar';
 import { SettingsModal } from './components/SettingsModal';
@@ -72,7 +73,7 @@ import { MobileBottomDock } from './components/MobileBottomDock';
 import { GrandSiteFooter } from './components/GrandSiteFooter';
 import { AduBibleLogo } from './components/AduBibleLogo';
 import { AskAduBibleModal } from './components/AskAduBibleModal';
-import { Search, User } from 'lucide-react';
+import { Search, User, Film } from 'lucide-react';
 import { AskAduBibleContext } from './services/askAduBibleService';
 
 const COMPARE_PRESETS: Array<{ label: string; versions: string[] }> = [
@@ -265,6 +266,14 @@ export function App() {
     verse: number;
     primaryText: string;
     secondaryText?: string;
+  } | null>(null);
+  const [isStatusStudioOpen, setIsStatusStudioOpen] = useState<boolean>(false);
+  const [statusStudioTarget, setStatusStudioTarget] = useState<{
+    reference: string;
+    primaryText: string;
+    primaryVersion?: string;
+    secondaryText?: string;
+    secondaryVersion?: string;
   } | null>(null);
   const [legalModalState, setLegalModalState] = useState<{
     open: boolean;
@@ -936,6 +945,26 @@ export function App() {
           <button
             type="button"
             className="quiet-button"
+            style={{
+              borderColor: 'rgba(245, 158, 11, 0.45)',
+              color: '#f59e0b',
+              fontWeight: 700,
+            }}
+            onClick={() => {
+              setStatusStudioTarget(null);
+              setIsStatusStudioOpen(true);
+            }}
+            title="10s Animated Scripture Status Studio — WhatsApp, Reels, Shorts & TikTok"
+          >
+            <span className="flex items-center gap-1.5">
+              <Film className="w-3.5 h-3.5" />
+              10s Status Video
+            </span>
+          </button>
+
+          <button
+            type="button"
+            className="quiet-button"
             onClick={() => {
               setStudyVaultTab('pins');
               setIsStudyVaultOpen(true);
@@ -977,6 +1006,20 @@ export function App() {
 
         {/* Mobile-only clean top controls: Search icon, Active Edition Pill, Sign In */}
         <div className="mobile-mast-actions">
+          <button
+            type="button"
+            className="mobile-mast-icon-btn"
+            style={{ color: '#f59e0b', borderColor: 'rgba(245, 158, 11, 0.45)' }}
+            onClick={() => {
+              setStatusStudioTarget(null);
+              setIsStatusStudioOpen(true);
+            }}
+            aria-label="Create 10s Animated Video Status"
+            title="10s Status Video"
+          >
+            <Film className="h-4 w-4" />
+          </button>
+
           <button
             type="button"
             className="mobile-mast-icon-btn"
@@ -2327,6 +2370,35 @@ export function App() {
                               fontWeight: 700,
                             }}
                             onClick={() => {
+                              const secVerId = activeVersionIds[1];
+                              const secText = secVerId
+                                ? chaptersByVersion[secVerId]?.verses.find(
+                                    (x) => x.verse === verseNumber
+                                  )?.text
+                                : undefined;
+                              setStatusStudioTarget({
+                                reference: `${currentBook.names.en} ${currentChapter}:${verseNumber}`,
+                                primaryText: primaryVerseText,
+                                primaryVersion: primaryVersionId.toUpperCase(),
+                                secondaryText: secText,
+                                secondaryVersion: secVerId?.toUpperCase(),
+                              });
+                              setIsStatusStudioOpen(true);
+                            }}
+                            title="Create 10s Animated Video Status for WhatsApp, Reels & TikTok"
+                          >
+                            🎬 10s Video
+                          </button>
+
+                          <button
+                            type="button"
+                            className="verse-quick-btn"
+                            style={{
+                              color: '#f59e0b',
+                              borderColor: 'rgba(245, 158, 11, 0.45)',
+                              fontWeight: 700,
+                            }}
+                            onClick={() => {
                               setSelectedVerse(verseNumber);
                               setIsAskAduBibleOpen(true);
                             }}
@@ -2789,8 +2861,39 @@ export function App() {
           secondaryText={verseCardTarget.secondaryText}
           primaryVersionName={primaryVersionId.toUpperCase()}
           secondaryVersionName={activeVersionIds[1]?.toUpperCase()}
+          onOpenVideoStudio={() => {
+            if (verseCardTarget) {
+              setStatusStudioTarget({
+                reference: `${currentBook.names.en} ${currentChapter}:${verseCardTarget.verse}`,
+                primaryText: verseCardTarget.primaryText,
+                primaryVersion: primaryVersionId.toUpperCase(),
+                secondaryText: verseCardTarget.secondaryText,
+                secondaryVersion: activeVersionIds[1]?.toUpperCase(),
+              });
+              setIsStatusStudioOpen(true);
+            }
+          }}
         />
       )}
+
+      {/* 10s ANIMATED SCRIPTURE STATUS VIDEO STUDIO MODAL */}
+      <AnimatedStatusStudioModal
+        isOpen={isStatusStudioOpen}
+        onClose={() => {
+          setIsStatusStudioOpen(false);
+          setStatusStudioTarget(null);
+        }}
+        initialReference={statusStudioTarget?.reference || `${currentBook.names.en} ${currentChapter}:1`}
+        initialText={
+          statusStudioTarget?.primaryText ||
+          chaptersByVersion[primaryVersionId]?.verses[0]?.text ||
+          'For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.'
+        }
+        initialVersionName={statusStudioTarget?.primaryVersion || primaryVersionId.toUpperCase()}
+        initialSecondaryText={statusStudioTarget?.secondaryText}
+        initialSecondaryVersionName={statusStudioTarget?.secondaryVersion}
+        langCode={currentBook.slug === 'twi' || primaryVersionId.includes('twi') ? 'ak' : 'en'}
+      />
 
       {/* LEGAL & INSTITUTIONAL PAGES MODAL */}
       <LegalInstitutionalModal

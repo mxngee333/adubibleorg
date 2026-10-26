@@ -302,6 +302,65 @@ if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
     }
   });
 
+  // 6. 10s Scripture Status Video Presets & Fal.ai Prompt Generator
+  app.get('/api/v1/status-video/presets', (req, res) => {
+    const presets = [
+      {
+        id: 'celestial',
+        name: 'Celestial Dawn',
+        falPrompt: 'cinematic ethereal morning sunbeams piercing ancient sacred sanctuary, golden dust floating in radiant light, 4k 60fps slow gentle motion background',
+      },
+      {
+        id: 'candlelight',
+        name: 'Sacred Flame & Parchment',
+        falPrompt: 'warm flickering candlelight in an ancient stone chapel, gentle amber shadows dancing on sacred manuscript, peaceful prayer ambience',
+      },
+      {
+        id: 'clouds',
+        name: 'Clouds of Glory',
+        falPrompt: 'majestic mountain peaks above rolling heavenly clouds, divine azure sky and golden godrays breaking through mist, aerial slow motion',
+      },
+      {
+        id: 'obsidian',
+        name: 'Royal Obsidian & Gold Dust',
+        falPrompt: 'deep velvet cosmic starlight, slow drifting golden celestial particles, royal deep purple nebula, reverent holy majesty',
+      },
+      {
+        id: 'covenant',
+        name: 'Covenant Living Waters',
+        falPrompt: 'crystal clear living water ripples over smooth river stones, lush serene emerald garden of Eden, soft morning light reflections',
+      },
+    ];
+
+    res.json({
+      presets,
+      watermark: 'Adubible.org',
+      supportedRatios: ['9:16', '1:1', '16:9'],
+      defaultDurationSeconds: 10,
+      socialTargets: ['WhatsApp Status', 'Instagram Stories/Reels', 'TikTok', 'YouTube Shorts', 'X', 'Facebook'],
+    });
+  });
+
+  app.post('/api/v1/status-video/ai-prompt', (req, res) => {
+    const { verse = 'John 3:16', theme = 'celestial', aspectRatio = '9:16' } = req.body || {};
+    const presets = {
+      celestial: 'cinematic ethereal morning sunbeams piercing ancient sacred sanctuary, golden dust floating in radiant light, 4k 60fps slow gentle motion background',
+      candlelight: 'warm flickering candlelight in an ancient stone chapel, gentle amber shadows dancing on sacred manuscript, peaceful prayer ambience',
+      clouds: 'majestic mountain peaks above rolling heavenly clouds, divine azure sky and golden godrays breaking through mist, aerial slow motion',
+      obsidian: 'deep velvet cosmic starlight, slow drifting golden celestial particles, royal deep purple nebula, reverent holy majesty',
+      covenant: 'crystal clear living water ripples over smooth river stones, lush serene emerald garden of Eden, soft morning light reflections',
+    };
+    const falPrompt = presets[theme] || presets.celestial;
+    res.json({
+      verse,
+      theme,
+      recommendedFalPrompt: `${falPrompt}, sacred biblical atmosphere for scripture text overlay of ${verse}`,
+      watermark: 'Adubible.org',
+      durationSeconds: 10,
+      aspectRatio,
+    });
+  });
+
   const server = http.createServer(app);
   server.listen(PORT, HOST, () => {
     console.log(`⚡ [Worker ${workerPid}] Hetzner Origin API listening on http://${HOST}:${PORT}`);

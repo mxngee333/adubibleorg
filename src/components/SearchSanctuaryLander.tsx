@@ -20,6 +20,7 @@ interface SearchSanctuaryLanderProps {
   onLaunchPreset: (versions: string[], bookSlug?: string, chapter?: number) => void;
   onSelectNavTab: (tab: 'canonical' | 'deuterocanon' | 'list-of-sixty') => void;
   onEnterReader: () => void;
+  onOpenStatusStudio?: () => void;
 }
 
 interface QuickTopic {
@@ -50,6 +51,7 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
   onLaunchPreset,
   onSelectNavTab,
   onEnterReader,
+  onOpenStatusStudio,
 }) => {
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);

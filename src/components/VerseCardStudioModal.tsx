@@ -9,6 +9,7 @@ interface VerseCardStudioModalProps {
   primaryText: string;
   secondaryVersionName?: string;
   secondaryText?: string;
+  onOpenVideoStudio?: () => void;
 }
 
 const STUDIO_THEMES = [
@@ -58,6 +59,7 @@ export const VerseCardStudioModal: React.FC<VerseCardStudioModalProps> = ({
   primaryText,
   secondaryVersionName,
   secondaryText,
+  onOpenVideoStudio,
 }) => {
   const [selectedTheme, setSelectedTheme] = useState(STUDIO_THEMES[0]);
   const [includeParallel, setIncludeParallel] = useState(Boolean(secondaryText));
@@ -272,6 +274,20 @@ export const VerseCardStudioModal: React.FC<VerseCardStudioModalProps> = ({
             )}
 
             <div className="space-y-2.5 pt-2">
+              {onOpenVideoStudio && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onOpenVideoStudio();
+                  }}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-amber-500/50 bg-gradient-to-r from-amber-500/20 via-amber-500/30 to-amber-500/20 py-2.5 text-xs font-bold text-amber-200 hover:brightness-125 shadow-lg shadow-amber-950/40 transition"
+                >
+                  <Sparkles className="h-4 w-4 text-amber-400" />
+                  🎬 Switch to 10s Animated Video Studio (WhatsApp/Reels)
+                </button>
+              )}
+
               <button
                 onClick={handleDownloadImage}
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 py-2.5 text-xs font-bold text-stone-950 hover:bg-amber-400 transition"

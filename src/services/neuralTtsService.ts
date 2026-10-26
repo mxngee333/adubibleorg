@@ -88,19 +88,19 @@ export function setStoredGeminiKey(key: string): void {
 export function getActiveGeminiApiKeys(): string[] {
   const keys: string[] = [];
   const stored = getStoredGeminiKey();
-  if (stored) keys.push(stored);
+  if (stored && stored !== DEFAULT_GEMINI_KEY) keys.push(stored);
 
   if (typeof window !== 'undefined') {
     const winKey = (window as any).__GEMINI_API_KEY;
-    if (winKey && typeof winKey === 'string' && winKey.trim()) {
+    if (winKey && typeof winKey === 'string' && winKey.trim() && winKey.trim() !== DEFAULT_GEMINI_KEY) {
       keys.push(winKey.trim());
     }
   }
 
   const envKey = (import.meta as any)?.env?.VITE_GEMINI_API_KEY?.trim();
-  if (envKey) keys.push(envKey);
+  if (envKey && envKey !== DEFAULT_GEMINI_KEY) keys.push(envKey);
 
-  keys.push(DEFAULT_GEMINI_KEY);
+  // Notice: DEFAULT_GEMINI_KEY was revoked/reported leaked by Google; do NOT push it by default
   return Array.from(new Set(keys.filter(Boolean)));
 }
 
@@ -192,76 +192,77 @@ export async function synthesizeNeuralAudio(
   rawText: string,
   langCode: string,
   voiceName: GoogleNeuralVoiceName = 'Charon'
-): Promise<string> {
+): Promise<string | null> {
   const pureVerseText = cleanVerseForSpeech(rawText);
   if (!pureVerseText) {
-    throw new Error('Empty verse text');
+    return null;
   }
 
   const cacheKey = `${langCode}:${voiceName}:${pureVerseText}`;
 
   // 1. Check local IndexedDB audio vault (0ms latency, zero bandwidth)
-  const cached = await getCachedTtsAudio(cacheKey);
-  if (cached) {
-    return cached;
+  try {
+    const cached = await getCachedTtsAudio(cacheKey);
+    if (cached) {
+      return cached;
+    }
+  } catch {
+    // Non-fatal cache read error
   }
 
-  // 2. Direct Google Gemini 24kHz Audio API (Fastest path, zero intermediate proxy delays)
+  // 2. Direct Google Gemini 24kHz Audio API (If user provided valid key)
   const candidateKeys = getActiveGeminiApiKeys();
-  let lastErrorMsg = '';
-  let hitQuotaLimit = false;
 
-  for (const apiKey of candidateKeys) {
-    for (const model of GEMINI_TTS_MODELS) {
-      try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 12000);
+  if (candidateKeys.length > 0) {
+    for (const apiKey of candidateKeys) {
+      for (const model of GEMINI_TTS_MODELS.slice(0, 2)) {
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3500);
 
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          signal: controller.signal,
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: pureVerseText }] }],
-            generationConfig: {
-              responseModalities: ['AUDIO'],
-              speechConfig: {
-                voiceConfig: {
-                  prebuiltVoiceConfig: { voiceName },
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: controller.signal,
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: pureVerseText }] }],
+              generationConfig: {
+                responseModalities: ['AUDIO'],
+                speechConfig: {
+                  voiceConfig: {
+                    prebuiltVoiceConfig: { voiceName },
+                  },
                 },
               },
-            },
-          }),
-        });
-        clearTimeout(timeoutId);
+            }),
+          });
+          clearTimeout(timeoutId);
 
-        if (res.ok) {
-          const json = await res.json();
-          const base64Audio = json?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-          if (base64Audio) {
-            await setCachedTtsAudio(cacheKey, base64Audio);
-            return base64Audio;
+          if (res.ok) {
+            const json = await res.json();
+            const base64Audio = json?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+            if (base64Audio) {
+              await setCachedTtsAudio(cacheKey, base64Audio);
+              return base64Audio;
+            }
+          } else {
+            // Immediate short-circuit on authentication failure (400, 401, 403)
+            if (res.status === 400 || res.status === 401 || res.status === 403) {
+              break;
+            }
           }
-        } else {
-          const errData = await res.json().catch(() => null);
-          const msg = errData?.error?.message || `HTTP ${res.status}`;
-          lastErrorMsg = msg;
-          if (res.status === 429 || msg.toLowerCase().includes('quota')) {
-            hitQuotaLimit = true;
-          }
-          console.warn(`[NeuralTTS] Model ${model} returned ${res.status}:`, msg);
+        } catch {
+          // Continue to next model/key
         }
-      } catch (err: any) {
-        lastErrorMsg = err?.message || 'Network error';
       }
     }
   }
 
-  // 3. Resilient Secondary Fallback: Edge TTS Gateway (Single attempt, bounded 4s timeout)
+  // 3. Edge TTS Gateway with 2000ms timeout
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
     const res = await fetch(EDGE_TTS_GATEWAY, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -284,11 +285,7 @@ export async function synthesizeNeuralAudio(
     // Non-blocking fallback
   }
 
-  if (hitQuotaLimit) {
-    throw new Error('Daily 24kHz Google audio quota limit reached (429). Please add your free Gemini key in Settings (⚙️).');
-  }
-
-  throw new Error(`24kHz Neural TTS unavailable: ${lastErrorMsg || 'Network error'}`);
+  return null;
 }
 
 /**
@@ -324,7 +321,7 @@ export async function getOrPreloadAudioBuffer(
   text: string,
   langCode: string,
   voiceName: GoogleNeuralVoiceName = 'Charon'
-): Promise<AudioBuffer> {
+): Promise<AudioBuffer | null> {
   const pureVerseText = cleanVerseForSpeech(text);
   const memKey = `${langCode}:${voiceName}:${pureVerseText}`;
 
@@ -335,9 +332,17 @@ export async function getOrPreloadAudioBuffer(
 
   // 2. Fetch base64 (from IndexedDB or network)
   const base64Audio = await synthesizeNeuralAudio(text, langCode, voiceName);
-  const buffer = decodePcm24kToAudioBuffer(audioContext, base64Audio);
-  memoryAudioBufferCache.set(memKey, buffer);
-  return buffer;
+  if (!base64Audio) {
+    return null;
+  }
+
+  try {
+    const buffer = decodePcm24kToAudioBuffer(audioContext, base64Audio);
+    memoryAudioBufferCache.set(memKey, buffer);
+    return buffer;
+  } catch {
+    return null;
+  }
 }
 
 export function isAudioBufferPreloaded(
