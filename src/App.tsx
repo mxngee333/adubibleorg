@@ -73,7 +73,7 @@ import { MobileBottomDock } from './components/MobileBottomDock';
 import { GrandSiteFooter } from './components/GrandSiteFooter';
 import { AduBibleLogo } from './components/AduBibleLogo';
 import { AskAduBibleModal } from './components/AskAduBibleModal';
-import { Search, User, Film } from 'lucide-react';
+import { Search, User } from 'lucide-react';
 import { AskAduBibleContext } from './services/askAduBibleService';
 
 const COMPARE_PRESETS: Array<{ label: string; versions: string[] }> = [
@@ -145,18 +145,18 @@ export function App() {
   const allHistoricalBooks = useMemo(() => getAllHistoricalBooks(), []);
   const allLanguages = useMemo(() => getAllLanguagesMetadata(), []);
 
-  // Parse initial URL (supports /nkjv/ephesians/1.htm, /kjv/ephesians/1, /twi/ephesians/1, etc.)
+  // Parse initial URL (supports /nkjv/genesis/1.htm, /kjv/genesis/1, /twi/genesis/1, etc.)
   const initialRoute = useMemo(
     () =>
       typeof window !== 'undefined'
         ? parseBibleHubUrlPath(window.location.pathname)
-        : { versionId: 'kjv', bookSlug: 'ephesians', chapter: 1 },
+        : { versionId: 'kjv', bookSlug: 'genesis', chapter: 1 },
     []
   );
 
   // Active Book, Chapter & Parallel Versions
   const [currentBookSlug, setCurrentBookSlug] = useState<string>(
-    initialRoute.bookSlug || 'ephesians'
+    initialRoute.bookSlug || 'genesis'
   );
   const [currentChapter, setCurrentChapter] = useState<number>(
     initialRoute.chapter || 1
@@ -287,7 +287,7 @@ export function App() {
     () =>
       allHistoricalBooks.find((b) => b.slug === currentBookSlug) ||
       canonicalBooks.find((b) => b.slug === currentBookSlug) ||
-      canonicalBooks.find((b) => b.slug === 'ephesians') ||
+      canonicalBooks.find((b) => b.slug === 'genesis') ||
       canonicalBooks[0],
     [allHistoricalBooks, canonicalBooks, currentBookSlug]
   );
@@ -420,7 +420,7 @@ export function App() {
       if (typeof window === 'undefined') return;
       if (window.location.pathname === '/' || window.location.pathname === '') {
         setLegalModalState((prev) => ({ ...prev, open: false }));
-        setCurrentBookSlug('ephesians');
+        setCurrentBookSlug('genesis');
         setCurrentChapter(1);
         setSelectedVerse(1);
         setActiveVersionIds(['kjv', 'twi']);
@@ -598,9 +598,9 @@ export function App() {
     setVerseCardTarget(null);
     setActiveVerseActionBar(null);
 
-    // Reset to default home sanctuary reading state (Ephesians 1, KJV + Asante Twi)
+    // Reset to default home sanctuary reading state (Genesis 1, KJV + Asante Twi)
     setActiveNavTab('canonical');
-    setCurrentBookSlug('ephesians');
+    setCurrentBookSlug('genesis');
     setCurrentChapter(1);
     setSelectedVerse(1);
     setActiveVersionIds(['kjv', 'twi']);
@@ -942,26 +942,6 @@ export function App() {
         </div>
 
         <div className="mast-actions">
-          <button
-            type="button"
-            className="quiet-button"
-            style={{
-              borderColor: 'rgba(245, 158, 11, 0.45)',
-              color: '#f59e0b',
-              fontWeight: 700,
-            }}
-            onClick={() => {
-              setStatusStudioTarget(null);
-              setIsStatusStudioOpen(true);
-            }}
-            title="10s Animated Scripture Status Studio — WhatsApp, Reels, Shorts & TikTok"
-          >
-            <span className="flex items-center gap-1.5">
-              <Film className="w-3.5 h-3.5" />
-              10s Status Video
-            </span>
-          </button>
-
           <button
             type="button"
             className="quiet-button"

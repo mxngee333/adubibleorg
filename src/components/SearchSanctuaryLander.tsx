@@ -20,7 +20,6 @@ interface SearchSanctuaryLanderProps {
   onLaunchPreset: (versions: string[], bookSlug?: string, chapter?: number) => void;
   onSelectNavTab: (tab: 'canonical' | 'deuterocanon' | 'list-of-sixty') => void;
   onEnterReader: () => void;
-  onOpenStatusStudio?: () => void;
 }
 
 interface QuickTopic {
@@ -51,7 +50,6 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
   onLaunchPreset,
   onSelectNavTab,
   onEnterReader,
-  onOpenStatusStudio,
 }) => {
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -369,95 +367,6 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
           ))}
         </div>
       </div>
-
-      {/* 10s VIRAL ANIMATED SCRIPTURE STATUS STUDIO BANNER */}
-      {onOpenStatusStudio && (
-        <div
-          style={{
-            maxWidth: '820px',
-            margin: '0 auto 28px',
-            padding: '16px 20px',
-            borderRadius: '14px',
-            background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(20, 15, 10, 0.8))',
-            border: '1px solid rgba(245, 158, 11, 0.35)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '12px',
-            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div
-              style={{
-                width: '42px',
-                height: '42px',
-                borderRadius: '10px',
-                background: 'rgba(245, 158, 11, 0.2)',
-                border: '1px solid rgba(245, 158, 11, 0.4)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--green)',
-                fontSize: '20px',
-              }}
-            >
-              🎬
-            </div>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <strong style={{ fontSize: '14px', color: 'var(--ink)' }}>
-                  10s Animated Scripture Status Studio
-                </strong>
-                <span
-                  style={{
-                    fontSize: '10px',
-                    fontWeight: 800,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    background: 'rgba(245, 158, 11, 0.25)',
-                    color: 'var(--green)',
-                    padding: '2px 8px',
-                    borderRadius: '999px',
-                    border: '1px solid rgba(245, 158, 11, 0.4)',
-                  }}
-                >
-                  WhatsApp Status · Reels · TikTok
-                </span>
-              </div>
-              <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: 'var(--subtle)' }}>
-                Search any verse and create 10-second kinetic text videos with 24kHz Google neural voice and permanent <strong>Adubible.org</strong> watermark.
-              </p>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={onOpenStatusStudio}
-            style={{
-              padding: '10px 18px',
-              borderRadius: '10px',
-              background: 'var(--green)',
-              color: '#0c0a09',
-              fontSize: '12.5px',
-              fontWeight: 800,
-              cursor: 'pointer',
-              border: 0,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 4px 14px rgba(245, 158, 11, 0.35)',
-              transition: 'transform 0.15s, filter 0.15s',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.filter = 'brightness(1.15)')}
-            onMouseLeave={(e) => (e.currentTarget.style.filter = 'brightness(1)')}
-          >
-            <span>Open Video Studio</span>
-            <ArrowRight style={{ width: '15px', height: '15px' }} />
-          </button>
-        </div>
-      )}
 
       {/* 4. THE 66 CANONICAL BOOKS OF THE HOLY SCRIPTURES */}
       <div

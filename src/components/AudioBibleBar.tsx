@@ -67,6 +67,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   const activeSourceRef = useRef<AudioBufferSourceNode | null>(null);
   const activeGainNodeRef = useRef<GainNode | null>(null);
   const studioAudioElRef = useRef<HTMLAudioElement | null>(null);
+  const retryCountRef = useRef<number>(0);
 
   useEffect(() => {
     setUseStudioMp3(Boolean(audioUrl));

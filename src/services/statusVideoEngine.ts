@@ -230,8 +230,11 @@ export class StatusVideoRenderer {
       const voice = this.options.voiceName || 'Charon';
       const lang = this.options.langCode || 'en';
       const base64Audio = await synthesizeNeuralAudio(this.options.verseText, lang, voice);
-      this.speechBuffer = decodePcm24kToAudioBuffer(this.audioCtx, base64Audio);
-      return true;
+      if (base64Audio) {
+        this.speechBuffer = decodePcm24kToAudioBuffer(this.audioCtx, base64Audio);
+        return true;
+      }
+      return false;
     } catch (err) {
       console.warn('[StatusVideoEngine] Speech preload non-fatal notice:', err);
       return false;

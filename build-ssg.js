@@ -14,12 +14,12 @@ const CANONICAL_ROUTES = [
     route: '/',
     priority: '1.0',
     changefreq: 'weekly',
-    title: "AduBible.org — Ad-Free Multilingual Parallel Bible, Twi (Twerɛ Kronkron), Strong's Concordance & Study Sync",
+    title: "AduBible.org — Ad-Free Multilingual Parallel Bible, Genesis 1, Asante Twi & Strong's Concordance",
     description:
-      "Read the Holy Bible in parallel across Asante Twi (Twerɛ Kronkron), NKJV, KJV, Hebrew, Greek, and 35+ world languages on AduBible (Adubible.org). Dedicated to Humanity in honor of the Legacy of Apostle Kwame Adu · Nsuhia, Ghana (https://nsuhia.com/). 100% Ads-Free Reading Experience with Strong's Concordance and Cloud Study Sync.",
-    heading: 'AduBible — Multilingual Parallel Scripture & Exegetical Study Sanctuary',
+      "Read Genesis 1 and the Holy Bible in parallel across Asante Twi (Twerɛ Kronkron), NKJV, KJV, Hebrew, Greek, and 35+ world languages on AduBible (Adubible.org). Dedicated to Humanity in honor of the Legacy of Apostle Kwame Adu · Nsuhia, Ghana (https://nsuhia.com/). 100% Ads-Free Reading Experience with Strong's Concordance and Cloud Study Sync.",
+    heading: 'Genesis Chapter 1 (Genesis 1) — In the Beginning God Created the Heavens and the Earth',
     excerpt:
-      'Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ (Ephesians 1:3) • For the word of God is living and active, sharper than any two-edged sword (Hebrews 4:12) • All Scripture is breathed out by God and profitable for teaching (2 Timothy 3:16). Honoring the Legacy of Apostle Kwame Adu · Nsuhia, Ghana (https://nsuhia.com/) · adubible.org · Dedicated to Humanity · 100% Ads-Free Reading Experience.',
+      'In the beginning God created the heaven and the earth. And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of God moved upon the face of the waters. And God said, Let there be light: and there was light (Genesis 1:1–3). Mfitiaseɛ no Onyankopɔn bɔɔ ɔsoro ne asase... Honoring the Legacy of Apostle Kwame Adu · Nsuhia, Ghana (https://nsuhia.com/) · adubible.org · Dedicated to Humanity · 100% Ads-Free Reading Experience.',
   },
   {
     route: '/nkjv/ephesians/1/',
