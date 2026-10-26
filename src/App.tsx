@@ -108,9 +108,11 @@ function renderVersePieces(
       if (typeof piece.noteId === 'number') {
         const num = piece.noteId + 1;
         return (
-          <sup key={idx}>
-            <a href={`#fn-${versionId}-${num}`}>[{num}]</a>
-          </sup>
+          <React.Fragment key={idx}>
+            <sup>
+              <a href={`#fn-${versionId}-${num}`}>[{num}]</a>
+            </sup>{' '}
+          </React.Fragment>
         );
       }
       if (piece.heading) {
@@ -1009,6 +1011,9 @@ export function App() {
                             );
                           }}
                         >
+                          <span className="mobile-cell-badge">
+                            {verMeta.languageName} · {verMeta.shortName}
+                          </span>
                           {prefs.showHeadings && verseObj?.heading ? (
                             <h3>{verseObj.heading}</h3>
                           ) : null}
@@ -1278,10 +1283,27 @@ export function App() {
             </div>
             <div className="languages-grid">
               {allLanguages.map((lang) => {
+                const matchingVersions = allVersions.filter(
+                  (v) => v.languageCode === lang.code
+                );
                 const defaultVer =
-                  allVersions.find((v) => v.languageCode === lang.code) ||
+                  matchingVersions.find((v) => v.id === 'kjv') ||
+                  matchingVersions[0] ||
                   allVersions[0];
-                const isSelected = activeVersionIds.includes(defaultVer.id);
+                const isSelected = matchingVersions.some((v) =>
+                  activeVersionIds.includes(v.id)
+                );
+                const cleanNative = lang.nativeName
+                  .replace(/\s*\([^)]*\)/g, '')
+                  .trim();
+                const cleanEnglish = lang.name
+                  .replace(/\s*\([^)]*\)/g, '')
+                  .trim();
+                const pillLabel =
+                  cleanNative.toLowerCase() === cleanEnglish.toLowerCase()
+                    ? cleanEnglish
+                    : `${cleanNative} · ${cleanEnglish}`;
+
                 return (
                   <button
                     type="button"
@@ -1289,10 +1311,14 @@ export function App() {
                     className={isSelected ? 'active' : ''}
                     onClick={() => {
                       if (isSelected) {
+                        const activeMatch =
+                          matchingVersions.find((v) =>
+                            activeVersionIds.includes(v.id)
+                          ) || defaultVer;
                         setActiveVersionIds([
-                          defaultVer.id,
+                          activeMatch.id,
                           ...activeVersionIds.filter(
-                            (id) => id !== defaultVer.id
+                            (id) => id !== activeMatch.id
                           ),
                         ]);
                       } else if (activeVersionIds.length < 4) {
@@ -1308,7 +1334,7 @@ export function App() {
                       }
                     }}
                   >
-                    {lang.nativeName} · {lang.name}
+                    {pillLabel}
                   </button>
                 );
               })}
@@ -1506,8 +1532,26 @@ export function App() {
             'en'
           }
           verses={primaryVerses}
+          audioUrl={primaryChapterData?.audioUrl}
+          parallelVerses={
+            activeVersionIds[1]
+              ? chaptersByVersion[activeVersionIds[1]]?.verses
+              : undefined
+          }
+          parallelVersionName={
+            activeVersionIds[1]
+              ? allVersions.find((v) => v.id === activeVersionIds[1])?.shortName
+              : undefined
+          }
+          parallelLangCode={
+            activeVersionIds[1]
+              ? allVersions.find((v) => v.id === activeVersionIds[1])
+                  ?.languageCode
+              : undefined
+          }
           activeVerse={selectedVerse}
           onVerseChange={(v: number) => setSelectedVerse(v)}
+          onClose={() => setShowAudioBar(false)}
         />
       )}
 

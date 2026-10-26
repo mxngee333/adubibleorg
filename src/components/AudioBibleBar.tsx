@@ -1,13 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  Play,
-  Pause,
-  Square,
-  SkipBack,
-  SkipForward,
-  Volume2,
-  Repeat,
-} from 'lucide-react';
 import { VerseData } from '../types/bible';
 
 interface AudioBibleBarProps {
@@ -16,11 +7,13 @@ interface AudioBibleBarProps {
   versionName: string;
   langCode: string;
   verses: VerseData[];
+  audioUrl?: string;
   parallelVerses?: VerseData[];
   parallelVersionName?: string;
   parallelLangCode?: string;
   activeVerse: number;
   onVerseChange: (verseNum: number) => void;
+  onClose?: () => void;
 }
 
 export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
@@ -29,22 +22,33 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   versionName,
   langCode,
   verses,
+  audioUrl,
   parallelVerses,
   parallelVersionName,
   parallelLangCode,
   activeVerse,
   onVerseChange,
+  onClose,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [rate, setRate] = useState(1.0);
   const [bilingualMode, setBilingualMode] = useState(false);
+  const [useStudioMp3, setUseStudioMp3] = useState<boolean>(Boolean(audioUrl));
   const isPlayingRef = useRef(false);
   const currentVerseIdxRef = useRef(0);
+  const audioElRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    setUseStudioMp3(Boolean(audioUrl));
+  }, [audioUrl]);
 
   useEffect(() => {
     return () => {
       if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
         window.speechSynthesis.cancel();
+      }
+      if (audioElRef.current) {
+        audioElRef.current.pause();
       }
     };
   }, []);
@@ -91,6 +95,23 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   };
 
   const handleTogglePlay = () => {
+    if (useStudioMp3 && audioUrl && audioElRef.current && !bilingualMode) {
+      if (isPlaying) {
+        audioElRef.current.pause();
+        setIsPlaying(false);
+        isPlayingRef.current = false;
+      } else {
+        audioElRef.current.playbackRate = rate;
+        audioElRef.current.play().catch(() => {
+          // Fallback to TTS if stream blocked
+          setUseStudioMp3(false);
+        });
+        setIsPlaying(true);
+        isPlayingRef.current = true;
+      }
+      return;
+    }
+
     if (isPlaying) {
       setIsPlaying(false);
       isPlayingRef.current = false;
@@ -111,6 +132,10 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   const handleStop = () => {
     setIsPlaying(false);
     isPlayingRef.current = false;
+    if (audioElRef.current) {
+      audioElRef.current.pause();
+      audioElRef.current.currentTime = 0;
+    }
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
@@ -125,86 +150,167 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     if (verses[nextIdx]) {
       onVerseChange(verses[nextIdx].verse);
     }
-    if (isPlayingRef.current) {
+    if (isPlayingRef.current && (!useStudioMp3 || bilingualMode)) {
       speakVerseAtIndex(nextIdx);
     }
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-amber-500/30 bg-stone-900/95 px-4 py-2.5 text-stone-100 shadow-lg">
-      <div className="flex items-center gap-2.5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/20 text-amber-400">
-          <Volume2 className={`h-4 w-4 ${isPlaying ? 'animate-pulse' : ''}`} />
-        </div>
-        <div>
-          <div className="text-xs font-bold text-amber-200">
-            Audio Scripture Reader • {bookName} {chapter}:{activeVerse}
-          </div>
-          <div className="text-[11px] text-stone-400">
-            {versionName}
-            {bilingualMode && parallelVersionName
-              ? ` + Parallel (${parallelVersionName})`
-              : ''}
-          </div>
-        </div>
-      </div>
+    <div
+      style={{
+        position: 'sticky',
+        bottom: '16px',
+        zIndex: 45,
+        maxWidth: '1508px',
+        margin: '0 auto 20px',
+        padding: '0 36px',
+      }}
+    >
+      {audioUrl && (
+        <audio
+          ref={audioElRef}
+          src={audioUrl}
+          onEnded={() => {
+            setIsPlaying(false);
+            isPlayingRef.current = false;
+          }}
+        />
+      )}
 
-      <div className="flex items-center gap-1.5">
-        <button
-          onClick={() => handleStep(-1)}
-          className="rounded-lg p-1.5 text-stone-300 hover:bg-stone-800 hover:text-white transition"
-          title="Previous Verse"
-        >
-          <SkipBack className="h-4 w-4" />
-        </button>
-        <button
-          onClick={handleTogglePlay}
-          className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500 text-stone-950 font-bold hover:bg-amber-400 transition shadow"
-          title={isPlaying ? 'Pause' : 'Play Chapter Audio'}
-        >
-          {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 ml-0.5" />}
-        </button>
-        <button
-          onClick={handleStop}
-          className="rounded-lg p-1.5 text-stone-300 hover:bg-stone-800 hover:text-white transition"
-          title="Stop"
-        >
-          <Square className="h-4 w-4" />
-        </button>
-        <button
-          onClick={() => handleStep(1)}
-          className="rounded-lg p-1.5 text-stone-300 hover:bg-stone-800 hover:text-white transition"
-          title="Next Verse"
-        >
-          <SkipForward className="h-4 w-4" />
-        </button>
+      <div
+        style={{
+          padding: '12px 18px',
+          borderRadius: '8px',
+          border: '1px solid var(--line)',
+          background: 'var(--paper)',
+          color: 'var(--ink)',
+          boxShadow: '0 14px 36px rgba(0, 0, 0, 0.28)',
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '12px',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span className="brand-icon" aria-hidden="true">
+            ♫
+          </span>
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 600 }}>
+              Audio Scripture Reader · {bookName} {chapter}:{activeVerse}
+            </div>
+            <div style={{ fontSize: '12px', color: 'var(--subtle)' }}>
+              {versionName}
+              {useStudioMp3 && audioUrl && !bilingualMode
+                ? ' · Studio Narration'
+                : ' · Voice Reader'}
+              {bilingualMode && parallelVersionName
+                ? ` + Parallel (${parallelVersionName})`
+                : ''}
+            </div>
+          </div>
+        </div>
 
-        {parallelVerses && parallelVerses.length > 0 && (
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+        >
           <button
-            onClick={() => setBilingualMode(!bilingualMode)}
-            className={`ml-1 inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-[11px] font-bold transition ${
-              bilingualMode
-                ? 'bg-amber-500/25 text-amber-300 border border-amber-500/40'
-                : 'bg-stone-800 text-stone-400 hover:text-white'
-            }`}
-            title="Alternate reading primary & parallel language verse by verse"
+            type="button"
+            className="quiet-button"
+            onClick={() => handleStep(-1)}
+            title="Previous Verse"
           >
-            <Repeat className="h-3 w-3" />
-            <span className="hidden sm:inline">Bilingual Alternate</span>
+            ⏮
           </button>
-        )}
 
-        <select
-          value={rate}
-          onChange={(e) => setRate(Number(e.target.value))}
-          className="ml-1 rounded-lg border border-stone-700 bg-stone-950 px-2 py-1 text-[11px] font-mono text-amber-300"
-          aria-label="Playback speed"
-        >
-          <option value={0.85}>0.85x</option>
-          <option value={1}>1.0x</option>
-          <option value={1.15}>1.15x</option>
-          <option value={1.3}>1.3x</option>
-        </select>
+          <button
+            type="button"
+            className="add-column"
+            onClick={handleTogglePlay}
+            style={{ minWidth: '88px' }}
+          >
+            {isPlaying ? '⏸ Pause' : '▶ Listen'}
+          </button>
+
+          <button
+            type="button"
+            className="quiet-button"
+            onClick={handleStop}
+            title="Stop"
+          >
+            ⏹
+          </button>
+
+          <button
+            type="button"
+            className="quiet-button"
+            onClick={() => handleStep(1)}
+            title="Next Verse"
+          >
+            ⏭
+          </button>
+
+          {parallelVerses && parallelVerses.length > 0 && (
+            <button
+              type="button"
+              className={`quiet-button ${bilingualMode ? 'active-pill' : ''}`}
+              onClick={() => {
+                handleStop();
+                setBilingualMode(!bilingualMode);
+              }}
+              title="Alternate reading primary & parallel language verse by verse"
+            >
+              ⇄ Bilingual ({versionName} + {parallelVersionName})
+            </button>
+          )}
+
+          <select
+            value={rate}
+            onChange={(e) => {
+              const nextRate = Number(e.target.value);
+              setRate(nextRate);
+              if (audioElRef.current) {
+                audioElRef.current.playbackRate = nextRate;
+              }
+            }}
+            style={{
+              height: '36px',
+              padding: '0 10px',
+              borderRadius: '6px',
+              border: '1px solid var(--line)',
+              background: 'var(--surface)',
+              color: 'var(--ink)',
+              fontSize: '12px',
+            }}
+            aria-label="Playback speed"
+          >
+            <option value={0.85}>0.85x</option>
+            <option value={1}>1.0x</option>
+            <option value={1.15}>1.15x</option>
+            <option value={1.3}>1.3x</option>
+          </select>
+
+          {onClose && (
+            <button
+              type="button"
+              className="icon-button"
+              onClick={() => {
+                handleStop();
+                onClose();
+              }}
+              aria-label="Close Audio Reader"
+              title="Close Audio Bar"
+            >
+              ×
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

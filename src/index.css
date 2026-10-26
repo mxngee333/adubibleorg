@@ -530,6 +530,16 @@ input {
   position: relative;
 }
 
+.mobile-cell-badge {
+  display: none;
+  margin-bottom: 6px;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--green);
+  font-weight: 600;
+}
+
 .verse-cell h3 {
   margin: 2px 0 12px;
   font-family: Georgia, "Times New Roman", serif;
@@ -903,6 +913,10 @@ input {
   .verse-cell {
     border-right: 0;
     border-bottom: 1px solid var(--line);
+  }
+
+  .mobile-cell-badge {
+    display: inline-block;
   }
 
   .edition-head:last-child,
