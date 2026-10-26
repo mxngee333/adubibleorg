@@ -77,17 +77,17 @@ import { Search, User } from 'lucide-react';
 import { AskAduBibleContext } from './services/askAduBibleService';
 
 const COMPARE_PRESETS: Array<{ label: string; versions: string[] }> = [
-  { label: 'KJV + Twi', versions: ['kjv', 'twi'] },
-  { label: 'NKJV + Twi', versions: ['nkjv', 'twi'] },
-  { label: 'KJV 1611 + Apocrypha', versions: ['kjv-apoc', 'twi-apoc'] },
-  { label: 'Septuagint LXX + KJV', versions: ['lxx', 'kjv-apoc'] },
-  { label: 'Catholic Douay-Rheims', versions: ['dra', 'twi-apoc'] },
-  { label: 'Charles (Enoch) + Twi', versions: ['charles', 'twi-apoc'] },
-  { label: 'Akuapem + Asante', versions: ['ak-twi', 'twi'] },
+  { label: 'KJV + BSB', versions: ['kjv', 'bsb'] },
+  { label: 'NKJV + KJV', versions: ['nkjv', 'kjv'] },
   { label: 'English Quad', versions: ['nkjv', 'kjv', 'bsb', 'asv'] },
+  { label: 'English Major', versions: ['kjv', 'bsb', 'web'] },
+  { label: 'Greek/Hebrew + KJV', versions: ['tr-gk', 'kjv'] },
+  { label: 'Septuagint LXX + KJV', versions: ['lxx', 'kjv-apoc'] },
+  { label: 'Catholic Douay-Rheims', versions: ['dra', 'kjv-apoc'] },
+  { label: 'KJV + Twi', versions: ['kjv', 'twi'] },
+  { label: 'Akuapem + Asante', versions: ['ak-twi', 'twi'] },
+  { label: 'French + Spanish', versions: ['fr-lsg', 'es-rvr'] },
   { label: 'Hausa + French', versions: ['ha', 'fr-lsg'] },
-  { label: 'English versions', versions: ['kjv', 'bsb', 'web'] },
-  { label: 'Greek/Hebrew + Twi', versions: ['tr-gk', 'twi', 'nkjv'] },
 ];
 
 const HIGHLIGHT_COLORS: Array<{ id: HighlightColor; label: string; dotColor: string }> = [
