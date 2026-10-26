@@ -248,6 +248,7 @@ export function App() {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isBookModalOpen, setIsBookModalOpen] = useState<boolean>(false);
+  const [bookPickerTab, setBookPickerTab] = useState<'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD'>('CANONICAL');
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState<boolean>(false);
   const [isLangAddonModalOpen, setIsLangAddonModalOpen] =
     useState<boolean>(false);
@@ -879,6 +880,13 @@ export function App() {
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }}
+      onSelectTheme={(themeKey) => {
+        updatePrefs({ theme: themeKey as any });
+      }}
+      onOpenBookPickerWithTab={(tab) => {
+        setBookPickerTab(tab);
+        setIsBookModalOpen(true);
+      }}
       showStrongs={prefs.showStrongsInline}
       showCommentaries={prefs.showCommentaries}
     />
@@ -1171,6 +1179,18 @@ export function App() {
             </button>
 
             <div className="mobile-bar-quick-actions">
+              <button
+                type="button"
+                className="mobile-quick-btn apo-dc-btn"
+                onClick={() => {
+                  setBookPickerTab(currentBook.testament === 'DC' ? 'PSEUD' : 'DC');
+                  setIsBookModalOpen(true);
+                }}
+                title="Browse 16 Deuterocanon & 25 Apocrypha Books"
+                aria-label="Browse Deuterocanon & Apocrypha Books"
+              >
+                📜 Apo/DC
+              </button>
               {activeVersionIds.length >= 2 && (
                 <button
                   type="button"
@@ -2341,7 +2361,9 @@ export function App() {
             <button
               type="button"
               onClick={() => handleStepChapter(-1)}
-              disabled={currentBook.number === 1 && currentChapter <= 1}
+              disabled={
+                currentBook.id === activeCollectionBooks[0]?.id && currentChapter <= 1
+              }
             >
               ← Previous
             </button>
@@ -2353,7 +2375,8 @@ export function App() {
               type="button"
               onClick={() => handleStepChapter(1)}
               disabled={
-                currentBook.number === 66 &&
+                currentBook.id ===
+                  activeCollectionBooks[activeCollectionBooks.length - 1]?.id &&
                 currentChapter >= currentBook.chapters
               }
             >
@@ -2654,6 +2677,7 @@ export function App() {
         currentBookId={currentBook.id}
         currentChapter={currentChapter}
         uiLanguageCode="en"
+        initialTestamentFilter={bookPickerTab}
         onSelectBookChapter={handleSelectBookChapter}
       />
 

@@ -175,6 +175,17 @@ const CANONICAL_ROUTES = [
     excerpt:
       'Historic 7th-century manuscript canon index preserved in Codex Sinaiticus, Ethiopian Orthodox canon, and Early Church collections. Read 1 Enoch, Didache, Epistle of Barnabas, and Shepherd of Hermas in parallel.',
   },
+  {
+    route: '/apocrypha/',
+    priority: '0.9',
+    changefreq: 'weekly',
+    title: 'Biblical Apocrypha & Ancient Pseudepigrapha — 25 Historic Sacred Books | AduBible',
+    description:
+      'Read 25 ancient Apocrypha and Pseudepigrapha books (1 Enoch, Book of Jasher, Jubilees, 2 Esdras, Didache, Shepherd of Hermas) in parallel across R.H. Charles, Lightfoot, and Asante Twi on AduBible.',
+    heading: 'Biblical Apocrypha & Ancient Pseudepigrapha (25 Sacred Books) — Parallel Study',
+    excerpt:
+      'Ancient Jewish and early Christian sacred literature including 1 Enoch (Book of Enoch), Book of Jasher, Book of Jubilees, 2 Esdras (4 Ezra), and Apostolic Fathers with 24kHz neural audio and sovereign offline storage.',
+  },
 ];
 
 // Also include the 23 localization routes from mega-multilingual-seo-transformer

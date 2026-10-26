@@ -9,6 +9,7 @@ interface BookChapterSelectorModalProps {
   currentBookId: string;
   currentChapter: number;
   uiLanguageCode: string;
+  initialTestamentFilter?: 'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD';
   onSelectBookChapter: (bookSlug: string, chapter: number) => void;
 }
 
@@ -19,9 +20,10 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
   currentBookId,
   currentChapter,
   uiLanguageCode,
+  initialTestamentFilter,
   onSelectBookChapter,
 }) => {
-  const [testamentFilter, setTestamentFilter] = useState<'CANONICAL' | 'OT' | 'NT'>('CANONICAL');
+  const [testamentFilter, setTestamentFilter] = useState<'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD'>('CANONICAL');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBook, setSelectedBook] = useState<BibleBook | null>(
     () => books.find((b) => b.id === currentBookId) || books[0] || null
@@ -31,19 +33,31 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
   useEffect(() => {
     if (isOpen) {
       const cur = books.find((b) => b.id === currentBookId);
-      if (cur?.testament === 'OT') setTestamentFilter('OT');
-      else if (cur?.testament === 'NT') setTestamentFilter('NT');
-      else setTestamentFilter('CANONICAL');
+      if (initialTestamentFilter) {
+        setTestamentFilter(initialTestamentFilter);
+      } else if (cur?.testament === 'DC') {
+        setTestamentFilter('DC');
+      } else if (cur?.testament === 'PSEUD') {
+        setTestamentFilter('PSEUD');
+      } else if (cur?.testament === 'OT') {
+        setTestamentFilter('OT');
+      } else if (cur?.testament === 'NT') {
+        setTestamentFilter('NT');
+      } else {
+        setTestamentFilter('CANONICAL');
+      }
       if (cur) setSelectedBook(cur);
       setStep('books');
       setSearchQuery('');
     }
-  }, [isOpen, currentBookId, books]);
+  }, [isOpen, currentBookId, books, initialTestamentFilter]);
 
   const filteredBooks = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     return books.filter((b) => {
-      if (testamentFilter === 'CANONICAL') {
+      if (testamentFilter === 'ALL') {
+        // Show all 107 books
+      } else if (testamentFilter === 'CANONICAL') {
         if (b.testament !== 'OT' && b.testament !== 'NT') return false;
       } else if (b.testament !== testamentFilter) {
         return false;
@@ -66,6 +80,43 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
 
   const activeBook = selectedBook || books.find((b) => b.id === currentBookId) || books[0];
 
+  const getHeaderMeta = () => {
+    switch (testamentFilter) {
+      case 'DC':
+        return {
+          title: '📜 Deuterocanonical Scriptures (16 Books)',
+          desc: 'Catholic & Orthodox Historical Canon · Tobit, Judith, 1–2 Maccabees, Wisdom, Sirach, Baruch',
+        };
+      case 'PSEUD':
+        return {
+          title: '🏺 Ancient Apocrypha & Sacred Pseudepigrapha (25 Books)',
+          desc: '1 Enoch, Jubilees, Book of Jasher, 2 Esdras, Patriarchs, Didache, Shepherd of Hermas',
+        };
+      case 'OT':
+        return {
+          title: '📜 Old Testament (39 Books)',
+          desc: 'Torah, Historical Books, Wisdom Poetry & Prophetic Scriptures',
+        };
+      case 'NT':
+        return {
+          title: '✝️ New Testament (27 Books)',
+          desc: 'Four Gospels, Acts, Epistles of Paul & Apostolic Letters, Revelation',
+        };
+      case 'ALL':
+        return {
+          title: '👑 Complete 107 Holy Scriptures Library',
+          desc: 'Accepted Canon (66) + Deuterocanon (16) + Ancient Apocrypha (25)',
+        };
+      default:
+        return {
+          title: 'Holy Bible · 66 Canonical Books Navigator',
+          desc: 'Old Testament (39 Books) · New Testament (27 Books) · Accepted Scripture',
+        };
+    }
+  };
+
+  const headerMeta = getHeaderMeta();
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-3 sm:p-6">
       <div className="relative flex flex-col w-full max-w-4xl max-h-[88vh] rounded-2xl border border-amber-500/30 bg-stone-950 text-stone-100 shadow-2xl overflow-hidden">
@@ -77,10 +128,10 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
             </div>
             <div>
               <h2 className="text-base font-bold text-amber-200">
-                Holy Bible · 66 Canonical Books Navigator
+                {headerMeta.title}
               </h2>
               <p className="text-xs text-stone-400">
-                Old Testament (39 Books) · New Testament (27 Books) · Accepted Scripture
+                {headerMeta.desc}
               </p>
             </div>
           </div>
@@ -107,7 +158,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
               }`}
               title="66 Accepted Canonical Books (OT 39 + NT 27)"
             >
-              Accepted Canon (66)
+              Canon (66)
             </button>
             <button
               onClick={() => {
@@ -135,7 +186,48 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
             >
               New Testament (27)
             </button>
-
+            <button
+              onClick={() => {
+                setTestamentFilter('DC');
+                setStep('books');
+              }}
+              className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
+                testamentFilter === 'DC'
+                  ? 'bg-amber-500 text-stone-950'
+                  : 'bg-amber-950/70 border border-amber-600/50 text-amber-300 hover:text-amber-100'
+              }`}
+              title="16 Deuterocanonical Books (Tobit, Judith, 1-2 Maccabees, Wisdom, Sirach, Baruch...)"
+            >
+              📜 Deuterocanon (16)
+            </button>
+            <button
+              onClick={() => {
+                setTestamentFilter('PSEUD');
+                setStep('books');
+              }}
+              className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
+                testamentFilter === 'PSEUD'
+                  ? 'bg-amber-500 text-stone-950'
+                  : 'bg-purple-950/70 border border-purple-600/50 text-purple-300 hover:text-purple-100'
+              }`}
+              title="25 Apocrypha Books (1 Enoch, Jubilees, Book of Jasher, 2 Esdras, Patriarchs...)"
+            >
+              🏺 Apocrypha (25)
+            </button>
+            <button
+              onClick={() => {
+                setTestamentFilter('ALL');
+                setStep('books');
+              }}
+              className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
+                testamentFilter === 'ALL'
+                  ? 'bg-amber-500 text-stone-950'
+                  : 'bg-stone-800 text-stone-300 hover:text-white'
+              }`}
+              title="View all 107 Holy Scriptures"
+            >
+              All (107)
+            </button>
           </div>
 
           <div className="relative flex-1 max-w-xs">

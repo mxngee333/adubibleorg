@@ -39,8 +39,14 @@ export const MobileBottomDock: React.FC<MobileBottomDockProps> = ({
           aria-label={`Open Scripture Navigator (${currentBookName} ${currentChapter})`}
         >
           <BookOpen className="dock-icon" />
-          <span className="dock-label truncate max-w-[68px]">
-            {currentBookName.split(' ')[0]} {currentChapter}
+          <span className="dock-label truncate max-w-[76px]">
+            {(() => {
+              const words = currentBookName.trim().split(' ');
+              if (words.length > 1 && /^[1-4]$/.test(words[0])) {
+                return `${words[0]} ${words[1].slice(0, 3)} ${currentChapter}`;
+              }
+              return `${words[0].slice(0, 4)} ${currentChapter}`;
+            })()}
           </span>
         </button>
 

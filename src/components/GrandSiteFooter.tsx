@@ -6,6 +6,8 @@ interface GrandSiteFooterProps {
   onOpenSettings: () => void;
   onGoHome: (e?: React.MouseEvent) => void;
   onSelectNavTab: (tab: 'canonical' | 'deuterocanon' | 'list-of-sixty') => void;
+  onSelectTheme?: (themeId: string) => void;
+  onOpenBookPickerWithTab?: (tab: 'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD') => void;
   showStrongs: boolean;
   showCommentaries: boolean;
 }
@@ -15,9 +17,30 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
   onOpenSettings,
   onGoHome,
   onSelectNavTab,
+  onSelectTheme,
+  onOpenBookPickerWithTab,
   showStrongs,
   showCommentaries,
 }) => {
+  const handleThemeClick = (themeId: string) => {
+    if (onSelectTheme) {
+      onSelectTheme(themeId);
+    } else {
+      onOpenSettings();
+    }
+  };
+
+  const handleBookPickerTab = (tab: 'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD') => {
+    if (onOpenBookPickerWithTab) {
+      onOpenBookPickerWithTab(tab);
+    } else if (tab === 'DC') {
+      onSelectNavTab('deuterocanon');
+    } else if (tab === 'PSEUD') {
+      onSelectNavTab('list-of-sixty');
+    } else {
+      onSelectNavTab('canonical');
+    }
+  };
   return (
     <footer className="grand-site-footer" role="contentinfo">
 
@@ -138,15 +161,15 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
       </div>
 
       <div className="footer-grid">
-        {/* Column 1: Scriptures & Canons */}
+        {/* Column 1: Scriptures, Deuterocanon & Apocrypha */}
         <div className="footer-col">
-          <h3 className="footer-col-title">Holy Scriptures &amp; Canons</h3>
+          <h3 className="footer-col-title">Holy Scriptures &amp; Historical Canons (107 Books)</h3>
           <ul className="footer-links">
             <li>
               <button
                 type="button"
                 className="footer-btn-link"
-                onClick={() => onSelectNavTab('canonical')}
+                onClick={() => handleBookPickerTab('CANONICAL')}
               >
                 📖 66 Canonical Books (OT 39 + NT 27)
               </button>
@@ -155,7 +178,8 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
               <button
                 type="button"
                 className="footer-btn-link"
-                onClick={() => onSelectNavTab('deuterocanon')}
+                onClick={() => handleBookPickerTab('DC')}
+                style={{ color: '#f59e0b', fontWeight: 700 }}
               >
                 📜 16 Deuterocanonical Books (Catholic &amp; Orthodox)
               </button>
@@ -164,40 +188,162 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
               <button
                 type="button"
                 className="footer-btn-link"
-                onClick={() => onSelectNavTab('list-of-sixty')}
+                onClick={() => handleBookPickerTab('PSEUD')}
+                style={{ color: '#c084fc', fontWeight: 700 }}
               >
-                🏺 25 List of Sixty &amp; Ancient Apocrypha
+                🏺 25 Ancient Apocrypha &amp; Pseudepigrapha
               </button>
             </li>
             <li>
-              <a href="/twi/ephesians/1/" className="footer-text-link">
-                🇬🇭 Twerɛ Kronkron (Asante Twi Bible)
-              </a>
+              <button
+                type="button"
+                className="footer-btn-link"
+                onClick={() => handleBookPickerTab('ALL')}
+              >
+                👑 Browse All 107 Holy Scriptures
+              </button>
             </li>
-            <li>
-              <a href="/nkjv/ephesians/1/" className="footer-text-link">
-                📖 New King James Version (NKJV)
-              </a>
-            </li>
-            <li>
-              <a href="/kjv/ephesians/1/" className="footer-text-link">
-                👑 King James Version (KJV 1769)
-              </a>
+            <li style={{ borderTop: '1px dashed var(--line)', paddingTop: '6px', marginTop: '6px' }}>
+              <span style={{ fontSize: '11px', color: 'var(--subtle)', display: 'block', marginBottom: '4px' }}>
+                Quick Historical Scripture Hubs:
+              </span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                <a href="/deuterocanon/" className="footer-pill-link">
+                  📜 Deuterocanon Hub
+                </a>
+                <a href="/list-of-sixty/" className="footer-pill-link">
+                  🏺 Apocrypha Hub
+                </a>
+                <a href="/kjv-apoc/tobit/1/" className="footer-pill-link">
+                  Tobit
+                </a>
+                <a href="/kjv-apoc/wisdom-of-solomon/1/" className="footer-pill-link">
+                  Wisdom
+                </a>
+                <a href="/kjv-apoc/1-maccabees/1/" className="footer-pill-link">
+                  1 Maccabees
+                </a>
+                <a href="/charles/1-enoch/1/" className="footer-pill-link">
+                  1 Enoch
+                </a>
+                <a href="/charles/book-of-jasher/1/" className="footer-pill-link">
+                  Jasher
+                </a>
+                <a href="/charles/jubilees/1/" className="footer-pill-link">
+                  Jubilees
+                </a>
+              </div>
             </li>
           </ul>
         </div>
 
-        {/* Column 2: Exegetical Tools */}
+        {/* Column 2: Exegetical Tools & Themes Dashboard */}
         <div className="footer-col">
-          <h3 className="footer-col-title">Exegetical &amp; Study Tools</h3>
+          <h3 className="footer-col-title">Reading Palettes &amp; Themes (Settings Dashboard)</h3>
           <ul className="footer-links">
-            <li>
+            <li style={{ marginBottom: '8px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '6px' }}>
+                <button
+                  type="button"
+                  className="footer-theme-chip"
+                  onClick={() => handleThemeClick('wisdom-legacy')}
+                  title="Switch to Wisdom Pine Legacy Theme"
+                >
+                  🌿 Wisdom Pine
+                </button>
+                <button
+                  type="button"
+                  className="footer-theme-chip"
+                  onClick={() => handleThemeClick('royal-purple')}
+                  title="Switch to Royal Tyrian Velvet Theme"
+                >
+                  👑 Royal Velvet
+                </button>
+                <button
+                  type="button"
+                  className="footer-theme-chip"
+                  onClick={() => handleThemeClick('lilac-light')}
+                  title="Switch to Sacred Lilac Parchment Theme"
+                >
+                  🌸 Sacred Lilac
+                </button>
+                <button
+                  type="button"
+                  className="footer-theme-chip"
+                  onClick={() => handleThemeClick('burgundy-gold')}
+                  title="Switch to Burgundy Leather KJV Theme"
+                >
+                  📖 Burgundy KJV
+                </button>
+                <button
+                  type="button"
+                  className="footer-theme-chip"
+                  onClick={() => handleThemeClick('adubible-si')}
+                  title="Switch to AduBible SI Sovereign Theme"
+                >
+                  ⚡ AduBible SI
+                </button>
+                <button
+                  type="button"
+                  className="footer-theme-chip"
+                  onClick={() => handleThemeClick('architect-gold')}
+                  title="Switch to Sacred Architect Maroon Theme"
+                >
+                  📐 Architect
+                </button>
+                <button
+                  type="button"
+                  className="footer-theme-chip"
+                  onClick={() => handleThemeClick('covenant-atlas')}
+                  title="Switch to Covenant Atlas Theme"
+                >
+                  🧭 Covenant Atlas
+                </button>
+                <button
+                  type="button"
+                  className="footer-theme-chip"
+                  onClick={() => handleThemeClick('sapphire-blue')}
+                  title="Switch to Celestial Sapphire Blue Theme"
+                  style={{ borderColor: 'rgba(56, 189, 248, 0.45)', color: '#38bdf8' }}
+                >
+                  🌊 Sapphire Blue
+                </button>
+                <button
+                  type="button"
+                  className="footer-theme-chip"
+                  onClick={() => handleThemeClick('midnight')}
+                  title="Switch to Obsidian & Amber Gold Theme"
+                >
+                  🌙 Obsidian Gold
+                </button>
+                <button
+                  type="button"
+                  className="footer-theme-chip"
+                  onClick={() => handleThemeClick('parchment')}
+                  title="Switch to Warm Daylight Parchment Theme"
+                >
+                  ☀️ Daylight
+                </button>
+                <button
+                  type="button"
+                  className="footer-theme-chip"
+                  onClick={() => {
+                    handleThemeClick('custom');
+                    onOpenSettings();
+                  }}
+                  title="Open Custom Palette Studio in Settings"
+                >
+                  🎨 Custom Studio
+                </button>
+              </div>
+            </li>
+            <li style={{ borderTop: '1px dashed var(--line)', paddingTop: '6px' }}>
               <button
                 type="button"
                 className="footer-btn-link"
                 onClick={onOpenSettings}
               >
-                🔤 Strong’s Greek &amp; Hebrew Concordance {showStrongs ? '✓ ON' : '(Turn ON)'}
+                🔤 Strong’s Greek &amp; Hebrew Lexicon {showStrongs ? '✓ ON' : '(Turn ON)'}
               </button>
             </li>
             <li>
@@ -206,7 +352,7 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
                 className="footer-btn-link"
                 onClick={onOpenSettings}
               >
-                💬 Matthew Henry Commentaries {showCommentaries ? '✓ ON' : '(Turn ON)'}
+                💬 Matthew Henry Expository Notes {showCommentaries ? '✓ ON' : '(Turn ON)'}
               </button>
             </li>
             <li>
@@ -218,20 +364,6 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
               <span className="footer-static-item">
                 ⇄ 4-Column Synchronized Parallel Study
               </span>
-            </li>
-            <li>
-              <span className="footer-static-item">
-                🗄️ Sovereign Local &amp; Cloud Study Vault
-              </span>
-            </li>
-            <li>
-              <button
-                type="button"
-                className="footer-btn-link"
-                onClick={onOpenSettings}
-              >
-                🎨 Velvet Purple, Lilac, Midnight &amp; Parchment Themes
-              </button>
             </li>
           </ul>
         </div>
