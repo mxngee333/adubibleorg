@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="authGlow" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#4c1d95" />
+      <stop offset="60%" stop-color="#1e0a38" />
+      <stop offset="100%" stop-color="#090212" />
+    </radialGradient>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7" />
+      <stop offset="40%" stop-color="#f59e0b" />
+      <stop offset="80%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#92400e" />
+    </linearGradient>
+    <filter id="authShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="url(#authGlow)" />
+  <rect width="500" height="500" x="6" y="6" rx="106" fill="none" stroke="url(#goldGradient)" stroke-width="6" stroke-opacity="0.8" />
+
+  <!-- Center Aura -->
+  <circle cx="256" cy="230" r="150" fill="#f59e0b" opacity="0.16" />
+
+  <!-- Open Bible Symbol Scaled for Auth Avatar -->
+  <g filter="url(#authShadow)" transform="translate(106, 110) scale(1.08)">
+    <!-- Left Cover -->
+    <path d="M 140 178 C 95 162 40 165 10 178 L 10 50 C 45 36 95 34 140 48 Z" fill="#2d104e" stroke="url(#goldGradient)" stroke-width="4" />
+    <!-- Left Page -->
+    <path d="M 136 170 C 95 156 46 158 18 170 L 18 44 C 48 32 94 30 136 43 Z" fill="#faf5ff" />
+    <!-- Left Ruling -->
+    <line x1="38" y1="68" x2="116" y2="60" stroke="#c084fc" stroke-width="3.5" stroke-linecap="round" stroke-opacity="0.6" />
+    <line x1="38" y1="90" x2="116" y2="82" stroke="#c084fc" stroke-width="3.5" stroke-linecap="round" stroke-opacity="0.6" />
+    <line x1="38" y1="112" x2="116" y2="104" stroke="#c084fc" stroke-width="3.5" stroke-linecap="round" stroke-opacity="0.6" />
+    <line x1="38" y1="134" x2="116" y2="126" stroke="#c084fc" stroke-width="3.5" stroke-linecap="round" stroke-opacity="0.6" />
+
+    <!-- Right Cover -->
+    <path d="M 140 178 C 185 162 240 165 270 178 L 270 50 C 235 36 185 34 140 48 Z" fill="#2d104e" stroke="url(#goldGradient)" stroke-width="4" />
+    <!-- Right Page -->
+    <path d="M 144 170 C 185 156 234 158 262 170 L 262 44 C 232 32 186 30 144 43 Z" fill="#fefce8" />
+    <!-- Right Ruling -->
+    <line x1="164" y1="60" x2="242" y2="68" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round" stroke-opacity="0.6" />
+    <line x1="164" y1="82" x2="242" y2="90" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round" stroke-opacity="0.6" />
+    <line x1="164" y1="104" x2="242" y2="112" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round" stroke-opacity="0.6" />
+    <line x1="164" y1="126" x2="242" y2="134" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round" stroke-opacity="0.6" />
+
+    <!-- Ribbon Marker -->
+    <path d="M 140 46 L 140 180" stroke="#78350f" stroke-width="5" />
+    <path d="M 140 176 Q 148 200 156 215 L 140 206 L 124 215 Q 132 200 140 176 Z" fill="url(#goldGradient)" stroke="#78350f" stroke-width="2" />
+
+    <!-- Center Cross Crest -->
+    <circle cx="140" cy="36" r="16" fill="#1e0a38" stroke="url(#goldGradient)" stroke-width="2.5" />
+    <path d="M 140 26 L 140 46 M 132 33 L 148 33" stroke="url(#goldGradient)" stroke-width="3" stroke-linecap="round" />
+  </g>
+
+  <!-- Base Label -->
+  <text x="256" y="420" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="44" font-weight="700">
+    <tspan fill="url(#goldGradient)">Adu</tspan><tspan fill="#f8fafc">Bible</tspan>
+  </text>
+  <text x="256" y="452" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" fill="#cbd5e1" letter-spacing="3">
+    CLOUD AUTH &amp; STUDY SYNC
+  </text>
+</svg>
