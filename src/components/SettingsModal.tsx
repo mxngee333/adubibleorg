@@ -1,5 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ReadingPreferences } from '../types/bible';
+import {
+  getStoredGeminiKey,
+  setStoredGeminiKey,
+  clearTtsAudioCache,
+} from '../services/neuralTtsService';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -16,7 +21,24 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onUpdatePrefs,
   onOpenLanguageAddonModal,
 }) => {
+  const [apiKeyInput, setApiKeyInput] = useState<string>(() => getStoredGeminiKey());
+  const [isKeyVisible, setIsKeyVisible] = useState(false);
+  const [keyNotice, setKeyNotice] = useState<string>('');
+  const [cacheNotice, setCacheNotice] = useState<string>('');
+
   if (!isOpen) return null;
+
+  const handleSaveKey = () => {
+    setStoredGeminiKey(apiKeyInput);
+    setKeyNotice(apiKeyInput.trim() ? '✅ Custom Gemini key saved!' : 'Custom key removed. Using built-in key.');
+    setTimeout(() => setKeyNotice(''), 3000);
+  };
+
+  const handleClearCache = async () => {
+    await clearTtsAudioCache();
+    setCacheNotice('Audio cache cleared (0 bytes)');
+    setTimeout(() => setCacheNotice(''), 3000);
+  };
 
   const isNight =
     prefs.theme !== 'parchment' &&
@@ -326,7 +348,128 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
           </div>
 
-          {/* 3. Custom Language / Version Add-on */}
+          {/* 3. 24kHz Google Neural Audio & API Key Sanctuary */}
+          <div className="picker-group">
+            <div className="picker-language">24kHz Neural Audio &amp; Gemini Studio Key</div>
+            <div
+              style={{
+                padding: '14px 16px',
+                borderRadius: '6px',
+                border: '1px solid var(--line)',
+                background: 'var(--surface)',
+                display: 'grid',
+                gap: '12px',
+              }}
+            >
+              <div>
+                <strong style={{ display: 'block', fontSize: '14px', marginBottom: '4px' }}>
+                  Google Gemini 24kHz Audio API Key
+                </strong>
+                <span style={{ fontSize: '12px', color: 'var(--subtle)', lineHeight: 1.5 }}>
+                  The reader uses Google Gemini Studio 24kHz voices (Charon, Kore, Puck, Aoede, Fenrir). To ensure uninterrupted daily narration across long Bible sessions without free tier quota limits, you can add your own free Gemini API key below.
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <input
+                  type={isKeyVisible ? 'text' : 'password'}
+                  value={apiKeyInput}
+                  onChange={(e) => setApiKeyInput(e.target.value)}
+                  placeholder="Paste AIzaSy... key (optional)"
+                  style={{
+                    flex: 1,
+                    height: '38px',
+                    padding: '0 12px',
+                    borderRadius: '6px',
+                    border: '1px solid var(--line)',
+                    background: 'var(--paper)',
+                    color: 'var(--ink)',
+                    fontSize: '13px',
+                    fontFamily: 'monospace',
+                  }}
+                />
+                <button
+                  type="button"
+                  className="quiet-button"
+                  onClick={() => setIsKeyVisible(!isKeyVisible)}
+                  title={isKeyVisible ? 'Hide Key' : 'Show Key'}
+                >
+                  {isKeyVisible ? '🙈' : '👁️'}
+                </button>
+                <button
+                  type="button"
+                  className="add-column"
+                  onClick={handleSaveKey}
+                  style={{ minWidth: '80px' }}
+                >
+                  Save
+                </button>
+              </div>
+
+              {keyNotice && (
+                <div style={{ fontSize: '12px', color: 'var(--green)', fontWeight: 500 }}>
+                  {keyNotice}
+                </div>
+              )}
+
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '8px',
+                  paddingTop: '6px',
+                  borderTop: '1px solid var(--line)',
+                  fontSize: '11px',
+                  color: 'var(--subtle)',
+                }}
+              >
+                <span>
+                  {apiKeyInput.trim() ? (
+                    <strong style={{ color: 'var(--green)' }}>● Custom Key Active</strong>
+                  ) : (
+                    <span>● Using Built-in High-Speed Audio Key</span>
+                  )}
+                </span>
+                <a
+                  href="https://aistudio.google.com/app/apikey"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'var(--green)', textDecoration: 'underline' }}
+                >
+                  Get free key at Google AI Studio ↗
+                </a>
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingTop: '8px',
+                  borderTop: '1px solid var(--line)',
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: '12px', fontWeight: 600 }}>Zero-Cost Audio Vault Cache</div>
+                  <div style={{ fontSize: '11px', color: 'var(--subtle)' }}>
+                    Verses already downloaded are stored locally in IndexedDB for 0ms offline playback.
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  className="quiet-button"
+                  onClick={handleClearCache}
+                  style={{ fontSize: '11px' }}
+                >
+                  {cacheNotice || 'Clear Audio Cache'}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* 4. Custom Language / Version Add-on */}
           <div className="picker-group">
             <div className="picker-language">Language &amp; Translation Add-ons</div>
             <div

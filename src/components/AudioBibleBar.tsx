@@ -20,6 +20,7 @@ interface AudioBibleBarProps {
   activeVerse: number;
   onVerseChange: (verseNum: number) => void;
   onClose?: () => void;
+  onOpenSettings?: () => void;
 }
 
 const SAVED_VOICE_KEY = 'elohim_neural_voice_v1';
@@ -37,6 +38,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   activeVerse,
   onVerseChange,
   onClose,
+  onOpenSettings,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoadingVerse, setIsLoadingVerse] = useState(false);
@@ -57,11 +59,11 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
   const isPlayingRef = useRef(false);
   const currentVerseIdxRef = useRef(0);
+  const retryCountRef = useRef(0);
   const audioContextRef = useRef<AudioContext | null>(null);
   const activeSourceRef = useRef<AudioBufferSourceNode | null>(null);
   const activeGainNodeRef = useRef<GainNode | null>(null);
   const studioAudioElRef = useRef<HTMLAudioElement | null>(null);
-  const prefetchQueueActiveRef = useRef<boolean>(false);
 
   useEffect(() => {
     setUseStudioMp3(Boolean(audioUrl));
@@ -95,10 +97,10 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     setBufferedCount(count);
   }, [verses, langCode, selectedVoice]);
 
-  // Background Look-Ahead Pre-fetcher for Next Verses (N+1, N+2, N+3)
-  // Keeps character voice 100% consistent!
+  // Background Look-Ahead Pre-fetcher for Next Verse (N+1)
+  // Keeps character voice 100% consistent and prevents quota-exhausting storms
   const prefetchAhead = useCallback(
-    async (fromIndex: number, depth = 3) => {
+    async (fromIndex: number, depth = 1) => {
       try {
         const ctx = getOrCreateAudioContext();
         for (let i = fromIndex + 1; i <= Math.min(fromIndex + depth, verses.length - 1); i++) {
@@ -134,36 +136,12 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     ]
   );
 
-  // Background whole-chapter idle preloader so reading stays 100% fluid
-  useEffect(() => {
-    if (prefetchQueueActiveRef.current) return;
-    prefetchQueueActiveRef.current = true;
-
-    const startIdlePreload = async () => {
-      await new Promise((r) => setTimeout(r, 600));
-      const ctx = getOrCreateAudioContext();
-      for (let i = 0; i < verses.length; i++) {
-        const v = verses[i];
-        if (v && !isAudioBufferPreloaded(v.text, langCode, selectedVoice)) {
-          try {
-            await getOrPreloadAudioBuffer(ctx, v.text, langCode, selectedVoice);
-            updateBufferedCount();
-            await new Promise((r) => setTimeout(r, 350));
-          } catch {
-            // Ignore background failures
-          }
-        }
-      }
-    };
-
-    startIdlePreload();
-  }, [verses, langCode, selectedVoice, getOrCreateAudioContext, updateBufferedCount]);
-
   // Clean, click-free stop with 35ms micro-fade to eliminate all glitch pops
   const stopPlayback = () => {
     setIsPlaying(false);
     setIsLoadingVerse(false);
     isPlayingRef.current = false;
+    retryCountRef.current = 0;
     setStatusMessage('');
 
     if (activeGainNodeRef.current && audioContextRef.current) {
@@ -214,8 +192,8 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       return;
     }
 
-    // Trigger lookahead prefetch for next verses with consistent selected voice
-    prefetchAhead(index, 3);
+    // Trigger lookahead prefetch for NEXT verse (N+1) only, saving quota while maintaining 0ms gapless cutover
+    prefetchAhead(index, 1);
 
     const ctx = getOrCreateAudioContext();
     const isAlreadyInMemory = isAudioBufferPreloaded(
@@ -246,6 +224,8 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
         return;
       }
 
+      // Reset retry count on successful audio retrieval
+      retryCountRef.current = 0;
       setIsLoadingVerse(false);
       setStatusMessage('');
       updateBufferedCount();
@@ -322,18 +302,30 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       source.start();
       setIsPlaying(true);
       isPlayingRef.current = true;
-    } catch (err) {
-      console.warn('[AudioBibleBar] 24kHz synthesis retry error:', err);
+    } catch (err: any) {
+      console.warn('[AudioBibleBar] 24kHz synthesis error:', err);
       setIsLoadingVerse(false);
-      setStatusMessage('Retrying 24kHz audio stream…');
 
-      // Resilient recovery: wait 800ms and retry pure 24kHz neural audio (NEVER robot speech)
-      if (isPlayingRef.current) {
+      if (retryCountRef.current < 2 && isPlayingRef.current) {
+        retryCountRef.current += 1;
+        setStatusMessage(`Retrying 24kHz stream (${retryCountRef.current}/2)…`);
         setTimeout(() => {
           if (isPlayingRef.current) {
             playVerseAtIndex(index);
           }
-        }, 800);
+        }, 1200);
+      } else {
+        // Stop infinite buffering loop and show clear guidance
+        setIsPlaying(false);
+        isPlayingRef.current = false;
+        retryCountRef.current = 0;
+
+        const errStr = String(err?.message || '').toLowerCase();
+        if (errStr.includes('quota') || errStr.includes('429')) {
+          setStatusMessage('Daily 24kHz quota limit reached · Tap ⚙️ to add your free Gemini key');
+        } else {
+          setStatusMessage('Audio paused · Tap Play to retry or ⚙️ to configure API key');
+        }
       }
     }
   };
@@ -342,6 +334,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     if (isPlaying) {
       stopPlayback();
     } else {
+      retryCountRef.current = 0;
       const startIndex = Math.max(
         0,
         verses.findIndex((v) => v.verse === activeVerse)
@@ -354,6 +347,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
   const handleStep = (delta: number) => {
     stopPlayback();
+    retryCountRef.current = 0;
     const nextIdx = Math.min(
       verses.length - 1,
       Math.max(0, currentVerseIdxRef.current + delta)
@@ -427,7 +421,19 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
               Audio Scripture · {bookName} {chapter}:{activeVerse}
             </div>
             <div style={{ fontSize: '12px', color: 'var(--subtle)' }}>
-              {statusMessage || (
+              {statusMessage ? (
+                <span
+                  style={{
+                    color: statusMessage.includes('quota') ? '#e5a54b' : 'var(--ink)',
+                    cursor: onOpenSettings ? 'pointer' : 'default',
+                    textDecoration: onOpenSettings ? 'underline' : 'none',
+                  }}
+                  onClick={() => onOpenSettings && onOpenSettings()}
+                  title={onOpenSettings ? 'Click to open Settings' : undefined}
+                >
+                  {statusMessage}
+                </span>
+              ) : (
                 <>
                   {versionName}
                   {' · '}
@@ -588,6 +594,18 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             <option value={1.15}>1.15x</option>
             <option value={1.3}>1.3x</option>
           </select>
+
+          {onOpenSettings && (
+            <button
+              type="button"
+              className="quiet-button"
+              onClick={onOpenSettings}
+              title="Audio & API Key Settings"
+              aria-label="Settings"
+            >
+              ⚙️
+            </button>
+          )}
 
           {onClose && (
             <button

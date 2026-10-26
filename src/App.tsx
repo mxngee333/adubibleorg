@@ -1723,6 +1723,7 @@ export function App() {
           activeVerse={selectedVerse}
           onVerseChange={(v: number) => setSelectedVerse(v)}
           onClose={() => setShowAudioBar(false)}
+          onOpenSettings={() => setIsSettingsOpen(true)}
         />
       )}
 

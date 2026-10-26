@@ -5,7 +5,15 @@
  */
 
 const EDGE_TTS_GATEWAY = 'https://api.modelissa.com/api/gemini-tts';
-const DEFAULT_GEMINI_KEY = 'AIzaSyCmYDhFoekesow8HDnv_4zqYeBuEGy58Vo';
+export const DEFAULT_GEMINI_KEY = 'AIzaSyCmYDhFoekesow8HDnv_4zqYeBuEGy58Vo';
+
+export const GEMINI_TTS_MODELS = [
+  'gemini-3.8-flash-lite-tts',
+  'gemini-3.8-flash-tts',
+  'gemini-2.5-flash-preview-tts',
+  'gemini-3.1-flash-tts-preview',
+  'gemini-2.5-pro-preview-tts',
+];
 
 export type GoogleNeuralVoiceName = 'Charon' | 'Kore' | 'Puck' | 'Aoede' | 'Fenrir';
 
@@ -54,6 +62,48 @@ const DB_NAME = 'elohim_tts_audio_cache_v2';
 const STORE_NAME = 'audio_tracks';
 const memoryAudioBufferCache = new Map<string, AudioBuffer>();
 
+export function getStoredGeminiKey(): string {
+  if (typeof window === 'undefined') return '';
+  try {
+    return localStorage.getItem('gemini_api_key')?.trim() || '';
+  } catch {
+    return '';
+  }
+}
+
+export function setStoredGeminiKey(key: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const clean = key.trim();
+    if (clean) {
+      localStorage.setItem('gemini_api_key', clean);
+    } else {
+      localStorage.removeItem('gemini_api_key');
+    }
+  } catch {
+    // LocalStorage quota or private mode
+  }
+}
+
+export function getActiveGeminiApiKeys(): string[] {
+  const keys: string[] = [];
+  const stored = getStoredGeminiKey();
+  if (stored) keys.push(stored);
+
+  if (typeof window !== 'undefined') {
+    const winKey = (window as any).__GEMINI_API_KEY;
+    if (winKey && typeof winKey === 'string' && winKey.trim()) {
+      keys.push(winKey.trim());
+    }
+  }
+
+  const envKey = (import.meta as any)?.env?.VITE_GEMINI_API_KEY?.trim();
+  if (envKey) keys.push(envKey);
+
+  keys.push(DEFAULT_GEMINI_KEY);
+  return Array.from(new Set(keys.filter(Boolean)));
+}
+
 function openTtsCacheDb(): Promise<IDBDatabase | null> {
   if (typeof window === 'undefined' || !window.indexedDB) return Promise.resolve(null);
   return new Promise((resolve) => {
@@ -101,6 +151,23 @@ export async function setCachedTtsAudio(cacheKey: string, base64Audio: string): 
   }
 }
 
+export async function clearTtsAudioCache(): Promise<void> {
+  memoryAudioBufferCache.clear();
+  const db = await openTtsCacheDb();
+  if (!db) return;
+  return new Promise((resolve) => {
+    try {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      const store = tx.objectStore(STORE_NAME);
+      const req = store.clear();
+      req.onsuccess = () => resolve();
+      req.onerror = () => resolve();
+    } catch {
+      resolve();
+    }
+  });
+}
+
 /**
  * Clean verse text strictly for speech synthesis.
  * Strips footnote markers [1], [2], parentheses, and special punctuation,
@@ -118,7 +185,8 @@ export function cleanVerseForSpeech(text: string): string {
 
 /**
  * Synthesizes 24kHz Google Neural Audio with automatic multi-tier retry.
- * NEVER falls back to robotic browser speech!
+ * Prioritizes high-speed Gemini 3.8 Flash Lite TTS, falls back across all available
+ * Gemini audio models, and caches in IndexedDB for 0ms instant future playback.
  */
 export async function synthesizeNeuralAudio(
   rawText: string,
@@ -138,79 +206,89 @@ export async function synthesizeNeuralAudio(
     return cached;
   }
 
-  // 2. Multi-attempt resilient synthesis from Edge Gateway with backoff
-  for (let attempt = 0; attempt < 3; attempt++) {
-    try {
-      const res = await fetch(EDGE_TTS_GATEWAY, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: pureVerseText,
-          voiceName,
-        }),
-      });
+  // 2. Direct Google Gemini 24kHz Audio API (Fastest path, zero intermediate proxy delays)
+  const candidateKeys = getActiveGeminiApiKeys();
+  let lastErrorMsg = '';
+  let hitQuotaLimit = false;
 
-      if (res.ok) {
-        const data = await res.json();
-        if (data?.ok && data?.base64Audio) {
-          await setCachedTtsAudio(cacheKey, data.base64Audio);
-          return data.base64Audio;
-        }
-      }
-    } catch (edgeErr) {
-      console.warn(`[NeuralTTS] Edge Gateway attempt ${attempt + 1} failed:`, edgeErr);
-    }
+  for (const apiKey of candidateKeys) {
+    for (const model of GEMINI_TTS_MODELS) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 12000);
 
-    if (attempt < 2) {
-      await new Promise((r) => setTimeout(r, 450 * (attempt + 1)));
-    }
-  }
-
-  // 3. Fallback to Direct Google Gemini Audio API
-  const apiKey =
-    (typeof window !== 'undefined' &&
-      ((window as any).__GEMINI_API_KEY || localStorage.getItem('gemini_api_key'))) ||
-    DEFAULT_GEMINI_KEY;
-
-  for (const model of [
-    'gemini-2.5-flash-preview-tts',
-    'gemini-3.1-flash-tts-preview',
-    'gemini-2.0-flash',
-  ]) {
-    try {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: pureVerseText }] }],
-          generationConfig: {
-            responseModalities: ['AUDIO'],
-            speechConfig: {
-              voiceConfig: {
-                prebuiltVoiceConfig: { voiceName },
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: pureVerseText }] }],
+            generationConfig: {
+              responseModalities: ['AUDIO'],
+              speechConfig: {
+                voiceConfig: {
+                  prebuiltVoiceConfig: { voiceName },
+                },
               },
             },
-          },
-        }),
-      });
+          }),
+        });
+        clearTimeout(timeoutId);
 
-      if (res.ok) {
-        const json = await res.json();
-        const base64Audio = json?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-        if (base64Audio) {
-          await setCachedTtsAudio(cacheKey, base64Audio);
-          return base64Audio;
+        if (res.ok) {
+          const json = await res.json();
+          const base64Audio = json?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+          if (base64Audio) {
+            await setCachedTtsAudio(cacheKey, base64Audio);
+            return base64Audio;
+          }
+        } else {
+          const errData = await res.json().catch(() => null);
+          const msg = errData?.error?.message || `HTTP ${res.status}`;
+          lastErrorMsg = msg;
+          if (res.status === 429 || msg.toLowerCase().includes('quota')) {
+            hitQuotaLimit = true;
+          }
+          console.warn(`[NeuralTTS] Model ${model} returned ${res.status}:`, msg);
         }
+      } catch (err: any) {
+        lastErrorMsg = err?.message || 'Network error';
       }
-    } catch {
-      // try next model
     }
   }
 
-  throw new Error('Neural TTS synthesis failed after retries');
+  // 3. Resilient Secondary Fallback: Edge TTS Gateway (Single attempt, bounded 4s timeout)
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const res = await fetch(EDGE_TTS_GATEWAY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
+      body: JSON.stringify({
+        text: pureVerseText,
+        voiceName,
+      }),
+    });
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data?.ok && data?.base64Audio) {
+        await setCachedTtsAudio(cacheKey, data.base64Audio);
+        return data.base64Audio;
+      }
+    }
+  } catch {
+    // Non-blocking fallback
+  }
+
+  if (hitQuotaLimit) {
+    throw new Error('Daily 24kHz Google audio quota limit reached (429). Please add your free Gemini key in Settings (⚙️).');
+  }
+
+  throw new Error(`24kHz Neural TTS unavailable: ${lastErrorMsg || 'Network error'}`);
 }
 
 /**
