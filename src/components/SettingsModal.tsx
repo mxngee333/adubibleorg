@@ -21,6 +21,21 @@ const PRESET_CUSTOM_PALETTES: Array<{
   palette: CustomThemePalette;
 }> = [
   {
+    name: 'Wisdom Pine Legacy',
+    icon: '🌲',
+    palette: {
+      id: 'wisdom-pine-legacy',
+      name: 'Wisdom Pine Legacy',
+      paper: '#20271f',
+      surface: '#171d17',
+      ink: '#e3e6d8',
+      subtle: '#a5ae9e',
+      line: '#394435',
+      accent: '#b7c99f',
+      isDark: true,
+    },
+  },
+  {
     name: 'Emerald Sanctuary',
     icon: '🌿',
     palette: {

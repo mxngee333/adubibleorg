@@ -237,12 +237,12 @@ export interface CustomThemePalette {
 }
 
 export type ReadingTheme =
+  | 'wisdom-legacy'
   | 'royal-purple'
   | 'lilac-light'
   | 'burgundy-gold'
   | 'architect-gold'
   | 'covenant-atlas'
-  | 'wisdom-legacy'
   | 'adubible-si'
   | 'sapphire-blue'
   | 'midnight'

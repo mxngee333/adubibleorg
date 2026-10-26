@@ -1440,7 +1440,39 @@ export function App() {
                       </div>
 
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '340px', overflowY: 'auto' }}>
-                        {/* 1. Royal Tyrian Velvet */}
+                        {/* 1. Wisdom Bible Legacy (Default) */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updatePrefs({ theme: 'wisdom-legacy' });
+                            setIsThemePickerOpen(false);
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '8px 10px',
+                            borderRadius: '6px',
+                            border: `1px solid ${prefs.theme === 'wisdom-legacy' ? '#b7c99f' : 'transparent'}`,
+                            background: prefs.theme === 'wisdom-legacy' ? 'rgba(67, 85, 59, 0.35)' : 'transparent',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            color: 'var(--ink)',
+                          }}
+                        >
+                          <img
+                            src="/themes/wisdom-legacy-banner.png"
+                            alt="Wisdom Bible Legacy"
+                            style={{ width: '32px', height: '20px', borderRadius: '4px', objectFit: 'cover' }}
+                          />
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '12px', fontWeight: 600 }}>🌿 Wisdom Bible Legacy</div>
+                            <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Deep pine &amp; contemplative sage (Default)</div>
+                          </div>
+                          {prefs.theme === 'wisdom-legacy' && <span style={{ color: '#b7c99f', fontSize: '12px' }}>✓</span>}
+                        </button>
+
+                        {/* 2. Royal Tyrian Velvet */}
                         <button
                           type="button"
                           onClick={() => {
@@ -1630,38 +1662,6 @@ export function App() {
                             <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Scripture compass &amp; sea teal</div>
                           </div>
                           {prefs.theme === 'covenant-atlas' && <span style={{ color: '#2dd4bf', fontSize: '12px' }}>✓</span>}
-                        </button>
-
-                        {/* 7. Wisdom Bible Legacy */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            updatePrefs({ theme: 'wisdom-legacy' });
-                            setIsThemePickerOpen(false);
-                          }}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                            padding: '8px 10px',
-                            borderRadius: '6px',
-                            border: `1px solid ${prefs.theme === 'wisdom-legacy' ? '#86efac' : 'transparent'}`,
-                            background: prefs.theme === 'wisdom-legacy' ? 'rgba(77, 124, 77, 0.2)' : 'transparent',
-                            cursor: 'pointer',
-                            textAlign: 'left',
-                            color: 'var(--ink)',
-                          }}
-                        >
-                          <img
-                            src="/themes/wisdom-legacy-banner.png"
-                            alt="Wisdom Bible Legacy"
-                            style={{ width: '32px', height: '20px', borderRadius: '4px', objectFit: 'cover' }}
-                          />
-                          <div style={{ flex: 1 }}>
-                            <div style={{ fontSize: '12px', fontWeight: 600 }}>🌿 Wisdom Bible Legacy</div>
-                            <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Deep pine &amp; contemplative sage</div>
-                          </div>
-                          {prefs.theme === 'wisdom-legacy' && <span style={{ color: '#86efac', fontSize: '12px' }}>✓</span>}
                         </button>
 
                         {/* 5. Celestial Sapphire */}
