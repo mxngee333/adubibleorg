@@ -1996,24 +1996,110 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   transition: background-color 0.15s ease;
 }
 
+.verse-row:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
 .verse-row.selected-row {
   background: rgba(245, 158, 11, 0.08);
 }
 
+/* Sticky Left Verse Number Gutter (BibleHub Style) */
+.verse-gutter {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  background: var(--surface);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 12px 4px;
+  cursor: pointer;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.04);
+  user-select: none;
+}
+
+.verse-row.selected-row .verse-gutter {
+  background: var(--paper);
+}
+
+.gutter-num {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--green);
+  line-height: 1.2;
+}
+
+.gutter-badge {
+  font-size: 14px;
+  line-height: 1;
+  color: #f59e0b;
+  margin-top: 2px;
+}
+
 .verse-cell {
-  padding: 16px 22px;
+  padding: 14px 18px;
   border-right: 1px solid var(--line);
   position: relative;
+  font-size: var(--reading-size, 19px);
+  line-height: 1.68;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.verse-cell:hover {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.verse-heading {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--subtle);
+  margin-bottom: 8px;
+  font-family: inherit;
+}
+
+.verse-text-body p {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: var(--reading-size, 19px);
+  line-height: 1.72;
+  color: var(--ink);
+}
+
+.verse-add-spacer {
+  background: transparent;
+  border-left: 1px dashed var(--line);
+}
+
+/* Synchronized Quick Bar across full grid row */
+.verse-quick-bar-wrapper {
+  grid-column: 1 / -1;
+  position: sticky;
+  left: 0;
+  z-index: 15;
+  width: 100%;
+  max-width: 100vw;
+  padding: 8px 12px;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.verse-interlinear-ribbon {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .mobile-cell-badge {
-  display: none;
-  margin-bottom: 6px;
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--green);
-  font-weight: 600;
+  display: none !important;
 }
 
 .verse-cell h3 {
@@ -2494,41 +2580,234 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   }
 
   .workspace {
-    padding: 20px 14px 42px;
+    padding: 0 0 60px;
   }
 
+  /* BIBLEHUB MOBILE CLUTTER PURGE:
+     When scripture is searched or viewed on mobile, hide the redundant stacked toolbars,
+     page headings, and chapter intros so reading begins immediately below the sleek chapter bar! */
+  .page-heading,
   .passage-toolbar,
   .chapter-intro,
-  .quick-controls,
+  .quick-controls {
+    display: none !important;
+  }
+
+  .reading-shell {
+    padding: 0 !important;
+    border-radius: 0 !important;
+  }
+
   .reading-end,
   .footnotes-grid,
   .languages-strip {
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
   .edition-heads {
-    top: 0;
+    top: 50px; /* immediately below mobile-biblehub-bar */
   }
 
+  /* Maintain BibleHub side-by-side synchronized grid on mobile with horizontal scroll */
   .edition-heads,
   .verse-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: 38px repeat(var(--columns), minmax(260px, 1fr)) 58px;
   }
 
   .edition-head,
   .verse-cell {
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
+    border-right: 1px solid var(--line);
   }
 
   .mobile-cell-badge {
-    display: inline-block;
+    display: none !important;
   }
+}
 
-  .edition-head:last-child,
-  .verse-cell:last-child {
-    border-bottom: 0;
+/* ==========================================================================
+   MOBILE BIBLEHUB CHAPTER BAR & EDGE NAV ARROWS
+   ========================================================================== */
+.mobile-biblehub-bar {
+  display: none; /* hidden on desktop */
+  position: sticky;
+  top: 0;
+  z-index: 35;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  padding: 8px 10px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+@media (max-width: 768px) {
+  .mobile-biblehub-bar {
+    display: flex;
+  }
+}
+
+.mobile-chapter-step-btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  font-size: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.mobile-chapter-step-btn:hover:not(:disabled) {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.mobile-chapter-step-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.mobile-chapter-title-trigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  min-width: 0;
+  flex: 1;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.mobile-chapter-title-trigger:hover {
+  border-color: var(--green);
+}
+
+.mobile-book-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-chapter-num {
+  color: var(--green);
+  font-weight: 800;
+}
+
+.mobile-twi-tag {
+  font-size: 11px;
+  color: var(--subtle);
+  font-weight: 400;
+}
+
+.mobile-caret {
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.mobile-bar-quick-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.mobile-quick-btn {
+  padding: 6px 10px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.mobile-quick-btn.swap {
+  padding: 6px 8px;
+  font-weight: 800;
+  color: var(--green);
+}
+
+.mobile-quick-btn.active {
+  background: rgba(168, 85, 247, 0.2);
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.mobile-quick-btn.add-btn {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.4);
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+/* FLOATING SIDE CHAPTER NAV ARROWS (BibleHub Style) */
+.biblehub-edge-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 52px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 26px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+  cursor: pointer;
+  border-radius: 6px;
+  opacity: 0.65;
+  transition: all 0.2s ease;
+}
+
+.biblehub-edge-arrow:hover {
+  opacity: 1;
+  background: var(--paper);
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.biblehub-edge-arrow.left {
+  left: 4px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.biblehub-edge-arrow.right {
+  right: 4px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.biblehub-edge-arrow:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .biblehub-edge-arrow {
+    display: none;
   }
 }
 
