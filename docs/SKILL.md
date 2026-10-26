@@ -252,10 +252,58 @@ if (typeof piece.noteId === 'number') {
 
 ---
 
-## 8. Pre-Flight Verification Checklist
+## 9. Royal Purple Palette & Elegance Architecture
+
+Biblical purple represents divine royalty, prayer, praise, and sacred majesty (*Argaman* אַרְגָּמָן in Exodus 28:5; *Porphyra* πορφύρα in John 19:2, Revelation 19:16). The reader offers two royal purple palettes engineered for high aesthetic luxury and long reading sessions:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   BIBLICAL ROYAL PURPLE PALETTES                       │
+├────────────────────────────────────┬───────────────────────────────────┤
+│   1. ROYAL TYRIAN VELVET (DARK)    │   2. SACRED LILAC PARCHMENT (LT)  │
+│                                    │                                   │
+│  Base Canvas:  #160d24 (Velvet)    │  Base Canvas:  #fdfcfe (Lilac)    │
+│  Surface:      #10081a (Aubergine) │  Surface:      #f5f0fa (Lavender) │
+│  Ink Text:     #f5f0fa (Silk)      │  Ink Text:     #241432 (Aubergine)│
+│  Subtle:       #a896c2 (Amethyst)  │  Subtle:       #6b567e (Plum)     │
+│  Line Rule:    rgba(192,132,252,.2)│  Line Rule:    #e2d5ec (Heather)  │
+│  Accent:       #c084fc (Luminous)  │  Accent:       #7e22ce (Violet)   │
+│  Action CTA:   #9333ea gradient    │  Action CTA:   #7e22ce gradient   │
+└────────────────────────────────────┴───────────────────────────────────┘
+```
+
+### CSS Implementation Pattern:
+```css
+.bible-app.theme-royal-purple {
+  --paper: #160d24;
+  --surface: #10081a;
+  --ink: #f5f0fa;
+  --subtle: #a896c2;
+  --line: rgba(192, 132, 252, 0.22);
+  --green: #c084fc;
+  --soft: #221438;
+  color-scheme: dark;
+}
+
+.bible-app.theme-lilac-light {
+  --paper: #fdfcfe;
+  --surface: #f5f0fa;
+  --ink: #241432;
+  --subtle: #6b567e;
+  --line: #e2d5ec;
+  --green: #7e22ce;
+  --soft: #ede4f7;
+  color-scheme: light;
+}
+```
+
+---
+
+## 10. Pre-Flight Verification Checklist
 
 Before shipping any Bible web app build:
 - [ ] Verify `showStrongsInline: false` and `showCommentaries: false` in default preferences.
+- [ ] Confirm default reading theme is `royal-purple` or user's saved choice.
 - [ ] Confirm `AudioBibleBar` is centered with `max-width: 1508px` and has a working `×` close button.
 - [ ] Test 24kHz Google Neural Audio on both English and Twi scripture.
 - [ ] Verify look-ahead pre-fetching buffers verses ahead (`⚡ Buffered N/Total`).
