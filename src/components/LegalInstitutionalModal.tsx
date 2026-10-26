@@ -83,16 +83,82 @@ export const LegalInstitutionalModal: React.FC<LegalInstitutionalModalProps> = (
         <div className="flex-1 overflow-y-auto p-6 space-y-4 text-sm leading-relaxed text-stone-300">
           {page === 'about' && (
             <div className="space-y-4">
-              <div className="rounded-xl border border-amber-500/30 bg-amber-950/20 p-4">
-                <span className="text-xs uppercase tracking-widest font-bold text-amber-400">
-                  SACRED MEMORIAL &amp; COVENANT
-                </span>
-                <h3 className="text-lg font-bold text-amber-200 mt-1">
-                  Honoring the Legacy of Apostle Kwame Adu — Nushia, Ghana
-                </h3>
-                <p className="mt-2 text-stone-200">
-                  <strong>AduBible (Adubible.org)</strong> is dedicated to honor the life, spiritual leadership, and enduring gospel ministry of <strong>Apostle Kwame Adu</strong> of Nushia, Ghana. Rooted in deep devotion to Christ and a steadfast love for the scriptures, this sanctuary stands as a living generational monument to spread the uncorrupted Word of God across Ghana, Africa, and the nations of the earth.
-                </p>
+              <div className="rounded-xl border border-amber-500/30 bg-amber-950/20 p-5 space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-xs uppercase tracking-widest font-bold text-amber-400">
+                    SACRED MEMORIAL &amp; COVENANT
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="rounded-full bg-amber-500/20 border border-amber-500/40 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-300">
+                      Dedicated to Humanity
+                    </span>
+                    <span className="rounded-full bg-emerald-500/20 border border-emerald-500/40 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-400">
+                      100% Ads-Free
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold text-amber-200">
+                    Honoring the Legacy of Apostle Kwame Adu ·{' '}
+                    <a
+                      href="https://nsuhia.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline hover:text-amber-300 text-stone-100"
+                    >
+                      Nsuhia, Ghana ↗
+                    </a>{' '}
+                    ·{' '}
+                    <a
+                      href="https://adubible.org/"
+                      className="underline hover:text-amber-300 text-amber-400"
+                    >
+                      adubible.org
+                    </a>
+                  </h3>
+                  <p className="mt-2 text-stone-200 leading-relaxed">
+                    <strong>AduBible (Adubible.org)</strong> is dedicated to humanity in honor of the life, spiritual leadership, and enduring gospel ministry of <strong>Apostle Kwame Adu</strong> of{' '}
+                    <a
+                      href="https://nsuhia.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline text-amber-300 font-bold"
+                    >
+                      Nsuhia, Ghana
+                    </a>. Rooted in deep devotion to Christ and an unyielding reverence for the holy scriptures, this digital sanctuary stands as a living generational monument to spread the uncorrupted Word of God freely across Ghana, Africa, and all nations.
+                  </p>
+                </div>
+
+                {/* THREE CORNERSTONE SCRIPTURES */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+                  <div className="rounded-lg border border-amber-500/20 bg-stone-900/60 p-3 flex flex-col justify-between">
+                    <p className="text-xs italic text-stone-200 leading-normal">
+                      &ldquo;Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ.&rdquo;
+                    </p>
+                    <span className="mt-2 text-[10px] font-bold tracking-wider uppercase text-amber-400">
+                      Ephesians 1:3 · Efesofoɔ 1:3
+                    </span>
+                  </div>
+
+                  <div className="rounded-lg border border-amber-500/20 bg-stone-900/60 p-3 flex flex-col justify-between">
+                    <p className="text-xs italic text-stone-200 leading-normal">
+                      &ldquo;For the word of God is living and active, sharper than any two-edged sword, piercing to the division of soul and of spirit, of joints and of marrow.&rdquo;
+                    </p>
+                    <span className="mt-2 text-[10px] font-bold tracking-wider uppercase text-amber-400">
+                      Hebrews 4:12 · Hebrifoɔ 4:12
+                    </span>
+                  </div>
+
+                  <div className="rounded-lg border border-amber-500/20 bg-stone-900/60 p-3 flex flex-col justify-between">
+                    <p className="text-xs italic text-stone-200 leading-normal">
+                      &ldquo;All Scripture is breathed out by God and profitable for teaching, for reproof, for correction, and for training in righteousness.&rdquo;
+                    </p>
+                    <span className="mt-2 text-[10px] font-bold tracking-wider uppercase text-amber-400">
+                      2 Timothy 3:16 · 2 Timoteo 3:16
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <h4 className="text-base font-bold text-amber-300">

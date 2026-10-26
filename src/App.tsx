@@ -529,6 +529,7 @@ export function App() {
     setCurrentChapter(chapter);
     setSelectedVerse(1);
     setActiveVerseActionBar(null);
+    setActiveNavTab('canonical');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -738,6 +739,322 @@ export function App() {
   const studyLayersActiveCount =
     (prefs.showStrongsInline ? 1 : 0) + (prefs.showCommentaries ? 1 : 0);
 
+  const renderSharedFooter = () => (
+    <footer
+      className="site-footer"
+      style={{
+        marginTop: '36px',
+        paddingTop: '24px',
+        paddingBottom: '32px',
+        borderTop: '1px solid var(--line)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '20px',
+        fontSize: '13px',
+        color: 'var(--subtle)',
+      }}
+    >
+      {/* 1. CORNERSTONE THREE SCRIPTURE QUOTES */}
+      <div
+        className="footer-scripture-trio"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '14px',
+        }}
+      >
+        <div
+          style={{
+            padding: '14px 16px',
+            borderRadius: '12px',
+            background: 'var(--soft)',
+            border: '1px solid var(--line)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          <p
+            style={{
+              margin: '0 0 8px 0',
+              fontStyle: 'italic',
+              color: 'var(--ink)',
+              lineHeight: 1.5,
+              fontSize: '13px',
+            }}
+          >
+            &ldquo;Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ.&rdquo;
+          </p>
+          <div
+            style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: 'var(--green)',
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+            }}
+          >
+            Ephesians 1:3 · Efesofoɔ 1:3
+          </div>
+        </div>
+
+        <div
+          style={{
+            padding: '14px 16px',
+            borderRadius: '12px',
+            background: 'var(--soft)',
+            border: '1px solid var(--line)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          <p
+            style={{
+              margin: '0 0 8px 0',
+              fontStyle: 'italic',
+              color: 'var(--ink)',
+              lineHeight: 1.5,
+              fontSize: '13px',
+            }}
+          >
+            &ldquo;For the word of God is living and active, sharper than any two-edged sword, piercing to the division of soul and of spirit, of joints and of marrow.&rdquo;
+          </p>
+          <div
+            style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: 'var(--green)',
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+            }}
+          >
+            Hebrews 4:12 · Hebrifoɔ 4:12
+          </div>
+        </div>
+
+        <div
+          style={{
+            padding: '14px 16px',
+            borderRadius: '12px',
+            background: 'var(--soft)',
+            border: '1px solid var(--line)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          <p
+            style={{
+              margin: '0 0 8px 0',
+              fontStyle: 'italic',
+              color: 'var(--ink)',
+              lineHeight: 1.5,
+              fontSize: '13px',
+            }}
+          >
+            &ldquo;All Scripture is breathed out by God and profitable for teaching, for reproof, for correction, and for training in righteousness.&rdquo;
+          </p>
+          <div
+            style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              color: 'var(--green)',
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+            }}
+          >
+            2 Timothy 3:16 · 2 Timoteo 3:16
+          </div>
+        </div>
+      </div>
+
+      {/* 2. DEDICATION BANNER & VALUES */}
+      <div
+        style={{
+          padding: '14px 18px',
+          borderRadius: '12px',
+          border: '1px solid rgba(245, 158, 11, 0.28)',
+          background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(20, 16, 13, 0.6) 100%)',
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '12px',
+        }}
+      >
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
+          <span style={{ color: 'var(--green)', fontWeight: 700 }}>✦ Honoring the Legacy of Apostle Kwame Adu</span>
+          <span>·</span>
+          <a
+            href="https://nsuhia.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: 'var(--ink)',
+              textDecoration: 'underline',
+              fontWeight: 600,
+            }}
+            title="Visit Nsuhia, Ghana community portal"
+          >
+            Nsuhia, Ghana ↗
+          </a>
+          <span>·</span>
+          <a
+            href="https://adubible.org/"
+            style={{
+              color: 'var(--green)',
+              textDecoration: 'underline',
+              fontWeight: 700,
+            }}
+            title="AduBible — Adubible.org"
+          >
+            adubible.org
+          </a>
+        </div>
+
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px' }}>
+          <span
+            style={{
+              padding: '4px 12px',
+              borderRadius: '999px',
+              background: 'rgba(245, 158, 11, 0.18)',
+              border: '1px solid rgba(245, 158, 11, 0.35)',
+              color: 'var(--green)',
+              fontSize: '11px',
+              fontWeight: 700,
+              letterSpacing: '0.03em',
+              textTransform: 'uppercase',
+            }}
+          >
+            Dedicated to Humanity
+          </span>
+          <span
+            style={{
+              padding: '4px 12px',
+              borderRadius: '999px',
+              background: 'rgba(16, 185, 129, 0.16)',
+              border: '1px solid rgba(16, 185, 129, 0.35)',
+              color: '#34d399',
+              fontSize: '11px',
+              fontWeight: 700,
+              letterSpacing: '0.03em',
+              textTransform: 'uppercase',
+            }}
+          >
+            100% Ads-Free Reading Experience
+          </span>
+        </div>
+      </div>
+
+      {/* 3. NAVIGATION BAR & UTILITY LINKS */}
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: '12px',
+          paddingTop: '6px',
+        }}
+      >
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
+          <a
+            href="/"
+            onClick={handleGoHome}
+            style={{
+              color: 'var(--ink)',
+              textDecoration: 'none',
+              fontWeight: 700,
+              cursor: 'pointer',
+              fontSize: '14px',
+            }}
+            title="AduBible — Home | Adubible.org"
+          >
+            AduBible
+          </a>
+          <span>· Parallel Scripture Sanctuary</span>
+          {!prefs.showStrongsInline && !prefs.showCommentaries && (
+            <span style={{ marginLeft: '6px' }}>
+              · Strong’s &amp; Commentaries:{' '}
+              <button
+                type="button"
+                style={{
+                  border: 0,
+                  background: 'transparent',
+                  color: 'var(--green)',
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                  padding: 0,
+                }}
+                onClick={() => setIsSettingsOpen(true)}
+              >
+                Turn on in Settings
+              </button>
+            </span>
+          )}
+        </div>
+
+        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
+          <a
+            href="https://adubible.org/"
+            style={{
+              fontWeight: 700,
+              color: 'var(--green)',
+              textDecoration: 'none',
+            }}
+          >
+            Adubible.org
+          </a>
+          <a
+            href="/about/"
+            onClick={(e) => {
+              e.preventDefault();
+              setLegalModalState({ open: true, page: 'about' });
+            }}
+          >
+            About &amp; Memorial
+          </a>
+          <a
+            href="/how-to-use/"
+            onClick={(e) => {
+              e.preventDefault();
+              setLegalModalState({ open: true, page: 'how-to-use' });
+            }}
+          >
+            How to Use
+          </a>
+          <a
+            href="/privacy/"
+            onClick={(e) => {
+              e.preventDefault();
+              setLegalModalState({ open: true, page: 'privacy' });
+            }}
+          >
+            Privacy Policy
+          </a>
+          <a
+            href="/terms/"
+            onClick={(e) => {
+              e.preventDefault();
+              setLegalModalState({ open: true, page: 'terms' });
+            }}
+          >
+            Terms of Service
+          </a>
+          <a
+            href="https://nsuhia.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'var(--subtle)' }}
+          >
+            nsuhia.com ↗
+          </a>
+        </div>
+      </div>
+    </footer>
+  );
+
   return (
     <div className={`bible-app theme-${prefs.theme} ${isNight ? 'night' : ''}`}>
       {/* 1. TOP MASTHEAD (AduBible) */}
@@ -812,17 +1129,135 @@ export function App() {
         </div>
       </header>
 
-      {/* 2. MAIN WORKSPACE */}
-      <main id="reader" className="workspace">
-        <section className="page-heading">
-          <p className="eyebrow">
-            100% AD-FREE · 107 CANONICAL &amp; APOCRYPHAL BOOKS · 24KHZ NEURAL AUDIO
-          </p>
-          <h1>AduBible — The Pure Word, Side by Side.</h1>
-          <p>
-            Zero ads, zero trackers. 107 Canonical, Deuterocanonical &amp; Apocryphal books in Asante Twi, English &amp; 35+ languages with Strong’s Concordance and 24kHz Audio.
-          </p>
-        </section>
+      {/* 2. CANONICAL TABS NAVIGATION */}
+      <nav className="canon-nav-bar" aria-label="Canons and Collections">
+        <div className="canon-nav-container">
+          <button
+            type="button"
+            className={`canon-tab-btn ${activeNavTab === 'canonical' ? 'active' : ''}`}
+            onClick={() => {
+              setActiveNavTab('canonical');
+              if (typeof window !== 'undefined') {
+                window.history.pushState(
+                  {},
+                  '',
+                  `/${activeVersionIds[0] || 'kjv'}/${currentBookSlug}/${currentChapter}`
+                );
+              }
+            }}
+          >
+            <span className="tab-icon">📖</span>
+            <span className="tab-title">Canonical Scriptures</span>
+            <span className="tab-badge">66 Books</span>
+          </button>
+
+          <button
+            type="button"
+            className={`canon-tab-btn ${activeNavTab === 'deuterocanon' ? 'active' : ''}`}
+            onClick={() => {
+              setActiveNavTab('deuterocanon');
+              if (typeof window !== 'undefined') {
+                window.history.pushState({}, '', '/deuterocanon');
+              }
+            }}
+          >
+            <span className="tab-icon">📜</span>
+            <span className="tab-title">Deuterocanonicals</span>
+            <span className="tab-badge">16 Books</span>
+          </button>
+
+          <button
+            type="button"
+            className={`canon-tab-btn ${activeNavTab === 'list-of-sixty' ? 'active' : ''}`}
+            onClick={() => {
+              setActiveNavTab('list-of-sixty');
+              if (typeof window !== 'undefined') {
+                window.history.pushState({}, '', '/list-of-sixty');
+              }
+            }}
+          >
+            <span className="tab-icon">🏺</span>
+            <span className="tab-title">List of Sixty &amp; Apocrypha</span>
+            <span className="tab-badge">25 Books</span>
+          </button>
+        </div>
+      </nav>
+
+      {/* 3. DEDICATED CANON VIEWS OR PARALLEL SCRIPTURE READER */}
+      {activeNavTab === 'deuterocanon' ? (
+        <DeuterocanonicalHubPage
+          books={canonicalBooks}
+          uiLanguageCode="en"
+          onSelectBookChapter={(slug, chapter) => {
+            handleSelectBookChapter(slug, chapter);
+            if (typeof window !== 'undefined') {
+              window.history.pushState(
+                {},
+                '',
+                `/${activeVersionIds[0] || 'kjv-apoc'}/${slug}/${chapter}`
+              );
+            }
+          }}
+          onOpenReaderWithVersions={(slug, chapter, versionIds) => {
+            setCurrentBookSlug(slug);
+            setCurrentChapter(chapter);
+            setSelectedVerse(1);
+            setActiveVersionIds(versionIds);
+            setActiveNavTab('canonical');
+            if (typeof window !== 'undefined') {
+              window.history.pushState(
+                {},
+                '',
+                `/${versionIds[0] || 'kjv-apoc'}/${slug}/${chapter}?versions=${versionIds.join(',')}`
+              );
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          footer={renderSharedFooter()}
+        />
+      ) : activeNavTab === 'list-of-sixty' ? (
+        <ListOfSixtyHubPage
+          books={canonicalBooks}
+          uiLanguageCode="en"
+          onSelectBookChapter={(slug, chapter) => {
+            handleSelectBookChapter(slug, chapter);
+            if (typeof window !== 'undefined') {
+              window.history.pushState(
+                {},
+                '',
+                `/${activeVersionIds[0] || 'charles'}/${slug}/${chapter}`
+              );
+            }
+          }}
+          onOpenReaderWithVersions={(slug, chapter, versionIds) => {
+            setCurrentBookSlug(slug);
+            setCurrentChapter(chapter);
+            setSelectedVerse(1);
+            setActiveVersionIds(versionIds);
+            setActiveNavTab('canonical');
+            if (typeof window !== 'undefined') {
+              window.history.pushState(
+                {},
+                '',
+                `/${versionIds[0] || 'charles'}/${slug}/${chapter}?versions=${versionIds.join(',')}`
+              );
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          footer={renderSharedFooter()}
+        />
+      ) : (
+        <main id="reader" className="workspace">
+          <section className="page-heading">
+            <p className="eyebrow">
+              {currentBook.category ? `${currentBook.category.toUpperCase()} · ` : ''}
+              100% AD-FREE · {canonicalBooks.length} BOOKS · 24KHZ NEURAL AUDIO
+            </p>
+            <h1>{currentBook.names.en} {currentChapter}</h1>
+            <p>
+              {currentBook.canonStatus || 'One passage. Different translations. A wider understanding.'}
+            </p>
+          </section>
 
         {/* 3. READING SHELL */}
         <section className="reading-shell" aria-busy={loadingChapters}>
@@ -880,7 +1315,7 @@ export function App() {
                   type="button"
                   onClick={() => handleStepChapter(1)}
                   disabled={
-                    currentBook.number === 66 &&
+                    currentBook.number === canonicalBooks.length &&
                     currentChapter >= currentBook.chapters
                   }
                   aria-label="Next chapter"
@@ -893,9 +1328,9 @@ export function App() {
                 <button
                   type="button"
                   onClick={() => setIsBookModalOpen(true)}
-                  title="Browse all 66 Books in English & Twi"
+                  title="Browse all 107 Canonical, Deuterocanonical & Apocryphal Books"
                 >
-                  All 66 Books
+                  All 107 Books
                 </button>
               </div>
             </div>
@@ -1548,126 +1983,9 @@ export function App() {
         ) : null}
 
         {/* 5. MINIMAL FOOTER */}
-        <footer
-          style={{
-            marginTop: '28px',
-            paddingTop: '18px',
-            borderTop: '1px solid var(--line)',
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: '12px',
-            fontSize: '13px',
-            color: 'var(--subtle)',
-          }}
-        >
-          <div>
-            <div>
-              <a
-                href="/"
-                onClick={handleGoHome}
-                style={{
-                  color: 'inherit',
-                  textDecoration: 'none',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                }}
-                title="AduBible — Home | Adubible.org"
-              >
-                AduBible
-              </a>
-              <span> · Parallel Scripture Sanctuary (100% Ad-Free)</span>
-              {!prefs.showStrongsInline && !prefs.showCommentaries && (
-                <span style={{ marginLeft: '10px' }}>
-                  · Need Strong’s Concordance or Commentaries?{' '}
-                  <button
-                    type="button"
-                    style={{
-                      border: 0,
-                      background: 'transparent',
-                      color: 'var(--green)',
-                      textDecoration: 'underline',
-                      cursor: 'pointer',
-                      padding: 0,
-                    }}
-                    onClick={() => setIsSettingsOpen(true)}
-                  >
-                    Turn them on in Settings
-                  </button>
-                </span>
-              )}
-            </div>
-            <div
-              style={{
-                marginTop: '4px',
-                fontSize: '12px',
-                color: 'var(--green)',
-                fontWeight: 500,
-                letterSpacing: '0.02em',
-              }}
-            >
-              Honoring the Legacy of Apostle Kwame Adu · Nushia, Ghana ·{' '}
-              <a
-                href="https://adubible.org/"
-                style={{ textDecoration: 'underline', color: 'inherit' }}
-              >
-                adubible.org
-              </a>
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
-            <a
-              href="https://adubible.org/"
-              style={{
-                fontWeight: 700,
-                color: 'var(--green)',
-                textDecoration: 'none',
-              }}
-            >
-              Adubible.org
-            </a>
-            <a
-              href="/about/"
-              onClick={(e) => {
-                e.preventDefault();
-                setLegalModalState({ open: true, page: 'about' });
-              }}
-            >
-              About
-            </a>
-            <a
-              href="/how-to-use/"
-              onClick={(e) => {
-                e.preventDefault();
-                setLegalModalState({ open: true, page: 'how-to-use' });
-              }}
-            >
-              How to Use
-            </a>
-            <a
-              href="/privacy/"
-              onClick={(e) => {
-                e.preventDefault();
-                setLegalModalState({ open: true, page: 'privacy' });
-              }}
-            >
-              Privacy
-            </a>
-            <a
-              href="/terms/"
-              onClick={(e) => {
-                e.preventDefault();
-                setLegalModalState({ open: true, page: 'terms' });
-              }}
-            >
-              Terms
-            </a>
-          </div>
-        </footer>
+        {renderSharedFooter()}
       </main>
+    )}
 
       {/* WISDOM BIBLE COLUMN TRANSLATION PICKER DIALOG */}
       {pickerSlot !== null && (

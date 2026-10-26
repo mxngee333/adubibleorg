@@ -2,7 +2,7 @@
   "name": "adubible",
   "private": true,
   "version": "1.0.0",
-  "description": "AduBible (Adubible.org) — Honoring the Legacy of Apostle Kwame Adu | Nushia, Ghana. Ad-Free Multilingual Parallel Bible, Twi & 35+ Languages, Strong's Concordance, Open-Source Commentaries & Cloud Study Sync",
+  "description": "AduBible (Adubible.org) — Honoring the Legacy of Apostle Kwame Adu | Nsuhia, Ghana (https://nsuhia.com/). Dedicated to Humanity · 100% Ads-Free Multilingual Parallel Bible, Twi & 35+ Languages, Strong's Concordance, Open-Source Commentaries & Cloud Study Sync",
   "type": "module",
   "scripts": {
     "dev": "vite",

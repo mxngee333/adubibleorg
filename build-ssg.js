@@ -16,10 +16,10 @@ const CANONICAL_ROUTES = [
     changefreq: 'weekly',
     title: "AduBible — Ad-Free Multilingual Parallel Bible, Twi (Twerɛ Kronkron), Strong's Concordance & Study Sync | Adubible.org",
     description:
-      "Read the Holy Bible in parallel across Asante Twi (Twerɛ Kronkron), NKJV, KJV, Hebrew, Greek, and 35+ world languages on AduBible. Dedicated to the Legacy of Apostle Kwame Adu (Nushia, Ghana). Features Strong's Exhaustive Concordance and Cloud Study Sync with zero ads.",
+      "Read the Holy Bible in parallel across Asante Twi (Twerɛ Kronkron), NKJV, KJV, Hebrew, Greek, and 35+ world languages on AduBible (Adubible.org). Dedicated to Humanity in honor of the Legacy of Apostle Kwame Adu · Nsuhia, Ghana (https://nsuhia.com/). 100% Ads-Free Reading Experience with Strong's Concordance and Cloud Study Sync.",
     heading: 'AduBible — Multilingual Parallel Scripture & Exegetical Study Sanctuary',
     excerpt:
-      'Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ (Ephesians 1:3) • Nhyira nka yɛn Awurade Yesu Kristo Nyankopɔn ne Agya a ɔnam Kristo so ahyira yɛn honhom mu nhyira nyinaa wɔ soro hɔnom (Efesofoɔ 1:3). Honoring the Legacy of Apostle Kwame Adu · Nushia, Ghana.',
+      'Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ (Ephesians 1:3) • For the word of God is living and active, sharper than any two-edged sword (Hebrews 4:12) • All Scripture is breathed out by God and profitable for teaching (2 Timothy 3:16). Honoring the Legacy of Apostle Kwame Adu · Nsuhia, Ghana (https://nsuhia.com/) · adubible.org · Dedicated to Humanity · 100% Ads-Free Reading Experience.',
   },
   {
     route: '/nkjv/ephesians/1/',
@@ -113,12 +113,12 @@ const CANONICAL_ROUTES = [
     route: '/about/',
     priority: '0.6',
     changefreq: 'monthly',
-    title: 'About AduBible — Honoring the Legacy of Apostle Kwame Adu | Adubible.org',
+    title: 'About AduBible — Honoring the Legacy of Apostle Kwame Adu | Nsuhia, Ghana | Adubible.org',
     description:
-      'Learn how AduBible honors the ministry and legacy of Apostle Kwame Adu (Nushia, Ghana) through an ad-free parallel study sanctuary uniting Twi, English, Hebrew, and Greek.',
-    heading: 'About AduBible — The Legacy of Apostle Kwame Adu (Nushia, Ghana)',
+      'Learn how AduBible honors the ministry and legacy of Apostle Kwame Adu (Nsuhia, Ghana · https://nsuhia.com/) through a dedicated, 100% ad-free parallel study sanctuary uniting Twi, English, Hebrew, and Greek.',
+    heading: 'About AduBible — The Legacy of Apostle Kwame Adu (Nsuhia, Ghana)',
     excerpt:
-      'AduBible was founded to honor the gospel life and generational ministry of Apostle Kwame Adu of Nushia, Ghana. Combining deep exegetical rigor with YouVersion study sync with zero ads.',
+      'AduBible was founded to honor the gospel life and generational ministry of Apostle Kwame Adu of Nsuhia, Ghana (https://nsuhia.com/). Dedicated to humanity with a permanent 100% ad-free reading covenant, YouVersion-style personal study sync, and deep exegetical tools.',
   },
   {
     route: '/how-to-use/',
@@ -152,6 +152,28 @@ const CANONICAL_ROUTES = [
     heading: 'Terms of Service & Open-Source Biblical Commons',
     excerpt:
       'All public-domain and open-access translations, lexicons, and commentaries are freely accessible for personal devotion, sermon preparation, and academic research.',
+  },
+  {
+    route: '/deuterocanon/',
+    priority: '0.9',
+    changefreq: 'weekly',
+    title: 'Deuterocanonical Scriptures & Apocrypha — 16 Sacred Books in Parallel | AduBible',
+    description:
+      'Read the 16 Deuterocanonical Books (Tobit, Judith, Wisdom of Solomon, Sirach, Baruch, 1 & 2 Maccabees, Septuagint additions) in parallel across KJV 1611 Apocrypha, Douay-Rheims, Greek LXX, and Asante Twi on AduBible.',
+    heading: 'Deuterocanonical Scriptures & Biblical Apocrypha (16 Books) — Parallel Study',
+    excerpt:
+      'Sacred scriptures canonical for Catholic, Eastern Orthodox, and Oriental traditions. Features Wisdom of Solomon, Sirach (Ecclesiasticus), Tobit, Judith, and Maccabees in parallel translations with 24kHz audio.',
+  },
+  {
+    route: '/list-of-sixty/',
+    priority: '0.9',
+    changefreq: 'weekly',
+    title: 'List of Sixty Canonical & Apocryphal Books — 7th-Century Manuscript Index & Apostolic Fathers | AduBible',
+    description:
+      'Explore the ancient 7th-century List of Sixty and Apocrypha (1 Enoch, Didache, Shepherd of Hermas, Clement, Testament of the Twelve Patriarchs) in parallel across R.H. Charles, Lightfoot, and Asante Twi translations on AduBible.',
+    heading: 'List of Sixty & Ancient Apocrypha (25 Historic Books) — Apostolic Fathers & Pseudepigrapha',
+    excerpt:
+      'Historic 7th-century manuscript canon index preserved in Codex Sinaiticus, Ethiopian Orthodox canon, and Early Church collections. Read 1 Enoch, Didache, Epistle of Barnabas, and Shepherd of Hermas in parallel.',
   },
 ];
 

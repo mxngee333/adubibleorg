@@ -122,8 +122,13 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
   const handleExportMarkdown = () => {
     const lines: string[] = [
       '# AduBible (Adubible.org) — Personal Exegetical Study Vault',
-      '## Honoring the Legacy of Apostle Kwame Adu · Nushia, Ghana',
+      '## Honoring the Legacy of Apostle Kwame Adu · Nsuhia, Ghana (https://nsuhia.com/) · adubible.org',
+      '### Dedicated to Humanity · 100% Ads-Free Reading Experience',
       `Exported: ${new Date().toLocaleString()}`,
+      '',
+      '> "Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ." — Ephesians 1:3',
+      '> "For the word of God is living and active, sharper than any two-edged sword..." — Hebrews 4:12',
+      '> "All Scripture is breathed out by God and profitable for teaching, for reproof, for correction, and for training in righteousness..." — 2 Timothy 3:16',
       '',
       '## 📌 Pinned Scripture Anchors',
       ...pins.map(
