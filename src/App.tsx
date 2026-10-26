@@ -1458,7 +1458,20 @@ export function App() {
           }}
         >
           <div>
-            <span>Wisdom Bible · Parallel Scripture Sanctuary (100% Ad-Free)</span>
+            <a
+              href="/"
+              onClick={handleGoHome}
+              style={{
+                color: 'inherit',
+                textDecoration: 'none',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+              title="Wisdom Bible — Home"
+            >
+              Wisdom Bible
+            </a>
+            <span> · Parallel Scripture Sanctuary (100% Ad-Free)</span>
             {!prefs.showStrongsInline && !prefs.showCommentaries && (
               <span style={{ marginLeft: '10px' }}>
                 · Need Strong’s Concordance or Commentaries?{' '}
