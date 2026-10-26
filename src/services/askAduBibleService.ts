@@ -20,8 +20,8 @@ export interface AskAduBibleContext {
 
 const AI_TEXT_MODELS = [
   'gemini-2.5-flash',
-  'gemini-2.0-flash',
-  'gemini-1.5-flash',
+  'gemini-flash-latest',
+  'gemini-3.5-flash',
   'gemini-2.5-pro',
 ];
 
@@ -32,6 +32,28 @@ function getSanctuaryFallbackAnswer(query: string, ctx: AskAduBibleContext): str
   const q = query.toLowerCase();
   const book = ctx.bookNameEn;
   const ch = ctx.chapter;
+
+  if (q.includes('pray') || q.includes('prayer') || q.includes('mpaebɔ')) {
+    return `### Biblical Foundation: How to Pray According to Scripture
+In Scripture, prayer is an intimate, heartfelt communion with God our Heavenly Father through Jesus Christ.
+
+#### 1. The Lord's Prayer (The Pattern Christ Taught - Matthew 6:9-13)
+Jesus taught His disciples not to use vain repetitions like the hypocrites, but to pray with reverence:
+- **Praise & Adoration**: *"Our Father in heaven, hallowed be Your name"* (Yɛn Agya a wowɔ soro, wo din ho ntew).
+- **Alignment to His Sovereign Will**: *"Your kingdom come, Your will be done on earth as it is in heaven."*
+- **Daily Provision**: *"Give us this day our daily bread"* (Ma yɛn yɛn daa aduan).
+- **Forgiveness & Cleansing**: *"And forgive us our debts, as we forgive our debtors."*
+- **Spiritual Deliverance**: *"And do not lead us into temptation, but deliver us from the evil one."*
+
+#### 2. The Apostolic Heart of Prayer in Ephesians
+In ${book} (e.g., Ephesians 1:16-19 and 6:18), Paul instructs believers:
+- Pray for the **Spirit of wisdom and revelation** in the full knowledge of Christ (*Ephesians 1:17*).
+- Pray *"always with all prayer and supplication in the Spirit, being watchful to this end with all perseverance"* (*Ephesians 6:18*).
+
+#### 3. Original Language & Asante Twi Insight
+- **Greek: Proseuchomai (G4336 - προσεύχομαι)**: To exchange human weakness for divine strength in reverent prayer.
+- **Asante Twi (*Mpaebɔ*)**: Calling upon **Tweduampɔn Nyame** (the dependable Almighty upon whom we lean without falling) with sincere faith (*gyidie*), thanksgiving (*aseda*), and humility (*ahobrɛaseɛ*).`;
+  }
 
   if (q.includes('twi') || q.includes('asante') || q.includes('akan')) {
     return `### Asante Twi Theological Analysis for ${book} ${ch}
@@ -130,17 +152,25 @@ ${context.selectedVerseText ? `- Selected Verse ${context.selectedVerse}: "${con
           body: JSON.stringify({
             contents,
             generationConfig: {
-              temperature: 0.4,
-              maxOutputTokens: 1200,
+              temperature: 0.5,
+              maxOutputTokens: 4096,
+              thinkingConfig: {
+                thinkingBudget: 0,
+              },
             },
           }),
         });
 
         if (res.ok) {
           const data = await res.json();
-          const answer = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (answer && typeof answer === 'string' && answer.trim().length > 10) {
-            return answer.trim();
+          const parts = data?.candidates?.[0]?.content?.parts || [];
+          const answer = parts
+            .filter((p: any) => !p.thought)
+            .map((p: any) => p.text || '')
+            .join('')
+            .trim();
+          if (answer && answer.length > 10) {
+            return answer;
           }
         }
       } catch {
