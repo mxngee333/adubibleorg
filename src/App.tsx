@@ -339,6 +339,28 @@ export function App() {
     return canonicalBooks; // Strictly the 66 accepted canonical books (OT 39 + NT 27)
   }, [currentBook?.testament, allHistoricalBooks, canonicalBooks]);
 
+  // Active language code based on current primary translation (e.g. 'en' for NKJV, 'tw' for Twi, 'es' for Spanish)
+  const primaryVersionLangCode = useMemo(() => {
+    const meta = allVersions.find((v) => v.id === (activeVersionIds[0] || 'nkjv'));
+    return meta?.languageCode || 'en';
+  }, [allVersions, activeVersionIds]);
+
+  // Clean, authentic localized book name matching active translation language (defaults to clean NKJV English)
+  const getBookDisplayName = useCallback(
+    (book: BibleBook, lang: string = primaryVersionLangCode): string => {
+      if (!book) return '';
+      if (lang && lang !== 'en' && book.names && book.names[lang]) {
+        return book.names[lang];
+      }
+      const prefix = lang ? lang.split('-')[0] : 'en';
+      if (prefix && prefix !== 'en' && book.names && book.names[prefix]) {
+        return book.names[prefix];
+      }
+      return book.names?.en || book.slug;
+    },
+    [primaryVersionLangCode]
+  );
+
   // Load custom addons on mount
   useEffect(() => {
     loadAllCustomAddons().then((loaded) => {
@@ -445,7 +467,7 @@ export function App() {
     ) {
       window.history.replaceState({}, '', nextUrl);
     }
-    document.title = `${currentBook.names.en} ${currentChapter} — AduBible.org Parallel Bible Reader`;
+    document.title = `${getBookDisplayName(currentBook)} ${currentChapter} — AduBible.org Parallel Bible Reader`;
   }, [activeVersionIds, currentBook, currentChapter]);
 
   // Listen for browser back / forward navigation
@@ -1130,7 +1152,7 @@ export function App() {
       {activeNavTab === 'deuterocanon' ? (
         <DeuterocanonicalHubPage
           books={allHistoricalBooks}
-          uiLanguageCode="en"
+          uiLanguageCode={primaryVersionLangCode}
           onSelectBookChapter={(slug, chapter) => {
             handleSelectBookChapter(slug, chapter);
             if (typeof window !== 'undefined') {
@@ -1161,7 +1183,7 @@ export function App() {
       ) : activeNavTab === 'list-of-sixty' ? (
         <ListOfSixtyHubPage
           books={allHistoricalBooks}
-          uiLanguageCode="en"
+          uiLanguageCode={primaryVersionLangCode}
           onSelectBookChapter={(slug, chapter) => {
             handleSelectBookChapter(slug, chapter);
             if (typeof window !== 'undefined') {
@@ -1192,7 +1214,7 @@ export function App() {
       ) : (
         <main id="reader" className="workspace">
           <section className="page-heading">
-            <h1>{currentBook.names.en} {currentChapter}</h1>
+            <h1>{getBookDisplayName(currentBook)} {currentChapter}</h1>
           </section>
 
         {/* 3. READING SHELL */}
@@ -1219,11 +1241,8 @@ export function App() {
               aria-label="Select Book and Chapter"
               title="Select Book and Chapter"
             >
-              <span className="mobile-book-name">{currentBook.names.en}</span>
+              <span className="mobile-book-name">{getBookDisplayName(currentBook)}</span>
               <span className="mobile-chapter-num">{currentChapter}</span>
-              {currentBook.names.tw && currentBook.names.tw !== currentBook.names.en && (
-                <span className="mobile-twi-tag">({currentBook.names.tw})</span>
-              )}
               <span className="mobile-caret">▾</span>
             </button>
 
@@ -1316,7 +1335,7 @@ export function App() {
                   <optgroup label="── 66 ACCEPTED CANONICAL SCRIPTURES (OT 39 + NT 27) ──">
                     {canonicalBooks.map((item) => (
                       <option key={item.id} value={item.slug}>
-                        {item.names.en} ({item.names.tw || item.id})
+                        {getBookDisplayName(item)}
                       </option>
                     ))}
                   </optgroup>
@@ -1326,7 +1345,7 @@ export function App() {
                       .filter((b) => b.testament === 'DC')
                       .map((item) => (
                         <option key={item.id} value={item.slug}>
-                          {item.names.en} ({item.names.tw || item.id})
+                          {getBookDisplayName(item)}
                         </option>
                       ))}
                   </optgroup>
@@ -1336,7 +1355,7 @@ export function App() {
                       .filter((b) => b.testament === 'PSEUD')
                       .map((item) => (
                         <option key={item.id} value={item.slug}>
-                          {item.names.en} ({item.names.tw || item.id})
+                          {getBookDisplayName(item)}
                         </option>
                       ))}
                   </optgroup>
@@ -1946,16 +1965,12 @@ export function App() {
                   : 'NEW TESTAMENT'}
               </span>
               <h2>
-                {currentBook.names.en} <span>{currentChapter}</span>
+                {getBookDisplayName(currentBook)} <span>{currentChapter}</span>
               </h2>
               <p className="chapter-subtitle">
                 {activeVersionIds.length === 1
                   ? 'Single column'
                   : 'Parallel reading'}
-                {currentBook.names.tw &&
-                currentBook.names.tw !== currentBook.names.en
-                  ? ` · ${currentBook.names.tw}`
-                  : ''}
                 {prefs.showStrongsInline ? ' · Strong’s ON' : ''}
                 {prefs.showCommentaries ? ' · Commentaries ON' : ''}
               </p>
@@ -2415,7 +2430,7 @@ export function App() {
                                   )?.text
                                 : undefined;
                               setStatusStudioTarget({
-                                reference: `${currentBook.names.en} ${currentChapter}:${verseNumber}`,
+                                reference: `${getBookDisplayName(currentBook)} ${currentChapter}:${verseNumber}`,
                                 primaryText: primaryVerseText,
                                 primaryVersion: primaryVersionId.toUpperCase(),
                                 secondaryText: secText,
@@ -2744,7 +2759,7 @@ export function App() {
       {/* AUDIO BIBLE PLAYER BAR */}
       {showAudioBar && (
         <AudioBibleBar
-          bookName={`${currentBook.names.en} (${currentBook.names.tw || currentBook.names.en})`}
+          bookName={getBookDisplayName(currentBook)}
           chapter={currentChapter}
           versionName={
             allVersions.find((v) => v.id === primaryVersionId)?.shortName ||
@@ -2786,7 +2801,7 @@ export function App() {
         books={allHistoricalBooks}
         currentBookId={currentBook.id}
         currentChapter={currentChapter}
-        uiLanguageCode="en"
+        uiLanguageCode={primaryVersionLangCode}
         initialTestamentFilter={bookPickerTab}
         onSelectBookChapter={handleSelectBookChapter}
       />
@@ -2894,7 +2909,7 @@ export function App() {
         <VerseCardStudioModal
           isOpen={Boolean(verseCardTarget)}
           onClose={() => setVerseCardTarget(null)}
-          reference={`${currentBook.names.en} ${currentChapter}:${verseCardTarget.verse}`}
+          reference={`${getBookDisplayName(currentBook)} ${currentChapter}:${verseCardTarget.verse}`}
           primaryText={verseCardTarget.primaryText}
           secondaryText={verseCardTarget.secondaryText}
           primaryVersionName={primaryVersionId.toUpperCase()}
@@ -2902,7 +2917,7 @@ export function App() {
           onOpenVideoStudio={() => {
             if (verseCardTarget) {
               setStatusStudioTarget({
-                reference: `${currentBook.names.en} ${currentChapter}:${verseCardTarget.verse}`,
+                reference: `${getBookDisplayName(currentBook)} ${currentChapter}:${verseCardTarget.verse}`,
                 primaryText: verseCardTarget.primaryText,
                 primaryVersion: primaryVersionId.toUpperCase(),
                 secondaryText: verseCardTarget.secondaryText,
@@ -2921,7 +2936,7 @@ export function App() {
           setIsStatusStudioOpen(false);
           setStatusStudioTarget(null);
         }}
-        initialReference={statusStudioTarget?.reference || `${currentBook.names.en} ${currentChapter}:1`}
+        initialReference={statusStudioTarget?.reference || `${getBookDisplayName(currentBook)} ${currentChapter}:1`}
         initialText={
           statusStudioTarget?.primaryText ||
           chaptersByVersion[primaryVersionId]?.verses[0]?.text ||
@@ -2983,7 +2998,7 @@ export function App() {
           setIsStudyVaultOpen(true);
         }}
         vaultCount={totalVaultCount}
-        currentBookName={currentBook.names.en}
+        currentBookName={getBookDisplayName(currentBook)}
         currentChapter={currentChapter}
       />
 
