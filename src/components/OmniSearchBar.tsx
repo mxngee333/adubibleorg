@@ -95,7 +95,7 @@ export const OmniSearchBar: React.FC<OmniSearchBarProps> = ({
         {
           type: 'reference',
           label: 'John 3:16',
-          sublabel: 'For God so loved the world • Efisɛ sɛnea Onyankopɔn dɔɔ wiase ni',
+          sublabel: 'For God so loved the world that He gave His only begotten Son (NKJV)',
           bookSlug: 'john',
           chapter: 3,
           verse: 16,

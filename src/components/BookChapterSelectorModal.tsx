@@ -251,7 +251,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
             onClick={() => setStep('books')}
             className={`font-bold ${step === 'books' ? 'text-amber-400' : 'text-stone-400'}`}
           >
-            1. Select Book ({activeBook?.names.en})
+            1. Select Book ({uiLanguageCode !== 'en' && activeBook?.names[uiLanguageCode] ? activeBook.names[uiLanguageCode] : activeBook?.names.en})
           </button>
           <ChevronRight className="h-4 w-4 mx-1 text-stone-600" />
           <button
@@ -290,16 +290,16 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                       <span className="text-[10px] font-mono font-bold rounded bg-stone-800 px-1.5 py-0.5 text-amber-400">
                         {book.number}
                       </span>
-                      <span className="font-bold text-sm truncate">{book.names.en}</span>
+                      <span className="font-bold text-sm truncate">
+                        {uiLanguageCode !== 'en' && book.names[uiLanguageCode]
+                          ? book.names[uiLanguageCode]
+                          : book.names.en}
+                      </span>
                     </div>
                     <div className="text-[11px] text-amber-300/80 truncate mt-0.5">
-                      {uiLanguageCode === 'tw' ? (
-                        `🇬🇭 ${book.names.tw || book.names.en}`
-                      ) : uiLanguageCode !== 'en' && book.names[uiLanguageCode] ? (
-                        book.names[uiLanguageCode]
-                      ) : (
-                        `${book.category} • ${book.chapters} ch`
-                      )}
+                      {uiLanguageCode !== 'en' && book.names[uiLanguageCode]
+                        ? `${book.names.en} • ${book.chapters} ch`
+                        : `${book.category} • ${book.chapters} ch`}
                     </div>
                   </div>
                   <span className="shrink-0 rounded-lg bg-stone-800/90 px-2 py-1 text-[11px] font-mono text-stone-400">
@@ -331,7 +331,9 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                       : 'List of Sixty & Apocrypha'}
                   </div>
                   <h3 className="text-lg font-bold text-white mt-0.5">
-                    {activeBook.names.en} {uiLanguageCode === 'tw' && activeBook.names.tw ? `(${activeBook.names.tw})` : ''}
+                    {uiLanguageCode !== 'en' && activeBook.names[uiLanguageCode]
+                      ? `${activeBook.names[uiLanguageCode]} (${activeBook.names.en})`
+                      : activeBook.names.en}
                   </h3>
                   {activeBook.canonStatus && (
                     <p className="text-[11px] text-amber-300/80 mt-0.5 leading-relaxed">
