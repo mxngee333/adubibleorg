@@ -24,6 +24,9 @@ interface AudioBibleBarProps {
   onClose?: () => void;
   onOpenSettings?: () => void;
   onNextChapter?: () => boolean | void;
+  autoPlay?: boolean;
+  autoPlayNonce?: number;
+  onPlaybackStateChange?: (isPlaying: boolean) => void;
 }
 
 const SAVED_VOICE_KEY = 'elohim_neural_voice_v1';
@@ -43,11 +46,16 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   onClose,
   onOpenSettings,
   onNextChapter,
+  autoPlay = true,
+  autoPlayNonce = 0,
+  onPlaybackStateChange,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoadingVerse, setIsLoadingVerse] = useState(false);
   const [continuousPlayback, setContinuousPlayback] = useState<boolean>(true);
   const autoPlayNextChapterRef = useRef<boolean>(false);
+  const hasInitialAutoPlayedRef = useRef<boolean>(false);
+  const lastHandledNonceRef = useRef<number>(autoPlayNonce || 0);
   const [selectedVoice, setSelectedVoice] = useState<GoogleNeuralVoiceName>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem(SAVED_VOICE_KEY);
@@ -594,10 +602,14 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     }
   };
 
-  const handleTogglePlay = () => {
-    if (isPlaying) {
-      stopPlayback();
-    } else {
+  // Notify parent component of playback state changes
+  useEffect(() => {
+    onPlaybackStateChange?.(isPlaying);
+  }, [isPlaying, onPlaybackStateChange]);
+
+  const startPlayback = useCallback(
+    (customStartIdx?: number) => {
+      if (!verses || verses.length === 0) return;
       // Direct user gesture unlock for Web Audio and Speech Synthesis
       getOrCreateAudioContext();
       if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -606,15 +618,46 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
         }
       }
 
-      const startIndex = Math.max(
-        0,
-        verses.findIndex((v) => v.verse === activeVerse)
-      );
+      const targetIdx =
+        typeof customStartIdx === 'number'
+          ? customStartIdx
+          : Math.max(
+              0,
+              verses.findIndex((v) => v.verse === activeVerse)
+            );
+      const safeIdx = targetIdx >= 0 && targetIdx < verses.length ? targetIdx : 0;
       setIsPlaying(true);
       isPlayingRef.current = true;
-      playVerseAtIndex(startIndex >= 0 ? startIndex : 0);
+      playVerseAtIndex(safeIdx);
+    },
+    [verses, activeVerse, getOrCreateAudioContext]
+  );
+
+  const handleTogglePlay = () => {
+    if (isPlaying) {
+      stopPlayback();
+    } else {
+      startPlayback();
     }
   };
+
+  // Immediate Auto-Play on mount when opened via Audio button
+  useEffect(() => {
+    if (autoPlay && !hasInitialAutoPlayedRef.current && verses && verses.length > 0) {
+      hasInitialAutoPlayedRef.current = true;
+      startPlayback();
+    }
+  }, [autoPlay, verses, startPlayback]);
+
+  // Handle re-trigger via autoPlayNonce (e.g. user clicks Audio while bar was paused)
+  useEffect(() => {
+    if (autoPlayNonce && autoPlayNonce !== lastHandledNonceRef.current) {
+      lastHandledNonceRef.current = autoPlayNonce;
+      if (!isPlayingRef.current && verses && verses.length > 0) {
+        startPlayback();
+      }
+    }
+  }, [autoPlayNonce, verses, startPlayback]);
 
   const handleStep = (delta: number) => {
     stopPlayback();

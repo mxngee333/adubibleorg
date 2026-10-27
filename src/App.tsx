@@ -265,6 +265,8 @@ export function App() {
   >(null);
   const [chapterSearchQuery, setChapterSearchQuery] = useState<string>('');
   const [showAudioBar, setShowAudioBar] = useState<boolean>(false);
+  const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
+  const [audioAutoPlayNonce, setAudioAutoPlayNonce] = useState<number>(0);
   const [copiedNotice, setCopiedNotice] = useState<boolean>(false);
   const [themeSyncNotice, setThemeSyncNotice] = useState<string>('');
   const scrollBoxRef = useRef<HTMLDivElement | null>(null);
@@ -757,6 +759,21 @@ export function App() {
     return false;
   };
 
+  const handleToggleAudio = () => {
+    setIsSettingsOpen(false);
+    if (!showAudioBar) {
+      setShowAudioBar(true);
+      setAudioAutoPlayNonce((prev) => prev + 1);
+    } else if (!isAudioPlaying) {
+      // Bar is open but paused — clicking Audio immediately starts playback
+      setAudioAutoPlayNonce((prev) => prev + 1);
+    } else {
+      // Audio is actively playing — clicking Audio closes and stops playback
+      setShowAudioBar(false);
+      setIsAudioPlaying(false);
+    }
+  };
+
   const handleJumpToReferenceString = (refStr: string) => {
     const match = refStr
       .trim()
@@ -1058,10 +1075,16 @@ export function App() {
           <button
             type="button"
             className={`quiet-button ${showAudioBar ? 'active-pill' : ''}`}
-            onClick={() => setShowAudioBar((prev) => !prev)}
-            title="Listen to Audio Scripture"
+            onClick={handleToggleAudio}
+            title={
+              showAudioBar
+                ? isAudioPlaying
+                  ? 'Audio Bible Playing (Click to close & stop)'
+                  : 'Audio Bible Paused (Click to Play)'
+                : 'Listen to 24kHz Audio Scripture (Auto-plays)'
+            }
           >
-            <span>Audio</span>
+            <span>{isAudioPlaying ? '🔊 Audio' : 'Audio'}</span>
           </button>
 
           <button
@@ -1303,11 +1326,11 @@ export function App() {
               <button
                 type="button"
                 className={`mobile-quick-btn ${showAudioBar ? 'active' : ''}`}
-                onClick={() => setShowAudioBar((prev) => !prev)}
-                title="Audio Bible"
+                onClick={handleToggleAudio}
+                title={isAudioPlaying ? 'Audio Bible Playing' : 'Audio Bible'}
                 aria-label="Audio Bible"
               >
-                Audio
+                {isAudioPlaying ? '🔊 Audio' : 'Audio'}
               </button>
               <button
                 type="button"
@@ -2820,9 +2843,15 @@ export function App() {
           }
           activeVerse={selectedVerse}
           onVerseChange={(v: number) => setSelectedVerse(v)}
-          onClose={() => setShowAudioBar(false)}
+          onClose={() => {
+            setShowAudioBar(false);
+            setIsAudioPlaying(false);
+          }}
           onOpenSettings={() => setIsSettingsOpen((prev) => !prev)}
           onNextChapter={handleAudioNextChapter}
+          autoPlay={true}
+          autoPlayNonce={audioAutoPlayNonce}
+          onPlaybackStateChange={(playing) => setIsAudioPlaying(playing)}
         />
       )}
 
@@ -3026,10 +3055,7 @@ export function App() {
           setIsSettingsOpen(false);
           setIsMobileSearchOpen(true);
         }}
-        onToggleAudio={() => {
-          setIsSettingsOpen(false);
-          setShowAudioBar((prev) => !prev);
-        }}
+        onToggleAudio={handleToggleAudio}
         isAudioActive={showAudioBar}
         onSwapLanguages={() => {
           setIsSettingsOpen(false);
