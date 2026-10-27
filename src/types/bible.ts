@@ -7,6 +7,7 @@ export interface BibleBook {
   testament: BibleTestament;
   category: string;
   chapters: number;
+  abbreviation?: string;
   author?: string;
   canonStatus?: string;
   historicalEra?: string;
