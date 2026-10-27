@@ -559,8 +559,9 @@ export function parseBibleHubUrlPath(pathname: string): {
   bookSlug?: string;
   chapter?: number;
   isParallelRoute?: boolean;
-  legalPage?: 'about' | 'how-to-use' | 'privacy' | 'terms';
-  targetTab?: 'canonical' | 'deuterocanon' | 'list-of-sixty';
+  legalPage?: 'about' | 'how-to-use' | 'privacy' | 'terms' | 'editorial-policy' | 'glossary' | 'sources';
+  targetTab?: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles';
+  articleSlug?: string;
 } {
   const cleanPath = pathname
     .replace(/\.html?$/i, '')
@@ -572,6 +573,19 @@ export function parseBibleHubUrlPath(pathname: string): {
   }
 
   const lower = cleanPath.toLowerCase();
+
+  // Articles & Scripture Pillar Guides
+  if (lower === 'articles' || lower === 'blog' || lower.startsWith('articles/') || lower.startsWith('blog/')) {
+    const slug = lower.replace(/^(articles|blog)\/?/, '').trim();
+    return {
+      versionId: 'nkjv',
+      bookSlug: 'ephesians',
+      chapter: 1,
+      targetTab: 'articles',
+      articleSlug: slug || undefined,
+    };
+  }
+
   if (lower === 'deuterocanon' || lower === 'deuterocanonical' || lower === 'apocrypha') {
     return {
       versionId: 'kjv-apoc',
@@ -593,13 +607,16 @@ export function parseBibleHubUrlPath(pathname: string): {
     lower === 'about' ||
     lower === 'how-to-use' ||
     lower === 'privacy' ||
-    lower === 'terms'
+    lower === 'terms' ||
+    lower === 'editorial-policy' ||
+    lower === 'glossary' ||
+    lower === 'sources'
   ) {
     return {
       versionId: 'nkjv',
       bookSlug: 'ephesians',
       chapter: 1,
-      legalPage: lower as 'about' | 'how-to-use' | 'privacy' | 'terms',
+      legalPage: lower as any,
     };
   }
 
