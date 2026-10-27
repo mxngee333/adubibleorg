@@ -60,11 +60,12 @@ function parseHelloaoChapterPayload(
   let pendingHeading: string | undefined;
 
   for (const item of contentArr) {
-    if (item.type === 'heading' && Array.isArray(item.content)) {
-      pendingHeading = item.content
+    if ((item.type === 'heading' || item.type === 'hebrew_subtitle') && Array.isArray(item.content)) {
+      const sub = item.content
         .map((c: any) => (typeof c === 'string' ? c : c?.text || ''))
         .join(' ')
         .trim();
+      pendingHeading = pendingHeading ? `${pendingHeading} — ${sub}` : sub;
     } else if (item.type === 'verse' && Array.isArray(item.content)) {
       const textParts: string[] = [];
       const pieces: VersePiece[] = [];

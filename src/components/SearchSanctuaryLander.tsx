@@ -9,9 +9,12 @@ import {
   Shield,
   Layers,
   X,
+  Quote,
+  Loader2,
 } from 'lucide-react';
 import { BibleBook } from '../types/bible';
 import { parsePassageQuery } from '../services/passageService';
+import { searchScripture, BibleSearchResult } from '../services/scriptureSearchService';
 
 interface SearchSanctuaryLanderProps {
   books: BibleBook[];
@@ -54,6 +57,9 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
 }) => {
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const [liveScriptureResults, setLiveScriptureResults] = useState<BibleSearchResult[]>([]);
+  const [isSearchingScripture, setIsSearchingScripture] = useState(false);
+  const [testamentFilter, setTestamentFilter] = useState<'ALL' | 'OT' | 'NT'>('ALL');
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Close search suggestions on click outside
@@ -66,6 +72,33 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
     document.addEventListener('mousedown', handleOutside);
     return () => document.removeEventListener('mousedown', handleOutside);
   }, []);
+
+  // Debounced live Scripture full-text word & phrase search
+  useEffect(() => {
+    const trimmed = query.trim();
+    if (trimmed.length < 2) {
+      setLiveScriptureResults([]);
+      setIsSearchingScripture(false);
+      return;
+    }
+
+    setIsSearchingScripture(true);
+    const timer = setTimeout(async () => {
+      try {
+        const results = await searchScripture(trimmed, {
+          versionId: 'nkjv',
+          limit: 30,
+        });
+        setLiveScriptureResults(results);
+      } catch {
+        setLiveScriptureResults([]);
+      } finally {
+        setIsSearchingScripture(false);
+      }
+    }, 240);
+
+    return () => clearTimeout(timer);
+  }, [query]);
 
   // Filter suggestions dynamically as user types
   const filteredSuggestions = useMemo(() => {
@@ -80,6 +113,8 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
       chapter: number;
       verse?: number;
       testament: string;
+      snippetHtml?: string;
+      isExactMatch?: boolean;
     }> = [];
 
     const parsed = parsePassageQuery(raw, books);
@@ -100,7 +135,7 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
       const tw = (b.names.tw || '').toLowerCase();
       const slug = b.slug.toLowerCase();
       return en.includes(raw) || tw.includes(raw) || slug.includes(raw);
-    }).slice(0, 5);
+    }).slice(0, 3);
 
     for (const b of matchedBooks) {
       if (!results.some((r) => r.bookSlug === b.slug)) {
@@ -114,8 +149,24 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
       }
     }
 
+    // 3. Live Scripture Verses Matching the Searched Word or Phrase
+    for (const v of liveScriptureResults.slice(0, 6)) {
+      if (!results.some((r) => r.bookSlug === v.bookSlug && r.chapter === v.chapter && r.verse === v.verse)) {
+        results.push({
+          label: `${v.reference} (${v.versionId.toUpperCase()})`,
+          sublabel: v.text,
+          snippetHtml: v.snippetHtml,
+          bookSlug: v.bookSlug,
+          chapter: v.chapter,
+          verse: v.verse,
+          testament: v.testament,
+          isExactMatch: v.isExactMatch,
+        });
+      }
+    }
+
     return results;
-  }, [query, books]);
+  }, [query, books, liveScriptureResults]);
 
   return (
     <section
@@ -301,12 +352,25 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
                 onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
               >
                 <div>
-                  <strong style={{ display: 'block', fontSize: '14px', color: 'var(--ink)' }}>
-                    {item.label}
-                  </strong>
-                  <span style={{ fontSize: '12px', color: 'var(--subtle)' }}>
-                    {item.sublabel}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <strong style={{ display: 'block', fontSize: '14px', color: 'var(--ink)' }}>
+                      {item.label}
+                    </strong>
+                    {item.isExactMatch && (
+                      <span className="suggestion-badge-exact">Exact Match</span>
+                    )}
+                  </div>
+                  {item.snippetHtml ? (
+                    <div
+                      className="suggestion-snippet"
+                      style={{ fontSize: '12.5px', marginTop: '3px', color: 'var(--ink)' }}
+                      dangerouslySetInnerHTML={{ __html: item.snippetHtml }}
+                    />
+                  ) : (
+                    <span style={{ fontSize: '12px', color: 'var(--subtle)' }}>
+                      {item.sublabel}
+                    </span>
+                  )}
                 </div>
                 <ArrowRight style={{ width: '16px', height: '16px', color: 'var(--green)' }} />
               </button>
@@ -314,6 +378,146 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
           </div>
         )}
       </div>
+
+      {/* 2B. SCRIPTURE WORD & PHRASE FULL-TEXT RESULTS */}
+      {liveScriptureResults.length > 0 && (
+        <div style={{ maxWidth: '820px', margin: '0 auto 36px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '16px',
+              flexWrap: 'wrap',
+              gap: '10px',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Quote style={{ width: '18px', height: '18px', color: 'var(--green)' }} />
+              <strong style={{ fontSize: '16px', color: 'var(--ink)' }}>
+                Scripture Verses for "{query}"
+              </strong>
+              <span
+                style={{
+                  fontSize: '11px',
+                  fontWeight: 800,
+                  padding: '2px 8px',
+                  borderRadius: '999px',
+                  background: 'rgba(34, 197, 94, 0.15)',
+                  color: '#22c55e',
+                  border: '1px solid rgba(34, 197, 94, 0.35)',
+                }}
+              >
+                {
+                  (testamentFilter === 'ALL'
+                    ? liveScriptureResults
+                    : liveScriptureResults.filter((r) => r.testament === testamentFilter)
+                  ).length
+                }{' '}
+                Found
+              </span>
+            </div>
+
+            <div style={{ display: 'flex', gap: '6px' }}>
+              {(['ALL', 'OT', 'NT'] as const).map((tf) => (
+                <button
+                  key={tf}
+                  type="button"
+                  onClick={() => setTestamentFilter(tf)}
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    border:
+                      testamentFilter === tf
+                        ? '1px solid var(--green)'
+                        : '1px solid var(--line)',
+                    background:
+                      testamentFilter === tf ? 'var(--soft)' : 'var(--paper)',
+                    color:
+                      testamentFilter === tf ? 'var(--green)' : 'var(--subtle)',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  {tf === 'ALL' ? 'All' : tf === 'OT' ? 'Old Testament' : 'New Testament'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {(testamentFilter === 'ALL'
+              ? liveScriptureResults
+              : liveScriptureResults.filter((r) => r.testament === testamentFilter)
+            ).map((item) => (
+              <div
+                key={item.id}
+                style={{
+                  padding: '16px 18px',
+                  borderRadius: '12px',
+                  border: '1px solid var(--line)',
+                  background: 'var(--paper)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '8px',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '15px', fontWeight: 800, color: 'var(--green)' }}>
+                      {item.reference} ({item.versionId.toUpperCase()})
+                    </span>
+                    {item.isExactMatch && (
+                      <span className="suggestion-badge-exact">Exact Match</span>
+                    )}
+                    {item.category && (
+                      <span className="suggestion-badge-cat">{item.category}</span>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => onNavigate(item.bookSlug, item.chapter, item.verse)}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '5px 12px',
+                      borderRadius: '6px',
+                      border: '1px solid var(--green)',
+                      background: 'rgba(34, 197, 94, 0.12)',
+                      color: 'var(--green)',
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <span>Read Chapter</span>
+                    <ArrowRight style={{ width: '13px', height: '13px' }} />
+                  </button>
+                </div>
+                <div
+                  style={{
+                    fontSize: '14px',
+                    lineHeight: 1.6,
+                    color: 'var(--ink)',
+                  }}
+                  dangerouslySetInnerHTML={{ __html: item.highlightedHtml }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* 3. QUICK SCRIPTURE DISCOVERY CHIPS */}
       <div style={{ maxWidth: '820px', margin: '0 auto 28px' }}>

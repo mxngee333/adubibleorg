@@ -1103,9 +1103,10 @@ export function App() {
             books={allHistoricalBooks}
             currentBookSlug={currentBook.slug}
             currentChapter={currentChapter}
+            activeVersionId={activeVersionIds[0] || 'nkjv'}
             onNavigate={(slug, ch, v) => {
-              handleSelectBookChapter(slug, ch);
-              if (v) setSelectedVerse(v);
+              handleSelectBookChapter(slug, ch, v);
+              if (v) scrollToVerse(v);
             }}
           />
         </div>
@@ -1652,6 +1653,11 @@ export function App() {
                       <img src="/themes/wisdom-legacy-banner.png" alt="Legacy" style={{ width: '22px', height: '14px', borderRadius: '3px', objectFit: 'cover' }} />
                       <span>Legacy</span>
                     </>
+                  ) : prefs.theme === 'symbol-midnight-gold' ? (
+                    <>
+                      <img src="/brand/icon-64.png" alt="Midnight Gold" style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
+                      <span>Midnight Gold</span>
+                    </>
                   ) : prefs.theme === 'adubible-si' ? (
                     <>
                       <img src="/themes/adubible-si-banner.png" alt="SI Gold" style={{ width: '22px', height: '14px', borderRadius: '3px', objectFit: 'cover' }} />
@@ -1761,6 +1767,38 @@ export function App() {
                             <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Deep pine &amp; contemplative sage (Default)</div>
                           </div>
                           {prefs.theme === 'wisdom-legacy' && <span style={{ color: '#b7c99f', fontSize: '12px' }}>✓</span>}
+                        </button>
+
+                        {/* Midnight Navy & Antique Gold (Symbol Edition) */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updatePrefs({ theme: 'symbol-midnight-gold' });
+                            setIsThemePickerOpen(false);
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '8px 10px',
+                            borderRadius: '6px',
+                            border: `1px solid ${prefs.theme === 'symbol-midnight-gold' ? '#bd913f' : 'transparent'}`,
+                            background: prefs.theme === 'symbol-midnight-gold' ? 'rgba(189, 145, 63, 0.2)' : 'transparent',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            color: 'var(--ink)',
+                          }}
+                        >
+                          <img
+                            src="/brand/icon-64.png"
+                            alt="Midnight Navy & Antique Gold"
+                            style={{ width: '24px', height: '24px', objectFit: 'contain' }}
+                          />
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '12px', fontWeight: 600 }}>🏛️ Midnight Navy &amp; Antique Gold</div>
+                            <div style={{ fontSize: '10px', color: 'var(--subtle)' }}>Symbol Edition · Navy #15283C &amp; Gold #BD913F</div>
+                          </div>
+                          {prefs.theme === 'symbol-midnight-gold' && <span style={{ color: '#bd913f', fontSize: '12px' }}>✓</span>}
                         </button>
 
                         {/* 2. Royal Tyrian Velvet */}
@@ -3201,9 +3239,10 @@ export function App() {
               books={allHistoricalBooks}
               currentBookSlug={currentBook.slug}
               currentChapter={currentChapter}
+              activeVersionId={activeVersionIds[0] || 'nkjv'}
               onNavigate={(slug, ch, v) => {
-                handleSelectBookChapter(slug, ch);
-                if (v) setSelectedVerse(v);
+                handleSelectBookChapter(slug, ch, v);
+                if (v) scrollToVerse(v);
                 setIsMobileSearchOpen(false);
               }}
               onCloseMobile={() => setIsMobileSearchOpen(false)}

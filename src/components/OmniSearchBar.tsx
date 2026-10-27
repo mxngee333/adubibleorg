@@ -1,24 +1,29 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Search, X, BookOpen, ArrowRight, CornerDownLeft, Sparkles } from 'lucide-react';
+import { Search, X, BookOpen, ArrowRight, CornerDownLeft, Sparkles, Loader2, Quote } from 'lucide-react';
 import { BibleBook } from '../types/bible';
 import { parsePassageQuery } from '../services/passageService';
+import { searchScripture, BibleSearchResult } from '../services/scriptureSearchService';
 
 interface OmniSearchBarProps {
   books: BibleBook[];
   currentBookSlug: string;
   currentChapter: number;
+  activeVersionId?: string;
   onNavigate: (bookSlug: string, chapter: number, verse?: number) => void;
   onCloseMobile?: () => void;
   isOpenMobile?: boolean;
 }
 
 interface SearchSuggestion {
-  type: 'reference' | 'book' | 'topic';
+  type: 'reference' | 'book' | 'topic' | 'verse';
   label: string;
   sublabel: string;
   bookSlug: string;
   chapter: number;
   verse?: number;
+  snippetHtml?: string;
+  isExactMatch?: boolean;
+  category?: string;
 }
 
 // Popular curated scripture topics for instant discovery
@@ -48,6 +53,7 @@ export const OmniSearchBar: React.FC<OmniSearchBarProps> = ({
   books,
   currentBookSlug,
   currentChapter,
+  activeVersionId = 'nkjv',
   onNavigate,
   onCloseMobile,
   isOpenMobile,
@@ -55,6 +61,8 @@ export const OmniSearchBar: React.FC<OmniSearchBarProps> = ({
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [liveVerses, setLiveVerses] = useState<BibleSearchResult[]>([]);
+  const [isSearchingScripture, setIsSearchingScripture] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -76,7 +84,34 @@ export const OmniSearchBar: React.FC<OmniSearchBarProps> = ({
     }
   }, [isOpenMobile]);
 
-  // Parse reference or keyword suggestions
+  // Debounced live Scripture full-text word & phrase search
+  useEffect(() => {
+    const trimmed = query.trim();
+    if (trimmed.length < 2) {
+      setLiveVerses([]);
+      setIsSearchingScripture(false);
+      return;
+    }
+
+    setIsSearchingScripture(true);
+    const timer = setTimeout(async () => {
+      try {
+        const results = await searchScripture(trimmed, {
+          versionId: activeVersionId || 'nkjv',
+          limit: 8,
+        });
+        setLiveVerses(results);
+      } catch {
+        setLiveVerses([]);
+      } finally {
+        setIsSearchingScripture(false);
+      }
+    }, 220);
+
+    return () => clearTimeout(timer);
+  }, [query, activeVersionId]);
+
+  // Parse reference, book, keyword, and live Bible verse suggestions
   const suggestions = useMemo<SearchSuggestion[]>(() => {
     const raw = query.trim().toLowerCase();
     if (!raw) {
@@ -144,13 +179,13 @@ export const OmniSearchBar: React.FC<OmniSearchBarProps> = ({
       });
     }
 
-    // 2. Book Name Matching
+    // 2. Book Name Matching (up to 2)
     const matchedBooks = books.filter((b) => {
       const en = b.names.en.toLowerCase();
       const tw = (b.names.tw || '').toLowerCase();
       const slug = b.slug.toLowerCase();
       return en.includes(raw) || tw.includes(raw) || slug.includes(raw);
-    }).slice(0, 4);
+    }).slice(0, 2);
 
     for (const b of matchedBooks) {
       if (!results.some((r) => r.bookSlug === b.slug)) {
@@ -164,22 +199,41 @@ export const OmniSearchBar: React.FC<OmniSearchBarProps> = ({
       }
     }
 
-    // 3. Topic & Keyword Matching
-    for (const topic of CURATED_TOPICS) {
-      if (topic.keyword.includes(raw) || topic.label.toLowerCase().includes(raw)) {
+    // 3. Live Scripture Verses Matching the Searched Word, Phrase, or Keyword
+    for (const v of liveVerses) {
+      if (!results.some((r) => r.bookSlug === v.bookSlug && r.chapter === v.chapter && r.verse === v.verse)) {
         results.push({
-          type: 'topic',
-          label: `${topic.reference} — "${topic.keyword.toUpperCase()}"`,
-          sublabel: topic.label,
-          bookSlug: topic.bookSlug,
-          chapter: topic.chapter,
-          verse: topic.verse,
+          type: 'verse',
+          label: `${v.reference} (${v.versionId.toUpperCase()})`,
+          sublabel: v.text,
+          snippetHtml: v.snippetHtml,
+          bookSlug: v.bookSlug,
+          chapter: v.chapter,
+          verse: v.verse,
+          isExactMatch: v.isExactMatch,
+          category: v.category,
         });
       }
     }
 
-    return results.slice(0, 6);
-  }, [query, books, currentBookSlug, currentChapter]);
+    // 4. Topic & Keyword Matching
+    for (const topic of CURATED_TOPICS) {
+      if (topic.keyword.includes(raw) || topic.label.toLowerCase().includes(raw)) {
+        if (!results.some((r) => r.bookSlug === topic.bookSlug && r.chapter === topic.chapter && r.verse === topic.verse)) {
+          results.push({
+            type: 'topic',
+            label: `${topic.reference} — "${topic.keyword.toUpperCase()}"`,
+            sublabel: topic.label,
+            bookSlug: topic.bookSlug,
+            chapter: topic.chapter,
+            verse: topic.verse,
+          });
+        }
+      }
+    }
+
+    return results.slice(0, 10);
+  }, [query, books, currentBookSlug, currentChapter, liveVerses]);
 
   const handleSelect = (suggestion: SearchSuggestion) => {
     onNavigate(suggestion.bookSlug, suggestion.chapter, suggestion.verse);
@@ -256,10 +310,21 @@ export const OmniSearchBar: React.FC<OmniSearchBarProps> = ({
       </div>
 
       {/* AUTOCOMPLETE / JUMP SUGGESTIONS DROPDOWN */}
-      {isFocused && suggestions.length > 0 && (
+      {isFocused && (suggestions.length > 0 || isSearchingScripture) && (
         <div className="omni-suggestions-dropdown" role="listbox">
           <div className="omni-dropdown-header">
-            <span>{query ? 'Quick Scripture Jumps' : 'Suggested Passages & Topics'}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              {isSearchingScripture ? (
+                <>
+                  <Loader2 className="h-3.5 w-3.5 omni-search-spinner text-amber-400" />
+                  <span>Searching Scripture for "{query}"...</span>
+                </>
+              ) : liveVerses.length > 0 ? (
+                <span>Found {liveVerses.length} Scripture Verses Matching "{query}"</span>
+              ) : (
+                <span>{query ? 'Quick Scripture Jumps' : 'Suggested Passages & Topics'}</span>
+              )}
+            </div>
             <span className="omni-hint">Press ↵ Enter to jump</span>
           </div>
 
@@ -270,25 +335,42 @@ export const OmniSearchBar: React.FC<OmniSearchBarProps> = ({
                 <button
                   type="button"
                   key={`${item.bookSlug}-${item.chapter}-${item.verse || 0}-${idx}`}
-                  className={`omni-suggestion-item ${active ? 'active' : ''}`}
+                  className={`omni-suggestion-item ${active ? 'active' : ''} ${item.type === 'verse' ? 'verse-suggestion' : ''}`}
                   onMouseEnter={() => setSelectedIndex(idx)}
                   onClick={() => handleSelect(item)}
                   role="option"
                   aria-selected={active}
                 >
                   <div className="suggestion-icon">
-                    {item.type === 'topic' ? (
-                      <Sparkles className="h-4 w-4" />
+                    {item.type === 'verse' ? (
+                      <Quote className="h-4 w-4 text-amber-400" />
+                    ) : item.type === 'topic' ? (
+                      <Sparkles className="h-4 w-4 text-purple-400" />
                     ) : item.type === 'book' ? (
-                      <BookOpen className="h-4 w-4" />
+                      <BookOpen className="h-4 w-4 text-emerald-400" />
                     ) : (
-                      <ArrowRight className="h-4 w-4" />
+                      <ArrowRight className="h-4 w-4 text-emerald-400" />
                     )}
                   </div>
 
                   <div className="suggestion-content">
-                    <div className="suggestion-title">{item.label}</div>
-                    <div className="suggestion-subtitle">{item.sublabel}</div>
+                    <div className="suggestion-title-row">
+                      <span className="suggestion-title">{item.label}</span>
+                      {item.isExactMatch && (
+                        <span className="suggestion-badge-exact">Exact Match</span>
+                      )}
+                      {item.category && item.type === 'verse' && (
+                        <span className="suggestion-badge-cat">{item.category}</span>
+                      )}
+                    </div>
+                    {item.snippetHtml ? (
+                      <div
+                        className="suggestion-snippet"
+                        dangerouslySetInnerHTML={{ __html: item.snippetHtml }}
+                      />
+                    ) : (
+                      <div className="suggestion-subtitle">{item.sublabel}</div>
+                    )}
                   </div>
 
                   <div className="suggestion-action">

@@ -1,5 +1,4 @@
 import React from 'react';
-import { BookOpen } from 'lucide-react';
 
 export interface AduBibleLogoProps {
   size?: 'sm' | 'md' | 'lg';
@@ -22,8 +21,16 @@ export const AduBibleLogo: React.FC<AduBibleLogoProps> = ({
       title={title}
       role="banner"
     >
-      <div className="logo-badge" aria-hidden="true">
-        <BookOpen className="logo-icon" />
+      <div className="logo-symbol-wrap" aria-hidden="true">
+        <img
+          src="/brand/icon-128.png"
+          srcSet="/brand/icon-128.png 1x, /brand/Symbol_Transparent.png 2x"
+          alt="AduBible Transparent Wave Symbol"
+          className="logo-symbol-wave"
+          width="34"
+          height="34"
+          loading="eager"
+        />
       </div>
       <div className="logo-wordmark">
         <span className="logo-word-adu">Adu</span>

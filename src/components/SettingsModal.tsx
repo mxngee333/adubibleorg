@@ -22,6 +22,21 @@ const PRESET_CUSTOM_PALETTES: Array<{
   palette: CustomThemePalette;
 }> = [
   {
+    name: 'Midnight Navy & Gold (Symbol)',
+    icon: '🏛️',
+    palette: {
+      id: 'symbol-midnight-gold',
+      name: 'Midnight Navy & Antique Gold',
+      paper: '#0b141f',
+      surface: '#15283c',
+      ink: '#fdfbf7',
+      subtle: '#c5a059',
+      line: 'rgba(189, 145, 63, 0.28)',
+      accent: '#bd913f',
+      isDark: true,
+    },
+  },
+  {
     name: 'Wisdom Pine Legacy',
     icon: '🌲',
     palette: {
@@ -383,6 +398,39 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   </div>
                   <span style={{ display: 'block', fontSize: '11px', lineHeight: 1.4 }}>
                     Authentic original edition · Contemplative deep pine (#171d17), warm ivory script (#e3e6d8) &amp; luminous sage (#b7c99f)
+                  </span>
+                </div>
+              </button>
+
+              {/* Option: Midnight Navy & Antique Gold (Symbol Edition) */}
+              <button
+                type="button"
+                className={`picker-option ${prefs.theme === 'symbol-midnight-gold' ? 'active' : ''}`}
+                onClick={() => onUpdatePrefs({ theme: 'symbol-midnight-gold' })}
+                style={{ textAlign: 'left', padding: '12px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}
+              >
+                <img
+                  src="/brand/icon-128.png"
+                  alt="Midnight Navy & Antique Gold"
+                  style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '8px',
+                    objectFit: 'contain',
+                    background: '#0b141f',
+                    padding: '4px',
+                    border: '1px solid #bd913f',
+                    flexShrink: 0,
+                    boxShadow: '0 2px 8px rgba(189, 145, 63, 0.35)',
+                  }}
+                />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
+                    <strong style={{ fontSize: '13px' }}>🏛️ Midnight Navy &amp; Antique Gold</strong>
+                    <span style={{ fontSize: '11px', color: '#bd913f', fontWeight: 700 }}>SYMBOL</span>
+                  </div>
+                  <span style={{ display: 'block', fontSize: '11px', lineHeight: 1.4 }}>
+                    Symbol Edition · Signature Midnight Navy (#15283C), Pure Ivory Scripture &amp; Antique Gold wave (#BD913F)
                   </span>
                 </div>
               </button>
