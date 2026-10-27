@@ -4836,85 +4836,37 @@ mark.search-highlight {
   color: #ffffff;
 }
 
-/* Wordmark Typography: Simple, Regal, Editorial Serif */
+/* Wordmark Typography: Simple, Regal, Editorial Serif - Strict Brand Identity Invariant */
 .logo-wordmark {
   display: flex;
   align-items: baseline;
   font-family: Georgia, "Iowan Old Style", "Palatino", "Times New Roman", serif;
-  font-size: 20px;
+  font-size: 21px;
   letter-spacing: -0.01em;
   line-height: 1;
 }
 
 .logo-word-adu {
   font-weight: 800;
-  color: #38bdf8 !important; /* Radiant Sky Electric Blue - as per Brand Identity */
+  color: #38bdf8 !important; /* Radiant Sky Electric Blue - Strict Brand Identity */
   letter-spacing: -0.015em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
-  transition: color 0.15s ease;
-}
-
-.bible-app.theme-parchment .logo-word-adu,
-.bible-app.theme-daylight .logo-word-adu {
-  color: #0284c7 !important;
-  text-shadow: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
 }
 
 .logo-word-bible {
   font-weight: 700;
-  color: #f59e0b !important; /* Radiant Golden Amber */
+  color: #f59e0b !important; /* Radiant Golden Amber - Strict Brand Identity */
   margin-left: 0;
   letter-spacing: -0.01em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
-  transition: color 0.15s ease;
-}
-
-.bible-app.theme-parchment .logo-word-bible,
-.bible-app.theme-daylight .logo-word-bible {
-  color: #d97706 !important;
-  text-shadow: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
 }
 
 .logo-word-tld {
   font-weight: 700;
   font-size: 0.82em;
-  color: #10b981 !important; /* Vibrant Emerald Green */
+  color: #10b981 !important; /* Vibrant Emerald Green - Strict Brand Identity */
   letter-spacing: -0.02em;
   margin-left: 1px;
-  transition: color 0.15s ease;
-}
-
-.brand:hover .logo-word-adu {
-  color: #7dd3fc !important;
-}
-
-.brand:hover .logo-word-bible {
-  color: #fbbf24 !important;
-}
-
-.brand:hover .logo-word-tld {
-  color: #34d399 !important;
-}
-
-.bible-app.theme-parchment .logo-word-tld,
-.bible-app.theme-daylight .logo-word-tld {
-  color: #059669;
-}
-
-.bible-app.theme-cobalt .logo-word-tld {
-  color: #38bdf8;
-}
-
-.bible-app.theme-royal-purple .logo-word-tld {
-  color: #a78bfa;
-}
-
-.bible-app.theme-adubible-si .logo-word-tld {
-  color: #d4af37;
-}
-
-.bible-app.theme-crimson .logo-word-tld {
-  color: #fb7185;
 }
 
 /* SIZES */

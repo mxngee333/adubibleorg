@@ -67,7 +67,7 @@ async function run() {
   await sharp(masterPngSrc).resize(512, 512, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toFile(path.join(PUBLIC_DIR, 'icon-512.png'));
   console.log('✅ Generated public/icon-512.png (512x512 transparent)');
 
-  // 4. Generate public/favicon.svg using embedded base64 of the crisp 512x512 transparent symbol
+  // 4. Generate public/favicon.svg, public/logo.svg, and public/auth-logo.svg
   const png512Buf = await sharp(masterPngSrc).resize(512, 512, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer();
   const b64 = png512Buf.toString('base64');
   const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
@@ -75,7 +75,9 @@ async function run() {
 </svg>`;
 
   fs.writeFileSync(path.join(PUBLIC_DIR, 'favicon.svg'), faviconSvg, 'utf-8');
-  console.log('✅ Generated public/favicon.svg (crisp vector wrapper over Symbol logo)');
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'logo.svg'), faviconSvg, 'utf-8');
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'auth-logo.svg'), faviconSvg, 'utf-8');
+  console.log('✅ Generated public/favicon.svg, logo.svg, and auth-logo.svg (strict Symbol logo)');
 
   // 5. Generate 1200x630 OG Image (Social preview & Google Discover preview)
   // Composite the new symbol logo in the center top
@@ -92,8 +94,8 @@ async function run() {
     <rect width="1200" height="630" fill="url(#ogGlow)" />
     <rect width="1168" height="598" x="16" y="16" rx="28" fill="none" stroke="#BD913F" stroke-width="3" stroke-opacity="0.6" />
 
-    <!-- Typography -->
-    <text x="600" y="380" font-family="Georgia, serif" font-size="52" font-weight="bold" text-anchor="middle" letter-spacing="1"><tspan fill="#60a5fa">Adu</tspan><tspan fill="#fbbf24">Bible</tspan><tspan fill="#34d399">.org</tspan></text>
+    <!-- Typography (Strict Brand Colors) -->
+    <text x="600" y="380" font-family="Georgia, serif" font-size="52" font-weight="bold" text-anchor="middle" letter-spacing="1"><tspan fill="#38bdf8">Adu</tspan><tspan fill="#f59e0b">Bible</tspan><tspan fill="#10b981">.org</tspan></text>
     <text x="600" y="430" font-family="system-ui, sans-serif" font-size="22" font-weight="600" fill="#BD913F" text-anchor="middle" letter-spacing="3">✦ FREE AD-FREE MULTILINGUAL PARALLEL BIBLE ✦</text>
     <text x="600" y="480" font-family="Georgia, serif" font-size="20" font-style="italic" fill="#f8fafc" text-anchor="middle">Asante Twi (Twerɛ Kronkron) • NKJV • KJV • Hebrew • Greek • 35+ Languages</text>
     <text x="600" y="525" font-family="system-ui, sans-serif" font-size="16" fill="#94a3b8" text-anchor="middle">Strong’s Exhaustive Concordance • Open-Source Commentaries • 10s Status Video Studio</text>

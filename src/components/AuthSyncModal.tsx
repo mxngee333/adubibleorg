@@ -269,8 +269,13 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
             <div>
               {/* Auth Branding Hero */}
               <div className="mb-4 text-center">
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500/25 via-purple-900/30 to-stone-900 border border-amber-400/40 shadow-lg shadow-amber-500/10 mb-2">
-                  <img src="/auth-logo.svg" alt="AduBible" className="h-8 w-8" />
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-stone-900 border border-stone-800 shadow-lg mb-2">
+                  <img src="/brand/Symbol_Transparent.png" alt="AduBible" className="h-9 w-9 object-contain" />
+                </div>
+                <div className="flex items-center justify-center gap-1 font-serif text-base font-bold mb-1">
+                  <span style={{ color: '#38bdf8' }}>Adu</span>
+                  <span style={{ color: '#f59e0b' }}>Bible</span>
+                  <span style={{ color: '#10b981' }}>.org</span>
                 </div>
                 <h3 className="text-sm font-bold text-white tracking-wide">
                   {activeTab === 'signin' ? 'Welcome Back to AduBible' : 'Create Your Sovereign Study Vault'}

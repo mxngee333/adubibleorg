@@ -14,6 +14,8 @@ export const AduBibleLogo: React.FC<AduBibleLogoProps> = ({
   onClick,
   title = 'AduBible.org — Sovereign Scripture Engine',
 }) => {
+  const dims = size === 'sm' ? 26 : size === 'lg' ? 44 : 34;
+
   return (
     <div
       className={`adubible-logo-mark size-${size} ${className}`}
@@ -27,8 +29,8 @@ export const AduBibleLogo: React.FC<AduBibleLogoProps> = ({
           srcSet="/brand/icon-128.png 1x, /brand/Symbol_Transparent.png 2x"
           alt="AduBible Transparent Wave Symbol"
           className="logo-symbol-wave"
-          width="34"
-          height="34"
+          width={dims}
+          height={dims}
           loading="eager"
         />
       </div>
