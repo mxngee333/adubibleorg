@@ -2355,12 +2355,25 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
 .picker-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 60;
+  z-index: 2000;
   background: rgba(12, 10, 9, 0.85);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: grid;
   place-items: center;
   padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .picker-backdrop {
+    padding: 12px;
+    z-index: 2000;
+  }
+  .picker-dialog {
+    max-height: 88vh !important;
+    padding: 16px !important;
+    border-radius: 12px !important;
+  }
 }
 
 .picker-dialog {

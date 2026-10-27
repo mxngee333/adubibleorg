@@ -1229,11 +1229,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
         {/* Sticky Action Footer to close card easily from anywhere */}
         <div
+          onClick={(e) => e.stopPropagation()}
           style={{
             position: 'sticky',
             bottom: '-1px',
             marginTop: '20px',
-            padding: '12px 16px',
+            padding: '12px 16px max(14px, env(safe-area-inset-bottom))',
             background: 'var(--surface)',
             borderTop: '1px solid var(--line)',
             display: 'flex',

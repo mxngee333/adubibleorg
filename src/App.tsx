@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
+  BibleBook,
   BibleVersion,
   ChapterData,
   CustomBibleAddon,
@@ -737,6 +738,23 @@ export function App() {
       const prevBook = activeCollectionBooks[currentBookIdx - 1];
       handleSelectBookChapter(prevBook.slug, prevBook.chapters);
     }
+  };
+
+  const handleAudioNextChapter = (): boolean => {
+    const nextCh = currentChapter + 1;
+    if (nextCh <= currentBook.chapters) {
+      handleSelectBookChapter(currentBook.slug, nextCh);
+      return true;
+    }
+    const currentBookIdx = activeCollectionBooks.findIndex(
+      (b) => b.id === currentBook.id
+    );
+    if (currentBookIdx >= 0 && currentBookIdx < activeCollectionBooks.length - 1) {
+      const nextBook = activeCollectionBooks[currentBookIdx + 1];
+      handleSelectBookChapter(nextBook.slug, 1);
+      return true;
+    }
+    return false;
   };
 
   const handleJumpToReferenceString = (refStr: string) => {
@@ -2804,6 +2822,7 @@ export function App() {
           onVerseChange={(v: number) => setSelectedVerse(v)}
           onClose={() => setShowAudioBar(false)}
           onOpenSettings={() => setIsSettingsOpen((prev) => !prev)}
+          onNextChapter={handleAudioNextChapter}
         />
       )}
 
@@ -2999,15 +3018,28 @@ export function App() {
 
       {/* MOBILE BOTTOM THUMB NAVIGATION DOCK */}
       <MobileBottomDock
-        onOpenBooks={() => setIsBookModalOpen(true)}
-        onOpenSearch={() => setIsMobileSearchOpen(true)}
-        onToggleAudio={() => setShowAudioBar((prev) => !prev)}
+        onOpenBooks={() => {
+          setIsSettingsOpen(false);
+          setIsBookModalOpen(true);
+        }}
+        onOpenSearch={() => {
+          setIsSettingsOpen(false);
+          setIsMobileSearchOpen(true);
+        }}
+        onToggleAudio={() => {
+          setIsSettingsOpen(false);
+          setShowAudioBar((prev) => !prev);
+        }}
         isAudioActive={showAudioBar}
-        onSwapLanguages={handleSwapLanguages}
+        onSwapLanguages={() => {
+          setIsSettingsOpen(false);
+          handleSwapLanguages();
+        }}
         canSwap={activeVersionIds.length >= 2}
         onOpenSettings={() => setIsSettingsOpen((prev) => !prev)}
         isSettingsOpen={isSettingsOpen}
         onOpenVault={() => {
+          setIsSettingsOpen(false);
           setStudyVaultTab('pins');
           setIsStudyVaultOpen(true);
         }}

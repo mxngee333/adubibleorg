@@ -118,7 +118,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
   const headerMeta = getHeaderMeta();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-3 sm:p-6">
+    <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/75 backdrop-blur-sm p-3 sm:p-6">
       <div className="relative flex flex-col w-full max-w-4xl max-h-[88vh] rounded-2xl border border-amber-500/30 bg-stone-950 text-stone-100 shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-stone-800 bg-gradient-to-r from-stone-900 via-stone-900 to-amber-950/40 px-5 py-3.5">

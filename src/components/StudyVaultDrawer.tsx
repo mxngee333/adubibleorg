@@ -178,7 +178,7 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/70 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[2000] flex justify-end bg-black/70 backdrop-blur-sm">
       <div className="relative flex h-full w-full max-w-xl flex-col border-l border-amber-500/30 bg-stone-950 text-stone-100 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-stone-800 bg-gradient-to-r from-stone-900 via-stone-900 to-amber-950/40 px-5 py-4">

@@ -23,6 +23,7 @@ interface AudioBibleBarProps {
   onVerseChange: (verseNum: number) => void;
   onClose?: () => void;
   onOpenSettings?: () => void;
+  onNextChapter?: () => boolean | void;
 }
 
 const SAVED_VOICE_KEY = 'elohim_neural_voice_v1';
@@ -41,9 +42,12 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   onVerseChange,
   onClose,
   onOpenSettings,
+  onNextChapter,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoadingVerse, setIsLoadingVerse] = useState(false);
+  const [continuousPlayback, setContinuousPlayback] = useState<boolean>(true);
+  const autoPlayNextChapterRef = useRef<boolean>(false);
   const [selectedVoice, setSelectedVoice] = useState<GoogleNeuralVoiceName>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem(SAVED_VOICE_KEY);
@@ -111,6 +115,22 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   useEffect(() => {
     setUseStudioMp3(Boolean(audioUrl));
   }, [audioUrl]);
+
+  // Continuous Auto-Advance to Next Chapter Listener
+  useEffect(() => {
+    if (autoPlayNextChapterRef.current && verses && verses.length > 0) {
+      autoPlayNextChapterRef.current = false;
+      setIsPlaying(true);
+      isPlayingRef.current = true;
+      currentVerseIdxRef.current = 0;
+      onVerseChange(verses[0].verse);
+      setStatusMessage('');
+      const timer = setTimeout(() => {
+        playVerseAtIndex(0);
+      }, 160);
+      return () => clearTimeout(timer);
+    }
+  }, [chapter, verses]);
 
   useEffect(() => {
     return () => {
@@ -369,6 +389,32 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
   const playVerseAtIndex = async (index: number) => {
     if (index < 0 || index >= verses.length) {
+      if (index >= verses.length && continuousPlayback && onNextChapter) {
+        setIsLoadingVerse(true);
+        setStatusMessage(`Loading ${bookName} Chapter ${chapter + 1}...`);
+        autoPlayNextChapterRef.current = true;
+
+        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+          try {
+            window.speechSynthesis.cancel();
+          } catch {}
+          (window as any).__activeScriptureUtterance = null;
+        }
+        if (activeSourceRef.current) {
+          try {
+            activeSourceRef.current.stop();
+          } catch {}
+          activeSourceRef.current = null;
+        }
+
+        const hasNext = onNextChapter();
+        if (!hasNext) {
+          stopPlayback();
+          setStatusMessage('Scripture reading complete.');
+          setTimeout(() => setStatusMessage(''), 3000);
+        }
+        return;
+      }
       stopPlayback();
       return;
     }
@@ -572,6 +618,16 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
   const handleStep = (delta: number) => {
     stopPlayback();
+    if (delta > 0 && currentVerseIdxRef.current >= verses.length - 1 && onNextChapter) {
+      setIsLoadingVerse(true);
+      setStatusMessage(`Advancing to ${bookName} Chapter ${chapter + 1}...`);
+      autoPlayNextChapterRef.current = true;
+      const hasNext = onNextChapter();
+      if (!hasNext) {
+        stopPlayback();
+      }
+      return;
+    }
     const nextIdx = Math.min(
       verses.length - 1,
       Math.max(0, currentVerseIdxRef.current + delta)
@@ -618,7 +674,19 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
         <audio
           ref={studioAudioElRef}
           src={audioUrl}
-          onEnded={() => stopPlayback()}
+          onEnded={() => {
+            if (continuousPlayback && onNextChapter) {
+              setIsLoadingVerse(true);
+              setStatusMessage('Advancing to next chapter audio...');
+              autoPlayNextChapterRef.current = true;
+              const hasNext = onNextChapter();
+              if (!hasNext) {
+                stopPlayback();
+              }
+            } else {
+              stopPlayback();
+            }
+          }}
         />
       )}
 
@@ -823,6 +891,32 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             style={{ minWidth: '36px', height: '36px', padding: '0 8px' }}
           >
             ⏭
+          </button>
+
+          {/* Continuous Chapter Auto-Play Toggle */}
+          <button
+            type="button"
+            className={`quiet-button ${continuousPlayback ? 'active-pill' : ''}`}
+            onClick={() => setContinuousPlayback((prev) => !prev)}
+            title={
+              continuousPlayback
+                ? 'Continuous Chapter Auto-Play is ON (automatically loads and recites next chapter)'
+                : 'Continuous Chapter Auto-Play is OFF (stops at end of chapter)'
+            }
+            style={{
+              height: '36px',
+              fontSize: '12px',
+              fontWeight: continuousPlayback ? 600 : 400,
+              color: continuousPlayback ? 'var(--green)' : 'var(--ink)',
+              border: continuousPlayback ? '1px solid var(--green)' : '1px solid var(--line)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '5px',
+              padding: '0 10px',
+            }}
+          >
+            <span>🔁</span>
+            <span>{continuousPlayback ? 'Auto-Next ON' : 'Auto-Next OFF'}</span>
           </button>
 
           {/* Bilingual Alternate Toggle (e.g. English ⇄ Twi) */}
