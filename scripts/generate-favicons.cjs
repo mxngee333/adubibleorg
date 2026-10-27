@@ -127,7 +127,7 @@ async function run() {
     </g>
 
     <!-- Typography -->
-    <text x="600" y="380" font-family="Georgia, serif" font-size="52" font-weight="bold" fill="#fef08a" text-anchor="middle" letter-spacing="1">AduBible.org</text>
+    <text x="600" y="380" font-family="Georgia, serif" font-size="52" font-weight="bold" text-anchor="middle" letter-spacing="1"><tspan fill="#38bdf8">Adu</tspan><tspan fill="#f59e0b">Bible</tspan><tspan fill="#10b981">.org</tspan></text>
     <text x="600" y="430" font-family="system-ui, sans-serif" font-size="22" font-weight="600" fill="#f59e0b" text-anchor="middle" letter-spacing="3">✦ FREE AD-FREE MULTILINGUAL PARALLEL BIBLE ✦</text>
     <text x="600" y="480" font-family="Georgia, serif" font-size="20" font-style="italic" fill="#fafaf9" text-anchor="middle">Asante Twi (Twerɛ Kronkron) • NKJV • KJV • Hebrew • Greek • 35+ Languages</text>
     <text x="600" y="525" font-family="system-ui, sans-serif" font-size="16" fill="#a8a29e" text-anchor="middle">Strong’s Exhaustive Concordance • Open-Source Commentaries • 10s Status Video Studio</text>

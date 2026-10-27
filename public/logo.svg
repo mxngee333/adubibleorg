@@ -77,7 +77,7 @@
 
   <!-- Typography: AduBible Wordmark -->
   <text x="256" y="380" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="56" font-weight="700" letter-spacing="1">
-    <tspan fill="url(#goldSheen)">Adu</tspan><tspan fill="#f8fafc">Bible</tspan>
+    <tspan fill="#38bdf8">Adu</tspan><tspan fill="#f59e0b">Bible</tspan><tspan fill="#10b981">.org</tspan>
   </text>
 
   <!-- Subtitle: Parallel Study Sanctuary -->
