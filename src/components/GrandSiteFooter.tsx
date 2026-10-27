@@ -6,7 +6,7 @@ interface GrandSiteFooterProps {
   onOpenLegal: (page: LegalPageKey) => void;
   onOpenSettings: () => void;
   onGoHome: (e?: React.MouseEvent) => void;
-  onSelectNavTab: (tab: 'canonical' | 'deuterocanon' | 'list-of-sixty') => void;
+  onSelectNavTab: (tab: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles') => void;
   onSelectTheme?: (themeId: string) => void;
   onOpenBookPickerWithTab?: (tab: 'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD') => void;
   showStrongs: boolean;
@@ -351,9 +351,62 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
         {/* Column 4: Institutional & Heritage */}
         <div className="footer-col">
           <h3 className="footer-col-title">
-            <span>🏛️ Institutional &amp; Sacred Ministry</span>
+            <span>🏛️ Institutional Trust, Articles &amp; Heritage</span>
           </h3>
           <ul className="footer-links">
+            <li>
+              <a
+                href="/articles/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onSelectNavTab('articles');
+                }}
+                className="footer-text-link"
+                style={{ color: '#f59e0b', fontWeight: 700 }}
+              >
+                <span>📖 15 Pillar Scripture &amp; Study Guides</span>
+                <ChevronRight className="footer-link-chevron" />
+              </a>
+            </li>
+            <li>
+              <a
+                href="/editorial-policy/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onOpenLegal('editorial-policy');
+                }}
+                className="footer-text-link"
+              >
+                <span>Editorial Policy &amp; Translation Standards</span>
+                <ChevronRight className="footer-link-chevron" />
+              </a>
+            </li>
+            <li>
+              <a
+                href="/glossary/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onOpenLegal('glossary');
+                }}
+                className="footer-text-link"
+              >
+                <span>Biblical Exegesis &amp; Textual Glossary</span>
+                <ChevronRight className="footer-link-chevron" />
+              </a>
+            </li>
+            <li>
+              <a
+                href="/sources/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onOpenLegal('sources');
+                }}
+                className="footer-text-link"
+              >
+                <span>Manuscript Archives &amp; Scholarly Sources</span>
+                <ChevronRight className="footer-link-chevron" />
+              </a>
+            </li>
             <li>
               <a
                 href="/about/"
@@ -417,13 +470,35 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
                 <ExternalLink className="footer-link-chevron" style={{ width: 14, height: 14 }} />
               </a>
             </li>
+            <li className="pt-2 border-t border-stone-800">
+              <span className="text-[11px] text-stone-500 block mb-1">Partner &amp; Reference Archives:</span>
+              <div className="flex items-center gap-3 text-xs">
+                <a
+                  href="https://www.biblegateway.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-stone-400 hover:text-amber-400 transition underline flex items-center gap-1"
+                >
+                  <span>Bible Gateway ↗</span>
+                </a>
+                <span className="text-stone-600">·</span>
+                <a
+                  href="https://biblehub.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-stone-400 hover:text-amber-400 transition underline flex items-center gap-1"
+                >
+                  <span>Bible Hub ↗</span>
+                </a>
+              </div>
+            </li>
           </ul>
         </div>
       </div>
 
       <div className="footer-bottom-bar">
         <div className="footer-copy">
-          © {new Date().getFullYear()} <a href="https://adubible.org/" style={{ color: 'inherit', textDecoration: 'none' }}>AduBible.org</a> · Dedicated to Humanity by the Ministry of Apostle Kwame Adu · Nsuhia, Ghana.
+          © {new Date().getFullYear()} <a href="https://adubible.org/" style={{ textDecoration: 'none' }}><span style={{ color: '#38bdf8', fontWeight: 800 }}>Adu</span><span style={{ color: '#f59e0b', fontWeight: 700 }}>Bible</span><span style={{ color: '#10b981', fontWeight: 700 }}>.org</span></a> · Dedicated to Humanity by the Ministry of Apostle Kwame Adu · Nsuhia, Ghana.
         </div>
       </div>
     </footer>

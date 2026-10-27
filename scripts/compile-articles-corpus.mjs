@@ -4,6 +4,7 @@ import path from 'node:path';
 const root = process.cwd();
 const contentDir = path.join(root, 'src', 'content', 'articles');
 const targetFile = path.join(root, 'src', 'data', 'articlesCorpus.ts');
+const targetJson = path.join(root, 'src', 'data', 'articlesCorpus.json');
 
 const ARTICLES_META = [
   {
@@ -375,4 +376,5 @@ export function getAllArticleCategories(): string[] {
 `;
 
 fs.writeFileSync(targetFile, outputTs, 'utf8');
-console.log(`[CORPUS COMPILED] Successfully wrote ${articlesData.length} articles to ${targetFile}`);
+fs.writeFileSync(targetJson, JSON.stringify(articlesData, null, 2), 'utf8');
+console.log(`[CORPUS COMPILED] Successfully wrote ${articlesData.length} articles to ${targetFile} and ${targetJson}`);

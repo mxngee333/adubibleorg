@@ -67,6 +67,9 @@ import { AudioBibleBar } from './components/AudioBibleBar';
 import { SettingsModal } from './components/SettingsModal';
 import { DeuterocanonicalHubPage } from './components/DeuterocanonicalHubPage';
 import { ListOfSixtyHubPage } from './components/ListOfSixtyHubPage';
+import { ArticleReaderPage } from './components/ArticleReaderPage';
+import { ArticlesDirectoryHubPage } from './components/ArticlesDirectoryHubPage';
+import { getArticleBySlug } from './data/articlesCorpus';
 import {
   LegalInstitutionalModal,
   LegalPageKey,
@@ -167,18 +170,28 @@ export function App() {
     initialRoute.chapter || 1
   );
 
-  // Active Canon Navigation Tab: 'canonical' (Default Scripture Reader) | 'deuterocanon' | 'list-of-sixty'
-  const [activeNavTab, setActiveNavTab] = useState<'canonical' | 'deuterocanon' | 'list-of-sixty'>(() => {
+  // Active Canon Navigation Tab: 'canonical' (Default Scripture Reader) | 'deuterocanon' | 'list-of-sixty' | 'articles'
+  const [activeNavTab, setActiveNavTab] = useState<'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles'>(() => {
     if (initialRoute.targetTab) return initialRoute.targetTab;
     if (typeof window !== 'undefined') {
       const qTab = new URLSearchParams(window.location.search).get('tab');
-      if (qTab === 'deuterocanon' || qTab === 'list-of-sixty') return qTab;
+      if (qTab === 'deuterocanon' || qTab === 'list-of-sixty' || qTab === 'articles') return qTab;
       const p = window.location.pathname.toLowerCase();
+      if (p.includes('articles') || p.includes('blog')) return 'articles';
       if (p.includes('deuterocanon') || p.includes('apocrypha')) return 'deuterocanon';
       if (p.includes('sixty') || p.includes('pseudepigrapha')) return 'list-of-sixty';
     }
     return 'canonical';
   });
+
+  const [activeArticleSlug, setActiveArticleSlug] = useState<string | null>(
+    initialRoute.articleSlug || null
+  );
+
+  const activeArticle = useMemo(
+    () => (activeArticleSlug ? getArticleBySlug(activeArticleSlug) : null),
+    [activeArticleSlug]
+  );
 
   const [activeVersionIds, setActiveVersionIds] = useState<string[]>(() => {
     // 1. Explicit query param (e.g., ?versions=nkjv,kjv or deep links) has highest precedence
@@ -481,6 +494,8 @@ export function App() {
       if (typeof window === 'undefined') return;
       if (window.location.pathname === '/' || window.location.pathname === '') {
         setLegalModalState((prev) => ({ ...prev, open: false }));
+        setActiveNavTab('canonical');
+        setActiveArticleSlug(null);
         setCurrentBookSlug('genesis');
         setCurrentChapter(1);
         setSelectedVerse(1);
@@ -489,10 +504,30 @@ export function App() {
         return;
       }
       const route = parseBibleHubUrlPath(window.location.pathname);
+      if (route.targetTab === 'articles') {
+        setActiveNavTab('articles');
+        setActiveArticleSlug(route.articleSlug || null);
+        setLegalModalState((prev) => ({ ...prev, open: false }));
+        return;
+      }
+      if (route.targetTab === 'deuterocanon') {
+        setActiveNavTab('deuterocanon');
+        setActiveArticleSlug(null);
+        setLegalModalState((prev) => ({ ...prev, open: false }));
+        return;
+      }
+      if (route.targetTab === 'list-of-sixty') {
+        setActiveNavTab('list-of-sixty');
+        setActiveArticleSlug(null);
+        setLegalModalState((prev) => ({ ...prev, open: false }));
+        return;
+      }
       if (route.legalPage) {
         setLegalModalState({ open: true, page: route.legalPage });
       } else {
         setLegalModalState((prev) => ({ ...prev, open: false }));
+        setActiveNavTab('canonical');
+        setActiveArticleSlug(null);
         if (route.bookSlug) setCurrentBookSlug(route.bookSlug);
         if (route.chapter) setCurrentChapter(route.chapter);
         if (route.versionId) {
@@ -669,6 +704,7 @@ export function App() {
 
     // Reset to home sanctuary reading state (Genesis 1, retaining latest stored version)
     setActiveNavTab('canonical');
+    setActiveArticleSlug(null);
     setCurrentBookSlug('genesis');
     setCurrentChapter(1);
     setSelectedVerse(1);
@@ -1200,7 +1236,7 @@ export function App() {
       </header>
 
       {/* ISOLATED HISTORICAL ZONE BANNER (Only visible when user explicitly visits /deuterocanon or /list-of-sixty) */}
-      {activeNavTab !== 'canonical' && (
+      {(activeNavTab === 'deuterocanon' || activeNavTab === 'list-of-sixty') && (
         <div
           className="historical-zone-strip"
           style={{
@@ -1247,13 +1283,15 @@ export function App() {
         </div>
       )}
 
-            {/* QUICK TRANSLATION VERSION RIBBON (BIBLEHUB-STYLE 1-TAP SWITCHER) */}
-      <QuickVersionRibbon
-        activeVersionIds={activeVersionIds}
-        allVersions={allVersions}
-        onToggleVersion={handleToggleRibbonVersion}
-        onOpenVersionPicker={() => setPickerSlot('add')}
-      />
+      {/* QUICK TRANSLATION VERSION RIBBON (BIBLEHUB-STYLE 1-TAP SWITCHER) */}
+      {activeNavTab !== 'articles' && (
+        <QuickVersionRibbon
+          activeVersionIds={activeVersionIds}
+          allVersions={allVersions}
+          onToggleVersion={handleToggleRibbonVersion}
+          onOpenVersionPicker={() => setPickerSlot('add')}
+        />
+      )}
 
       {/* 3. DEDICATED CANON VIEWS OR PARALLEL SCRIPTURE READER */}
       {activeNavTab === 'deuterocanon' ? (
@@ -1318,6 +1356,68 @@ export function App() {
           }}
           footer={renderSharedFooter()}
         />
+      ) : activeNavTab === 'articles' ? (
+        activeArticle ? (
+          <ArticleReaderPage
+            article={activeArticle}
+            onNavigateArticle={(slug) => {
+              setActiveArticleSlug(slug);
+              if (typeof window !== 'undefined') {
+                window.history.pushState({}, '', `/articles/${slug}`);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+            onBackToDirectory={() => {
+              setActiveArticleSlug(null);
+              if (typeof window !== 'undefined') {
+                window.history.pushState({}, '', `/articles/`);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+            onOpenReaderWithVersions={(slug, chapter, versionIds) => {
+              setCurrentBookSlug(slug);
+              setCurrentChapter(chapter);
+              setSelectedVerse(1);
+              setActiveVersionIds(versionIds);
+              setActiveNavTab('canonical');
+              if (typeof window !== 'undefined') {
+                window.history.pushState(
+                  {},
+                  '',
+                  `/${versionIds[0] || 'nkjv'}/${slug}/${chapter}?versions=${versionIds.join(',')}`
+                );
+              }
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            footer={renderSharedFooter()}
+          />
+        ) : (
+          <ArticlesDirectoryHubPage
+            onSelectArticle={(slug) => {
+              setActiveArticleSlug(slug);
+              if (typeof window !== 'undefined') {
+                window.history.pushState({}, '', `/articles/${slug}`);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+            onOpenReaderWithVersions={(slug, chapter, versionIds) => {
+              setCurrentBookSlug(slug);
+              setCurrentChapter(chapter);
+              setSelectedVerse(1);
+              setActiveVersionIds(versionIds);
+              setActiveNavTab('canonical');
+              if (typeof window !== 'undefined') {
+                window.history.pushState(
+                  {},
+                  '',
+                  `/${versionIds[0] || 'nkjv'}/${slug}/${chapter}?versions=${versionIds.join(',')}`
+                );
+              }
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            footer={renderSharedFooter()}
+          />
+        )
       ) : (
         <main id="reader" className="workspace">
           <section className="page-heading">
