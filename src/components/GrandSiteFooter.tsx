@@ -423,7 +423,7 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
 
       <div className="footer-bottom-bar">
         <div className="footer-copy">
-          © {new Date().getFullYear()} <strong>AduBible</strong> (<a href="https://adubible.org/">adubible.org</a>) · Dedicated to Humanity as a Sacred Ministry in Honor of Apostle Kwame Adu · Nsuhia, Ghana.
+          © {new Date().getFullYear()} <strong>AduBible</strong> (<a href="https://adubible.org/">adubible.org</a>) · Dedicated to Humanity by the Ministry of Apostle Kwame Adu · Nsuhia, Ghana.
         </div>
       </div>
     </footer>
