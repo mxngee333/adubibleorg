@@ -227,43 +227,43 @@ export async function searchScripture(
   let formattedResults: BibleSearchResult[] = [];
 
   if (rawResults.length > 0) {
-    formattedResults = rawResults
-      .map((item) => {
-        const book = BIBLE_BOOKS.find((b) => b.number === item.book);
-        if (!book) return null;
+    const mapped = rawResults.map((item) => {
+      const book = BIBLE_BOOKS.find((b) => b.number === item.book);
+      if (!book) return null;
 
-        const cleanHtml = cleanSearchHtml(item.text);
-        const plainText = stripAllHtml(cleanHtml);
-        const plainLower = plainText.toLowerCase();
+      const cleanHtml = cleanSearchHtml(item.text);
+      const plainText = stripAllHtml(cleanHtml);
+      const plainLower = plainText.toLowerCase();
 
-        // Exact phrase check
-        const isExactMatch = plainLower.includes(qLower);
+      // Exact phrase check
+      const isExactMatch = plainLower.includes(qLower);
 
-        // Scoring: exact matches get +100, plus points for each matched token
-        let score = isExactMatch ? 100 : 0;
-        for (const token of qTokens) {
-          if (plainLower.includes(token)) score += 10;
-        }
-        if (plainLower.startsWith(qLower)) score += 20;
+      // Scoring: exact matches get +100, plus points for each matched token
+      let score = isExactMatch ? 100 : 0;
+      for (const token of qTokens) {
+        if (plainLower.includes(token)) score += 10;
+      }
+      if (plainLower.startsWith(qLower)) score += 20;
 
-        return {
-          id: `${targetVersion}-${book.slug}-${item.chapter}-${item.verse}`,
-          bookSlug: book.slug,
-          bookName: book.names.en,
-          testament: book.testament,
-          category: book.category,
-          chapter: item.chapter,
-          verse: item.verse,
-          reference: `${book.names.en} ${item.chapter}:${item.verse}`,
-          text: plainText,
-          highlightedHtml: cleanHtml,
-          snippetHtml: generateSnippet(cleanHtml),
-          isExactMatch,
-          score,
-          versionId: targetVersion,
-        };
-      })
-      .filter((r): r is BibleSearchResult => r !== null);
+      const res: BibleSearchResult = {
+        id: `${targetVersion}-${book.slug}-${item.chapter}-${item.verse}`,
+        bookSlug: book.slug,
+        bookName: book.names.en,
+        testament: book.testament,
+        category: book.category,
+        chapter: item.chapter,
+        verse: item.verse,
+        reference: `${book.names.en} ${item.chapter}:${item.verse}`,
+        text: plainText,
+        highlightedHtml: cleanHtml,
+        snippetHtml: generateSnippet(cleanHtml),
+        isExactMatch,
+        score,
+        versionId: targetVersion,
+      };
+      return res;
+    });
+    formattedResults = mapped.filter((r): r is BibleSearchResult => r !== null);
   } else {
     // Fallback: search our prebundled featured chapters corpus
     formattedResults = searchPrebundledCorpus(trimmed, targetVersion);
