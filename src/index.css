@@ -3742,22 +3742,24 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
 .footer-bottom-bar {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  text-align: center;
   gap: 12px;
   padding-top: 20px;
   border-top: 1px solid var(--line);
   font-size: 12px;
+  width: 100%;
+}
+
+.footer-copy {
+  color: var(--subtle);
+  line-height: 1.6;
 }
 
 .footer-copy a {
   color: inherit;
   text-decoration: underline;
-}
-
-.footer-security-note {
-  font-weight: 600;
-  color: var(--green);
 }
 
 

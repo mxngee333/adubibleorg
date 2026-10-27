@@ -11,10 +11,6 @@ interface QuickVersionRibbonProps {
 
 // Complete BibleHub Canonical Editions + Ghanaian & Classical Heritage
 export const BIBLEHUB_RIBBON_VERSIONS: Array<{ id: string; short: string; name: string; tag?: string }> = [
-  // ── Ghanaian Heritage Jewels ──
-  { id: 'twi', short: 'TWI', name: 'Asante Twi (Twerɛ Kronkron)', tag: 'GH' },
-  { id: 'ak-twi', short: 'AK-TWI', name: 'Akuapem Twi (Kyerew Kronkron)', tag: 'GH' },
-
   // ── 29 BibleHub Exact Canonical Editions (Matching BibleHub Lineup) ──
   { id: 'niv', short: 'NIV', name: 'New International Version (1984 / 2011)' },
   { id: 'nlt', short: 'NLT', name: 'New Living Translation (2015)' },
@@ -46,7 +42,9 @@ export const BIBLEHUB_RIBBON_VERSIONS: Array<{ id: string; short: string; name: 
   { id: 'wbt', short: 'WBT', name: 'Webster Bible (1833)' },
   { id: 'wyc', short: 'WYC', name: "Wycliffe's Bible (1395)" },
 
-  // ── African & Classical Translations ──
+  // ── Ghanaian, African & Classical Translations ──
+  { id: 'twi', short: 'TWI', name: 'Asante Twi (Twerɛ Kronkron)', tag: 'GH' },
+  { id: 'ak-twi', short: 'AK-TWI', name: 'Akuapem Twi (Kyerew Kronkron)', tag: 'GH' },
   { id: 'ee', short: 'EWE', name: 'Eʋegbe Biblia (Ghana / Togo)' },
   { id: 'gaa', short: 'GA', name: 'Gã Ŋmalɛ Krɔŋkrɔŋ (Accra, Ghana)' },
   { id: 'yo', short: 'YOR', name: 'Èdè Yorùbá (Bíbélì Mímọ́)' },
