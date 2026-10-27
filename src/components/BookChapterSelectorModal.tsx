@@ -230,8 +230,8 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
             </button>
           </div>
 
-          <div className="relative flex-1 max-w-xs">
-            <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-stone-400" />
+          <div className="relative flex-1 min-w-[130px] max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
@@ -239,8 +239,8 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                 setSearchQuery(e.target.value);
                 setStep('books');
               }}
-              placeholder="Search Ephesians, Efesofoɔ, Dwom, Genesis..."
-              className="w-full rounded-xl border border-stone-700 bg-stone-950 pl-8 pr-3 py-1.5 text-xs text-white placeholder-stone-500 focus:border-amber-500 focus:outline-none"
+              placeholder="Search scripture, book, chapter..."
+              className="w-full rounded-xl border border-stone-700 bg-stone-950 pl-9 pr-3 py-2 text-sm sm:text-xs text-white placeholder-stone-500 focus:border-amber-500 focus:outline-none min-h-[38px]"
             />
           </div>
         </div>

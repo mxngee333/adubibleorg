@@ -2509,18 +2509,53 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
     display: none !important;
   }
 
-  /* Show sleek, compact mobile-mast-actions */
+  /* Show sleek, prominent mobile-mast-actions */
   .mobile-mast-actions {
     display: flex !important;
     align-items: center;
+    gap: 7px;
+    flex: 1;
+    justify-content: flex-end;
+    min-width: 0;
+  }
+
+  .mobile-mast-search-box-btn {
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--subtle);
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
     gap: 8px;
-    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    flex: 1;
+    max-width: 190px;
+    min-width: 75px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  }
+
+  .mobile-mast-search-box-btn:hover,
+  .mobile-mast-search-box-btn:active {
+    border-color: var(--green);
+    color: var(--ink);
+    background: var(--surface);
+  }
+
+  .mobile-mast-search-box-btn .search-placeholder-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
   }
 
   .mobile-mast-icon-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 7px;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
     border: 1px solid var(--line);
     background: var(--paper);
     color: var(--ink);
@@ -2529,6 +2564,7 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
     justify-content: center;
     cursor: pointer;
     transition: all 0.15s ease;
+    flex-shrink: 0;
   }
 
   .mobile-mast-icon-btn:hover,
@@ -3508,22 +3544,136 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   flex-shrink: 0;
 }
 
-/* Mobile Search Overlay Modal */
+/* Mobile Search Overlay Modal - Prominent, Thumb-Friendly Search Box */
 .mobile-search-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   z-index: 2000;
-  padding: 20px 16px;
+  padding: calc(14px + env(safe-area-inset-top, 0px)) 16px calc(24px + env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: column;
 }
 
 .mobile-search-modal {
   width: 100%;
-  max-width: 600px;
+  max-width: 620px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Enlarge mobile search bar box to 56px with thumb-friendly controls */
+.mobile-search-modal .omni-search-box {
+  min-height: 56px !important;
+  height: 56px !important;
+  padding: 0 16px !important;
+  border-radius: 16px !important;
+  border: 2px solid var(--green) !important;
+  background: var(--surface) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+  gap: 12px !important;
+}
+
+.mobile-search-modal .omni-search-icon {
+  width: 22px !important;
+  height: 22px !important;
+  color: var(--green) !important;
+  flex-shrink: 0 !important;
+}
+
+.mobile-search-modal .omni-search-input {
+  font-size: 16px !important; /* 16px strictly prevents iOS Safari viewport auto-zoom */
+  font-weight: 500 !important;
+  height: 100% !important;
+  color: var(--ink) !important;
+  line-height: normal !important;
+}
+
+.mobile-search-modal .omni-search-input::placeholder {
+  font-size: 14.5px !important;
+  color: var(--subtle) !important;
+  opacity: 0.85 !important;
+}
+
+.mobile-search-modal .omni-clear-btn {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: var(--subtle) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+.mobile-search-modal .omni-mobile-close-btn {
+  height: 38px !important;
+  padding: 0 16px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  border-radius: 999px !important;
+  background: var(--soft) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--ink) !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.15s ease !important;
+}
+
+.mobile-search-modal .omni-mobile-close-btn:hover,
+.mobile-search-modal .omni-mobile-close-btn:active {
+  background: var(--green) !important;
+  color: #fff !important;
+  border-color: var(--green) !important;
+}
+
+.mobile-search-modal .omni-suggestions-dropdown {
+  position: static !important;
+  margin-top: 14px !important;
+  max-height: calc(85vh - 100px) !important;
+  border-radius: 16px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--paper) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4) !important;
+}
+
+.mobile-search-modal .omni-dropdown-header {
+  padding: 12px 18px !important;
+  font-size: 11.5px !important;
+}
+
+.mobile-search-modal .omni-suggestions-list {
+  padding: 8px !important;
+  max-height: calc(85vh - 160px) !important;
+}
+
+.mobile-search-modal .omni-suggestion-item {
+  min-height: 54px !important;
+  padding: 12px 16px !important;
+  border-radius: 12px !important;
+  gap: 14px !important;
+}
+
+.mobile-search-modal .suggestion-icon {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 10px !important;
+}
+
+.mobile-search-modal .suggestion-title {
+  font-size: 15px !important;
+}
+
+.mobile-search-modal .suggestion-subtitle {
+  font-size: 12.5px !important;
+  margin-top: 2px !important;
 }
 
 /* 2. QUICK VERSION RIBBON (THEME RESPONSIVE 1-TAP SWITCHER) */

@@ -242,7 +242,7 @@ export const OmniSearchBar: React.FC<OmniSearchBarProps> = ({
           }}
           onFocus={() => setIsFocused(true)}
           onKeyDown={handleKeyDown}
-          placeholder="Search scripture, passage, or topic (e.g. John 3:16, Psalm 23)..."
+          placeholder={isOpenMobile ? "Search passage or topic (e.g. John 3:16)..." : "Search scripture, passage, or topic (e.g. John 3:16, Psalm 23)..."}
           aria-label="Search scripture passage or reference"
         />
         {query && (

@@ -176,9 +176,11 @@ export async function clearTtsAudioCache(): Promise<void> {
  */
 export function cleanVerseForSpeech(text: string): string {
   return text
+    .replace(/^\s*\d+[:.]?\s*/, '') // remove leading verse number if present
     .replace(/\[\d+\]/g, '') // remove footnote tags [1], [2]
     .replace(/\(\d+:\d+\)/g, '')
-    .replace(/[«»"]/g, '')
+    .replace(/[«»"“”]/g, '')
+    .replace(/[*_#]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -187,6 +189,8 @@ export function cleanVerseForSpeech(text: string): string {
  * Synthesizes 24kHz Google Neural Audio with automatic multi-tier retry.
  * Prioritizes high-speed Gemini 3.8 Flash Lite TTS, falls back across all available
  * Gemini audio models, and caches in IndexedDB for 0ms instant future playback.
+ * If no valid Gemini key is present, returns null immediately (0ms) so natural
+ * browser speech speaks instantly without any buffering stall!
  */
 export async function synthesizeNeuralAudio(
   rawText: string,
@@ -213,76 +217,53 @@ export async function synthesizeNeuralAudio(
   // 2. Direct Google Gemini 24kHz Audio API (If user provided valid key)
   const candidateKeys = getActiveGeminiApiKeys();
 
-  if (candidateKeys.length > 0) {
-    for (const apiKey of candidateKeys) {
-      for (const model of GEMINI_TTS_MODELS.slice(0, 2)) {
-        try {
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 3500);
-
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            signal: controller.signal,
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: pureVerseText }] }],
-              generationConfig: {
-                responseModalities: ['AUDIO'],
-                speechConfig: {
-                  voiceConfig: {
-                    prebuiltVoiceConfig: { voiceName },
-                  },
-                },
-              },
-            }),
-          });
-          clearTimeout(timeoutId);
-
-          if (res.ok) {
-            const json = await res.json();
-            const base64Audio = json?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-            if (base64Audio) {
-              await setCachedTtsAudio(cacheKey, base64Audio);
-              return base64Audio;
-            }
-          } else {
-            // Immediate short-circuit on authentication failure (400, 401, 403)
-            if (res.status === 400 || res.status === 401 || res.status === 403) {
-              break;
-            }
-          }
-        } catch {
-          // Continue to next model/key
-        }
-      }
-    }
+  if (candidateKeys.length === 0) {
+    // Fast path: No API key configured. Immediately return null so local browser voice speaks instantly!
+    return null;
   }
 
-  // 3. Edge TTS Gateway with 2000ms timeout
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
-    const res = await fetch(EDGE_TTS_GATEWAY, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      signal: controller.signal,
-      body: JSON.stringify({
-        text: pureVerseText,
-        voiceName,
-      }),
-    });
-    clearTimeout(timeoutId);
+  for (const apiKey of candidateKeys) {
+    for (const model of GEMINI_TTS_MODELS.slice(0, 2)) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
 
-    if (res.ok) {
-      const data = await res.json();
-      if (data?.ok && data?.base64Audio) {
-        await setCachedTtsAudio(cacheKey, data.base64Audio);
-        return data.base64Audio;
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: pureVerseText }] }],
+            generationConfig: {
+              responseModalities: ['AUDIO'],
+              speechConfig: {
+                voiceConfig: {
+                  prebuiltVoiceConfig: { voiceName },
+                },
+              },
+            },
+          }),
+        });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const json = await res.json();
+          const base64Audio = json?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+          if (base64Audio) {
+            await setCachedTtsAudio(cacheKey, base64Audio);
+            return base64Audio;
+          }
+        } else {
+          // Immediate short-circuit on authentication failure (400, 401, 403)
+          if (res.status === 400 || res.status === 401 || res.status === 403) {
+            break;
+          }
+        }
+      } catch {
+        // Continue to next model/key
       }
     }
-  } catch {
-    // Non-blocking fallback
   }
 
   return null;
