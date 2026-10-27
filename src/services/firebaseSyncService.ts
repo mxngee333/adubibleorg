@@ -42,7 +42,7 @@ let firebaseApp: FirebaseApp | null = null;
 let firebaseAuth: Auth | null = null;
 let firestoreDb: Firestore | null = null;
 
-function initFirebaseIfConfigured(): { auth: Auth | null; db: Firestore | null } {
+export function initFirebaseIfConfigured(): { auth: Auth | null; db: Firestore | null } {
   if (firebaseAuth && firestoreDb) {
     return { auth: firebaseAuth, db: firestoreDb };
   }
