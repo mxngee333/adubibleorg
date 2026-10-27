@@ -4,6 +4,9 @@
  * Powered by Google Gemini 24kHz Audio Modality (Charon, Kore, Puck, Aoede, Fenrir) + IndexedDB Zero-Cost Audio Vault.
  */
 
+import { isTwiLanguage } from './twiAudioService';
+import { transphonemizeTwiForSpeech } from './twiPhonemeEngine';
+
 const EDGE_TTS_GATEWAY = 'https://api.modelissa.com/api/gemini-tts';
 export const DEFAULT_GEMINI_KEY = 'AIzaSyCmYDhFoekesow8HDnv_4zqYeBuEGy58Vo';
 
@@ -197,7 +200,9 @@ export async function synthesizeNeuralAudio(
   langCode: string,
   voiceName: GoogleNeuralVoiceName = 'Charon'
 ): Promise<string | null> {
-  const pureVerseText = cleanVerseForSpeech(rawText);
+  const isTwi = isTwiLanguage(langCode);
+  const textToProcess = isTwi ? transphonemizeTwiForSpeech(rawText) : rawText;
+  const pureVerseText = cleanVerseForSpeech(textToProcess);
   if (!pureVerseText) {
     return null;
   }
@@ -303,7 +308,9 @@ export async function getOrPreloadAudioBuffer(
   langCode: string,
   voiceName: GoogleNeuralVoiceName = 'Charon'
 ): Promise<AudioBuffer | null> {
-  const pureVerseText = cleanVerseForSpeech(text);
+  const isTwi = isTwiLanguage(langCode);
+  const textToProcess = isTwi ? transphonemizeTwiForSpeech(text) : text;
+  const pureVerseText = cleanVerseForSpeech(textToProcess);
   const memKey = `${langCode}:${voiceName}:${pureVerseText}`;
 
   // 1. Instant 0ms RAM Hit
@@ -331,7 +338,9 @@ export function isAudioBufferPreloaded(
   langCode: string,
   voiceName: GoogleNeuralVoiceName = 'Charon'
 ): boolean {
-  const pureVerseText = cleanVerseForSpeech(text);
+  const isTwi = isTwiLanguage(langCode);
+  const textToProcess = isTwi ? transphonemizeTwiForSpeech(text) : text;
+  const pureVerseText = cleanVerseForSpeech(textToProcess);
   const memKey = `${langCode}:${voiceName}:${pureVerseText}`;
   return memoryAudioBufferCache.has(memKey);
 }

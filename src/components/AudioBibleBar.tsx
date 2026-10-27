@@ -8,6 +8,8 @@ import {
   cleanVerseForSpeech,
   getActiveGeminiApiKeys,
 } from '../services/neuralTtsService';
+import { isTwiLanguage } from '../services/twiAudioService';
+import { transphonemizeTwiForSpeech } from '../services/twiPhonemeEngine';
 
 interface AudioBibleBarProps {
   bookName: string;
@@ -313,28 +315,33 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       return;
     }
 
-    const clean = cleanVerseForSpeech(textToSpeak);
+    const isTwi = isTwiLanguage(voiceLang) || isTwiLanguage(langCode);
+    const textForSpeech = isTwi
+      ? transphonemizeTwiForSpeech(textToSpeak)
+      : textToSpeak;
+    const clean = cleanVerseForSpeech(textForSpeech);
     if (!clean) {
       onEnded();
       return;
     }
 
     const utterance = new SpeechSynthesisUtterance(clean);
-    utterance.rate = rate;
+    // Steady, reverent pacing for Akan phonological clarity
+    utterance.rate = isTwi ? Math.min(rate, 0.95) : rate;
     utterance.pitch = 1.0;
 
     const code = (voiceLang || 'en').toLowerCase().trim();
-    if (code === 'tw' || code === 'ak') {
-      utterance.lang = 'ak-GH';
+    const matchedVoice = getBestNativeVoice(voiceLang);
+    if (matchedVoice) {
+      utterance.voice = matchedVoice;
+      utterance.lang = matchedVoice.lang;
+    } else if (isTwi) {
+      // Browsers lack native ak-GH voices; standard voices pronounce transphonemized Akan phonemes cleanly via en-US
+      utterance.lang = 'en-US';
     } else if (code.length === 2) {
       utterance.lang = `${code}-${code.toUpperCase()}`;
     } else {
       utterance.lang = code;
-    }
-
-    const matchedVoice = getBestNativeVoice(voiceLang);
-    if (matchedVoice) {
-      utterance.voice = matchedVoice;
     }
 
     // Critical: Anchor utterance globally to prevent Chromium / WebKit GC bug mid-sentence
@@ -811,6 +818,25 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
                     </span>
                   )}
 
+                  {isTwiLanguage(langCode) && (
+                    <span
+                      style={{
+                        padding: '1px 8px',
+                        borderRadius: '999px',
+                        background: 'rgba(212, 175, 55, 0.16)',
+                        color: 'var(--green)',
+                        fontWeight: 600,
+                        border: '1px solid var(--line)',
+                        fontSize: '11px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}
+                    >
+                      🇬🇭 Asante Twi · {engineType === 'studio' ? 'Authentic Studio Audio' : 'Akan Phonemic TTS'}
+                    </span>
+                  )}
+
                   {/* Buffering status badge */}
                   {engineType === 'native' ? (
                     <span
@@ -996,7 +1022,13 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
               title="Switch between Studio Recorded MP3 and Verse-by-Verse Narration"
               style={{ height: '36px', fontSize: '12px' }}
             >
-              {useStudioMp3 ? 'Studio MP3' : 'Verse Audio'}
+              {useStudioMp3
+                ? isTwiLanguage(langCode)
+                  ? '🎙️ Studio Twi Audio'
+                  : 'Studio MP3'
+                : isTwiLanguage(langCode)
+                  ? 'Akan Phonemic TTS'
+                  : 'Verse Audio'}
             </button>
           )}
 

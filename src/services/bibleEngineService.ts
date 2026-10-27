@@ -12,6 +12,11 @@ import {
   getPrebundledChapter,
   adaptVerseToLanguage,
 } from '../data/featuredChaptersCorpus';
+import {
+  isTwiLanguage,
+  resolveTwiAudioUrl,
+  getCornerstoneTwiAudioUrl,
+} from './twiAudioService';
 import licensesJson from '../data/wisdom/licenses.json';
 import {
   BibleBook,
@@ -117,10 +122,17 @@ function parseHelloaoChapterPayload(
   }));
 
   const audioLinks = json?.thisChapterAudioLinks || {};
-  const firstAudioUrl =
+  let resolvedAudioUrl =
     typeof audioLinks === 'object' && audioLinks !== null
       ? (Object.values(audioLinks)[0] as string | undefined)
       : undefined;
+
+  if (!resolvedAudioUrl && isTwiLanguage(versionId)) {
+    resolvedAudioUrl =
+      getCornerstoneTwiAudioUrl(book.slug, validChapter) ||
+      resolveTwiAudioUrl(book.slug, validChapter, versionId) ||
+      undefined;
+  }
 
   const lic = licensesMap[helloaoId];
 
@@ -133,7 +145,7 @@ function parseHelloaoChapterPayload(
     chapter: validChapter,
     verses,
     chapterFootnotes,
-    audioUrl: firstAudioUrl,
+    audioUrl: resolvedAudioUrl,
     source: sourceLabel,
     licenseUrl: lic?.url || json?.translation?.licenseUrl || json?.translation?.website,
     licenseText: lic?.text,
@@ -335,6 +347,11 @@ export async function resolveChapterData(
       bookLocalName: book.names[verMeta.langCode] || book.names.en,
       chapter: validChapter,
       verses,
+      audioUrl: isTwiLanguage(versionId)
+        ? getCornerstoneTwiAudioUrl(book.slug, validChapter) ||
+          resolveTwiAudioUrl(book.slug, validChapter, versionId) ||
+          undefined
+        : undefined,
       source: 'Elohim Bundled Parallel Corpus (0ms)',
       licenseUrl: licInfo?.url,
       licenseText: licInfo?.text || verMeta.copyright,
