@@ -17,10 +17,10 @@ export const BIBLEHUB_RIBBON_VERSIONS: Array<{ id: string; short: string; name: 
   { id: 'niv', short: 'NIV', name: 'New International Version (1984 / 2011)' },
   { id: 'nlt', short: 'NLT', name: 'New Living Translation (2015)' },
   { id: 'esv', short: 'ESV', name: 'English Standard Version (2016)' },
-  { id: 'ak-twi', short: 'AK-TWI', name: 'Akuapem Twi (Kyerew Kronkron)', tag: 'GH' },
+  { id: 'twi', short: 'TWI', name: 'Asante Twi (Twerɛ Kronkron)', tag: 'GH' },
+  { id: 'amp', short: 'AMP', name: 'Amplified Bible (2015)' },
   { id: 'bsb', short: 'BSB', name: 'Berean Standard Bible' },
   { id: 'nasb', short: 'NAS', name: 'New American Standard Bible (1995)' },
-  { id: 'amp', short: 'AMP', name: 'Amplified Bible (2015)' },
   { id: 'csb', short: 'CSB', name: 'Christian Standard Bible (2017)' },
   { id: 'hcsb', short: 'HCS', name: 'Holman Christian Standard Bible' },
   { id: 'lsb', short: 'LSB', name: 'Legacy Standard Bible (2021)' },
@@ -44,7 +44,7 @@ export const BIBLEHUB_RIBBON_VERSIONS: Array<{ id: string; short: string; name: 
   { id: 'wyc', short: 'WYC', name: "Wycliffe's Bible (1395)" },
 
   // ── Ghanaian, African & Classical Translations ──
-  { id: 'twi', short: 'TWI', name: 'Asante Twi (Twerɛ Kronkron)', tag: 'GH' },
+  { id: 'ak-twi', short: 'AK-TWI', name: 'Akuapem Twi (Kyerew Kronkron)', tag: 'GH' },
   { id: 'ee', short: 'EWE', name: 'Eʋegbe Biblia (Ghana / Togo)' },
   { id: 'gaa', short: 'GA', name: 'Gã Ŋmalɛ Krɔŋkrɔŋ (Accra, Ghana)' },
   { id: 'yo', short: 'YOR', name: 'Èdè Yorùbá (Bíbélì Mímọ́)' },
