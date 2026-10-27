@@ -1,6 +1,10 @@
-import React from 'react';
-import { ChevronRight, ExternalLink } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronRight, ExternalLink, Sparkles, CheckCircle, Send } from 'lucide-react';
 import { LegalPageKey } from './LegalInstitutionalModal';
+import {
+  subscribeToNewsletter,
+  getLocalNewsletterSubscription,
+} from '../services/newsletterService';
 
 interface GrandSiteFooterProps {
   onOpenLegal: (page: LegalPageKey) => void;
@@ -23,6 +27,49 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
   showStrongs,
   showCommentaries,
 }) => {
+  // Minimalist Newsletter State
+  const [firstName, setFirstName] = useState('');
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [existingSub, setExistingSub] = useState<{ firstName: string; email: string } | null>(null);
+
+  useEffect(() => {
+    const saved = getLocalNewsletterSubscription();
+    if (saved) {
+      setExistingSub({ firstName: saved.firstName, email: saved.email });
+    }
+  }, []);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!firstName.trim()) {
+      setStatus('error');
+      setErrorMessage('Please enter your first name.');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim() || !emailRegex.test(email.trim())) {
+      setStatus('error');
+      setErrorMessage('Please enter a valid email address.');
+      return;
+    }
+
+    setStatus('loading');
+    setErrorMessage('');
+
+    const res = await subscribeToNewsletter(firstName, email);
+    if (res.success) {
+      setStatus('success');
+      setExistingSub({ firstName: firstName.trim(), email: email.trim().toLowerCase() });
+      setFirstName('');
+      setEmail('');
+    } else {
+      setStatus('error');
+      setErrorMessage(res.error || 'Could not subscribe. Please try again.');
+    }
+  };
+
   const handleThemeClick = (themeId: string) => {
     if (onSelectTheme) {
       onSelectTheme(themeId);
@@ -74,6 +121,98 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
           </div>
         </div>
       </div>
+
+      {/* MINIMALIST NEWSLETTER SIGNUP BANNER */}
+      <section className="footer-newsletter-banner" aria-label="AduBible Daily Scripture Newsletter">
+        <div className="footer-newsletter-header">
+          <div className="footer-newsletter-tag">
+            <Sparkles style={{ width: 13, height: 13 }} />
+            <span>THE LIVING WORD DAILY</span>
+          </div>
+          <h3 className="footer-newsletter-title">
+            Receive Daily Scripture &amp; Study Updates
+          </h3>
+          <p className="footer-newsletter-desc">
+            A single reverent passage and Greek &amp; Hebrew exegetical insight delivered to your inbox every morning. 100% Free &amp; Ad-Free.
+          </p>
+        </div>
+
+        {status === 'success' || existingSub ? (
+          <div className="footer-newsletter-success-box">
+            <CheckCircle className="footer-success-icon" />
+            <div className="footer-success-details">
+              <strong>Grace and peace, {existingSub?.firstName || firstName || 'friend'}!</strong>
+              <span>You are subscribed to Daily Scripture with {existingSub?.email || email}.</span>
+            </div>
+            <button
+              type="button"
+              className="footer-newsletter-re-sub"
+              onClick={() => {
+                setExistingSub(null);
+                setStatus('idle');
+              }}
+              title="Subscribe with another email"
+            >
+              Change
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubscribe} className="footer-newsletter-form">
+            <div className="footer-newsletter-fields">
+              <div className="footer-field-wrapper">
+                <input
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="First name"
+                  aria-label="First name"
+                  disabled={status === 'loading'}
+                  className="footer-field-input"
+                  required
+                />
+              </div>
+
+              <div className="footer-field-wrapper">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email address"
+                  aria-label="Email address"
+                  disabled={status === 'loading'}
+                  className="footer-field-input"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={status === 'loading'}
+                className="footer-subscribe-btn"
+              >
+                {status === 'loading' ? (
+                  <span>Joining...</span>
+                ) : (
+                  <>
+                    <span>Subscribe</span>
+                    <Send style={{ width: 13, height: 13 }} />
+                  </>
+                )}
+              </button>
+            </div>
+
+            {status === 'error' && errorMessage && (
+              <div className="footer-newsletter-error-msg">
+                {errorMessage}
+              </div>
+            )}
+
+            <div className="footer-newsletter-guarantee">
+              <span>🔒 Zero spam · Sovereign privacy · Unsubscribe anytime</span>
+            </div>
+          </form>
+        )}
+      </section>
 
       <div className="footer-grid">
         {/* Column 1: Scriptures, Deuterocanon & Apocrypha */}
@@ -351,62 +490,9 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
         {/* Column 4: Institutional & Heritage */}
         <div className="footer-col">
           <h3 className="footer-col-title">
-            <span>🏛️ Institutional Trust, Articles &amp; Heritage</span>
+            <span>🏛️ Institutional &amp; Sacred Ministry</span>
           </h3>
           <ul className="footer-links">
-            <li>
-              <a
-                href="/articles/"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onSelectNavTab('articles');
-                }}
-                className="footer-text-link"
-                style={{ color: '#f59e0b', fontWeight: 700 }}
-              >
-                <span>📖 15 Pillar Scripture &amp; Study Guides</span>
-                <ChevronRight className="footer-link-chevron" />
-              </a>
-            </li>
-            <li>
-              <a
-                href="/editorial-policy/"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onOpenLegal('editorial-policy');
-                }}
-                className="footer-text-link"
-              >
-                <span>Editorial Policy &amp; Translation Standards</span>
-                <ChevronRight className="footer-link-chevron" />
-              </a>
-            </li>
-            <li>
-              <a
-                href="/glossary/"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onOpenLegal('glossary');
-                }}
-                className="footer-text-link"
-              >
-                <span>Biblical Exegesis &amp; Textual Glossary</span>
-                <ChevronRight className="footer-link-chevron" />
-              </a>
-            </li>
-            <li>
-              <a
-                href="/sources/"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onOpenLegal('sources');
-                }}
-                className="footer-text-link"
-              >
-                <span>Manuscript Archives &amp; Scholarly Sources</span>
-                <ChevronRight className="footer-link-chevron" />
-              </a>
-            </li>
             <li>
               <a
                 href="/about/"
@@ -470,35 +556,13 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
                 <ExternalLink className="footer-link-chevron" style={{ width: 14, height: 14 }} />
               </a>
             </li>
-            <li className="pt-2 border-t border-stone-800">
-              <span className="text-[11px] text-stone-500 block mb-1">Partner &amp; Reference Archives:</span>
-              <div className="flex items-center gap-3 text-xs">
-                <a
-                  href="https://www.biblegateway.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-stone-400 hover:text-amber-400 transition underline flex items-center gap-1"
-                >
-                  <span>Bible Gateway ↗</span>
-                </a>
-                <span className="text-stone-600">·</span>
-                <a
-                  href="https://biblehub.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-stone-400 hover:text-amber-400 transition underline flex items-center gap-1"
-                >
-                  <span>Bible Hub ↗</span>
-                </a>
-              </div>
-            </li>
           </ul>
         </div>
       </div>
 
       <div className="footer-bottom-bar">
         <div className="footer-copy">
-          © {new Date().getFullYear()} <a href="https://adubible.org/" style={{ textDecoration: 'none' }}><span style={{ color: '#38bdf8', fontWeight: 800 }}>Adu</span><span style={{ color: '#f59e0b', fontWeight: 700 }}>Bible</span><span style={{ color: '#10b981', fontWeight: 700 }}>.org</span></a> · Dedicated to Humanity by the Ministry of Apostle Kwame Adu · Nsuhia, Ghana.
+          © {new Date().getFullYear()} <strong>AduBible</strong> (<a href="https://adubible.org/">adubible.org</a>) · Dedicated to Humanity as a Sacred Ministry in Honor of Apostle Kwame Adu · Nsuhia, Ghana.
         </div>
       </div>
     </footer>
