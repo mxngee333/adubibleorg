@@ -3269,22 +3269,25 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   margin: 0 auto;
 }
 
-/* 2. QUICK VERSION RIBBON (BIBLEHUB-STYLE SKY BLUE 1-TAP SWITCHER) */
-.version-ribbon-bar.biblehub-sky-ribbon {
+/* 2. QUICK VERSION RIBBON (THEME RESPONSIVE 1-TAP SWITCHER) */
+.version-ribbon-bar.theme-responsive-ribbon,
+.version-ribbon-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 3px 12px;
-  background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
-  border-bottom: 1px solid rgba(2, 132, 199, 0.4);
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  gap: 6px;
+  padding: 4px 12px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
   overflow: hidden;
   position: relative;
   min-height: 38px;
   z-index: 10;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.biblehub-sky-ribbon .ribbon-scroll-wrapper {
+.theme-responsive-ribbon .ribbon-scroll-wrapper,
+.version-ribbon-bar .ribbon-scroll-wrapper {
   position: relative;
   display: flex;
   align-items: center;
@@ -3294,33 +3297,36 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   overflow: hidden;
 }
 
-.biblehub-sky-ribbon .ribbon-nav-btn {
+.theme-responsive-ribbon .ribbon-nav-btn,
+.version-ribbon-bar .ribbon-nav-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 24px;
   height: 24px;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.18);
-  color: #ffffff;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--subtle);
   cursor: pointer;
   flex-shrink: 0;
   transition: all 0.15s ease;
-  backdrop-blur: 4px;
   z-index: 2;
 }
 
-.biblehub-sky-ribbon .ribbon-nav-btn:hover {
-  background: rgba(255, 255, 255, 0.35);
-  border-color: #ffffff;
+.theme-responsive-ribbon .ribbon-nav-btn:hover,
+.version-ribbon-bar .ribbon-nav-btn:hover {
+  background: var(--soft);
+  color: var(--ink);
+  border-color: var(--green);
   transform: scale(1.05);
 }
 
-.biblehub-sky-ribbon .ribbon-scroll-container {
+.theme-responsive-ribbon .ribbon-scroll-container,
+.version-ribbon-bar .ribbon-scroll-container {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   overflow-x: auto;
   overflow-y: hidden;
   padding: 2px 2px;
@@ -3333,83 +3339,146 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   -ms-overflow-style: none !important;
 }
 
-.biblehub-sky-ribbon .ribbon-scroll-container::-webkit-scrollbar {
+.theme-responsive-ribbon .ribbon-scroll-container::-webkit-scrollbar,
+.version-ribbon-bar .ribbon-scroll-container::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
 }
 
-.biblehub-sky-ribbon .ribbon-pill {
+.theme-responsive-ribbon .ribbon-pill,
+.version-ribbon-bar .ribbon-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
   padding: 4px 8px;
-  border-radius: 5px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
   font-family: inherit;
   font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.05em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: all 0.15s ease;
   flex-shrink: 0;
   line-height: 1;
   user-select: none;
 }
 
-.biblehub-sky-ribbon .ribbon-pill:hover {
-  background: rgba(255, 255, 255, 0.28);
-  border-color: rgba(255, 255, 255, 0.6);
+.theme-responsive-ribbon .ribbon-pill:hover,
+.version-ribbon-bar .ribbon-pill:hover {
+  background: var(--soft);
+  color: var(--green);
+  border-color: var(--green);
   transform: translateY(-1px);
 }
 
-.biblehub-sky-ribbon .ribbon-pill.active {
-  background: #ffffff;
-  color: #0369a1;
-  border-color: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+/* Active / Selected Pills — Theme Accent */
+.theme-responsive-ribbon .ribbon-pill.active,
+.version-ribbon-bar .ribbon-pill.active {
+  background: var(--green);
+  color: #0c0a09;
+  border-color: var(--green);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   font-weight: 900;
 }
 
-.biblehub-sky-ribbon .ribbon-pill.primary {
-  border-color: #fef08a;
-  box-shadow: 0 0 0 1px #facc15;
+/* Primary Edition (Column 1) Indicator Ring */
+.theme-responsive-ribbon .ribbon-pill.primary,
+.version-ribbon-bar .ribbon-pill.primary {
+  box-shadow: 0 0 0 1.5px #f59e0b, 0 2px 8px rgba(245, 158, 11, 0.3);
 }
 
-.biblehub-sky-ribbon .pill-code {
+.theme-responsive-ribbon .pill-code,
+.version-ribbon-bar .pill-code {
   font-weight: 800;
   letter-spacing: 0.04em;
 }
 
-.biblehub-sky-ribbon .pill-status {
-  padding: 1px 4px;
+.theme-responsive-ribbon .pill-status,
+.version-ribbon-bar .pill-status {
+  padding: 1px 4.5px;
   border-radius: 999px;
-  font-size: 9px;
+  font-size: 8.5px;
   font-weight: 900;
-  background: #0284c7;
+  background: rgba(0, 0, 0, 0.35);
   color: #ffffff;
   line-height: 1;
 }
 
-.biblehub-sky-ribbon .ribbon-pill.active .pill-status {
-  background: #0284c7;
-  color: #ffffff;
-}
-
-.biblehub-sky-ribbon .ribbon-pill.add-more {
-  border: 1px dashed rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+.theme-responsive-ribbon .ribbon-pill.add-more,
+.version-ribbon-bar .ribbon-pill.add-more {
+  border: 1px dashed var(--line);
+  background: transparent;
+  color: var(--subtle);
   font-weight: 700;
 }
 
-.biblehub-sky-ribbon .ribbon-pill.add-more:hover {
-  background: rgba(255, 255, 255, 0.25);
+.theme-responsive-ribbon .ribbon-pill.add-more:hover,
+.version-ribbon-bar .ribbon-pill.add-more:hover {
+  background: var(--soft);
+  color: var(--green);
+  border-color: var(--green);
   border-style: solid;
+}
+
+/* Theme-Specific Ribbon Palette Adaptation */
+.bible-app.theme-royal-purple .version-ribbon-bar {
+  background: #160d24;
+  border-bottom-color: rgba(192, 132, 252, 0.25);
+}
+.bible-app.theme-royal-purple .ribbon-pill.active {
+  background: #c084fc;
+  color: #160d24;
+}
+
+.bible-app.theme-adubible-si .version-ribbon-bar {
+  background: #1c1917;
+  border-bottom-color: rgba(212, 175, 55, 0.3);
+}
+.bible-app.theme-adubible-si .ribbon-pill.active {
+  background: #d4af37;
+  color: #0c0a09;
+}
+
+.bible-app.theme-burgundy-gold .version-ribbon-bar {
+  background: #200f14;
+  border-bottom-color: rgba(245, 158, 11, 0.25);
+}
+.bible-app.theme-burgundy-gold .ribbon-pill.active {
+  background: #f59e0b;
+  color: #14090c;
+}
+
+.bible-app.theme-sapphire-blue .version-ribbon-bar {
+  background: #08182b;
+  border-bottom-color: rgba(56, 189, 248, 0.28);
+}
+.bible-app.theme-sapphire-blue .ribbon-pill.active {
+  background: #38bdf8;
+  color: #030c17;
+}
+
+.bible-app.theme-parchment .version-ribbon-bar {
+  background: #f8f6f0;
+  border-bottom-color: #ddd6c6;
+}
+.bible-app.theme-parchment .ribbon-pill.active {
+  background: #2d5a3f;
+  color: #ffffff;
+}
+
+.bible-app.theme-daylight .version-ribbon-bar {
+  background: #f8fafc;
+  border-bottom-color: #e2e8f0;
+}
+.bible-app.theme-daylight .ribbon-pill.active {
+  background: #0284c7;
+  color: #ffffff;
 }
 
 /* 3. STACKED VERSE-BY-VERSE MODE */

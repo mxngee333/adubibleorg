@@ -1070,75 +1070,6 @@ export function App() {
         </div>
       </header>
 
-      {/* 2. CANON NAVIGATION BAR (Canonical 66, Deuterocanon 16, Apocrypha 25, Ask AduBible AI) */}
-      <nav className="canon-nav-bar" aria-label="Biblical Collections and Ancient Manuscripts">
-        <div className="canon-nav-container">
-          <button
-            type="button"
-            className={`canon-tab-btn ${activeNavTab === 'canonical' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveNavTab('canonical');
-              if (typeof window !== 'undefined' && window.location.pathname !== '/') {
-                window.history.pushState({}, '', '/');
-              }
-            }}
-            title="Read 66 Accepted Canonical Scriptures in Parallel"
-          >
-            <span>📖</span>
-            <span>Holy Scripture</span>
-            <span className="tab-badge">66 Books</span>
-          </button>
-
-          <button
-            type="button"
-            className={`canon-tab-btn ${activeNavTab === 'deuterocanon' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveNavTab('deuterocanon');
-              if (typeof window !== 'undefined') {
-                window.history.pushState({}, '', '/deuterocanon/');
-              }
-            }}
-            title="Read 16 Deuterocanonical Books (Tobit, Judith, Wisdom, Sirach, Baruch, 1-2 Maccabees...)"
-          >
-            <span>📜</span>
-            <span>Deuterocanon</span>
-            <span className="tab-badge">16 Books</span>
-          </button>
-
-          <button
-            type="button"
-            className={`canon-tab-btn ${activeNavTab === 'list-of-sixty' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveNavTab('list-of-sixty');
-              if (typeof window !== 'undefined') {
-                window.history.pushState({}, '', '/list-of-sixty/');
-              }
-            }}
-            title="Explore 25 Ancient Apocrypha &amp; Pseudepigrapha Texts (1 Enoch, Jasher, Jubilees, Didache...)"
-          >
-            <span>🏺</span>
-            <span>Apocrypha (List of 60)</span>
-            <span className="tab-badge">25 Books</span>
-          </button>
-
-          <button
-            type="button"
-            className="canon-tab-btn"
-            style={{
-              borderColor: 'rgba(245, 158, 11, 0.45)',
-              background: 'rgba(245, 158, 11, 0.08)',
-              color: '#f59e0b',
-              fontWeight: 700,
-            }}
-            onClick={() => setIsAskAduBibleOpen(true)}
-            title="Ask AduBible AI Exegetical Companion"
-          >
-            <span>✨</span>
-            <span>Ask AduBible AI</span>
-          </button>
-        </div>
-      </nav>
-
       {/* ISOLATED HISTORICAL ZONE BANNER (Only visible when user explicitly visits /deuterocanon or /list-of-sixty) */}
       {activeNavTab !== 'canonical' && (
         <div
@@ -1312,18 +1243,6 @@ export function App() {
             </button>
 
             <div className="mobile-bar-quick-actions">
-              <button
-                type="button"
-                className="mobile-quick-btn apo-dc-btn"
-                onClick={() => {
-                  setBookPickerTab(currentBook.testament === 'DC' ? 'PSEUD' : 'DC');
-                  setIsBookModalOpen(true);
-                }}
-                title="Browse 16 Deuterocanon & 25 Apocrypha Books"
-                aria-label="Browse Deuterocanon & Apocrypha Books"
-              >
-                📜 Apo/DC
-              </button>
               {activeVersionIds.length >= 2 && (
                 <button
                   type="button"

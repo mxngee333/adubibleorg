@@ -73,7 +73,7 @@ export const QuickVersionRibbon: React.FC<QuickVersionRibbonProps> = ({
   };
 
   return (
-    <nav className="version-ribbon-bar biblehub-sky-ribbon" aria-label="BibleHub Quick Translation Ribbon">
+    <nav className="version-ribbon-bar theme-responsive-ribbon" aria-label="Theme Responsive Translation Ribbon">
       <div className="ribbon-scroll-wrapper">
         <button
           type="button"
