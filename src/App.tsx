@@ -77,7 +77,7 @@ import { MobileBottomDock } from './components/MobileBottomDock';
 import { GrandSiteFooter } from './components/GrandSiteFooter';
 import { AduBibleLogo } from './components/AduBibleLogo';
 import { AskAduBibleModal } from './components/AskAduBibleModal';
-import { Search, User } from 'lucide-react';
+import { Search, User, Headphones, Volume2 } from 'lucide-react';
 import { AskAduBibleContext } from './services/askAduBibleService';
 
 const COMPARE_PRESETS: Array<{ label: string; versions: string[] }> = [
@@ -1133,10 +1133,15 @@ export function App() {
                 ? isAudioPlaying
                   ? 'Audio Bible Playing (Click to close & stop)'
                   : 'Audio Bible Paused (Click to Play)'
-                : 'Listen to 24kHz Audio Scripture (Auto-plays)'
+                : 'Listen to 24kHz Neural Audio Bible'
             }
+            aria-label="Audio Bible"
           >
-            <span>{isAudioPlaying ? '🔊 Audio' : 'Audio'}</span>
+            {isAudioPlaying ? (
+              <Volume2 className="h-4 w-4 animate-pulse" aria-hidden="true" />
+            ) : (
+              <Headphones className="h-4 w-4" aria-hidden="true" />
+            )}
           </button>
 
           <button
@@ -1382,7 +1387,11 @@ export function App() {
                 title={isAudioPlaying ? 'Audio Bible Playing' : 'Audio Bible'}
                 aria-label="Audio Bible"
               >
-                {isAudioPlaying ? '🔊 Audio' : 'Audio'}
+                {isAudioPlaying ? (
+                  <Volume2 className="h-3.5 w-3.5 animate-pulse" aria-hidden="true" />
+                ) : (
+                  <Headphones className="h-3.5 w-3.5" aria-hidden="true" />
+                )}
               </button>
               <button
                 type="button"
