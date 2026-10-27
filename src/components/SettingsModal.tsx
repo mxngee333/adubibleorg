@@ -139,6 +139,17 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     }
   }, [isOpen, initialSection]);
 
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const currentCustomTheme: CustomThemePalette = prefs.customTheme || {
@@ -173,7 +184,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
   const handleSaveKey = () => {
     setStoredGeminiKey(apiKeyInput);
-    setKeyNotice(apiKeyInput.trim() ? '✅ Custom Gemini key saved!' : 'Custom key removed. Using built-in key.');
+    setKeyNotice(
+      apiKeyInput.trim()
+        ? '✅ Custom Gemini key saved! 24kHz Google Neural Audio unlocked.'
+        : 'Custom key removed. Using instant Natural Voice Narration.'
+    );
     setTimeout(() => setKeyNotice(''), 3000);
   };
 
@@ -207,8 +222,26 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             <span className="eyebrow">READING SANCTUARY SETTINGS</span>
             <h3>Fluid Reading &amp; Study Controls</h3>
           </div>
-          <button type="button" onClick={onClose}>
-            Close
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close Settings"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 14px',
+              borderRadius: '6px',
+              background: 'var(--soft)',
+              color: 'var(--ink)',
+              border: '1px solid var(--line)',
+              fontSize: '13px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            ✕ Close
           </button>
         </div>
 
@@ -1115,9 +1148,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               >
                 <span>
                   {apiKeyInput.trim() ? (
-                    <strong style={{ color: 'var(--green)' }}>● Custom Key Active</strong>
+                    <strong style={{ color: 'var(--green)' }}>● Custom Key Active (Google 24kHz Unlocked)</strong>
                   ) : (
-                    <span>● Using Built-in High-Speed Audio Key</span>
+                    <span>● Natural Voice Active (Instant · Zero Quota)</span>
                   )}
                 </span>
                 <a
@@ -1192,6 +1225,50 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </button>
             </div>
           </div>
+        </div>
+
+        {/* Sticky Action Footer to close card easily from anywhere */}
+        <div
+          style={{
+            position: 'sticky',
+            bottom: '-1px',
+            marginTop: '20px',
+            padding: '12px 16px',
+            background: 'var(--surface)',
+            borderTop: '1px solid var(--line)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px',
+            zIndex: 10,
+            borderRadius: '0 0 10px 10px',
+            boxShadow: '0 -4px 14px rgba(0, 0, 0, 0.2)',
+          }}
+        >
+          <div style={{ fontSize: '12px', color: 'var(--subtle)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ color: 'var(--green)' }}>✓</span>
+            <span>Settings saved automatically</span>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              padding: '8px 18px',
+              borderRadius: '6px',
+              fontWeight: 600,
+              fontSize: '13px',
+              cursor: 'pointer',
+              background: 'var(--green)',
+              color: 'var(--paper)',
+              border: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.25)',
+            }}
+          >
+            ✓ Done / Close Settings
+          </button>
         </div>
       </div>
     </div>

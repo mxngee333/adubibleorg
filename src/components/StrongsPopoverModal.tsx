@@ -54,12 +54,27 @@ export const StrongsPopoverModal: React.FC<StrongsPopoverModalProps> = ({
 
   const handleSpeakPronunciation = (entry: StrongsLexiconEntry) => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
+    try {
+      window.speechSynthesis.cancel();
+    } catch {}
     const utter = new SpeechSynthesisUtterance(
       `${entry.transliteration}. ${entry.shortDefinition}`
     );
     utter.rate = 0.9;
-    window.speechSynthesis.speak(utter);
+    utter.lang = 'en-US';
+    (window as any).__strongsUtterance = utter;
+    utter.onend = () => {
+      (window as any).__strongsUtterance = null;
+    };
+    utter.onerror = () => {
+      (window as any).__strongsUtterance = null;
+    };
+    try {
+      window.speechSynthesis.speak(utter);
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+    } catch {}
   };
 
   const handleCopyEntry = (entry: StrongsLexiconEntry) => {

@@ -642,6 +642,13 @@ export function App() {
       }
       e.preventDefault();
     }
+    // If settings card is open, clicking the Bible reading logo simply clears/dismisses the settings card,
+    // keeping the user on their current reading passage with all their settings saved.
+    if (isSettingsOpen) {
+      setIsSettingsOpen(false);
+      return;
+    }
+
     // Close all open modals & drawers
     setLegalModalState((prev) => ({ ...prev, open: false }));
     setIsSettingsOpen(false);
@@ -939,7 +946,7 @@ export function App() {
   const renderSharedFooter = () => (
     <GrandSiteFooter
       onOpenLegal={(page) => setLegalModalState({ open: true, page })}
-      onOpenSettings={() => setIsSettingsOpen(true)}
+      onOpenSettings={() => setIsSettingsOpen((prev) => !prev)}
       onGoHome={handleGoHome}
       onSelectNavTab={(tab) => {
         setActiveNavTab(tab);
@@ -1041,9 +1048,9 @@ export function App() {
 
           <button
             type="button"
-            className={`quiet-button ${studyLayersActiveCount > 0 ? 'active-pill' : ''}`}
-            onClick={() => setIsSettingsOpen(true)}
-            title="Reading Settings — Toggle Strong's Concordance & Commentaries"
+            className={`quiet-button ${studyLayersActiveCount > 0 || isSettingsOpen ? 'active-pill' : ''}`}
+            onClick={() => setIsSettingsOpen((prev) => !prev)}
+            title={isSettingsOpen ? 'Close Settings' : "Reading Settings — Toggle Strong's Concordance & Commentaries"}
           >
             <span>
               ⚙️ Settings{studyLayersActiveCount > 0 ? ` (${studyLayersActiveCount})` : ''}
@@ -1453,12 +1460,16 @@ export function App() {
               <div style={{ position: 'relative' }}>
                 <button
                   type="button"
-                  className={prefs.theme !== 'wisdom-legacy' ? 'settings-active' : ''}
+                  className={prefs.theme !== 'wisdom-legacy' || isSettingsOpen ? 'settings-active' : ''}
                   onClick={() => {
-                    setSettingsInitialSection('theme');
-                    setIsSettingsOpen(true);
+                    if (isSettingsOpen) {
+                      setIsSettingsOpen(false);
+                    } else {
+                      setSettingsInitialSection('theme');
+                      setIsSettingsOpen(true);
+                    }
                   }}
-                  title="Open Theme & Appearance Dashboard (Settings)"
+                  title={isSettingsOpen ? 'Close Settings' : 'Open Theme & Appearance Dashboard (Settings)'}
                   style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 >
                   {prefs.theme === 'royal-purple' ? (
@@ -1925,7 +1936,7 @@ export function App() {
                           type="button"
                           onClick={() => {
                             setIsThemePickerOpen(false);
-                            setIsSettingsOpen(true);
+                            setIsSettingsOpen((prev) => !prev);
                           }}
                           style={{
                             background: 'none',
@@ -1946,9 +1957,9 @@ export function App() {
               </div>
               <button
                 type="button"
-                className={studyLayersActiveCount > 0 ? 'settings-active' : ''}
-                onClick={() => setIsSettingsOpen(true)}
-                title="Turn Strong's Concordance or Commentaries ON/OFF"
+                className={studyLayersActiveCount > 0 || isSettingsOpen ? 'settings-active' : ''}
+                onClick={() => setIsSettingsOpen((prev) => !prev)}
+                title={isSettingsOpen ? 'Close Settings' : "Turn Strong's Concordance or Commentaries ON/OFF"}
               >
                 ⚙️ Settings
               </button>
@@ -2792,7 +2803,7 @@ export function App() {
           activeVerse={selectedVerse}
           onVerseChange={(v: number) => setSelectedVerse(v)}
           onClose={() => setShowAudioBar(false)}
-          onOpenSettings={() => setIsSettingsOpen(true)}
+          onOpenSettings={() => setIsSettingsOpen((prev) => !prev)}
         />
       )}
 
@@ -2994,7 +3005,8 @@ export function App() {
         isAudioActive={showAudioBar}
         onSwapLanguages={handleSwapLanguages}
         canSwap={activeVersionIds.length >= 2}
-        onOpenSettings={() => setIsSettingsOpen(true)}
+        onOpenSettings={() => setIsSettingsOpen((prev) => !prev)}
+        isSettingsOpen={isSettingsOpen}
         onOpenVault={() => {
           setStudyVaultTab('pins');
           setIsStudyVaultOpen(true);

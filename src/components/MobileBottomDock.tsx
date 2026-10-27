@@ -9,6 +9,7 @@ interface MobileBottomDockProps {
   onSwapLanguages: () => void;
   canSwap: boolean;
   onOpenSettings: () => void;
+  isSettingsOpen?: boolean;
   onOpenVault: () => void;
   vaultCount: number;
   currentBookName: string;
@@ -23,6 +24,7 @@ export const MobileBottomDock: React.FC<MobileBottomDockProps> = ({
   onSwapLanguages,
   canSwap,
   onOpenSettings,
+  isSettingsOpen = false,
   onOpenVault,
   vaultCount,
   currentBookName,
@@ -100,9 +102,9 @@ export const MobileBottomDock: React.FC<MobileBottomDockProps> = ({
         {/* 5. Reading Settings & Themes */}
         <button
           type="button"
-          className="dock-item"
+          className={`dock-item ${isSettingsOpen ? 'active' : ''}`}
           onClick={onOpenSettings}
-          aria-label="Reading Settings and Palettes"
+          aria-label={isSettingsOpen ? 'Close Settings' : 'Reading Settings and Palettes'}
         >
           <Settings className="dock-icon" />
           <span className="dock-label">Settings</span>
