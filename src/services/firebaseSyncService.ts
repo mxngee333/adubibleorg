@@ -52,9 +52,16 @@ export function initFirebaseIfConfigured(): { auth: Auth | null; db: Firestore |
     return { auth: null, db: null };
   }
   try {
+    const isLocal =
+      typeof window !== 'undefined' &&
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    const authDomain = isLocal
+      ? `${projectId}.firebaseapp.com`
+      : (import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'adubible.org');
+
     const config = {
       apiKey,
-      authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || `${projectId}.firebaseapp.com`,
+      authDomain,
       projectId,
       storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || `${projectId}.firebasestorage.app`,
       messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
