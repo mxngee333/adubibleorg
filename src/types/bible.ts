@@ -239,6 +239,7 @@ export interface CustomThemePalette {
 
 export type ReadingTheme =
   | 'wisdom-legacy'
+  | 'symbol-midnight-gold'
   | 'royal-purple'
   | 'lilac-light'
   | 'burgundy-gold'

@@ -1,0 +1,11 @@
+ADUBIBLE.ORG — SYMBOL EDITION
+
+An abstract A made from open pages, with ascending negative space suggesting light and understanding.
+
+Suggested brand colors: Midnight navy #15283C; antique gold #BD913F. Artwork includes slight tonal variation.
+
+Symbol_Transparent.png: standalone alpha PNG for light surfaces. Symbol_Ivory.png: main presentation. Logo_With_Wordmark.png: horizontal logo on white. Profile_1024.png and numbered icons: square social and app assets. favicon.ico: multiple browser sizes.
+
+Keep original proportions; leave clear space. Use symbol alone at small sizes. PNG/ICO raster assets, not editable vector files. Generated variants may differ slightly.
+
+Creation: built-in image generation. Direction: original minimal two-color navy and gold abstract A/open-book mark, broad flowing page shapes, central ascending negative space, no text on symbol, no ornamentation. Variants: ivory presentation and classic serif AduBible.org horizontal wordmark. Icon exports resized from transparent master.

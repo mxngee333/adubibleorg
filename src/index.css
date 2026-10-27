@@ -1466,7 +1466,60 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
 }
 
 .field.compact select {
-  min-width: 96px;
+  min-width: 80px;
+}
+
+.passage-jump-field {
+  position: relative;
+}
+
+.passage-jump-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passage-jump-wrap input {
+  height: 40px;
+  width: 175px;
+  padding: 0 28px 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.passage-jump-wrap input:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+}
+
+.passage-jump-clear {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--subtle);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.passage-jump-clear:hover {
+  color: var(--ink);
+  background: var(--surface);
 }
 
 .step-buttons {

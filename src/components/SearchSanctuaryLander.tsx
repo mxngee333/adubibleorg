@@ -11,6 +11,7 @@ import {
   X,
 } from 'lucide-react';
 import { BibleBook } from '../types/bible';
+import { parsePassageQuery } from '../services/passageService';
 
 interface SearchSanctuaryLanderProps {
   books: BibleBook[];
@@ -71,8 +72,7 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
     const raw = query.trim().toLowerCase();
     if (!raw) return [];
 
-    // 1. Direct Reference Parsing (e.g., "John 3", "Efesofoɔ 1", "Tobit 2", "Enoch 1")
-    const refMatch = raw.match(/^([1-3]?\s*[a-z]+)\s*(\d+)?(?::(\d+))?$/i);
+    // 1. Universal Scripture Reference Parser (e.g., "Psalm 2:2", "ps 2;2", "John 3", "Efesofoɔ 1")
     const results: Array<{
       label: string;
       sublabel: string;
@@ -82,35 +82,16 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
       testament: string;
     }> = [];
 
-    if (refMatch) {
-      const bookPart = refMatch[1].trim().replace(/\s+/g, '-');
-      const chPart = refMatch[2] ? parseInt(refMatch[2], 10) : 1;
-      const vPart = refMatch[3] ? parseInt(refMatch[3], 10) : undefined;
-
-      const matchedBook = books.find((b) => {
-        const en = b.names.en.toLowerCase();
-        const tw = (b.names.tw || '').toLowerCase();
-        const slug = b.slug.toLowerCase().replace(/_/g, '-');
-        return (
-          slug === bookPart ||
-          en === bookPart ||
-          tw === bookPart ||
-          en.startsWith(bookPart) ||
-          slug.startsWith(bookPart)
-        );
+    const parsed = parsePassageQuery(raw, books);
+    if (parsed) {
+      results.push({
+        label: `${parsed.book.names.en} ${parsed.chapter}${parsed.verse ? `:${parsed.verse}` : ''}`,
+        sublabel: `${parsed.book.chapters} chapters${parsed.verse ? ` · Verse ${parsed.verse}` : ''}`,
+        bookSlug: parsed.book.slug,
+        chapter: parsed.chapter,
+        verse: parsed.verse,
+        testament: parsed.book.testament,
       });
-
-      if (matchedBook) {
-        const validCh = Math.min(Math.max(1, chPart), matchedBook.chapters);
-        results.push({
-          label: `${matchedBook.names.en} ${validCh}${vPart ? `:${vPart}` : ''}`,
-          sublabel: `${matchedBook.chapters} chapters`,
-          bookSlug: matchedBook.slug,
-          chapter: validCh,
-          verse: vPart,
-          testament: matchedBook.testament,
-        });
-      }
     }
 
     // 2. Matching Books
@@ -232,7 +213,22 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => setIsFocused(true)}
-            placeholder="Search verse, topic, book, or Strong's (e.g. John 3:16, Efesofoɔ 1, Ɔdɔ, Wisdom 1, Enoch)..."
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                const direct = parsePassageQuery(query, books);
+                if (direct) {
+                  onNavigate(direct.book.slug, direct.chapter, direct.verse);
+                  setIsFocused(false);
+                  setQuery('');
+                } else if (filteredSuggestions.length > 0) {
+                  const first = filteredSuggestions[0];
+                  onNavigate(first.bookSlug, first.chapter, first.verse);
+                  setIsFocused(false);
+                  setQuery('');
+                }
+              }
+            }}
+            placeholder="Search verse, topic, book, or reference (e.g. Psalm 2:2, ps 2;2, John 3:16)..."
             style={{
               width: '100%',
               height: '48px',

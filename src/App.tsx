@@ -21,6 +21,7 @@ import {
   parseBibleHubUrlPath,
   resolveChapterData,
 } from './services/bibleEngineService';
+import { parsePassageQuery } from './services/passageService';
 import {
   loadBookmarks,
   loadHighlights,
@@ -259,11 +260,12 @@ export function App() {
   );
 
   // UI & Modal States
-  const [selectedVerse, setSelectedVerse] = useState<number>(3);
+  const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
   const [activeVerseActionBar, setActiveVerseActionBar] = useState<
     number | null
   >(null);
   const [chapterSearchQuery, setChapterSearchQuery] = useState<string>('');
+  const [quickPassageInput, setQuickPassageInput] = useState<string>('');
   const [showAudioBar, setShowAudioBar] = useState<boolean>(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
   const [audioAutoPlayNonce, setAudioAutoPlayNonce] = useState<number>(0);
@@ -684,11 +686,26 @@ export function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSelectBookChapter = (bookSlug: string, chapter: number) => {
+  const scrollToVerse = useCallback((vNum: number) => {
+    setSelectedVerse(vNum);
+    setActiveVerseActionBar(vNum);
+    if (typeof window !== 'undefined') {
+      setTimeout(() => {
+        const el =
+          document.getElementById(`verse-${vNum}`) ||
+          document.querySelector(`[data-verse="${vNum}"]`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 70);
+    }
+  }, []);
+
+  const handleSelectBookChapter = (bookSlug: string, chapter: number, targetVerse?: number) => {
     setCurrentBookSlug(bookSlug);
     setCurrentChapter(chapter);
-    setSelectedVerse(1);
-    setActiveVerseActionBar(null);
+    setSelectedVerse(targetVerse || 1);
+    setActiveVerseActionBar(targetVerse || null);
     setActiveNavTab('canonical');
 
     // Auto-align parallel translations when switching between Canonical, Deuterocanon, and Apocrypha
@@ -721,8 +738,34 @@ export function App() {
       }
     }
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (targetVerse && typeof window !== 'undefined') {
+      setTimeout(() => {
+        const el =
+          document.getElementById(`verse-${targetVerse}`) ||
+          document.querySelector(`[data-verse="${targetVerse}"]`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
+
+  const handleQuickPassageChange = useCallback((val: string) => {
+    setQuickPassageInput(val);
+    const parsed = parsePassageQuery(val, allHistoricalBooks);
+    if (parsed) {
+      handleSelectBookChapter(parsed.book.slug, parsed.chapter, parsed.verse);
+    }
+  }, [allHistoricalBooks]);
+
+  const handleQuickPassageSubmit = useCallback((val: string) => {
+    const parsed = parsePassageQuery(val, allHistoricalBooks);
+    if (parsed) {
+      handleSelectBookChapter(parsed.book.slug, parsed.chapter, parsed.verse);
+    }
+  }, [allHistoricalBooks]);
 
   const handleStepChapter = (delta: number) => {
     const nextCh = currentChapter + delta;
@@ -924,6 +967,14 @@ export function App() {
       activeVersions: activeVersionIds,
     };
   }, [currentBook, currentChapter, selectedVerse, primaryChapterData, activeVersionIds]);
+
+  const currentChapterVerseCount = useMemo(() => {
+    return Math.max(
+      primaryVerses.length,
+      ...activeVersionIds.map((id) => chaptersByVersion[id]?.verses?.length || 0),
+      1
+    );
+  }, [primaryVerses, activeVersionIds, chaptersByVersion]);
 
   const filteredVerseNumbers = useMemo(() => {
     const maxV = Math.max(
@@ -1432,6 +1483,64 @@ export function App() {
                     </option>
                   ))}
                 </select>
+              </label>
+
+              <label className="field compact">
+                <span>Verse</span>
+                <select
+                  value={selectedVerse || ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val) {
+                      const v = Number(val);
+                      scrollToVerse(v);
+                      setQuickPassageInput(`${getBookDisplayName(currentBook)} ${currentChapter}:${v}`);
+                    } else {
+                      setSelectedVerse(null);
+                      setQuickPassageInput('');
+                    }
+                  }}
+                  aria-label="Select Verse"
+                >
+                  <option value="">All</option>
+                  {Array.from(
+                    { length: currentChapterVerseCount },
+                    (_, idx) => idx + 1
+                  ).map((num) => (
+                    <option key={num} value={num}>
+                      {num}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="field passage-jump-field" title="Type any scripture reference (e.g. Psalm 2:2, ps 2;2, John 3:16) to auto jump">
+                <span>Quick Jump</span>
+                <div className="passage-jump-wrap">
+                  <input
+                    type="text"
+                    value={quickPassageInput}
+                    onChange={(e) => handleQuickPassageChange(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleQuickPassageSubmit(quickPassageInput);
+                      }
+                    }}
+                    placeholder="e.g. Psalm 2:2, ps 2;2"
+                    aria-label="Type passage reference to auto jump (e.g. Psalm 2:2 or ps 2;2)"
+                  />
+                  {quickPassageInput && (
+                    <button
+                      type="button"
+                      className="passage-jump-clear"
+                      onClick={() => setQuickPassageInput('')}
+                      title="Clear jump input"
+                      aria-label="Clear jump input"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
               </label>
 
               <div className="step-buttons" role="group" aria-label="Chapter navigation">
@@ -2275,7 +2384,9 @@ export function App() {
 
                 return (
                   <div
-                    className={`verse-row ${isActionOpen ? 'selected-row' : ''}`}
+                    id={`verse-${verseNumber}`}
+                    data-verse={verseNumber}
+                    className={`verse-row ${isActionOpen || selectedVerse === verseNumber ? 'selected-row' : ''}`}
                     key={verseNumber}
                   >
                     {/* Sticky Left Verse Number Gutter (BibleHub Style) */}
@@ -2687,9 +2798,9 @@ export function App() {
               bookId={currentBook.id}
               bookName={currentBook.names.en}
               chapter={currentChapter}
-              selectedVerse={selectedVerse}
+              selectedVerse={selectedVerse || 1}
               selectedVerseText={
-                primaryVerses.find((v) => v.verse === selectedVerse)?.text || ''
+                primaryVerses.find((v) => v.verse === (selectedVerse || 1))?.text || ''
               }
               sources={COMMENTARIES_CATALOG}
               bundledCommentaries={chapterCommentaries}
@@ -2841,7 +2952,7 @@ export function App() {
                   ?.languageCode
               : undefined
           }
-          activeVerse={selectedVerse}
+          activeVerse={selectedVerse || 1}
           onVerseChange={(v: number) => setSelectedVerse(v)}
           onClose={() => {
             setShowAudioBar(false);

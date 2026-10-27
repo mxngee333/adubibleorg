@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Search, X, BookOpen, ArrowRight, CornerDownLeft, Sparkles } from 'lucide-react';
 import { BibleBook } from '../types/bible';
+import { parsePassageQuery } from '../services/passageService';
 
 interface OmniSearchBarProps {
   books: BibleBook[];
@@ -130,39 +131,17 @@ export const OmniSearchBar: React.FC<OmniSearchBarProps> = ({
 
     const results: SearchSuggestion[] = [];
 
-    // 1. Direct Verse Reference Parser (e.g., "John 3:16", "1 Cor 13", "Gen 1:1", "Ps 23", "Rom 8:28")
-    const refMatch = raw.match(/^([1-3]?\s*[a-z]+)\s*(\d+)?(?::(\d+))?$/i);
-    if (refMatch) {
-      const bookPart = refMatch[1].trim().replace(/\s+/g, '-');
-      const chPart = refMatch[2] ? parseInt(refMatch[2], 10) : undefined;
-      const vPart = refMatch[3] ? parseInt(refMatch[3], 10) : undefined;
-
-      const matchedBook = books.find((b) => {
-        const en = b.names.en.toLowerCase();
-        const tw = (b.names.tw || '').toLowerCase();
-        const slug = b.slug.toLowerCase().replace(/_/g, '-');
-        const id = b.id.toLowerCase();
-        return (
-          slug === bookPart ||
-          en === bookPart ||
-          tw === bookPart ||
-          id === bookPart ||
-          en.startsWith(bookPart) ||
-          slug.startsWith(bookPart)
-        );
+    // 1. Universal Scripture Reference Parser (e.g., "Psalm 2:2", "ps 2;2", "ps2:2", "John 3:16", "1 Cor 13", "Gen 1:1")
+    const parsed = parsePassageQuery(raw, books);
+    if (parsed) {
+      results.push({
+        type: 'reference',
+        label: `${parsed.book.names.en} ${parsed.chapter}${parsed.verse ? `:${parsed.verse}` : ''}`,
+        sublabel: `${parsed.book.testament === 'OT' ? 'Old Testament' : parsed.book.testament === 'NT' ? 'New Testament' : 'Historical Book'} (${parsed.book.chapters} chapters)${parsed.verse ? ` · Jump to Verse ${parsed.verse}` : ''}`,
+        bookSlug: parsed.book.slug,
+        chapter: parsed.chapter,
+        verse: parsed.verse,
       });
-
-      if (matchedBook) {
-        const chNum = chPart ? Math.min(Math.max(1, chPart), matchedBook.chapters) : 1;
-        results.push({
-          type: 'reference',
-          label: `${matchedBook.names.en} ${chNum}${vPart ? `:${vPart}` : ''}`,
-          sublabel: `${matchedBook.testament === 'OT' ? 'Old Testament' : matchedBook.testament === 'NT' ? 'New Testament' : 'Historical Book'} (${matchedBook.chapters} chapters)`,
-          bookSlug: matchedBook.slug,
-          chapter: chNum,
-          verse: vPart,
-        });
-      }
     }
 
     // 2. Book Name Matching
@@ -218,7 +197,13 @@ export const OmniSearchBar: React.FC<OmniSearchBarProps> = ({
       setSelectedIndex((prev) => (prev - 1 + suggestions.length) % Math.max(1, suggestions.length));
     } else if (e.key === 'Enter') {
       e.preventDefault();
-      if (suggestions[selectedIndex]) {
+      const direct = parsePassageQuery(query, books);
+      if (direct) {
+        onNavigate(direct.book.slug, direct.chapter, direct.verse);
+        setIsFocused(false);
+        setQuery('');
+        if (onCloseMobile) onCloseMobile();
+      } else if (suggestions[selectedIndex]) {
         handleSelect(suggestions[selectedIndex]);
       }
     } else if (e.key === 'Escape') {
