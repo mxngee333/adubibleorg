@@ -2784,10 +2784,267 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
     display: none !important;
   }
 
-  /* Footer area: ensure plenty of clearance above mobile bottom dock */
-  .grand-site-footer {
-    padding-top: 28px !important;
-    padding-bottom: calc(115px + env(safe-area-inset-bottom)) !important;
+  /* Mobile Luxury Grand Site Footer */
+  /* Cornerstone Scripture Quotes */
+.footer-scripture-trio {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+.footer-scripture-card {
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.footer-scripture-text {
+  margin: 0 0 8px 0;
+  font-style: italic;
+  color: var(--ink);
+  line-height: 1.5;
+  font-size: 13px;
+}
+
+.footer-scripture-ref {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Hubs and Themes */
+.footer-hubs-wrapper {
+  border-top: 1px dashed var(--line);
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.footer-hubs-label {
+  font-size: 11px;
+  color: var(--subtle);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.footer-hubs-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.footer-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.footer-languages-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footer-language-chip {
+  color: var(--subtle);
+  text-decoration: none;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.15s ease;
+}
+
+.footer-language-chip:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+.footer-language-chip .flag-icon {
+  font-size: 14px;
+}
+
+.footer-tool-item {
+  margin-top: 2px;
+}
+
+.footer-badge {
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-left: auto;
+}
+
+.footer-badge.badge-on {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.footer-badge.badge-off {
+  background: rgba(168, 162, 158, 0.15);
+  color: var(--subtle);
+  border: 1px solid var(--line);
+}
+
+.footer-link-chevron {
+  width: 14px;
+  height: 14px;
+  opacity: 0.45;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  margin-left: auto;
+}
+
+.footer-btn-link:hover .footer-link-chevron,
+.footer-text-link:hover .footer-link-chevron {
+  opacity: 0.9;
+  transform: translateX(2px);
+}
+
+.grand-site-footer {
+    padding-top: 24px !important;
+    padding-bottom: calc(125px + env(safe-area-inset-bottom)) !important;
+    margin-top: 28px !important;
+  }
+
+  .footer-scripture-trio {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .footer-scripture-card {
+    padding: 12px 14px !important;
+    border-radius: 12px !important;
+  }
+
+  .footer-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    margin-bottom: 28px !important;
+  }
+
+  .footer-col {
+    background: var(--paper) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 14px !important;
+    padding: 16px 14px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .footer-col-title {
+    font-size: 11.5px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.08em !important;
+    color: var(--green) !important;
+    margin: 0 0 12px 0 !important;
+    padding-bottom: 8px !important;
+    border-bottom: 1px solid var(--line) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+
+  .footer-links {
+    gap: 6px !important;
+  }
+
+  /* Mobile Touch Cards for Buttons, Links & Static Items */
+  .footer-btn-link,
+  .footer-text-link,
+  .footer-static-item {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 10px 12px !important;
+    border-radius: 9px !important;
+    background: var(--surface) !important;
+    border: 1px solid var(--line) !important;
+    font-size: 12.5px !important;
+    color: var(--ink) !important;
+    text-decoration: none !important;
+    transition: all 0.15s ease !important;
+    width: 100% !important;
+    min-height: 42px !important;
+    box-sizing: border-box !important;
+  }
+
+  .footer-btn-link:active,
+  .footer-text-link:active {
+    background: var(--soft) !important;
+    border-color: var(--green) !important;
+  }
+
+  .footer-static-item {
+    background: rgba(0, 0, 0, 0.15) !important;
+    color: var(--subtle) !important;
+  }
+
+  /* Mobile 2-Column Compact Languages Grid */
+  .footer-languages-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 7px !important;
+  }
+
+  .footer-language-chip {
+    display: flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    padding: 9px 11px !important;
+    border-radius: 9px !important;
+    background: var(--surface) !important;
+    border: 1px solid var(--line) !important;
+    color: var(--ink) !important;
+    text-decoration: none !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    min-height: 40px !important;
+    box-sizing: border-box !important;
+  }
+
+  .footer-language-chip:active {
+    background: var(--soft) !important;
+    border-color: var(--green) !important;
+  }
+
+  /* Mobile Themes 2-Column Grid */
+  .footer-theme-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 6px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .footer-theme-chip {
+    padding: 9px 10px !important;
+    font-size: 11.5px !important;
+    min-height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 6px !important;
+    width: 100% !important;
+    border-radius: 9px !important;
+  }
+
+  .footer-pill-link {
+    padding: 5px 10px !important;
+    font-size: 11px !important;
+    border-radius: 999px !important;
+    min-height: 28px !important;
+    display: inline-flex !important;
+    align-items: center !important;
   }
 
   .footer-bottom-bar {

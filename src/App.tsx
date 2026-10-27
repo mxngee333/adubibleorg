@@ -1060,15 +1060,17 @@ export function App() {
           </button>
         </div>
 
-        {/* Mobile-only clean top controls: Search icon, Active Edition Pill, Sign In */}
+        {/* Mobile-only clean top controls: Search Bar Box, Active Edition Pill, Sign In */}
         <div className="mobile-mast-actions">
           <button
             type="button"
-            className="mobile-mast-icon-btn"
+            className="mobile-mast-search-box-btn"
             onClick={() => setIsMobileSearchOpen(true)}
             aria-label="Search scripture or topic"
+            title="Search scripture, passage, or topic"
           >
-            <Search className="h-4 w-4" />
+            <Search className="h-4 w-4 shrink-0 text-amber-400" />
+            <span className="search-placeholder-text">Search...</span>
           </button>
 
           <button
