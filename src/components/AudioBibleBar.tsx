@@ -448,8 +448,24 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     if (useStudioMp3 && audioUrl && studioAudioElRef.current && !bilingualMode) {
       setEngineType('studio');
       setIsLoadingVerse(false);
-      studioAudioElRef.current.playbackRate = rate;
-      studioAudioElRef.current.play().catch(() => {
+      const audioEl = studioAudioElRef.current;
+      audioEl.playbackRate = rate;
+
+      // Proportional seek to verse position
+      if (audioEl.duration && !isNaN(audioEl.duration) && audioEl.duration > 0 && index >= 0 && verses.length > 0) {
+        const verseWeights = verses.map((v) => Math.max(1, (v.text || '').trim().split(/\s+/).length));
+        const totalWeight = verseWeights.reduce((a, b) => a + b, 0);
+        if (totalWeight > 0) {
+          let cum = 0;
+          for (let i = 0; i < index; i++) cum += verseWeights[i];
+          const targetTime = (cum / totalWeight) * audioEl.duration;
+          if (Math.abs(audioEl.currentTime - targetTime) > 1.5) {
+            audioEl.currentTime = targetTime;
+          }
+        }
+      }
+
+      audioEl.play().catch(() => {
         setUseStudioMp3(false);
         playVerseAtIndex(index);
       });
