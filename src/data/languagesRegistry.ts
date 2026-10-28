@@ -935,7 +935,6 @@ export const BIBLE_VERSIONS: BibleVersion[] = [
     hasStrongs: true,
     dir: 'ltr',
     helloaoId: 'twi_asa',
-    bollsId: 'KJV',
     description: 'Authentic Asante Twi Holy Scriptures (Twerɛ Kronkron / Nkwa Asɛm) treasured across Kumasi, Ashanti, Brong-Ahafo, and the Ghanaian diaspora.',
   },
   {
@@ -950,7 +949,6 @@ export const BIBLE_VERSIONS: BibleVersion[] = [
     hasStrongs: true,
     dir: 'ltr',
     helloaoId: 'twi_aka',
-    bollsId: 'KJV',
     description: 'Authentic Akuapem Twi Scriptures rooted in the heritage of Akropong and Eastern Ghana.',
   },
   {

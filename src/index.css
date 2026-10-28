@@ -2,9 +2,9 @@
 
 :root {
   color-scheme: dark;
-  --logo-adu-color: #1B8754; /* Deep Forest Green */
-  --logo-bible-color: #BD913F; /* Canonical Logo Antique Gold */
-  --logo-tld-color: #BD913F; /* Canonical Logo Antique Gold */
+  --logo-adu-color: #8EA486; /* Sacred Wisdom Pine Green */
+  --logo-bible-color: #B8AC94; /* Soft Muted Antique Stone */
+  --logo-tld-color: #8E968D; /* Subtle Muted Slate */
 }
 
 * {
@@ -4993,25 +4993,25 @@ mark.search-highlight {
 }
 
 .logo-word-adu {
-  font-weight: 800;
-  color: var(--logo-adu-color, #1B8754) !important; /* Deep Forest Green */
+  font-weight: 700;
+  color: var(--logo-adu-color, #8EA486) !important; /* Sacred Wisdom Pine Green */
   letter-spacing: -0.015em;
   text-shadow: none;
 }
 
 .logo-word-bible {
-  font-weight: 700;
-  color: var(--logo-bible-color, #BD913F) !important; /* Canonical Logo Antique Gold */
+  font-weight: 600;
+  color: var(--logo-bible-color, #B8AC94) !important; /* Soft Muted Antique Stone */
   margin-left: 0;
   letter-spacing: -0.01em;
   text-shadow: none;
 }
 
 .logo-word-tld {
-  font-weight: 600;
+  font-weight: 500;
   font-size: 0.82em;
-  color: var(--logo-tld-color, #BD913F) !important; /* Canonical Logo Antique Gold */
-  opacity: 0.85;
+  color: var(--logo-tld-color, #8E968D) !important; /* Subtle Muted Slate */
+  opacity: 0.8;
   letter-spacing: -0.02em;
   margin-left: 1px;
   text-shadow: none;
@@ -5020,9 +5020,9 @@ mark.search-highlight {
 .bible-app.theme-daylight,
 .bible-app.theme-parchment,
 .bible-app.theme-lilac-light {
-  --logo-adu-color: #0D7A55;
-  --logo-bible-color: #8C651F;
-  --logo-tld-color: #8C651F;
+  --logo-adu-color: #354A30;
+  --logo-bible-color: #423C32;
+  --logo-tld-color: #6B655B;
 }
 
 .bible-app.theme-daylight .logo-word-adu,

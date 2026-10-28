@@ -1,0 +1,271 @@
+{
+  "translation": {
+    "id": "ibo_bib",
+    "name": "Biblica® Baịbụlụ Nsọ nʼIgbo Ndị Ugbu a nke dịrị onye ọbụla ịgụ",
+    "website": "https://ebible.org/Scriptures/details.php?id=ibo",
+    "licenseUrl": "https://ebible.org/Scriptures/details.php?id=ibo",
+    "license": {
+      "attribution": "required",
+      "commercialUse": "allowed",
+      "derivatives": "allowed",
+      "copyleft": true,
+      "publicDomain": false
+    },
+    "shortName": "BIB",
+    "englishName": "Igbo Bible",
+    "language": "ibo",
+    "textDirection": "ltr",
+    "sha256": "74c3cff8a6e7d11b184e169f09fd48298cc1a84af715ad95dfbb9ef7ad191361",
+    "availableFormats": [
+      "json"
+    ],
+    "listOfBooksApiLink": "/api/ibo_bib/books.json",
+    "completeTranslationApiLink": "/api/ibo_bib/complete.json",
+    "simpleCompleteTranslationApiLink": "/api/ibo_bib/complete.simple.json",
+    "numberOfBooks": 66,
+    "totalNumberOfChapters": 1189,
+    "totalNumberOfVerses": 31103,
+    "languageName": "Igbo",
+    "languageEnglishName": "Igbo"
+  },
+  "book": {
+    "id": "EPH",
+    "translationId": "ibo_bib",
+    "name": "Ndị Efesọs",
+    "commonName": "Ndị Efesọs",
+    "title": "Ndị Efesọs",
+    "order": 49,
+    "numberOfChapters": 6,
+    "sha256": "82f7b3c899aa7817daa94cdb32bc03c646d0d63d610551b7c5d41cdba9e97e7a",
+    "firstChapterNumber": 1,
+    "firstChapterApiLink": "/api/ibo_bib/EPH/1.json",
+    "firstChapterReference": {
+      "translationId": "ibo_bib",
+      "book": "EPH",
+      "chapter": 1
+    },
+    "lastChapterNumber": 6,
+    "lastChapterApiLink": "/api/ibo_bib/EPH/6.json",
+    "lastChapterReference": {
+      "translationId": "ibo_bib",
+      "book": "EPH",
+      "chapter": 6
+    },
+    "totalNumberOfVerses": 155
+  },
+  "chapter": {
+    "number": 1,
+    "content": [
+      {
+        "type": "verse",
+        "number": 1,
+        "content": [
+          "Akwụkwọ ozi a sitere nʼaka mụ onwe m bụ Pọl, onye Chineke họpụtara ịbụ onyeozi Jisọs Kraịst.",
+          {
+            "lineBreak": true
+          },
+          "Ọ bụ unu ndị nsọ bi nʼEfesọs, unu bụ ndị kwesiri ntụkwasị obi nʼime Kraịst Jisọs, ka m na-edere ya:"
+        ]
+      },
+      {
+        "type": "line_break"
+      },
+      {
+        "type": "verse",
+        "number": 2,
+        "content": [
+          "Ka amara na udo nke sitere na Chineke Nna anyị, na Onyenwe anyị Jisọs Kraịst dịrị unu."
+        ]
+      },
+      {
+        "type": "line_break"
+      },
+      {
+        "type": "heading",
+        "content": [
+          "Ngọzị dịrị anyị nʼime Kraịst"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 3,
+        "content": [
+          "Ka otuto dịrị Chineke, na Nna Onyenwe anyị Jisọs Kraịst, bụ onye gọziri anyị site nʼinye anyị ngọzị niile nke ime mmụọ nke si nʼebe niile nke eluigwe nʼime Kraịst."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 4,
+        "content": [
+          "Dịka o si họpụta anyị nʼime Kraịst tupu a tọọ ntọala ụwa, ka anyị bụrụ ndị dị nsọ na ndị na-enweghị ịta ụta nʼihu ya nʼịhụnanya."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 5,
+        "content": [
+          "O kpebiri ime anyị ụmụ ya site nʼihi Kraịst Jisọs. Ma o mekwara ihe ndị a niile nʼihi na ọ tọrọ ya ụtọ nʼobi, bụrụkwa ihe o zubere ime."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 6,
+        "content": [
+          "Ka e si otu a too ịdị ebube nke amara ya, nke o ji obi ya niile nye anyị nʼime Onye ahụ ọ hụrụ nʼanya."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 7,
+        "content": [
+          "Nʼime ya, anyị nwere mgbapụta site nʼọbara ya, bụ mgbaghara nke njehie niile anyị; dị ka ịba ụba nke amara ya si dị,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 8,
+        "content": [
+          "nke o mere ka ọ babigara anyị ụba oke site nʼamamihe na nghọta niile."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 9,
+        "content": [
+          "O meela ka anyị mata ihe omimi nzube ya, dị ka o si tọọ ya ụtọ, bụ ihe omimi o zubere ime nʼime Kraịst."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 10,
+        "content": [
+          "Nke ọ ga-eme ka o mezuo mgbe oge ya niile zuru, nke bụ ịchịkọta ihe niile nʼime ya, bụ ihe ndị dị nʼeluigwe na nʼụwa nʼokpuru Kraịst."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 11,
+        "content": [
+          "Nʼime Kraịst ka e mere anyị ndị nketa, ndị e bururị ụzọ họpụta na mbụ, dị ka atụmatụ onye ahụ na-arụpụta ihe niile nʼizuoke nke nzube na ebumnuche ya."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 12,
+        "content": [
+          "Nke mere na anyị, ndị buuru ụzọ nwee olileanya na Kraịst, ga-ebi ndụ nʼotuto nke ebube ya."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 13,
+        "content": [
+          "Unu bụkwa ndị a gụnyere nʼime Kraịst mgbe unu nụrụ ozi nke eziokwu ahụ bụ oziọma nke nzọpụta. Mgbe unu kwenyere, a kara unu akara nʼime ya bụ akara nke nkwa ahụ bụ Mmụọ Nsọ."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 14,
+        "content": [
+          "Nke a bụ ihe nketa anyị tutu ruo mgbe a rụzuru ọrụ mgbapụta nke ndị ahụ niile bụ ihe nweta Chineke. Ka e si otu a too ebube ya."
+        ]
+      },
+      {
+        "type": "heading",
+        "content": [
+          "Ekele na ekpere"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 15,
+        "content": [
+          "Nʼihi nke a, ebe m nụrụ akụkọ banyere okwukwe unu nʼime Onyenwe anyị Jisọs, nụkwa maka ịhụnanya unu nwere nʼebe ndị nsọ niile nọ,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 16,
+        "content": [
+          "esepụghị m aka ikele ekele nʼihi unu, mgbe niile m na-echeta unu nʼekpere m niile."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 17,
+        "content": [
+          "Ana m arịọ Chineke nke Onyenwe anyị Jisọs Kraịst bụ Nna Onyenwe ebube niile, ka o nye unu Mmụọ amamihe na ezi nghọta ka unu nwee ike matazie nke ọma onye ọ bụ,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 18,
+        "content": [
+          "ka o meghee anya nke ime mmụọ unu ka unu matakwa ụdị olileanya unu nwere nʼihi ọkpụkpọ ọ kpọrọ unu, na akụ, na ihe nketa dị ebube o nwere nʼime ndị nsọ."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 19,
+        "content": [
+          "Na ịdị ukwuu nke ike ya nke na-enweghị atụ dịrị anyị, bụ ndị kwere ekwe, dịka ịrụsị ọrụ ike nke ike ya si dị."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 20,
+        "content": [
+          "Nke ọ rụrụ nʼime Kraịst mgbe o si nʼọnwụ kpọlite ya mee ya ka ọ nọdụ nʼaka nri ya nʼebe niile nke eluigwe."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 21,
+        "content": [
+          "Ọnọdụ ya dị elu karịa ọchịchị niile, na ikike ọchịchị niile, na ike niile na ịchị isi niile, na aha ọkwa ọchịchị nke e nwere ike inye mmadụ, ọ bụghị naanị nʼọgbọ a, kama ma nʼọgbọ ọzọ na-abịa."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 22,
+        "content": [
+          "O mere ka ihe niile dị nʼokpuru ya, meekwa ya ka ọ bụrụ onyeisi ihe niile nye nzukọ ya bụ chọọchị."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 23,
+        "content": [
+          "Nke bụ ahụ ya, ozuzu oke nke onye ahụ na-emejupụta ihe niile nʼụzọ niile."
+        ]
+      }
+    ],
+    "footnotes": []
+  },
+  "thisChapterLink": "/api/ibo_bib/EPH/1.json",
+  "thisChapterReference": {
+    "translationId": "ibo_bib",
+    "book": "EPH",
+    "chapter": 1
+  },
+  "thisChapterAudioLinks": {},
+  "nextChapterApiLink": "/api/ibo_bib/EPH/2.json",
+  "nextChapterReference": {
+    "translationId": "ibo_bib",
+    "book": "EPH",
+    "chapter": 2
+  },
+  "nextChapterAudioLinks": {},
+  "previousChapterApiLink": "/api/ibo_bib/GAL/6.json",
+  "previousChapterReference": {
+    "translationId": "ibo_bib",
+    "book": "GAL",
+    "chapter": 6
+  },
+  "previousChapterAudioLinks": {},
+  "thisChapterAudioTimings": {},
+  "nextChapterAudioTimings": {},
+  "previousChapterAudioTimings": {},
+  "numberOfVerses": 23,
+  "simpleChapterApiLink": "/api/ibo_bib/EPH/1.simple.json"
+}

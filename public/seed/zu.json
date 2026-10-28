@@ -1,0 +1,180 @@
+{
+  "translation": {
+    "id": "zu_bible",
+    "name": "isiZulu Holy Bible",
+    "language": "zu",
+    "languageName": "isiZulu",
+    "shortName": "ZUL59"
+  },
+  "book": {
+    "id": "EPH",
+    "name": "Ephesians"
+  },
+  "chapter": {
+    "number": 1,
+    "content": [
+      {
+        "type": "verse",
+        "number": 1,
+        "content": [
+          "UPawulu, umphostoli kaKristu Jesu ngentando kaNkulunkulu, kubo abangcwele abase-Efesu nakubo abakholwa nguKristu Jesu:"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 2,
+        "content": [
+          "Makube kini umusa nokuthula okuvela kuNkulunkulu uBaba wethu naseNkosini uJesu Kristu."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 3,
+        "content": [
+          "Makabongwe uNkulunkulu, uYise weNkosi yethu uJesu Kristu osibusisile ezulwini kuKristu ngesibusiso sonke sokomoya,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 4,
+        "content": [
+          "njengalokho asikhethela kuye ngothando ngaphambi kokusekelwa kwezwe ukuba sibe ngcwele, singabi nakusolwa phambi kwakhe;"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 5,
+        "content": [
+          "wasimisela ngaphambili ukuba sibe ngabantwana kuye ngoJesu Kristu, njengalokho kwaba kuhle kuye ngentando yakhe,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 6,
+        "content": [
+          "ukuze kutuswe inkazimulo yomusa wakhe asiphe wona ngesihle ngaye oThandiweyo;"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 7,
+        "content": [
+          "esinokuhlengwa kuye ngegazi lakhe, ukuthethelelwa kwezono ngokwengcebo yomusa wakhe"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 8,
+        "content": [
+          "awuvamisa kithi ngakho konke ukuhlakanipha nokuqonda,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 9,
+        "content": [
+          "esazisa imfihlakalo yentando yakhe njengokuzibonela kwakhe azimisela khona ngaphambili,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 10,
+        "content": [
+          "kuze kube yihlelo lokuphelela kwezikhathi lokuba kuhlanganiselwe ndawonye kuKristu konke okusezulwini nokusemhlabeni;"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 11,
+        "content": [
+          "kuyena esabelwa futhi ifa kuye, esakumiselwa ngaphambili ngokwesimiso salowo osebenza izinto zonke ngokunquma kwentando yakhe,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 12,
+        "content": [
+          "ukuze sibe ludumo lwenkazimulo yakhe, thina esethemba ngaphambili kuKristu;"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 13,
+        "content": [
+          "kuye nani esenizwile izwi leqiniso, ivangeli lokusindiswa kwenu, enakholwa nguye futhi, nani nabekwa uphawu olunguMoya oNgcwele wesithembiso"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 14,
+        "content": [
+          "oyisibambiso sefa lethu, kube ngukuhlengwa kokungokwakhe, ukuze kutuswe inkazimulo yakhe."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 15,
+        "content": [
+          "Ngalokho nami, sengizwile ngokukholwa okukini eNkosini uJesu nothando kubo bonke abangcwele,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 16,
+        "content": [
+          "angiyeki ukubonga ngenxa yenu, nginikhumbula emikhulekweni yami,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 17,
+        "content": [
+          "ukuze uNkulunkulu weNkosi yethu uJesu Kristu, uYise wenkazimulo, aniphe umoya wokuhlakanipha nokwambulelwa ekumazini yena;"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 18,
+        "content": [
+          "ekhanyisiwe amehlo enhliziyo yenu, nize nazi okuyithemba lobizo lwakhe nokuyingcebo yenkazimulo yefa lakhe kubo abangcwele,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 19,
+        "content": [
+          "nokungubukhulu obumangalisayo bamandla akhe kithina esikholwayo, ngokokusebenza kwamandla akhe amakhulu"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 20,
+        "content": [
+          "asebenze ngawo kuKristu emvusa kwabafileyo, wamhlalisa ngakwesokunene sakhe ezulwini,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 21,
+        "content": [
+          "ngaphezu kwakho konke ukubusa, negunya, namandla, nobukhosi, namagama onke aphathwayo, kungekuleli zwe lodwa kepha nakulo elizayo;"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 22,
+        "content": [
+          "wakubeka konke phansi kwezinyawo zakhe, wammisa abe yinhloko phezu kwakho konke kulo ibandla,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 23,
+        "content": [
+          "elona lingumzimba wakhe, ukugcwala kwakhe ogcwalisa konke kubo bonke."
+        ]
+      }
+    ]
+  },
+  "numberOfVerses": 23
+}

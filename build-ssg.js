@@ -184,6 +184,17 @@ const CANONICAL_ROUTES = [
     excerpt:
       'Ancient Jewish and early Christian sacred literature including 1 Enoch (Book of Enoch), Book of Jasher, Book of Jubilees, 2 Esdras (4 Ezra), and Apostolic Fathers with 24kHz neural audio and sovereign offline storage.',
   },
+  {
+    route: '/donate/',
+    priority: '0.8',
+    changefreq: 'monthly',
+    title: 'Support the AduBible Scripture Mission — 100% Ad-Free Scripture for Humanity | Adubible.org',
+    description:
+      'Partner with AduBible in honoring the legacy of Apostle Kwame Adu of Nsuhia, Ghana. Support non-profit parallel Bible translation, Asante Twi digitizing, and zero-ad server operations via Stripe and PayPal.',
+    heading: 'Support the AduBible Planetary Scripture Mission — Giving & Partnership',
+    excerpt:
+      'AduBible operates as a dedicated, 100% ad-free non-profit scripture sanctuary for 4 billion readers worldwide, honoring Apostle Kwame Adu of Nsuhia, Ghana (https://nsuhia.com/). Support our planetary scripture distribution via Stripe (Card, Apple Pay, Google Pay) and PayPal.',
+  },
 ];
 
 // Append all 9 Legal & Institutional Governance Pages from Corpus
@@ -517,8 +528,24 @@ function buildSSG() {
       html = html.replace('<div id="root"></div>', legalSsrBlock);
     } else {
       // Standard crawlable <main> for chapters and directory
-      const ssrMainBlock = `<div id="root"><main style="max-width:960px;margin:0 auto;padding:2rem;font-family:Georgia,serif;color:#f5f5f4;"><h1>${item.heading}</h1><p>${item.excerpt}</p><nav><a href="/">AduBible Home</a> | <a href="/articles/">Pillar Articles</a> | <a href="/nkjv/ephesians/1/">Ephesians 1 NKJV</a> | <a href="/twi/ephesians/1/">Efesofoɔ 1 Twi</a> | <a href="/about/">About</a> | <a href="/privacy/">Privacy Policy</a> | <a href="/terms/">Terms of Service</a> | <a href="/contact/">Contact Us</a> | <a href="/cookie-policy/">Cookie Policy</a> | <a href="/how-to-use/">How to Use</a></nav><footer style="margin-top:2rem;font-size:12px;color:#a8a29e;border-top:1px solid #292524;padding-top:1.5rem;"><div style="margin-bottom:1rem;font-style:italic;">&ldquo;Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ.&rdquo; &mdash; Ephesians 1:3 &bull; &ldquo;For the word of God is living and active, sharper than any two-edged sword...&rdquo; &mdash; Hebrews 4:12 &bull; &ldquo;All Scripture is breathed out by God and profitable for teaching...&rdquo; &mdash; 2 Timothy 3:16</div>&copy; 2026 <a href="https://adubible.org/" style="color:inherit;text-decoration:none;">AduBible.org</a> &middot; Dedicated to Humanity by the Ministry of Apostle Kwame Adu &middot; <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" style="color:#f59e0b;">Nsuhia, Ghana ↗</a> &middot; <span style="color:#10b981;">100% Ads-Free Reading Experience</span></footer></main></div>`;
+      const ssrMainBlock = `<div id="root"><main style="max-width:960px;margin:0 auto;padding:2rem;font-family:Georgia,serif;color:#f5f5f4;"><h1>${item.heading}</h1><p>${item.excerpt}</p><nav><a href="/">AduBible Home</a> | <a href="/articles/">Pillar Articles</a> | <a href="/nkjv/ephesians/1/">Ephesians 1 NKJV</a> | <a href="/twi/ephesians/1/">Efesofoɔ 1 Twi</a> | <a href="/donate/">Support Mission (Donate)</a> | <a href="/about/">About</a> | <a href="/privacy/">Privacy Policy</a> | <a href="/terms/">Terms of Service</a> | <a href="/contact/">Contact Us</a> | <a href="/cookie-policy/">Cookie Policy</a> | <a href="/how-to-use/">How to Use</a></nav><footer style="margin-top:2rem;font-size:12px;color:#a8a29e;border-top:1px solid #292524;padding-top:1.5rem;"><div style="margin-bottom:1rem;font-style:italic;">&ldquo;Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ.&rdquo; &mdash; Ephesians 1:3 &bull; &ldquo;For the word of God is living and active, sharper than any two-edged sword...&rdquo; &mdash; Hebrews 4:12 &bull; &ldquo;All Scripture is breathed out by God and profitable for teaching...&rdquo; &mdash; 2 Timothy 3:16</div>&copy; 2026 <a href="https://adubible.org/" style="color:inherit;text-decoration:none;">AduBible.org</a> &middot; Dedicated to Humanity by the Ministry of Apostle Kwame Adu &middot; <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" style="color:#f59e0b;">Nsuhia, Ghana ↗</a> &middot; <span style="color:#10b981;">100% Ads-Free Reading Experience</span></footer></main></div>`;
       html = html.replace('<div id="root"></div>', ssrMainBlock);
+    }
+
+    if (item.route === '/donate/') {
+      const donateSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'DonateAction',
+        'name': 'Support AduBible Planetary Scripture Mission',
+        'description': item.description,
+        'url': canonicalUrl,
+        'recipient': {
+          '@type': 'NGO',
+          'name': 'AduBible Scripture Mission (Apostle Kwame Adu Memorial)',
+          'url': BASE_URL,
+        },
+      };
+      html = html.replace('</head>', `\n    <script type="application/ld+json">\n${JSON.stringify(donateSchema, null, 2)}\n    </script>\n  </head>`);
     }
 
     const outDir =
