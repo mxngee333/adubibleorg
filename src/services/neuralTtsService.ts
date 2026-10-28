@@ -6,6 +6,7 @@
 
 import { isTwiLanguage } from './twiAudioService';
 import { transphonemizeTwiForSpeech } from './twiPhonemeEngine';
+import { recordRealAudioStream } from './adminService';
 
 const EDGE_TTS_GATEWAY = 'https://api.modelissa.com/api/gemini-tts';
 export const DEFAULT_GEMINI_KEY = 'AIzaSyCmYDhFoekesow8HDnv_4zqYeBuEGy58Vo';
@@ -206,6 +207,9 @@ export async function synthesizeNeuralAudio(
   if (!pureVerseText) {
     return null;
   }
+
+  // Record authentic audio stream telemetry
+  recordRealAudioStream();
 
   const cacheKey = `${langCode}:${voiceName}:${pureVerseText}`;
 

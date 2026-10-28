@@ -82,6 +82,7 @@ import { AduBibleLogo } from './components/AduBibleLogo';
 import { AskAduBibleModal } from './components/AskAduBibleModal';
 import { DonationHubPage } from './components/DonationHubPage';
 import { AdminDashboardPage } from './components/AdminDashboardPage';
+import { recordRealReaderVisit } from './services/adminService';
 import { Search, User, Headphones, Volume2, Heart } from 'lucide-react';
 import { AskAduBibleContext } from './services/askAduBibleService';
 
@@ -245,6 +246,11 @@ export function App() {
       saveActiveVersionIds(activeVersionIds);
     }
   }, [activeVersionIds]);
+
+  // Track authentic reader session (100% real telemetry)
+  useEffect(() => {
+    recordRealReaderVisit();
+  }, []);
 
 
   // Custom Add-on Packs

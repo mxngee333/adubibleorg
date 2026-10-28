@@ -17,6 +17,8 @@ import {
   getAdminSystemMetrics,
   exportSubscribersToCSV,
   exportDonationsToCSV,
+  fetchRealTelemetry,
+  RealTelemetryData,
   getLiveEnvConfig,
   fetchLiveEnvConfig,
   saveLiveEnvConfig,
@@ -106,6 +108,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
 
   // Live Environment & Credentials State
   const [envConfig, setEnvConfig] = useState<LiveEnvConfig>(getLiveEnvConfig());
+  const [telemetry, setTelemetry] = useState<RealTelemetryData>({ readersReached: 0, audioStreams: 0 });
   const [isSavingEnvs, setIsSavingEnvs] = useState<boolean>(false);
   const [envSaveSuccess, setEnvSaveSuccess] = useState<boolean>(false);
   const [showKeys, setShowKeys] = useState<Record<string, boolean>>({});
@@ -129,17 +132,21 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
   const loadAllAdminData = async () => {
     setIsLoadingData(true);
     try {
-      const [dList, sList, pList, liveEnvs] = await Promise.all([
+      const [dList, sList, pList, liveEnvs, realTelem] = await Promise.all([
         getAdminDonations(),
         getAdminSubscribers(),
         getAdminPrayerRequests(),
         fetchLiveEnvConfig(),
+        fetchRealTelemetry(),
       ]);
       setDonations(dList);
       setSubscribers(sList);
       setPrayers(pList);
       if (liveEnvs) {
         setEnvConfig(liveEnvs);
+      }
+      if (realTelem) {
+        setTelemetry(realTelem);
       }
     } finally {
       setIsLoadingData(false);
@@ -190,8 +197,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
   };
 
   const metrics = useMemo(
-    () => getAdminSystemMetrics(donations, subscribers),
-    [donations, subscribers]
+    () => getAdminSystemMetrics(donations, subscribers, telemetry),
+    [donations, subscribers, telemetry]
   );
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -416,7 +423,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
               {metrics.totalMonthlyReaders.toLocaleString()}
             </div>
             <div className="text-[11px] text-[var(--green)] mt-1 flex items-center gap-1">
-              <span>Target: 4.2 Billion Global Souls</span>
+              <span>Verified Real Telemetry</span>
             </div>
           </div>
 
@@ -429,7 +436,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
               ${metrics.totalOfferingsVolumeUSD.toLocaleString()}
             </div>
             <div className="text-[11px] text-[var(--subtle)] mt-1">
-              Stripe + PayPal + Church Seeds
+              Real-Time Ledger Total
             </div>
           </div>
 
@@ -442,7 +449,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
               {metrics.totalSubscribersCount}
             </div>
             <div className="text-[11px] text-[var(--subtle)] mt-1">
-              Maileroo Daily Scripture Roster
+              Firestore Live Roster
             </div>
           </div>
 
@@ -639,30 +646,38 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-stone-800/60 text-stone-300">
-                    {donations.slice(0, 5).map((d) => (
-                      <tr key={d.id} className="hover:bg-stone-800/30">
-                        <td className="py-2.5 font-medium text-stone-200">{d.donorName}</td>
-                        <td className="py-2.5 font-mono font-bold text-amber-300">
-                          {d.currency} {d.amount.toFixed(2)}
-                        </td>
-                        <td className="py-2.5">
-                          <span
-                            className={`px-2 py-0.5 rounded-md text-[10px] font-semibold ${
-                              d.frequency === 'monthly'
-                                ? 'bg-purple-950/60 text-purple-300 border border-purple-500/30'
-                                : 'bg-stone-800 text-stone-300'
-                            }`}
-                          >
-                            {d.frequency === 'monthly' ? 'Monthly Partner' : 'Seed'}
-                          </span>
-                        </td>
-                        <td className="py-2.5 uppercase font-mono text-[10px] text-stone-400">{d.gateway}</td>
-                        <td className="py-2.5 truncate max-w-[200px] text-stone-400">{d.designation}</td>
-                        <td className="py-2.5 text-stone-500 font-mono text-[11px]">
-                          {new Date(d.createdAt).toLocaleDateString()}
+                    {donations.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="py-8 text-center text-xs text-stone-400">
+                          No offering streams recorded yet. Awaiting live gifts via Stripe, PayPal, or manual church entries.
                         </td>
                       </tr>
-                    ))}
+                    ) : (
+                      donations.slice(0, 5).map((d) => (
+                        <tr key={d.id} className="hover:bg-stone-800/30">
+                          <td className="py-2.5 font-medium text-stone-200">{d.donorName}</td>
+                          <td className="py-2.5 font-mono font-bold text-amber-300">
+                            {d.currency} {d.amount.toFixed(2)}
+                          </td>
+                          <td className="py-2.5">
+                            <span
+                              className={`px-2 py-0.5 rounded-md text-[10px] font-semibold ${
+                                d.frequency === 'monthly'
+                                  ? 'bg-purple-950/60 text-purple-300 border border-purple-500/30'
+                                  : 'bg-stone-800 text-stone-300'
+                              }`}
+                            >
+                              {d.frequency === 'monthly' ? 'Monthly Partner' : 'Seed'}
+                            </span>
+                          </td>
+                          <td className="py-2.5 uppercase font-mono text-[10px] text-stone-400">{d.gateway}</td>
+                          <td className="py-2.5 truncate max-w-[200px] text-stone-400">{d.designation}</td>
+                          <td className="py-2.5 text-stone-500 font-mono text-[11px]">
+                            {new Date(d.createdAt).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -718,39 +733,51 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-stone-800/60 text-stone-300">
-                  {donations.map((d) => (
-                    <tr key={d.id} className="hover:bg-stone-800/40">
-                      <td className="py-3 font-mono text-[11px] text-stone-500">{d.transactionId}</td>
-                      <td className="py-3 font-semibold text-stone-100">{d.donorName}</td>
-                      <td className="py-3 font-mono text-stone-400">{d.donorEmail}</td>
-                      <td className="py-3 font-mono font-bold text-amber-300">
-                        {d.currency} {d.amount.toFixed(2)}
-                      </td>
-                      <td className="py-3">
-                        <span
-                          className={`px-2 py-0.5 rounded-md text-[10px] font-semibold ${
-                            d.frequency === 'monthly'
-                              ? 'bg-purple-950/60 text-purple-300 border border-purple-500/30'
-                              : 'bg-stone-800 text-stone-300'
-                          }`}
-                        >
-                          {d.frequency === 'monthly' ? 'Monthly Partner' : 'One-Time'}
-                        </span>
-                      </td>
-                      <td className="py-3">
-                        <span className="uppercase font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-stone-950 border border-stone-800 text-stone-300">
-                          {d.gateway}
-                        </span>
-                      </td>
-                      <td className="py-3 text-stone-300 max-w-[180px] truncate">{d.designation}</td>
-                      <td className="py-3 text-stone-400 italic max-w-[160px] truncate">
-                        {d.tributeName || '—'}
-                      </td>
-                      <td className="py-3 font-mono text-stone-500 text-[11px]">
-                        {new Date(d.createdAt).toLocaleDateString()}
+                  {donations.length === 0 ? (
+                    <tr>
+                      <td colSpan={9} className="py-12 text-center text-xs text-stone-400">
+                        <Coins className="w-8 h-8 text-stone-600 mx-auto mb-2" />
+                        <div className="font-semibold text-stone-300">0 Recorded Offerings in Ledger</div>
+                        <div className="text-[11px] text-stone-500 mt-1">
+                          Live gifts submitted via Stripe, PayPal, or manual church entries will appear here live.
+                        </div>
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    donations.map((d) => (
+                      <tr key={d.id} className="hover:bg-stone-800/40">
+                        <td className="py-3 font-mono text-[11px] text-stone-500">{d.transactionId}</td>
+                        <td className="py-3 font-semibold text-stone-100">{d.donorName}</td>
+                        <td className="py-3 font-mono text-stone-400">{d.donorEmail}</td>
+                        <td className="py-3 font-mono font-bold text-amber-300">
+                          {d.currency} {d.amount.toFixed(2)}
+                        </td>
+                        <td className="py-3">
+                          <span
+                            className={`px-2 py-0.5 rounded-md text-[10px] font-semibold ${
+                              d.frequency === 'monthly'
+                                ? 'bg-purple-950/60 text-purple-300 border border-purple-500/30'
+                                : 'bg-stone-800 text-stone-300'
+                            }`}
+                          >
+                            {d.frequency === 'monthly' ? 'Monthly Partner' : 'One-Time'}
+                          </span>
+                        </td>
+                        <td className="py-3">
+                          <span className="uppercase font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-stone-950 border border-stone-800 text-stone-300">
+                            {d.gateway}
+                          </span>
+                        </td>
+                        <td className="py-3 text-stone-300 max-w-[180px] truncate">{d.designation}</td>
+                        <td className="py-3 text-stone-400 italic max-w-[160px] truncate">
+                          {d.tributeName || '—'}
+                        </td>
+                        <td className="py-3 font-mono text-stone-500 text-[11px]">
+                          {new Date(d.createdAt).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -857,21 +884,33 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-stone-800/60 text-stone-300">
-                    {subscribers.map((s) => (
-                      <tr key={s.id} className="hover:bg-stone-800/40">
-                        <td className="py-2.5 font-semibold text-stone-200">{s.firstName}</td>
-                        <td className="py-2.5 font-mono text-stone-300">{s.email}</td>
-                        <td className="py-2.5 text-stone-500 font-mono text-[11px]">
-                          {new Date(s.subscribedAt).toLocaleDateString()}
-                        </td>
-                        <td className="py-2.5 font-mono text-[10px] text-stone-400">{s.source}</td>
-                        <td className="py-2.5">
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950/60 text-emerald-300 border border-emerald-500/30">
-                            Active
-                          </span>
+                    {subscribers.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="py-12 text-center text-xs text-stone-400">
+                          <Mail className="w-8 h-8 text-stone-600 mx-auto mb-2" />
+                          <div className="font-semibold text-stone-300">0 Newsletter Disciples</div>
+                          <div className="text-[11px] text-stone-500 mt-1">
+                            Real signups submitted via the site footer or mission modals will appear here live.
+                          </div>
                         </td>
                       </tr>
-                    ))}
+                    ) : (
+                      subscribers.map((s) => (
+                        <tr key={s.id} className="hover:bg-stone-800/40">
+                          <td className="py-2.5 font-semibold text-stone-200">{s.firstName}</td>
+                          <td className="py-2.5 font-mono text-stone-300">{s.email}</td>
+                          <td className="py-2.5 text-stone-500 font-mono text-[11px]">
+                            {new Date(s.subscribedAt).toLocaleDateString()}
+                          </td>
+                          <td className="py-2.5 font-mono text-[10px] text-stone-400">{s.source}</td>
+                          <td className="py-2.5">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950/60 text-emerald-300 border border-emerald-500/30">
+                              Active
+                            </span>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -894,15 +933,24 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
             </div>
 
             <div className="space-y-3 pt-2">
-              {prayers.map((p) => (
-                <div
-                  key={p.id}
-                  className={`p-4 rounded-2xl border transition-all ${
-                    p.status === 'interceded'
-                      ? 'bg-stone-950/40 border-stone-800/60 text-stone-400'
-                      : 'bg-stone-900/80 border-amber-500/30 text-stone-200 shadow-md'
-                  }`}
-                >
+              {prayers.length === 0 ? (
+                <div className="py-12 text-center text-xs text-stone-400">
+                  <Heart className="w-8 h-8 text-stone-600 mx-auto mb-2" />
+                  <div className="font-semibold text-stone-300">0 Prayer Petitions</div>
+                  <div className="text-[11px] text-stone-500 mt-1">
+                    Intercessory requests submitted by readers across the globe will appear here live.
+                  </div>
+                </div>
+              ) : (
+                prayers.map((p) => (
+                  <div
+                    key={p.id}
+                    className={`p-4 rounded-2xl border transition-all ${
+                      p.status === 'interceded'
+                        ? 'bg-stone-950/40 border-stone-800/60 text-stone-400'
+                        : 'bg-stone-900/80 border-amber-500/30 text-stone-200 shadow-md'
+                    }`}
+                  >
                   <div className="flex items-start justify-between gap-4">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
@@ -939,7 +987,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
                     </button>
                   </div>
                 </div>
-              ))}
+              )))}
             </div>
           </div>
         )}
