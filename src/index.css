@@ -3865,10 +3865,30 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
 .footer-copy {
   color: var(--subtle);
   font-size: 12.5px;
-  line-height: 1.7;
-  max-width: 860px;
+  line-height: 1.8;
+  max-width: 900px;
   margin: 0 auto;
-  opacity: 0.9;
+  text-align: center;
+  opacity: 0.92;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px 6px;
+  padding: 0 16px;
+}
+
+.footer-copy-seg {
+  display: inline-flex;
+  align-items: center;
+  text-align: center;
+}
+
+.footer-copy-sep {
+  color: rgba(245, 158, 11, 0.55);
+  font-weight: 700;
+  user-select: none;
+  padding: 0 2px;
 }
 
 .footer-copy strong {
@@ -3894,18 +3914,7 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   display: inline-block;
 }
 
-@media (max-width: 640px) {
-  .footer-legal-nav {
-    gap: 6px 8px;
-  }
-  .footer-legal-pill {
-    font-size: 11px;
-    padding: 5px 10px;
-  }
-  .footer-copy {
-    font-size: 11.5px;
-  }
-}
+
 
 /* ==========================================================================
    TABLET RESPONSIVE OVERRIDES (769px - 1024px)
@@ -3977,6 +3986,85 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 7px !important;
+  }
+
+  /* Mobile Footer Bottom Bar & Balanced Typography */
+  .footer-bottom-bar {
+    padding-top: 24px !important;
+    gap: 18px !important;
+    width: 100% !important;
+  }
+
+  .footer-legal-nav {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 6px 8px !important;
+    padding: 0 10px !important;
+    width: 100% !important;
+  }
+
+  .footer-legal-pill {
+    font-size: 11px !important;
+    padding: 5px 11px !important;
+    border-radius: 999px !important;
+    line-height: 1.4 !important;
+  }
+
+  .footer-copy {
+    font-size: 11.5px !important;
+    line-height: 1.8 !important;
+    text-align: center !important;
+    padding: 14px 14px 6px 14px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    margin-top: 6px !important;
+    gap: 3px 6px !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    justify-content: center !important;
+  }
+
+  .footer-copy-seg {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  .footer-copy-sep {
+    color: rgba(245, 158, 11, 0.45) !important;
+    font-size: 11px !important;
+    padding: 0 1px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-bottom-bar {
+    padding-top: 20px !important;
+    gap: 14px !important;
+  }
+
+  .footer-legal-nav {
+    gap: 5px 6px !important;
+    padding: 0 6px !important;
+  }
+
+  .footer-legal-pill {
+    font-size: 10.5px !important;
+    padding: 4.5px 9px !important;
+  }
+
+  .footer-copy {
+    font-size: 11px !important;
+    line-height: 1.7 !important;
+    padding: 12px 8px 4px 8px !important;
+    gap: 2px 4px !important;
+  }
+
+  .footer-copy-sep {
+    font-size: 10px !important;
   }
 }
 

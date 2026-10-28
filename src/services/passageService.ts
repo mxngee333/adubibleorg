@@ -378,12 +378,12 @@ export function setAutoScrollActive(enabled: boolean): void {
  *
  * CRITICAL FIXES FOR CHURCH / SANCTUARY SCREEN PROJECTION:
  * 1. Hard Master Kill-Switch: If Auto-Scroll is OFF, aborts in 0ms (absolute hard freeze).
- * 2. Golden Center Focus: When a verse moves near or past the bottom audio bar,
- *    it smoothly brings the verse into the UPPER-MIDDLE / CENTER of the screen (~35% from top).
- *    This ensures that on church projectors or small screens, the verse is NEVER hidden,
- *    NEVER stuck at the bottom edge, and NEVER covered by the floating audio player bar!
- * 3. In-View Stability: If the verse is already comfortably visible in the upper-middle zone,
- *    it does not scroll at all to prevent distracting jitter.
+ * 2. Golden Center Focus: Automatically elevates the active verse directly into the upper-middle
+ *    reading zone (~28% to 34% of viewport height). This guarantees the active verse is NEVER
+ *    at the bottom, NEVER stuck behind the floating audio bar, and always in prime view for
+ *    congregations watching screen projections!
+ * 3. In-View Stability: If the verse is already within 30px of the golden projection line,
+ *    it avoids micro-jitter.
  */
 export function scrollVerseIntoViewIfNeeded(
   el: HTMLElement | null,
@@ -399,37 +399,18 @@ export function scrollVerseIntoViewIfNeeded(
   const rect = el.getBoundingClientRect();
   const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
 
-  // Measure dynamic audio bar height
-  const audioBarEl =
-    document.querySelector('.audio-bar-wrapper') ||
-    document.querySelector('.audio-bar-container') ||
-    document.querySelector('.audio-bar-minimized');
-  const audioBarHeight = audioBarEl ? audioBarEl.getBoundingClientRect().height : 68;
+  // Golden Projection Focus Target: Place the top of the active verse comfortably
+  // in the upper-middle zone (~28% to 34% of viewport height, minimum 140px below sticky header).
+  // This provides massive clearance above the bottom audio bar and maximum readability on projectors!
+  const idealTopOffset = Math.max(140, Math.min(260, viewportHeight * 0.32));
 
-  // Safe reading zone boundaries:
-  // safeTop: clearance below top headers (~120px)
-  // safeBottom: generous clearance above the bottom audio bar (audioBarHeight + 110px).
-  // This guarantees that ANY verse entering the bottom 110px area above the audio bar
-  // is immediately smoothly elevated into the prime projection zone!
-  const safeTop = 120;
-  const safeBottom = Math.max(safeTop + 120, viewportHeight - (audioBarHeight + 110));
-
-  // 1. If verse is already comfortably visible within this safe zone, DO NOT scroll!
-  if (rect.top >= safeTop && rect.bottom <= safeBottom) {
+  // If the verse is already resting right around the golden focal line (within +/- 30px), skip
+  if (Math.abs(rect.top - idealTopOffset) < 30) {
     return;
   }
 
   const currentScrollY = window.scrollY || window.pageYOffset;
-
-  // 2. Projection Focal Target: Align the verse comfortably in the upper-middle (~35% of viewport height).
-  // This gives massive clearance above the bottom audio bar and perfect readability on screen projectors!
-  const targetOffset = safeTop + (safeBottom - safeTop) * 0.35;
-  const targetScrollY = currentScrollY + rect.top - targetOffset;
-
-  // Deadzone check: If the scroll difference is under 12px, skip to avoid micro-jitter
-  if (Math.abs(targetScrollY - currentScrollY) < 12) {
-    return;
-  }
+  const targetScrollY = currentScrollY + rect.top - idealTopOffset;
 
   window.scrollTo({
     top: Math.max(0, targetScrollY),
