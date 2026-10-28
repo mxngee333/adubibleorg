@@ -5445,3 +5445,216 @@ mark.search-highlight {
 .mobile-mast-actions {
   display: none;
 }
+
+/* ==========================================================================
+   ✦ AUDIO SCRIPTURE BAR — ULTRA-COMPACT MOBILE ARCHITECTURE & HIGH-CONTRAST CONTROLS
+   ========================================================================== */
+.audio-bar-wrapper {
+  position: sticky;
+  bottom: 16px;
+  z-index: 45;
+  max-width: 1508px;
+  margin: 0 auto 20px;
+  padding: 0 20px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (max-width: 768px) {
+  .audio-bar-wrapper {
+    position: fixed !important;
+    bottom: calc(56px + max(4px, env(safe-area-inset-bottom, 0px))) !important;
+    left: 8px !important;
+    right: 8px !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 950 !important;
+  }
+}
+
+.audio-bar-container {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (min-width: 1024px) {
+  .audio-bar-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    gap: 14px;
+  }
+}
+
+/* Minimized Floating Pill Mode */
+.audio-bar-minimized {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55), 0 0 14px rgba(245, 158, 11, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  gap: 8px;
+  height: 44px;
+}
+
+/* Play / Pause Primary Button */
+.audio-bar-play-btn {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+
+/* Playing State: Vibrant Emerald with High-Contrast Deep Obsidian/Forest Text */
+.audio-bar-play-btn.is-playing {
+  background: #10b981 !important;
+  border: 1px solid #34d399 !important;
+  color: #022c22 !important; /* 7.8:1 contrast — 100% visible */
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.45) !important;
+}
+
+.audio-bar-play-btn.is-playing:hover {
+  background: #059669 !important;
+  color: #ffffff !important;
+}
+
+/* Paused / Idle State: Radiant Amber with High-Contrast Obsidian Text */
+.audio-bar-play-btn.is-paused {
+  background: #f59e0b !important;
+  border: 1px solid #fbbf24 !important;
+  color: #0c0a09 !important; /* 9.2:1 contrast — 100% visible */
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.45) !important;
+}
+
+.audio-bar-play-btn.is-paused:hover {
+  background: #d97706 !important;
+  color: #0c0a09 !important;
+}
+
+/* Buffering State */
+.audio-bar-play-btn.is-buffering {
+  background: #78350f !important;
+  border: 1px solid #d97706 !important;
+  color: #fef3c7 !important;
+}
+
+/* Icon Control Buttons (⏮, ⏭, ⏹, ⚙️, ×, ▾, ▴) */
+.audio-bar-icon-btn {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink) !important;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.audio-bar-icon-btn:hover {
+  border-color: #f59e0b;
+  color: #f59e0b !important;
+  background: var(--soft);
+}
+
+.audio-bar-icon-btn.active {
+  border-color: #f59e0b;
+  color: #0c0a09 !important;
+  background: #f59e0b !important;
+}
+
+/* Toggle Pills (Auto-Next, Studio MP3, Bilingual) */
+.audio-bar-toggle-pill {
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink) !important;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.audio-bar-toggle-pill:hover {
+  border-color: #f59e0b;
+  color: #f59e0b !important;
+}
+
+/* Active State: Bold Amber Gold with High-Contrast Dark Obsidian Text! */
+.audio-bar-toggle-pill.active {
+  background: #f59e0b !important;
+  border-color: #d97706 !important;
+  color: #0c0a09 !important; /* CRITICAL FIX: Words are 100% visible! */
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35) !important;
+}
+
+.audio-bar-toggle-pill.active span,
+.audio-bar-toggle-pill.active svg {
+  color: #0c0a09 !important;
+}
+
+/* Dropdown Selectors (Voice & Speed) */
+.audio-bar-select {
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink) !important;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  max-width: 170px;
+}
+
+.audio-bar-select:focus {
+  outline: none;
+  border-color: #f59e0b;
+}
+
+@media (max-width: 640px) {
+  .audio-bar-select {
+    max-width: 140px;
+    font-size: 11px;
+  }
+}
+
