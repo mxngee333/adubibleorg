@@ -800,6 +800,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
         <audio
           ref={studioAudioElRef}
           src={audioUrl}
+          onTimeUpdate={handleStudioTimeUpdate}
           onEnded={() => {
             if (continuousPlayback && onNextChapter) {
               setIsLoadingVerse(true);
@@ -1062,6 +1063,53 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
           >
             <span>🔁</span>
             <span>{continuousPlayback ? 'Auto-Next ON' : 'Auto-Next OFF'}</span>
+          </button>
+
+          {/* Auto-Scroll Reader Sync Toggle */}
+          <button
+            type="button"
+            className={`quiet-button ${isAutoSync ? 'active-pill' : ''}`}
+            onClick={() => {
+              if (onToggleAutoSync) {
+                onToggleAutoSync();
+              } else {
+                setInternalAutoSync((prev) => !prev);
+              }
+              if (typeof window !== 'undefined') {
+                setTimeout(() => {
+                  const vNum = verses[currentVerseIdxRef.current]?.verse || activeVerse;
+                  const el =
+                    document.getElementById(`verse-${vNum}`) ||
+                    document.querySelector(`[data-verse="${vNum}"]`);
+                  if (el) {
+                    el.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'center',
+                      inline: 'nearest',
+                    });
+                  }
+                }, 40);
+              }
+            }}
+            title={
+              isAutoSync
+                ? 'Auto-Sync Reader is ON (Text automatically follows and scrolls smoothly to active voice verse)'
+                : 'Auto-Sync Reader is OFF (Text will not auto-scroll)'
+            }
+            style={{
+              height: '36px',
+              fontSize: '12px',
+              fontWeight: isAutoSync ? 600 : 400,
+              color: isAutoSync ? 'var(--green)' : 'var(--ink)',
+              border: isAutoSync ? '1px solid var(--green)' : '1px solid var(--line)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '5px',
+              padding: '0 10px',
+            }}
+          >
+            <span>📜</span>
+            <span>{isAutoSync ? 'Auto-Scroll ON' : 'Auto-Scroll OFF'}</span>
           </button>
 
           {/* Bilingual Alternate Toggle (e.g. English ⇄ Twi) */}
