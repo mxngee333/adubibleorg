@@ -437,6 +437,18 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
                 <span className="footer-badge badge-on">4-COL</span>
               </span>
             </li>
+            <li className="footer-tool-item">
+              <button
+                type="button"
+                className="footer-btn-link"
+                onClick={onOpenVideoStudio}
+                style={{ color: '#f59e0b', fontWeight: 700 }}
+                title="Create 10s Animated Video Status Reel with Neural Voice for WhatsApp, TikTok & Reels"
+              >
+                <span>🎬 Make Video for Status (10s Reel)</span>
+                <span className="footer-badge badge-on" style={{ background: '#f59e0b', color: '#0c0a09', fontWeight: 800 }}>60FPS</span>
+              </button>
+            </li>
           </ul>
         </div>
 
@@ -762,6 +774,21 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
           >
             📖 15 Pillar Guides
           </a>
+          <button
+            type="button"
+            onClick={onOpenVideoStudio}
+            className="footer-legal-pill"
+            style={{
+              borderColor: 'rgba(245, 158, 11, 0.65)',
+              background: 'rgba(245, 158, 11, 0.14)',
+              color: '#f59e0b',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+            title="Create 10s Animated Video Status Reel with Neural Voice for WhatsApp, TikTok & Reels"
+          >
+            🎬 Make Video for Status
+          </button>
           <a
             href="/donate/"
             onClick={(e) => {
