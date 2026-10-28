@@ -1,0 +1,180 @@
+{
+  "translation": {
+    "id": "la_bible",
+    "name": "Biblia Sacra Vulgata Bible",
+    "language": "la",
+    "languageName": "Biblia Sacra Vulgata",
+    "shortName": "VUL"
+  },
+  "book": {
+    "id": "EPH",
+    "name": "Ephesians"
+  },
+  "chapter": {
+    "number": 1,
+    "content": [
+      {
+        "type": "verse",
+        "number": 1,
+        "content": [
+          "Paulus Apostolus Jesu Christi per voluntatem Dei, omnibus sanctis qui sunt Ephesi, et fidelibus in Christo Jesu."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 2,
+        "content": [
+          "Gratia vobis, et pax a Deo Patre nostro, et Domino Jesu Christo."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 3,
+        "content": [
+          "Benedictus Deus et Pater Domini nostri Jesu Christi, qui benedixit nos in omni benedictione spirituali in cælestibus in Christo,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 4,
+        "content": [
+          "sicut elegit nos in ipso ante mundi constitutionem, ut essemus sancti et immaculati in conspectu ejus in caritate."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 5,
+        "content": [
+          "Qui prædestinavit nos in adoptionem filiorum per Jesum Christum in ipsum : secundum propositum voluntatis suæ,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 6,
+        "content": [
+          "in laudem gloriæ gratiæ suæ, in qua gratificavit nos in dilecto Filio suo."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 7,
+        "content": [
+          "In quo habemus redemptionem per sanguinem ejus, remissionem peccatorum secundum divitias gratiæ ejus,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 8,
+        "content": [
+          "quæ superabundavit in nobis in omni sapientia et prudentia :"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 9,
+        "content": [
+          "ut notum faceret nobis sacramentum voluntatis suæ, secundum beneplacitum ejus, quod proposuit in eo,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 10,
+        "content": [
+          "in dispensatione plenitudinis temporum, instaurare omnia in Christo, quæ in cælis et quæ in terra sunt, in ipso ;"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 11,
+        "content": [
+          "in quo etiam et nos sorte vocati sumus prædestinati secundum propositum ejus qui operatur omnia secundum consilium voluntatis suæ :"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 12,
+        "content": [
+          "ut simus in laudem gloriæ ejus nos, qui ante speravimus in Christo ;"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 13,
+        "content": [
+          "in quo et vos, cum audissetis verbum veritatis, Evangelium salutis vestræ, in quo et credentes signati estis Spiritu promissionis Sancto,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 14,
+        "content": [
+          "qui est pignus hæreditatis nostræ, in redemptionem acquisitionis, in laudem gloriæ ipsius."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 15,
+        "content": [
+          "Propterea et ego audiens fidem vestram, quæ est in Domino Jesu, et dilectionem in omnes sanctos,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 16,
+        "content": [
+          "non cesso gratias agens pro vobis, memoriam vestri faciens in orationibus meis :"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 17,
+        "content": [
+          "ut Deus, Domini nostri Jesu Christi Pater gloriæ, det vobis spiritum sapientiæ et revelationis in agnitione ejus,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 18,
+        "content": [
+          "illuminatos oculos cordis vestri, ut sciatis quæ sit spes vocationis ejus, et quæ divitiæ gloriæ hæreditatis ejus in sanctis,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 19,
+        "content": [
+          "et quæ sit supereminens magnitudo virtutis ejus in nos, qui credimus secundum operationem potentiæ virtutis ejus,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 20,
+        "content": [
+          "quam operatus est in Christo, suscitans illum a mortuis, et constituens ad dexteram suam in cælestibus :"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 21,
+        "content": [
+          "supra omnem principatum, et potestatem, et virtutem, et dominationem, et omne nomen, quod nominatur non solum in hoc sæculo, sed etiam in futuro."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 22,
+        "content": [
+          "Et omnia subjecit sub pedibus ejus : et ipsum dedit caput supra omnem ecclesiam,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 23,
+        "content": [
+          "quæ est corpus ipsius, et plenitudo ejus, qui omnia in omnibus adimpletur."
+        ]
+      }
+    ]
+  },
+  "numberOfVerses": 23
+}

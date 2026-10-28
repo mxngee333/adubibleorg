@@ -1,0 +1,180 @@
+{
+  "translation": {
+    "id": "pl_bible",
+    "name": "Biblia Gdańska Bible",
+    "language": "pl",
+    "languageName": "Biblia Gdańska",
+    "shortName": "BGD"
+  },
+  "book": {
+    "id": "EPH",
+    "name": "Ephesians"
+  },
+  "chapter": {
+    "number": 1,
+    "content": [
+      {
+        "type": "verse",
+        "number": 1,
+        "content": [
+          "Paweł, Apostoł Jezusa Chrystusa przez wolę Bożą, świętym, którzy są w Efezie, i wiernym w Chrystusie Jezusie."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 2,
+        "content": [
+          "Łaska wam i pokój niech będzie od Boga, Ojca naszego, i Pana Jezusa Chrystusa."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 3,
+        "content": [
+          "Błogosławiony niech będzie Bóg i Ojciec Pana naszego Jezusa Chrystusa, który nas ubłogosławił wszelkiem błogosławieństwem duchownem w niebieskich rzeczach w Chrystusie;"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 4,
+        "content": [
+          "Jako nas wybrał w nim przed założeniem świata, abyśmy byli świętymi i nienaganionymi przed oblicznością jego w miłości."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 5,
+        "content": [
+          "Który nas przenaznaczył ku przysposobieniu za synów przez Jezusa Chrystusa dla siebie samego, według upodobania woli swojej,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 6,
+        "content": [
+          "Ku chwale sławnej łaski swojej, którą nas udarował w onym umiłowanym:"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 7,
+        "content": [
+          "W którym mamy odkupienie przez krew jego, to jest odpuszczenie grzechów, według bogactwa łaski jego,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 8,
+        "content": [
+          "Którą hojnie pokazał przeciwko nam we wszelkiej mądrości i roztropności."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 9,
+        "content": [
+          "Oznajmiwszy nam tajemnicę woli swojej według upodobania swego, które był postanowił w samym sobie;"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 10,
+        "content": [
+          "Aby w rozrządzeniu zupełności czasów w jedno zgromadził wszystkie rzeczy w Chrystusie, i te, które są na niebiesiech, i te, które są na ziemi;"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 11,
+        "content": [
+          "W nim, mówię, w którymeśmy i do działu przypuszczeni, przenaznaczeni będąc według postanowienia tego, który sprawuje wszystko według rady woli swojej;"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 12,
+        "content": [
+          "Abyśmy my byli ku chwale sławy jego, którzyśmy pierwej nadzieję mieli w Chrystusie,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 13,
+        "content": [
+          "W którym i wy nadzieję macie, usłyszawszy słowo prawdy, to jest Ewangieliję zbawienia waszego, przez którą też uwierzywszy, jesteście zapieczętowani Duchem onym Świętym obiecanym,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 14,
+        "content": [
+          "Który jest zadatkiem dziedzictwa naszego na wykupienie nabytej własności, ku chwale sławy jego."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 15,
+        "content": [
+          "Przetoż i ja usłyszawszy o tej wierze, którą macie w Panu Jezusie, i o miłości ku wszystkim świętym,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 16,
+        "content": [
+          "Nie przestaję dziękować za was, wzmiankę czyniąc o was w modlitwach moich,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 17,
+        "content": [
+          "Aby Bóg Pana naszego Jezusa Chrystusa, Ojciec on chwały, dał wam Ducha mądrości i objawienia ku poznaniu samego siebie;"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 18,
+        "content": [
+          "Ażeby oświecił oczy myśli waszej, abyście wiedzieli, która jest nadzieja powołania jego i które jest bogactwo chwały dziedzictwa jego w świętych;"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 19,
+        "content": [
+          "I która jest ona przewyższająca wielkość mocy jego przeciwko nam, którzy wierzymy według skutecznej mocy siły jego,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 20,
+        "content": [
+          "Której dokazał w Chrystusie, gdy go wzbudził od umarłych i posadził na prawicy swojej na niebiesiech,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 21,
+        "content": [
+          "Wysoko nad wszystkie księstwa i zwierzchności, i mocy, i państwa, i nad wszelkie imię, które się mianuje, nie tylko w tym wieku, ale i w przyszłym;"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 22,
+        "content": [
+          "I wszystko poddał pod nogi jego, a onego dał za głowę nad wszystkim kościołowi,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 23,
+        "content": [
+          "Który jest ciałem jego i pełnością tego, który wszystko we wszystkich napełnia."
+        ]
+      }
+    ]
+  },
+  "numberOfVerses": 23
+}

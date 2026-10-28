@@ -327,26 +327,27 @@ export async function resolveChapterData(
   const bollsId = verMeta?.bollsId;
   const licInfo = helloaoId ? licensesMap[helloaoId] : undefined;
 
-  // 2A. For Ephesians 1, check local 28-edition Wisdom Bible Seed JSON (/seed/${helloaoId}.json) first!
+  // 2A. For Ephesians 1, check local Wisdom Bible Seed JSON (/seed/${seedName}.json) first!
   // (Except for NKJV which uses our dedicated NKJV Study Corpus)
+  const seedName = helloaoId || versionId;
   if (
     book.id === 'EPH' &&
     validChapter === 1 &&
-    helloaoId &&
+    seedName &&
     versionId !== 'nkjv' &&
     typeof window !== 'undefined'
   ) {
     try {
-      const seedRes = await fetch(`/seed/${encodeURIComponent(helloaoId)}.json`);
+      const seedRes = await fetch(`/seed/${encodeURIComponent(seedName)}.json`);
       if (seedRes.ok) {
         const seedJson = await seedRes.json();
         const parsedSeed = parseHelloaoChapterPayload(
           seedJson,
           versionId,
-          helloaoId,
+          seedName,
           book,
           validChapter,
-          `Wisdom Seed Corpus (${helloaoId})`
+          `Wisdom Seed Corpus (${seedName})`
         );
         if (parsedSeed) {
           memoryCache.set(memKey, parsedSeed);
@@ -603,17 +604,39 @@ export async function resolveChapterData(
     }
   }
 
-  // 4D-GA. Dedicated Authentic Ga Scripture Provider (Bible Society of Ghana NEGAB / Ŋmalɛ Krɔŋkrɔŋ Lɛ)
-  if (versionId === 'gaa' || verMeta?.langCode === 'gaa') {
+  // 4D-Native. Dedicated Authentic Regional Vernacular Provider (Ga, Amharic, Zulu)
+  const nativeProviders: Record<string, { verId: string; tag: string; source: string; lic: string }> = {
+    gaa: {
+      verId: '2708',
+      tag: 'NEGAB',
+      source: 'Bible Society of Ghana (NEGAB Ŋmalɛ Krɔŋkrɔŋ Lɛ)',
+      lic: 'The Bible Society of Ghana (NEGAB)',
+    },
+    am: {
+      verId: '1260',
+      tag: 'NASV',
+      source: 'Bible Society of Ethiopia / Biblica (NASV አዲሱ መደበኛ ትርጒም)',
+      lic: 'Bible Society of Ethiopia / Biblica',
+    },
+    zu: {
+      verId: '286',
+      tag: 'ZUL59',
+      source: 'Bible Society of South Africa (IBhayibheli Eliyingcwele 1959)',
+      lic: 'Bible Society of South Africa (ZUL59)',
+    },
+  };
+
+  const matchedNative = nativeProviders[versionId] || nativeProviders[verMeta?.langCode];
+  if (matchedNative) {
     try {
       const usfmBook = book.id.toUpperCase();
-      const gaRes = await fetchWithTimeout(
-        `https://www.bible.com/bible/2708/${encodeURIComponent(usfmBook)}.${validChapter}.NEGAB`,
+      const nativeRes = await fetchWithTimeout(
+        `https://www.bible.com/bible/${matchedNative.verId}/${encodeURIComponent(usfmBook)}.${validChapter}.${matchedNative.tag}`,
         3500
       );
-      if (gaRes.ok) {
-        const gaHtml = await gaRes.text();
-        const strippedHtml = gaHtml.replace(/<span class="[^"]*note[^"]*"[\s\S]*?<\/span>\s*<\/span>/gi, '');
+      if (nativeRes.ok) {
+        const nativeHtml = await nativeRes.text();
+        const strippedHtml = nativeHtml.replace(/<span class="[^"]*note[^"]*"[\s\S]*?<\/span>\s*<\/span>/gi, '');
         const reg = new RegExp(
           `data-usfm="${usfmBook}\\.${validChapter}\\.(\\d+)"[^>]*>([\\s\\S]*?)(?=<span class="[^"]*verse" data-usfm="${usfmBook}\\.${validChapter}\\.|\\<\\/div\\>|$)`,
           'gi'
@@ -648,14 +671,14 @@ export async function resolveChapterData(
             text: versesMap[vNum],
           }));
           const result: ChapterData = {
-            versionId: 'gaa',
+            versionId,
             bookId: book.id,
             bookSlug: book.slug,
-            bookLocalName: book.names.gaa || book.names.en,
+            bookLocalName: book.names[verMeta?.langCode] || book.names.en,
             chapter: validChapter,
             verses,
-            source: 'Bible Society of Ghana (NEGAB Ŋmalɛ Krɔŋkrɔŋ Lɛ)',
-            licenseText: 'The Bible Society of Ghana (NEGAB)',
+            source: matchedNative.source,
+            licenseText: matchedNative.lic,
           };
           memoryCache.set(memKey, result);
           await setCachedChapter(result);
@@ -668,12 +691,14 @@ export async function resolveChapterData(
   }
 
   // 4E. Try bible-api.com base English + adapt to target language if needed
-  // (Strict rule: NEVER disguise English KJV text as Ga or Ewe vernacular)
+  // (Strict rule: ONLY for English translations — NEVER disguise English KJV text as vernacular translations)
   if (
-    versionId !== 'gaa' &&
-    versionId !== 'ee' &&
-    verMeta?.langCode !== 'gaa' &&
-    verMeta?.langCode !== 'ee'
+    verMeta?.langCode === 'en' ||
+    versionId === 'nkjv' ||
+    versionId === 'kjv' ||
+    versionId === 'bsb' ||
+    versionId === 'asv' ||
+    versionId === 'web'
   ) {
     try {
       const res = await fetchWithTimeout(
