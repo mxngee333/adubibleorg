@@ -266,6 +266,41 @@ function stripHtmlAndExtractStrongs(rawHtml: string): {
   return { cleanText, strongsCodes };
 }
 
+/**
+ * Resolves any human input version string (e.g. "NKJV", "KJV", "ASANTE TWI", "twi", "ESV", "NIV", "EWE")
+ * to its canonical version id in BIBLE_VERSIONS.
+ */
+export function resolveVersionId(versionQueryOrCode: string): string {
+  if (!versionQueryOrCode) return 'nkjv';
+  const clean = versionQueryOrCode.trim().toLowerCase();
+
+  // Common aliases
+  if (clean === 'nkjv') return 'nkjv';
+  if (clean === 'kjv') return 'kjv';
+  if (clean === 'niv') return 'niv';
+  if (clean === 'esv') return 'esv';
+  if (clean === 'nlt') return 'nlt';
+  if (clean.includes('asante') || clean === 'twi' || clean.includes('asante twi')) return 'twi';
+  if (clean.includes('akuapem') || clean === 'ak-twi' || clean.includes('akuapem twi')) return 'ak-twi';
+  if (clean.includes('ewe') || clean === 'ee') return 'ee';
+  if (clean.includes('ga') || clean === 'gaa') return 'gaa';
+  if (clean.includes('yoruba') || clean === 'yo') return 'yo';
+  if (clean.includes('hausa') || clean === 'ha') return 'ha';
+  if (clean.includes('french') || clean.includes('louis segond') || clean === 'fr-lsg') return 'fr-lsg';
+  if (clean.includes('spanish') || clean.includes('reina valera') || clean === 'es-rvr') return 'es-rvr';
+
+  // Search built-in versions
+  const found = BIBLE_VERSIONS.find(
+    (v) =>
+      v.id.toLowerCase() === clean ||
+      v.shortCode.toLowerCase() === clean ||
+      v.name.toLowerCase().includes(clean)
+  );
+  if (found) return found.id;
+
+  return 'nkjv';
+}
+
 export async function resolveChapterData(
   versionId: string,
   bookSlugOrId: string,

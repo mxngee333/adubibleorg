@@ -67,6 +67,7 @@ import { StudyVaultDrawer } from './components/StudyVaultDrawer';
 import { AuthSyncModal } from './components/AuthSyncModal';
 import { VerseCardStudioModal } from './components/VerseCardStudioModal';
 import { AnimatedStatusStudioModal } from './components/AnimatedStatusStudioModal';
+import { ScriptureSlideDeckModal } from './components/ScriptureSlideDeckModal';
 import { CommentaryPanel } from './components/CommentaryPanel';
 import { AudioBibleBar } from './components/AudioBibleBar';
 import { SettingsModal } from './components/SettingsModal';
@@ -356,6 +357,20 @@ export function App() {
     );
   });
 
+  // Scripture Slide Deck Presentation Mode State (Cinematic Slider Mode)
+  const [isSlideDeckOpen, setIsSlideDeckOpen] = useState<boolean>(false);
+
+  const handleOpenSlideDeck = useCallback((targetVerse?: number) => {
+    if (typeof targetVerse === 'number') {
+      setSelectedVerse(targetVerse);
+    }
+    setIsSlideDeckOpen(true);
+  }, []);
+
+  const handleCloseSlideDeck = useCallback(() => {
+    setIsSlideDeckOpen(false);
+  }, []);
+
   const handleToggleFullscreen = useCallback(() => {
     if (typeof document === 'undefined') return;
     const doc = document as any;
@@ -414,21 +429,32 @@ export function App() {
     document.addEventListener('mozfullscreenchange', handleFullscreenChange);
     document.addEventListener('MSFullscreenChange', handleFullscreenChange);
 
-    // Global keyboard shortcut: Pressing 'f' (when not inside an input/textarea/select) toggles presentation fullscreen
+    // Global keyboard shortcuts:
+    // 'F' toggles presentation fullscreen
+    // 'S' toggles scripture slide deck mode
     const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const tag = target?.tagName?.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select' || target?.isContentEditable) {
+        return;
+      }
+
       if (
         (e.key === 'f' || e.key === 'F') &&
         !e.ctrlKey &&
         !e.metaKey &&
         !e.altKey
       ) {
-        const target = e.target as HTMLElement | null;
-        const tag = target?.tagName?.toLowerCase();
-        if (tag === 'input' || tag === 'textarea' || tag === 'select' || target?.isContentEditable) {
-          return;
-        }
         e.preventDefault();
         handleToggleFullscreen();
+      } else if (
+        (e.key === 's' || e.key === 'S') &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.altKey
+      ) {
+        e.preventDefault();
+        setIsSlideDeckOpen((prev) => !prev);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -2501,6 +2527,24 @@ export function App() {
               </button>
               <button
                 type="button"
+                className={`slide-mode-btn ${isSlideDeckOpen ? 'settings-active' : ''}`}
+                onClick={() => handleOpenSlideDeck(selectedVerse || 1)}
+                title="Enter Scripture Slide Mode for Sanctuary / Screen Projection (S)"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  fontWeight: 600,
+                  background: isSlideDeckOpen ? 'rgba(16, 185, 129, 0.2)' : undefined,
+                  borderColor: isSlideDeckOpen ? '#10b981' : undefined,
+                  color: isSlideDeckOpen ? '#10b981' : undefined,
+                }}
+              >
+                <span>📽️</span>
+                <span>Slide Mode</span>
+              </button>
+              <button
+                type="button"
                 className={`fullscreen-btn ${isFullscreen ? 'fullscreen-active settings-active' : ''}`}
                 onClick={handleToggleFullscreen}
                 title={
@@ -3384,6 +3428,7 @@ export function App() {
           onSetAutoSync={handleSetAutoSyncReader}
           isFullscreen={isFullscreen}
           onToggleFullscreen={handleToggleFullscreen}
+          onOpenSlideMode={() => handleOpenSlideDeck(selectedVerse || 1)}
           onClose={() => {
             setShowAudioBar(false);
             setIsAudioPlaying(false);
@@ -3550,6 +3595,27 @@ export function App() {
         langCode={currentBook.slug === 'twi' || primaryVersionId.includes('twi') ? 'ak' : 'en'}
       />
 
+      {/* SCRIPTURE SLIDE DECK PRESENTATION MODE MODAL */}
+      <ScriptureSlideDeckModal
+        isOpen={isSlideDeckOpen}
+        onClose={handleCloseSlideDeck}
+        book={currentBook}
+        chapter={currentChapter}
+        initialVerse={selectedVerse || 1}
+        activeVersionIds={activeVersionIds}
+        chaptersByVersion={chaptersByVersion}
+        allVersions={allBibleVersions}
+        bookDisplayName={getBookDisplayName(currentBook)}
+        isAudioPlaying={isAudioPlaying}
+        onToggleAudio={handleTogglePlayPause}
+        currentAudioVerse={currentVersePlaying}
+        onSelectVerse={(vNum) => setSelectedVerse(vNum)}
+        onNextChapter={handleNextChapter}
+        onPrevChapter={handlePreviousChapter}
+        hasNextChapter={currentChapter < currentBook.chapters}
+        hasPrevChapter={currentChapter > 1}
+      />
+
       {/* LEGAL & INSTITUTIONAL PAGES MODAL */}
       <LegalInstitutionalModal
         isOpen={legalModalState.open}
@@ -3603,6 +3669,38 @@ export function App() {
           };
           handleSaveNote(newNote);
         }}
+      />
+
+      {/* SCRIPTURE PRESENTATION SLIDE DECK (SLIDER MODE) */}
+      <ScriptureSlideDeckModal
+        isOpen={isSlideDeckOpen}
+        onClose={handleCloseSlideDeck}
+        book={currentBook}
+        chapter={currentChapter}
+        initialVerse={selectedVerse || 1}
+        activeVersionIds={activeVersionIds}
+        chaptersByVersion={chaptersByVersion}
+        allVersions={allVersions}
+        bookDisplayName={getBookDisplayName(currentBook)}
+        isAudioPlaying={isAudioPlaying}
+        onToggleAudio={handleToggleAudio}
+        currentAudioVerse={selectedVerse || 1}
+        onSelectVerse={(vNum) => {
+          setSelectedVerse(vNum);
+          setActiveVerseActionBar(vNum);
+        }}
+        onNextChapter={() => handleStepChapter(1)}
+        onPrevChapter={() => handleStepChapter(-1)}
+        hasNextChapter={
+          !(
+            currentBook.id ===
+              activeCollectionBooks[activeCollectionBooks.length - 1]?.id &&
+            currentChapter >= currentBook.chapters
+          )
+        }
+        hasPrevChapter={
+          !(currentBook.id === activeCollectionBooks[0]?.id && currentChapter <= 1)
+        }
       />
 
       {/* MOBILE BOTTOM THUMB NAVIGATION DOCK */}

@@ -15,6 +15,7 @@ import {
   Film,
   Music,
   ExternalLink,
+  Key,
 } from 'lucide-react';
 import {
   StatusVideoRenderer,
@@ -25,7 +26,17 @@ import {
 import {
   GOOGLE_NEURAL_VOICES,
   GoogleNeuralVoiceName,
+  cleanVerseForSpeech,
+  getStoredGeminiKey,
+  setStoredGeminiKey,
+  getOrPreloadAudioBuffer,
 } from '../services/neuralTtsService';
+import {
+  getAllCanonicalBooks,
+  resolveChapterData,
+  resolveVersionId,
+} from '../services/bibleEngineService';
+import { parsePassageQuery } from '../services/passageService';
 
 export interface AnimatedStatusStudioModalProps {
   isOpen: boolean;
@@ -120,10 +131,19 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
   // Video customization state
   const [selectedTheme, setSelectedTheme] = useState<StatusVideoTheme>(STATUS_THEMES[0]);
   const [aspectRatio, setAspectRatio] = useState<VideoAspectRatio>('3:4');
-  const [voiceName, setVoiceName] = useState<GoogleNeuralVoiceName>('Charon');
+  const [voiceName, setVoiceName] = useState<GoogleNeuralVoiceName>('Kore');
   const [includeAmbientMusic, setIncludeAmbientMusic] = useState<boolean>(true);
   const [boldTypography, setBoldTypography] = useState<boolean>(true);
   const [voiceBoost, setVoiceBoost] = useState<boolean>(true);
+  const [testingVoiceId, setTestingVoiceId] = useState<string | null>(null);
+  const [geminiKey, setGeminiKey] = useState<string>(getStoredGeminiKey());
+  const [geminiKeyInput, setGeminiKeyInput] = useState<string>(getStoredGeminiKey());
+  const [showKeyInput, setShowKeyInput] = useState<boolean>(false);
+
+  // Real-time scripture passage resolution state
+  const lastResolvedKeyRef = useRef<string>('');
+  const [isLookingUpVerse, setIsLookingUpVerse] = useState<boolean>(false);
+  const [lookupStatus, setLookupStatus] = useState<string>('');
 
   // Playback & Export state
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -151,6 +171,98 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
     }
     if (initialSecondaryVersionName) setSecondaryVersionName(initialSecondaryVersionName);
   }, [initialReference, initialText, initialVersionName, initialSecondaryText, initialSecondaryVersionName]);
+
+  // Real-time scripture reference & translation lookup (e.g. "Psalm 3:3", "John 3:16", "Dwom 23:1")
+  useEffect(() => {
+    if (!isOpen || !reference.trim()) return;
+    const queryKey = `${reference.trim()}_${versionName.trim()}`;
+    if (lastResolvedKeyRef.current === queryKey) return;
+
+    const timer = setTimeout(async () => {
+      const books = getAllCanonicalBooks();
+      const parsed = parsePassageQuery(reference, books);
+      if (!parsed) {
+        setLookupStatus('');
+        return;
+      }
+
+      setIsLookingUpVerse(true);
+      setLookupStatus('Finding verse...');
+
+      try {
+        const vId = resolveVersionId(versionName);
+        const chapterData = await resolveChapterData(vId, parsed.book.slug, parsed.chapter);
+        if (chapterData && chapterData.verses && chapterData.verses.length > 0) {
+          let selectedText = '';
+          if (parsed.verse) {
+            if (parsed.endVerse && parsed.endVerse >= parsed.verse) {
+              const rangeVerses = chapterData.verses.filter(
+                (v) => v.verse >= parsed.verse! && v.verse <= parsed.endVerse!
+              );
+              if (rangeVerses.length > 0) {
+                selectedText = rangeVerses.map((v) => cleanVerseForSpeech(v.text)).join(' ');
+              }
+            }
+            if (!selectedText) {
+              const matched = chapterData.verses.find((v) => v.verse === parsed.verse);
+              if (matched) {
+                selectedText = cleanVerseForSpeech(matched.text);
+              }
+            }
+          }
+          if (!selectedText && chapterData.verses[0]) {
+            selectedText = cleanVerseForSpeech(chapterData.verses[0].text);
+          }
+
+          if (selectedText) {
+            setVerseText(selectedText);
+            lastResolvedKeyRef.current = queryKey;
+            setLookupStatus(`${parsed.book.names.en} ${parsed.chapter}${parsed.verse ? `:${parsed.verse}` : ''}`);
+            setTimeout(() => setLookupStatus(''), 3000);
+          }
+        }
+      } catch (err) {
+        console.warn('[AnimatedStatusStudioModal] Real-time lookup error:', err);
+        setLookupStatus('');
+      } finally {
+        setIsLookingUpVerse(false);
+      }
+    }, 320);
+
+    return () => clearTimeout(timer);
+  }, [isOpen, reference, versionName]);
+
+  const handleTestVoice = async (vId: GoogleNeuralVoiceName) => {
+    setTestingVoiceId(vId);
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = new AudioContextClass();
+      const testPhrase = verseText ? verseText.slice(0, 90) : 'The Lord is my shepherd, I shall not want.';
+      const buffer = await getOrPreloadAudioBuffer(ctx, testPhrase, langCode, vId);
+      if (buffer) {
+        const src = ctx.createBufferSource();
+        src.buffer = buffer;
+        src.connect(ctx.destination);
+        src.onended = () => setTestingVoiceId(null);
+        src.start();
+      } else {
+        setTestingVoiceId(null);
+      }
+    } catch {
+      setTestingVoiceId(null);
+    }
+  };
+
+  const handleSaveGeminiKey = () => {
+    const clean = geminiKeyInput.trim();
+    setStoredGeminiKey(clean);
+    setGeminiKey(clean);
+    setShowKeyInput(false);
+    setShareNotice(clean ? '✦ Google Gemini 24kHz Studio Key active!' : 'Gemini Key cleared.');
+    setTimeout(() => setShareNotice(''), 4000);
+    handlePreloadAudio();
+  };
 
   // Initialize or reconfigure renderer
   useEffect(() => {
@@ -492,28 +604,62 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
           {/* LEFT COLUMN: Controls, Search, Themes & Voices (7 cols) */}
           <div className="lg:col-span-7 space-y-5">
             {/* 1. Scripture Passage Input & Search */}
-            <div className="bg-stone-950/60 p-4 rounded-xl border border-stone-800 space-y-3">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Scripture Passage
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={reference}
-                    onChange={(e) => setReference(e.target.value)}
-                    placeholder="e.g. John 3:16"
-                    className="w-28 sm:w-36 text-xs bg-stone-900 border border-stone-700 rounded-lg px-2.5 py-1 text-stone-100 font-semibold focus:border-amber-500 outline-none"
-                  />
+            <div className="bg-stone-950/60 p-3 sm:p-4 rounded-xl border border-stone-800 space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div className="flex items-center justify-between sm:justify-start gap-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Scripture Passage
+                  </label>
+                  {isLookingUpVerse && (
+                    <span className="text-[10px] text-amber-400 font-mono animate-pulse flex items-center gap-1">
+                      <Search className="w-3 h-3 animate-spin" /> Finding verse...
+                    </span>
+                  )}
+                  {!isLookingUpVerse && lookupStatus && (
+                    <span className="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
+                      <Check className="w-3 h-3" /> {lookupStatus}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <div className="relative flex-1 sm:w-36">
+                    <input
+                      type="text"
+                      value={reference}
+                      onChange={(e) => setReference(e.target.value)}
+                      placeholder="e.g. Psalm 3:3"
+                      className="w-full text-xs bg-stone-900 border border-stone-700 rounded-lg px-2.5 py-1.5 text-stone-100 font-semibold focus:border-amber-500 outline-none placeholder:text-stone-500"
+                    />
+                  </div>
                   <input
                     type="text"
                     value={versionName}
                     onChange={(e) => setVersionName(e.target.value)}
                     placeholder="NKJV"
-                    className="w-20 text-xs bg-stone-900 border border-stone-700 rounded-lg px-2 py-1 text-amber-300 font-semibold focus:border-amber-500 outline-none text-center"
+                    className="w-24 text-xs bg-stone-900 border border-stone-700 rounded-lg px-2 py-1.5 text-amber-300 font-semibold focus:border-amber-500 outline-none text-center uppercase"
                   />
                 </div>
+              </div>
+
+              {/* Mobile Quick Version Selector Chips */}
+              <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                <span className="text-[10px] text-stone-400 font-medium">Quick Version:</span>
+                {['NKJV', 'KJV', 'ASANTE TWI', 'ESV', 'NIV', 'NLT'].map((vCode) => (
+                  <button
+                    key={vCode}
+                    type="button"
+                    onClick={() => setVersionName(vCode)}
+                    className={`text-[10px] px-2 py-0.5 rounded-md font-semibold transition-all ${
+                      versionName.toUpperCase() === vCode
+                        ? 'bg-amber-500 text-stone-950 shadow-sm font-bold'
+                        : 'bg-stone-900 border border-stone-800 text-stone-400 hover:text-stone-200 hover:border-stone-700'
+                    }`}
+                  >
+                    {vCode}
+                  </button>
+                ))}
               </div>
 
               <textarea
@@ -602,16 +748,16 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
             </div>
 
             {/* 3. Audio & Neural Voice Settings */}
-            <div className="bg-stone-950/60 p-4 rounded-xl border border-stone-800 space-y-3">
+            <div className="bg-stone-950/60 p-3.5 sm:p-4 rounded-xl border border-stone-800 space-y-3">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
                   <Volume2 className="w-3.5 h-3.5" />
-                  24kHz Google Neural Voice Narration
+                  24kHz Google Studio Voice Narration
                 </label>
                 {audioLoading ? (
-                  <span className="text-[11px] text-amber-400 animate-pulse">Synthesizing audio...</span>
+                  <span className="text-[11px] text-amber-400 animate-pulse font-mono">Synthesizing audio...</span>
                 ) : audioLoaded ? (
-                  <span className="text-[11px] text-emerald-400 flex items-center gap-1">
+                  <span className="text-[11px] text-emerald-400 flex items-center gap-1 font-mono">
                     <Check className="w-3 h-3" /> Voice Ready
                   </span>
                 ) : null}
@@ -620,22 +766,85 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {GOOGLE_NEURAL_VOICES.map((v) => {
                   const isSelected = voiceName === v.id;
+                  const isTesting = testingVoiceId === v.id;
                   return (
-                    <button
+                    <div
                       key={v.id}
-                      type="button"
                       onClick={() => setVoiceName(v.id)}
-                      className={`p-2 rounded-lg border text-left transition-all ${
+                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                         isSelected
-                          ? 'bg-amber-500/20 border-amber-500 text-amber-200'
+                          ? 'bg-amber-500/20 border-amber-500 text-amber-200 ring-2 ring-amber-500/20'
                           : 'bg-stone-900 border-stone-800 text-stone-300 hover:border-stone-700'
                       }`}
                     >
-                      <div className="text-xs font-bold">{v.name.split(' ')[0]}</div>
-                      <div className="text-[10px] text-stone-400">{v.tone}</div>
-                    </button>
+                      <div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold">{v.id}</span>
+                          {isSelected && <Check className="w-3.5 h-3.5 text-amber-400" />}
+                        </div>
+                        <div className="text-[10px] text-stone-400 leading-tight mt-0.5 line-clamp-1">{v.tone}</div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTestVoice(v.id);
+                        }}
+                        className={`mt-2 py-1 px-2 rounded-lg text-[10px] font-semibold flex items-center justify-center gap-1 transition-all ${
+                          isTesting
+                            ? 'bg-amber-500 text-stone-950 font-bold animate-pulse'
+                            : 'bg-stone-800 hover:bg-stone-700 text-amber-300'
+                        }`}
+                        title="Listen to sample voice narration"
+                      >
+                        <Volume2 className="w-3 h-3" />
+                        {isTesting ? 'Speaking...' : 'Test Voice'}
+                      </button>
+                    </div>
                   );
                 })}
+              </div>
+
+              {/* Optional Gemini 24kHz API Key Expander */}
+              <div className="pt-2 border-t border-stone-800/80">
+                <div className="flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={() => setShowKeyInput(!showKeyInput)}
+                    className="text-[11px] text-stone-400 hover:text-amber-300 flex items-center gap-1.5 font-medium transition-colors"
+                  >
+                    <Key className="w-3 h-3 text-amber-400" />
+                    <span>{geminiKey ? '✦ Custom Gemini 24kHz Key Active' : 'Add Google Gemini Studio Key (Optional)'}</span>
+                  </button>
+                  {geminiKey && (
+                    <span className="text-[10px] text-emerald-400 font-mono font-semibold">Ready</span>
+                  )}
+                </div>
+
+                {showKeyInput && (
+                  <div className="mt-2 p-2.5 bg-stone-900/90 border border-stone-800 rounded-xl space-y-2">
+                    <p className="text-[10px] text-stone-400 leading-relaxed">
+                      Powered by Google Gemini 24kHz Audio Modality (<span className="text-amber-300">gemini-3.1-flash-tts-preview</span>). Natural Google voice fallback is active by default. Enter your free API key for custom rate limit quotas.
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="password"
+                        value={geminiKeyInput}
+                        onChange={(e) => setGeminiKeyInput(e.target.value)}
+                        placeholder="Paste AIzaSy... key"
+                        className="flex-1 text-xs bg-stone-950 border border-stone-700 rounded-lg px-2.5 py-1.5 text-stone-100 font-mono outline-none focus:border-amber-500 placeholder:text-stone-600"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleSaveGeminiKey}
+                        className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs rounded-lg transition-colors shadow-sm"
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center justify-between pt-1 text-xs">
@@ -744,26 +953,27 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
           {/* RIGHT COLUMN: Live Canvas Stage, Controls & Viral Share Suite (5 cols) */}
           <div className="lg:col-span-5 flex flex-col items-center space-y-4">
             {/* Live Canvas Stage */}
-            <div className="relative w-full flex items-center justify-center bg-stone-950 p-2 sm:p-3 rounded-2xl border border-stone-800 shadow-inner">
+            <div className="relative w-full flex items-center justify-center bg-stone-950 p-2 sm:p-3 rounded-2xl border border-stone-800 shadow-inner overflow-hidden">
               <div
-                className="relative overflow-hidden rounded-xl shadow-2xl border border-stone-800/80 bg-black flex items-center justify-center transition-all duration-200"
+                className="relative overflow-hidden rounded-xl shadow-2xl border border-stone-800/80 bg-black flex items-center justify-center transition-all duration-200 max-w-full"
                 style={{
                   width:
                     aspectRatio === '3:4'
-                      ? '285px'
+                      ? 'min(100%, 285px)'
                       : aspectRatio === '9:16'
-                      ? '240px'
+                      ? 'min(100%, 240px)'
                       : aspectRatio === '1:1'
-                      ? '290px'
-                      : '340px',
-                  height:
+                      ? 'min(100%, 290px)'
+                      : 'min(100%, 340px)',
+                  aspectRatio:
                     aspectRatio === '3:4'
-                      ? '380px'
+                      ? '3 / 4'
                       : aspectRatio === '9:16'
-                      ? '426px'
+                      ? '9 / 16'
                       : aspectRatio === '1:1'
-                      ? '290px'
-                      : '191px',
+                      ? '1 / 1'
+                      : '16 / 9',
+                  maxHeight: '440px',
                 }}
               >
                 <canvas

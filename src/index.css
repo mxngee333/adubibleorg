@@ -5692,17 +5692,61 @@ body.presentation-fullscreen-mode .reading-shell {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7) !important;
 }
 
-body.presentation-fullscreen-mode .verse-row.audio-active-row,
-body.presentation-fullscreen-mode .verse-row.selected-row {
-  background: rgba(245, 158, 11, 0.2) !important;
-  border-left: 6px solid #f59e0b !important;
-  box-shadow: 0 4px 28px rgba(245, 158, 11, 0.25) !important;
-  border-radius: 4px !important;
+body.presentation-fullscreen-mode .verse-text-body p {
+  font-size: calc(var(--reading-size) * 1.05) !important;
+  line-height: 1.65 !important;
 }
 
-body.presentation-fullscreen-mode .verse-text-body p {
-  font-size: calc(var(--reading-size) * 1.08) !important;
-  line-height: 1.7 !important;
+/* SCRIPTURE SLIDE DECK TRANSITION ANIMATIONS */
+@keyframes slideInFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(45px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-45px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slideFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.scripture-slide-card.slide-anim-next {
+  animation: slideInFromRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.scripture-slide-card.slide-anim-prev {
+  animation: slideInFromLeft 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.scripture-slide-card.slide-anim-none {
+  animation: slideFadeIn 0.22s ease-out forwards;
+}
+
+@media (max-width: 768px) {
+  .hide-mobile-sm {
+    display: none !important;
+  }
 }
 
 /* Minimized Floating Pill Mode */

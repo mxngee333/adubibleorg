@@ -4,6 +4,7 @@ export interface ParsedPassage {
   book: BibleBook;
   chapter: number;
   verse?: number;
+  endVerse?: number;
 }
 
 // Canonical and historical Bible book aliases for rapid, forgiving auto-input
@@ -296,27 +297,30 @@ export function parsePassageQuery(query: string, books: BibleBook[]): ParsedPass
   const raw = query.trim();
   if (!raw) return null;
 
-  // Regex matches: [Book part] [optional space] [Chapter digits] [optional delimiter] [optional Verse digits]
+  // Regex matches: [Book part] [optional space] [Chapter digits] [optional delimiter] [optional Verse digits] [optional range - EndVerse]
   // Examples matched:
-  // "Psalm 2:2", "ps 2;2", "ps2:2", "ps 2 2", "psalm 125", "1 cor 13:4", "2 Cor 5;17"
-  const pattern = /^([1-4]?\s*[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+)\s*(\d+)?(?:[:;,\.\s](\d+))?$/i;
+  // "Psalm 2:2", "ps 2;2", "ps2:2", "ps 2 2", "psalm 125", "Psalm 23:1-3", "1 cor 13:4-8", "2 Cor 5;17", "Jn 3:16"
+  const pattern = /^([1-4]?\s*[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+)\s*(\d+)?(?:[:;,\.\s](\d+)(?:[-–](\d+))?)?$/i;
   const match = raw.match(pattern);
   if (!match) return null;
 
   const bookPart = match[1].trim();
   const rawCh = match[2] ? parseInt(match[2], 10) : undefined;
   const rawVerse = match[3] ? parseInt(match[3], 10) : undefined;
+  const rawEndVerse = match[4] ? parseInt(match[4], 10) : undefined;
 
   const matchedBook = findBookByQuery(bookPart, books);
   if (!matchedBook) return null;
 
   const validChapter = rawCh ? Math.min(Math.max(1, rawCh), matchedBook.chapters) : 1;
   const validVerse = rawVerse && rawVerse > 0 ? rawVerse : undefined;
+  const validEndVerse = rawEndVerse && rawVerse && rawEndVerse >= rawVerse ? rawEndVerse : undefined;
 
   return {
     book: matchedBook,
     chapter: validChapter,
     verse: validVerse,
+    endVerse: validEndVerse,
   };
 }
 

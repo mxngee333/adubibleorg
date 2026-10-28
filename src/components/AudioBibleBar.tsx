@@ -41,6 +41,7 @@ interface AudioBibleBarProps {
   onSetAutoSync?: (enabled: boolean) => void;
   isFullscreen?: boolean;
   onToggleFullscreen?: () => void;
+  onOpenSlideMode?: () => void;
 }
 
 const SAVED_VOICE_KEY = 'elohim_neural_voice_v1';
@@ -70,6 +71,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   onSetAutoSync,
   isFullscreen = false,
   onToggleFullscreen,
+  onOpenSlideMode,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoadingVerse, setIsLoadingVerse] = useState(false);
@@ -1303,6 +1305,19 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             </button>
           )}
 
+          {/* Slide Mode Presentation Button */}
+          {onOpenSlideMode && (
+            <button
+              type="button"
+              className="audio-bar-toggle-pill"
+              onClick={onOpenSlideMode}
+              title="Enter Scripture Slide Mode for Sanctuary / Screen Projection (S)"
+            >
+              <span>📽️</span>
+              <span className="pill-label">Slide Mode</span>
+            </button>
+          )}
+
           {/* Studio MP3 toggle */}
           {audioUrl && !bilingualMode && (
             <button
@@ -1488,6 +1503,19 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
               >
                 <span>{isFullscreen ? '🗗' : '⛶'}</span>
                 <span>{isFullscreen ? 'Windowed' : 'Fullscreen'}</span>
+              </button>
+            )}
+
+            {/* Slide Mode Presentation Button */}
+            {onOpenSlideMode && (
+              <button
+                type="button"
+                className="audio-bar-toggle-pill"
+                onClick={onOpenSlideMode}
+                title="Enter Scripture Slide Mode for Sanctuary / Screen Projection (S)"
+              >
+                <span>📽️</span>
+                <span>Slide Mode</span>
               </button>
             )}
 

@@ -7,7 +7,8 @@
 
 import {
   synthesizeNeuralAudio,
-  decodePcm24kToAudioBuffer,
+  decodeUniversalAudioToBuffer,
+  getOrPreloadAudioBuffer,
   GoogleNeuralVoiceName,
 } from './neuralTtsService';
 
@@ -156,12 +157,11 @@ function drawRoundedRect(
 }
 
 /**
- * Synthesizes an articulate, reverent scripture recitation AudioBuffer directly using Web Audio DSP.
- * Used when network TTS is offline or unconfigured, guaranteeing the status video ALWAYS has sound!
+ * Creates an ultra-clean, sacred acoustic chime buffer as graceful fallback
+ * when network voice narration is completely offline, ensuring zero keyboard or buzzing artifacts!
  */
-export function synthesizeFormantRecitation(
+export function createSacredChimeBuffer(
   audioCtx: AudioContext,
-  text: string,
   durationSec: number = 8.5
 ): AudioBuffer {
   const sampleRate = audioCtx.sampleRate || 24000;
@@ -169,83 +169,17 @@ export function synthesizeFormantRecitation(
   const buffer = audioCtx.createBuffer(1, numSamples, sampleRate);
   const data = buffer.getChannelData(0);
 
-  const words = text.split(/\s+/).filter(Boolean);
-  if (words.length === 0) return buffer;
-
-  const wordDuration = Math.min(0.65, (durationSec - 1.2) / words.length);
-  const startOffset = 0.6; // 600ms initial breath
-
-  // Formant tables for natural resonant vocal simulation
-  const vowels = [
-    { f1: 750, f2: 1220, f3: 2500 }, // 'a' (open)
-    { f1: 500, f2: 1750, f3: 2600 }, // 'e' (mid-high)
-    { f1: 320, f2: 2150, f3: 2900 }, // 'i' (high)
-    { f1: 500, f2: 950, f3: 2400 },  // 'o' (round)
-    { f1: 340, f2: 820, f3: 2200 },  // 'u' (deep)
-  ];
-
-  words.forEach((word, wIdx) => {
-    const wordStart = startOffset + wIdx * wordDuration;
-    const wordEnd = wordStart + wordDuration * 0.88;
-    const sStart = Math.floor(wordStart * sampleRate);
-    const sEnd = Math.min(numSamples, Math.floor(wordEnd * sampleRate));
-    const wordLen = sEnd - sStart;
-
-    // Pick formant based on word hash
-    const vIdx = Math.abs(word.charCodeAt(0) + (word.charCodeAt(1) || 0)) % vowels.length;
-    const fmt = vowels[vIdx];
-
-    // Pitch trajectory: declination with word-stress pitch bump
-    const basePitch = 120 + Math.sin(wIdx * 0.6) * 12 - (wIdx / words.length) * 10;
-
-    for (let i = 0; i < wordLen; i++) {
-      const idx = sStart + i;
-      if (idx >= numSamples) break;
-
-      const progress = i / wordLen;
-      // Natural vocal envelope (attack, sustain, decay)
-      let env = 1.0;
-      if (progress < 0.12) {
-        env = progress / 0.12;
-      } else if (progress > 0.75) {
-        env = (1.0 - progress) / 0.25;
-      }
-
-      // Voice glottal source
-      const t = i / sampleRate;
-      const pitch = basePitch + Math.sin(t * 35) * 2;
-      const glottal =
-        Math.sin(2 * Math.PI * pitch * t) * 0.55 +
-        Math.sin(4 * Math.PI * pitch * t) * 0.28 +
-        Math.sin(6 * Math.PI * pitch * t) * 0.12;
-
-      // Resonators
-      const r1 = Math.sin(2 * Math.PI * fmt.f1 * t) * 0.45;
-      const r2 = Math.sin(2 * Math.PI * fmt.f2 * t) * 0.32;
-      const r3 = Math.sin(2 * Math.PI * fmt.f3 * t) * 0.18;
-
-      // Subtle consonant aspiration burst at word start/end
-      let noise = 0;
-      if (progress < 0.08 || progress > 0.82) {
-        noise = (Math.random() * 2 - 1) * 0.08;
-      }
-
-      const sample = (glottal * 0.3 + (r1 + r2 + r3) * 0.6 + noise) * env;
-      data[idx] += sample * 0.48;
-    }
-  });
-
-  // Soft peak normalization
-  let maxAmp = 0;
-  for (let i = 0; i < numSamples; i++) {
-    const abs = Math.abs(data[i]);
-    if (abs > maxAmp) maxAmp = abs;
-  }
-  if (maxAmp > 0) {
-    const gain = 0.85 / maxAmp;
-    for (let i = 0; i < numSamples; i++) {
-      data[i] *= gain;
-    }
+  // Gentle, warm 432Hz harmonic bell chime at start
+  const chimeFreq = 432.0;
+  const chimeSamples = Math.min(numSamples, Math.floor(sampleRate * 2.5));
+  for (let i = 0; i < chimeSamples; i++) {
+    const t = i / sampleRate;
+    const decay = Math.exp(-t * 2.2);
+    const wave =
+      Math.sin(2 * Math.PI * chimeFreq * t) * 0.45 +
+      Math.sin(2 * Math.PI * chimeFreq * 2 * t) * 0.18 +
+      Math.sin(2 * Math.PI * chimeFreq * 3 * t) * 0.08;
+    data[i] = wave * decay * 0.22;
   }
 
   return buffer;
@@ -363,8 +297,8 @@ export class StatusVideoRenderer {
   }
 
   /**
-   * Pre-loads the neural speech audio into an AudioBuffer using Google Neural Audio or Articulate DSP fallback.
-   * Guarantees that speech audio is ALWAYS available for playback and video export!
+   * Pre-loads the neural speech audio into an AudioBuffer using Google Neural Audio or Google Voice Stream.
+   * Guarantees authentic human voice narration with ZERO synthesizer keyboard sounds!
    */
   public async preloadAudio(): Promise<boolean> {
     try {
@@ -377,32 +311,25 @@ export class StatusVideoRenderer {
         await this.audioCtx.resume();
       }
 
-      const voice = this.options.voiceName || 'Charon';
+      const voice = this.options.voiceName || 'Kore';
       const lang = this.options.langCode || 'en';
 
-      // 1. Try Google Neural Audio (Gemini 24kHz)
-      const base64Audio = await synthesizeNeuralAudio(this.options.verseText, lang, voice);
-      if (base64Audio) {
-        this.speechBuffer = decodePcm24kToAudioBuffer(this.audioCtx, base64Audio);
+      const buffer = await getOrPreloadAudioBuffer(this.audioCtx, this.options.verseText, lang, voice);
+      if (buffer) {
+        this.speechBuffer = buffer;
         return true;
       }
 
-      // 2. High-Fidelity Web Audio DSP Speech Formant Recitation Fallback
-      // Guarantees immediate, high-presence vocal sound with zero silence
-      this.speechBuffer = synthesizeFormantRecitation(
+      // Dignified sacred acoustic chime fallback (zero buzz, zero keyboard drone)
+      this.speechBuffer = createSacredChimeBuffer(
         this.audioCtx,
-        this.options.verseText,
         Math.min(8.5, this.duration - 1.2)
       );
       return true;
     } catch (err) {
-      console.warn('[StatusVideoEngine] Speech preload warning, using DSP fallback:', err);
+      console.warn('[StatusVideoEngine] Speech preload warning:', err);
       if (this.audioCtx) {
-        this.speechBuffer = synthesizeFormantRecitation(
-          this.audioCtx,
-          this.options.verseText,
-          8.0
-        );
+        this.speechBuffer = createSacredChimeBuffer(this.audioCtx, 8.0);
         return true;
       }
       return false;
@@ -1224,9 +1151,8 @@ export class StatusVideoRenderer {
 
         // Speech Narration with Studio Presence Boost
         if (!this.speechBuffer) {
-          this.speechBuffer = synthesizeFormantRecitation(
+          this.speechBuffer = createSacredChimeBuffer(
             this.audioCtx,
-            this.options.verseText,
             8.0
           );
         }
