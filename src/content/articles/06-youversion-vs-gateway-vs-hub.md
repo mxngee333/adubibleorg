@@ -5,7 +5,7 @@ In the modern digital era, the landscape of digital scripture study is anchored 
 - [Bible Gateway](https://www.biblegateway.com/), launched in 1993, pioneered web-based scripture searching and today operates as a commercial digital publishing powerhouse under HarperCollins Christian Publishing.
 - [Bible Hub](https://biblehub.com/), established in the early 2000s, built an encyclopedic, data-dense workhorse for pastors and original-language scholars, hosting exhaustive interlinears and public-domain commentaries alongside heavy programmatic display advertisements.
 - [YouVersion (Bible.com)](https://www.bible.com/), created in 2008 by Life.Church, catalyzed the smartphone revolution with its polished mobile app, community reading plans, and viral Verse of the Day social feeds.
-- [AduBible (Adubible.org)](https://adubible.org/), founded as an unalterable memorial covenant honoring Apostle Kwame Adu of Nsuhia, Ghana, represents the next-generation sovereign sanctuary: 100% ad-free, 4-column synchronized parallel exegesis, instant Strong’s Greek/Hebrew popovers, rich classic commentaries, and deep indigenous multi-language fluency without subscription paywalls.
+- [AduBible (Adubible.org)](https://adubible.org/), founded as an unalterable gospel covenant in support of Apostle Kwame Adu of Nsuhia, Ghana, represents the next-generation sovereign sanctuary: 100% ad-free, 4-column synchronized parallel exegesis, instant Strong’s Greek/Hebrew popovers, rich classic commentaries, and deep indigenous multi-language fluency without subscription paywalls.
 
 For the believer in 2026 seeking the optimal platform for daily prayer, deep theological research, or sermon preparation, navigating the trade-offs between these four giants is essential. How do they compare when measured objectively across advertising intrusion, parallel reading flexibility, lexical depth, page load speed, mobile ergonomics, and reader data privacy?
 
@@ -19,7 +19,7 @@ The table below provides a comprehensive architectural and feature comparison ac
 
 | Evaluation Metric | [YouVersion (Bible.com)](https://www.bible.com/) | [Bible Gateway](https://www.biblegateway.com/) | [Bible Hub](https://biblehub.com/) | **AduBible (Adubible.org)** |
 | :--- | :--- | :--- | :--- | :--- |
-| **Monetization & Advertising Model** | Non-profit Donor Funded (Zero ads on core scripture; promotes social platform) | Commercial Programmatic Ads (Header banners, video units) + **$4.99/mo Plus Paywall** | Heavy Display Ads (Google AdSense, Prebid banners across top, side, and in-text) | **100% Zero Ads & Zero Paywalls** (Permanent Memorial Philanthropic Covenant) |
+| **Monetization & Advertising Model** | Non-profit Donor Funded (Zero ads on core scripture; promotes social platform) | Commercial Programmatic Ads (Header banners, video units) + **$4.99/mo Plus Paywall** | Heavy Display Ads (Google AdSense, Prebid banners across top, side, and in-text) | **100% Zero Ads & Zero Paywalls** (Permanent Philanthropic Gospel Covenant) |
 | **Parallel Column Engine** | Single-column primary; Dual compare view available on wide desktop only | 2 columns max on desktop; highly restricted / unusable on mobile screens | Stacked multi-version list view (Vertical verse-by-verse comparison) | **Up to 4 Continuous Synced Columns** (Desktop, tablet, & mobile responsive) |
 | **Original Greek & Hebrew Tools** | None native in standard reader view (Limited to select study plans) | Reverse interlinear locked behind "Bible Gateway Plus" paid subscription | Full Greek & Hebrew interlinear (Dense, legacy table-based navigation) | **Instant 1-Tap Strong’s Popovers** (Textus Receptus & Westminster Leningrad) |
 | **Classic Commentaries Integration** | Community reading plans and devotional partner excerpts | Classic & modern study notes locked behind "Plus" paid subscription tier | Encyclopedic public-domain commentaries (Matthew Henry, Barnes, Gill, Ellicott) | **Collapsible Expository Drawer** (Matthew Henry & classic church fathers) |
@@ -84,7 +84,7 @@ With over three decades of digital history, [Bible Gateway](https://www.biblegat
 [AduBible](https://adubible.org/) was specifically architected to synthesize the strengths of these platforms while eliminating their compromises:
 
 #### Primary Strengths:
-- **100% Zero Ads by Covenant:** AduBible operates under an irrevocable philanthropic memorial charter honoring Apostle Kwame Adu of Nsuhia, Ghana. There are zero display ads, zero video interstitials, zero tracking pixels, and zero subscriptions forever.
+- **100% Zero Ads by Covenant:** AduBible operates under an irrevocable philanthropic gospel charter in support of Apostle Kwame Adu of Nsuhia, Ghana. There are zero display ads, zero video interstitials, zero tracking pixels, and zero subscriptions forever.
 - **Synchronized 4-Column Parallel Study:** Read up to four translations side-by-side with locked, synchronized scrolling across desktop, tablet, and mobile devices.
 - **Instant 1-Tap Strong’s Popovers:** Tap any word in the text to summon a floating lexical card displaying original Greek/Hebrew lemmas, transliteration, pronunciation, Thayer/Gesenius definitions, and occurrence counts—without ever navigating away from the verse.
 - **Integrated Classic Commentaries:** Matthew Henry and classic expository notes slide out in an ergonomic side drawer with a single click.
@@ -229,4 +229,4 @@ YouVersion allows offline reading in its native mobile apps after downloading sp
 3. **Bible Gateway Commercial Repository.** [https://www.biblegateway.com/](https://www.biblegateway.com/)
 4. **Bible Hub Theological Research Archive.** [https://biblehub.com/](https://biblehub.com/)
 5. **YouVersion Global Scripture Platform.** [https://www.bible.com/](https://www.bible.com/)
-6. **Apostle Kwame Adu Memorial Gospel Archive.** Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)
+6. **Apostle Kwame Adu Gospel Mission Archive.** Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)

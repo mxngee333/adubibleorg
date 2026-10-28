@@ -206,7 +206,7 @@ The NKJV was commissioned in 1975 to preserve the exact formal equivalence and T
 Yes. The original 1611 King James Bible included the historical Apocryphal and Deuterocanonical books between the Old and New Testaments. AduBible includes a dedicated **Deuterocanonical & Historical Books Sanctuary** featuring all 16 historical books in synchronized parallel study.
 
 ### Is AduBible completely ad-free when reading the King James Bible?
-Yes. AduBible contains zero advertisements, zero popups, and zero subscription paywalls forever, operating under a permanent philanthropic memorial covenant honoring Apostle Kwame Adu of Nsuhia, Ghana.
+Yes. AduBible contains zero advertisements, zero popups, and zero subscription paywalls forever, operating under a permanent philanthropic gospel covenant in support of Apostle Kwame Adu of Nsuhia, Ghana.
 
 ---
 
@@ -216,4 +216,4 @@ Yes. AduBible contains zero advertisements, zero popups, and zero subscription p
 2. **McGrath, Alister.** *In the Beginning: The Story of the King James Bible and How It Changed a Nation, a Language, and a Culture.* Anchor Books, 2001.
 3. **Carson, D. A.** *The King James Version Debate: A Plea for Realism.* Baker Books, 1979.
 4. **Opfell, Olga S.** *The King James Bible Translators.* McFarland & Company, 1982.
-5. **Apostle Kwame Adu Memorial Gospel Archive.** *Apostolic Heritage and Biblical Preservation.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)
+5. **Apostle Kwame Adu Gospel Mission Archive.** *Apostolic Heritage and Biblical Preservation.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)

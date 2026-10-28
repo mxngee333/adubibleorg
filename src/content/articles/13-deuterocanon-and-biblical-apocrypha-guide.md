@@ -196,7 +196,7 @@ The **Deuterocanon** refers to the specific books included in the Greek Septuagi
 Yes. AduBible includes the Akan Twi translations of the historical and Deuterocanonical scriptures, allowing Ghanaian believers and diaspora researchers to study these ancient texts in their own mother tongue.
 
 ### Is AduBible’s Deuterocanonical Sanctuary completely free of ads?
-Yes. Like all sections of AduBible, the Deuterocanonical Sanctuary is 100% ad-free, operating under a permanent philanthropic memorial covenant honoring Apostle Kwame Adu of Nsuhia, Ghana.
+Yes. Like all sections of AduBible, the Deuterocanonical Sanctuary is 100% ad-free, operating under a permanent philanthropic gospel covenant in support of Apostle Kwame Adu of Nsuhia, Ghana.
 
 ---
 
@@ -206,4 +206,4 @@ Yes. Like all sections of AduBible, the Deuterocanonical Sanctuary is 100% ad-fr
 2. **deSilva, David A.** *Introducing the Apocrypha: Message, Context, and Significance.* 2nd ed., Baker Academic, 2018.
 3. **Charles, R. H., editor.** *The Apocrypha and Pseudepigrapha of the Old Testament in English.* 2 vols., Clarendon Press, 1913.
 4. **Hengel, Martin.** *The Septuagint as Christian Scripture: Its Prehistory and the Problem of Its Canon.* Translated by Mark E. Biddle, T&T Clark, 2002.
-5. **Apostle Kwame Adu Memorial Gospel Archive.** *Historical Canons and Sovereign Scripture Transmission.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)
+5. **Apostle Kwame Adu Gospel Mission Archive.** *Historical Canons and Sovereign Scripture Transmission.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)

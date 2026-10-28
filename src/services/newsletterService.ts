@@ -132,7 +132,7 @@ export async function subscribeToNewsletter(
           </tr>
           <tr>
             <td style="padding: 20px 28px; background-color: #141210; border-top: 1px solid #292524; text-align: center; font-size: 11px; color: #78716c;">
-              © AduBible.org · Dedicated to Humanity in honor of Apostle Kwame Adu · Nsuhia, Ghana.
+              © AduBible.org · Dedicated to Humanity in support of Apostle Kwame Adu · Nsuhia, Ghana.
               <br>Zero Ads · Zero Commercial Tracking · 100% Free
             </td>
           </tr>

@@ -16,7 +16,7 @@ The matrix below contrasts [Bible Hub](https://biblehub.com/) against the leadin
 
 | Feature / Exegetical Capability | [Bible Hub](https://biblehub.com/) | **AduBible (Adubible.org)** | [Blue Letter Bible](https://www.blueletterbible.org/) | [Step Bible](https://www.stepbible.org/) | [Bible Gateway](https://www.biblegateway.com/) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Monetization & Advertising** | Heavy Display Banners (Top, sidebars, inter-text ads) | **100% Zero Ads** (Permanent Memorial Covenant) | Moderate (Partner banners & donation appeals) | Zero Ads (Tyndale House Cambridge charity) | Heavy Commercial Ads + $4.99/mo Paywall |
+| **Monetization & Advertising** | Heavy Display Banners (Top, sidebars, inter-text ads) | **100% Zero Ads** (Permanent Gospel Covenant) | Moderate (Partner banners & donation appeals) | Zero Ads (Tyndale House Cambridge charity) | Heavy Commercial Ads + $4.99/mo Paywall |
 | **Strong’s Concordance UX** | Hyperlinks navigating to separate dictionary pages | **Instant 1-Tap Popover** (Floating card, stays in verse) | Separate tabbed tool panel | Hover popup cards (Desktop-focused) | Limited in Free; Full locked behind Plus paywall |
 | **Original Greek & Hebrew Text** | Full Greek NT & Hebrew OT (Static table layout) | **Full Interlinear** (Westminster Leningrad & Textus Receptus) | Full Interlinear & parsed morphological data | Deep lexical morphological tagging | Basic reverse interlinear (Requires Plus subscription) |
 | **Parallel Column Synchronization** | Stacked vertical verse comparison (Non-continuous) | **Up to 4 Continuous Synced Columns** (Fluid scrolling) | Parallel column view (Rigid table format) | Multi-panel customizable layout | 2 columns max (Desktop only; poor mobile support) |
@@ -99,8 +99,8 @@ Commentaries are the heritage of the church, passed down through generations of 
 - A beautiful, high-contrast reading panel slides out from the right margin.
 - You can read verse-by-verse historical expositions alongside the text without opening separate browser tabs or losing your parallel reading setup.
 
-### 4. 100% Zero Ads: An Uncompromising Memorial Covenant
-Unlike Bible Hub, which depends on commercial display advertising to fund its operations, AduBible is built upon an unalterable memorial covenant honoring the gospel ministry of Apostle Kwame Adu of Nsuhia, Ghana. 
+### 4. 100% Zero Ads: An Uncompromising Gospel Covenant
+Unlike Bible Hub, which depends on commercial display advertising to fund its operations, AduBible is built upon an unalterable gospel covenant in support of the ministry of Apostle Kwame Adu of Nsuhia, Ghana. 
 
 The platform operates on a philanthropic foundation charter:
 - **No Banner Ads:** Zero Google AdSense, Prebid, or programmatic ad tags.
@@ -228,7 +228,7 @@ Keep [Bible Hub](https://biblehub.com/) bookmarked for specialized archival look
 Yes. AduBible contains an exhaustive digital concordance covering both the Old Testament Hebrew (Westminster Leningrad Codex, H1 through H8674) and New Testament Koine Greek (Textus Receptus and Majority Text, G1 through G5624) with complete lexical definitions, pronunciations, and root etymologies.
 
 ### Does AduBible cost anything or require a subscription like Bible Gateway Plus?
-No. AduBible is completely free forever. There are no subscriptions, no premium tiers, no hidden paywalls, and no advertisements. It operates as an enduring gospel memorial covenant honoring Apostle Kwame Adu of Nsuhia, Ghana.
+No. AduBible is completely free forever. There are no subscriptions, no premium tiers, no hidden paywalls, and no advertisements. It operates as an enduring gospel covenant in support of Apostle Kwame Adu of Nsuhia, Ghana.
 
 ### How does AduBible handle commentaries compared to Bible Hub?
 Where Bible Hub spreads commentaries across separate web pages with heavy banner advertisements, AduBible integrates classic commentaries (such as Matthew Henry's Complete Commentary) into an ergonomic, collapsible side-drawer that you can open and close with a single click while keeping your parallel scripture columns visible.
@@ -247,4 +247,4 @@ Yes. AduBible places major African languages on equal footing with Western trans
 2. **Thayer, Joseph Henry.** *A Greek-English Lexicon of the New Testament.* Harper & Brothers, 1889.
 3. **Gesenius, Wilhelm.** *Hebrew and Chaldee Lexicon to the Old Testament Scriptures.* Translated by Samuel Prideaux Tregelles, Baker Books, 1979.
 4. **Bible Hub Online Biblical Archive.** *Lexical Concordance and Parallel Study Repository.* [https://biblehub.com/](https://biblehub.com/)
-5. **Apostle Kwame Adu Memorial Gospel Archive.** *Apostolic Exegesis and Sovereign Scripture Distribution.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)
+5. **Apostle Kwame Adu Gospel Mission Archive.** *Apostolic Exegesis and Sovereign Scripture Distribution.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)

@@ -16,7 +16,7 @@ The table below contrasts how major digital scripture portals implement original
 
 | Feature / Capability | **AduBible (Adubible.org)** | [Bible Hub Interlinear](https://biblehub.com/interlinear/) | [Blue Letter Bible Interlinear](https://www.blueletterbible.org/) | [Step Bible (Tyndale House)](https://www.stepbible.org/) | [Bible Gateway Reverse Interlinear](https://www.biblegateway.com/) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Monetization & Advertising** | **100% Zero Ads** (Permanent Memorial Covenant) | Heavy Display Banners (Header, sidebar, in-text ads) | Moderate (Sponsor banners & partner donation appeals) | Zero Ads (Tyndale House Cambridge charity) | **Paywalled** (Requires $4.99/mo Plus subscription) |
+| **Monetization & Advertising** | **100% Zero Ads** (Permanent Gospel Covenant) | Heavy Display Banners (Header, sidebar, in-text ads) | Moderate (Sponsor banners & partner donation appeals) | Zero Ads (Tyndale House Cambridge charity) | **Paywalled** (Requires $4.99/mo Plus subscription) |
 | **Underlying Hebrew Old Testament** | Westminster Leningrad Codex (WLC) with full vowels | Westminster Leningrad Codex (WLC) | Westminster Leningrad Codex (WLC) | Tyndale House Hebrew Text / WLC | Modern English base with underlying Hebrew tags |
 | **Underlying Greek New Testament** | Textus Receptus (TR) & Majority Text Consensus | Scrivener 1894 Textus Receptus & NA28 / UBS5 | Textus Receptus & Westcott-Hort 1881 | Tyndale House Greek New Testament (THGNT) | Modern English base with underlying Greek tags |
 | **Parallel Column Synchronization** | **Up to 4 Continuous Synced Columns** (NKJV, KJV, BSB, Twi) | Stacked vertical list view (Non-continuous scrolling) | Rigid table-based parallel view | Multi-panel customizable study desktop canvas | 2 columns max (Desktop only; poor mobile support) |
@@ -205,7 +205,7 @@ No. AduBible includes full English transliterations and phonetic pronunciation g
 The Textus Receptus (Received Text) is the historic Greek manuscript consensus that sustained the Protestant Reformation and served as the direct basis for the Authorized King James Version (KJV 1611) and the New King James Version (NKJV). By providing the Textus Receptus with Strong’s integration, AduBible allows readers to examine the exact manuscript tradition behind these classic English Bibles.
 
 ### Is there any charge for using the interlinear or Strong's tools on AduBible?
-None. AduBible is 100% free forever, funded as an unalterable memorial covenant honoring Apostle Kwame Adu of Nsuhia, Ghana. There are zero subscriptions, zero paid tiers, and zero advertisements.
+None. AduBible is 100% free forever, funded as an unalterable gospel covenant in support of Apostle Kwame Adu of Nsuhia, Ghana. There are zero subscriptions, zero paid tiers, and zero advertisements.
 
 ### Can I use AduBible’s interlinear tools on my mobile phone?
 Yes. AduBible was engineered as a mobile-first progressive web application (PWA). Touch targets are large and ergonomic, popovers appear smoothly without screen jitter, and you can conduct original-language exegesis comfortably on any smartphone.
@@ -219,4 +219,4 @@ Yes. AduBible was engineered as a mobile-first progressive web application (PWA)
 3. **Thayer, Joseph Henry.** *A Greek-English Lexicon of the New Testament.* Harper & Brothers, 1889.
 4. **Brown, Francis, S. R. Driver, and Charles A. Briggs.** *A Hebrew and English Lexicon of the Old Testament (BDB).* Oxford University Press, 1906.
 5. **Wallace, Daniel B.** *Greek Grammar Beyond the Basics: An Exegetical Syntax of the New Testament.* Zondervan Academic, 1996.
-6. **Apostle Kwame Adu Memorial Gospel Archive.** *Apostolic Exegesis and Sovereign Scripture Distribution.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)
+6. **Apostle Kwame Adu Gospel Mission Archive.** *Apostolic Exegesis and Sovereign Scripture Distribution.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)

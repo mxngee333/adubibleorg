@@ -772,7 +772,7 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
         </nav>
 
         <div className="footer-copy">
-          © {new Date().getFullYear()} <strong>AduBible</strong> (<a href="https://adubible.org/">adubible.org</a>) · Dedicated to Humanity as a Sacred Ministry in Honor of Apostle Kwame Adu · <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer">Nsuhia, Ghana ↗</a> · <span style={{ color: '#10b981', fontWeight: 600 }}>100% Ads-Free Reading Experience</span>.
+          © {new Date().getFullYear()} <strong>AduBible</strong> (<a href="https://adubible.org/">adubible.org</a>) · Dedicated to Humanity as a Sacred Ministry in Support of Apostle Kwame Adu · <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer">Nsuhia, Ghana ↗</a> · <span style={{ color: '#10b981', fontWeight: 600 }}>100% Ads-Free Reading Experience</span>.
         </div>
       </div>
     </footer>

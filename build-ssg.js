@@ -520,7 +520,7 @@ function buildSSG() {
               <a href="/sources/" style="color:#a8a29e;">Sources</a> |
               <a href="/articles/" style="color:#f59e0b;">15 Pillar Articles</a>
             </nav>
-            <p>&copy; 2026 <a href="https://adubible.org/" style="color:inherit;text-decoration:none;">AduBible.org</a> &middot; Dedicated to Humanity as a Sacred Ministry in Honor of Apostle Kwame Adu &middot; <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" style="color:#f59e0b;">Nsuhia, Ghana ↗</a> &middot; <span style="color:#10b981;">100% Ads-Free Reading Experience</span></p>
+            <p>&copy; 2026 <a href="https://adubible.org/" style="color:inherit;text-decoration:none;">AduBible.org</a> &middot; Dedicated to Humanity as a Sacred Ministry in Support of Apostle Kwame Adu &middot; <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" style="color:#f59e0b;">Nsuhia, Ghana ↗</a> &middot; <span style="color:#10b981;">100% Ads-Free Reading Experience</span></p>
           </footer>
         </main>
       </div>`;

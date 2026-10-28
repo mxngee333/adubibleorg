@@ -70,8 +70,8 @@ export const DONATION_TIERS: DonationTier[] = [
   {
     id: 'tier-500',
     amount: 500,
-    label: 'Legacy Pillar',
-    impactDescription: 'Sponsors planetary-scale ad-free biblical infrastructure in honor of Apostle Kwame Adu.',
+    label: 'Mission Pillar',
+    impactDescription: 'Sponsors planetary-scale ad-free biblical infrastructure in support of Apostle Kwame Adu.',
   },
 ];
 

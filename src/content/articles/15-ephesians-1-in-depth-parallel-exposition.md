@@ -179,7 +179,7 @@ The Greek word is **προορίσας** (*proorisas*, Strong’s **G4309**), co
 The Greek word **ἀρραβὼν** (*arrhabōn*, Strong’s **G728**) was an ancient commercial term for a non-refundable down-payment or cash pledge that legally guaranteed the remainder of the purchase would be delivered. The Holy Spirit indwelling the believer is God’s down-payment and engagement ring, guaranteeing full final glorification in heaven.
 
 ### Is AduBible completely free of ads when studying Ephesians 1?
-Yes. AduBible is 100% ad-free forever, funded as an unalterable philanthropic memorial covenant honoring Apostle Kwame Adu of Nsuhia, Ghana. There are zero subscriptions, zero banner ads, and zero tracking cookies.
+Yes. AduBible is 100% ad-free forever, funded as an unalterable philanthropic gospel covenant in support of Apostle Kwame Adu of Nsuhia, Ghana. There are zero subscriptions, zero banner ads, and zero tracking cookies.
 
 ---
 
@@ -189,4 +189,4 @@ Yes. AduBible is 100% ad-free forever, funded as an unalterable philanthropic me
 2. **Hodge, Charles.** *A Commentary on the Epistle to the Ephesians.* Robert Carter & Brothers, 1856.
 3. **Stott, John R. W.** *The Message of Ephesians: God’s New Society.* InterVarsity Press, 1979.
 4. **Bediako, Kwame.** *Christianity in Africa: The Renewal of a Non-Western Religion.* Edinburgh University Press, 1995.
-5. **Apostle Kwame Adu Memorial Gospel Archive.** *Apostolic Grace and Ephesians 1 Exposition.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)
+5. **Apostle Kwame Adu Gospel Mission Archive.** *Apostolic Grace and Ephesians 1 Exposition.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)

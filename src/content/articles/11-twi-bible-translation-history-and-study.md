@@ -134,7 +134,7 @@ Apostle Kwame Adu was a pioneer of the gospel in Ghana whose life was consumed b
 
 Apostle Adu traveled tirelessly across rural Ghana, planting churches, training indigenous leaders, and distributing Bibles to cocoa farmers, market women, and youth who could not afford expensive books. He refused to commercialize ministry. He never turned the gospel into a business, never charged admission for church meetings, and never sought personal material enrichment.
 
-AduBible was built as a permanent digital sanctuary in Apostle Kwame Adu's honor. Operating from an unshakeable memorial covenant, the platform guarantees that the beloved Twi scriptures (*Twerɛ Kronkron*) will remain 100% free of commercial advertising, free of subscription paywalls, and freely accessible to every Ghanaian believer in Accra, Kumasi, Nsuhia, London, New York, Toronto, and across the globe forever.
+AduBible was built as a permanent digital sanctuary in Apostle Kwame Adu's honor. Operating from an unshakeable gospel covenant in support of Apostle Kwame Adu, the platform guarantees that the beloved Twi scriptures (*Twerɛ Kronkron*) will remain 100% free of commercial advertising, free of subscription paywalls, and freely accessible to every Ghanaian believer in Accra, Kumasi, Nsuhia, London, New York, Toronto, and across the globe forever.
 
 ---
 
@@ -203,4 +203,4 @@ Yes. AduBible incorporates a dedicated **Audio Bible Bar** that provides high-qu
 2. **Christaller, Johannes Gottlieb.** *A Dictionary of the Asante and Fante Language Called Tshi.* Basel Evangelical Missionary Society, 1881.
 3. **Bediako, Kwame.** *Christianity in Africa: The Renewal of a Non-Western Religion.* Edinburgh University Press, 1995.
 4. **Debrunner, Hans W.** *A History of Christianity in Ghana.* Waterville Publishing House, 1967.
-5. **Apostle Kwame Adu Memorial Gospel Archive.** *Apostolic Legacy and the Twi Scripture Mission in Nsuhia, Ghana.* [https://nsuhia.com/](https://nsuhia.com/)
+5. **Apostle Kwame Adu Gospel Mission Archive.** *Apostolic Legacy and the Twi Scripture Mission in Nsuhia, Ghana.* [https://nsuhia.com/](https://nsuhia.com/)

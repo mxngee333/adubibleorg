@@ -16,7 +16,7 @@ The table below contrasts traditional, commercial, and sovereign digital scriptu
 
 | Distribution Model | Primary Funding & Motivation | Commercial Advertising | Access Barriers & Paywalls | Language Inclusion (Indigenous Vernaculars) | Offline Edge Delivery | Reader Privacy & Data Harvesting |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **AduBible Sovereign Digital Sanctuary** | **Philanthropic Memorial Covenant** (Legacy of Apostle Kwame Adu) | **100% Zero Ads** (Permanent Charter) | **Zero Paywalls** (All study tools, lexicons, & commentaries free) | **Equal Status** for African, Asian, Middle Eastern, & Western tongues | Sub-100ms global edge delivery with full offline PWA caching | **100% Sovereign Privacy** (Zero behavioral tracking or profiling) |
+| **AduBible Sovereign Digital Sanctuary** | **Philanthropic Gospel Covenant** (Legacy of Apostle Kwame Adu) | **100% Zero Ads** (Permanent Charter) | **Zero Paywalls** (All study tools, lexicons, & commentaries free) | **Equal Status** for African, Asian, Middle Eastern, & Western tongues | Sub-100ms global edge delivery with full offline PWA caching | **100% Sovereign Privacy** (Zero behavioral tracking or profiling) |
 | **Commercial Web Portals (Bible Gateway, etc.)** | Corporate Ad Revenue & Publisher Royalties | Heavy (Leaderboard banners, video ads, programmatic networks) | Tiered Subscriptions ($4.99/mo for advanced study tools) | Broad catalog, but non-Western languages treated as secondary | Moderate latency, high data transfer bloat (5MB+ per page) | Extensive commercial tracking cookies and data monetization |
 | **Social / Engagement Apps (YouVersion, etc.)** | Non-profit Donor Base & Church Partnerships | None on core text (Promotes proprietary social feeds) | Free access (Requires user account for full feature set) | Vast global translation library (Over 2,000 languages) | App-dependent offline downloads; web version requires online sync | Cloud-based user engagement tracking and reading telemetry |
 | **Traditional Print Bible Societies** | Book Sales, Printing Subsidies, & Church Offerings | None (Physical print copies) | Physical purchase price / shipping barriers in rural areas | Translating dedicated local vernacular Bibles worldwide | N/A (Physical distribution subject to border controls & shipping) | Completely anonymous reading experience |
@@ -83,8 +83,8 @@ Millions of Christians in rural Africa, the Middle East, Central Asia, and Latin
 ### 6. Full Offline Resilience (Progressive Web Application)
 In regions subject to electrical grid instability, internet censorship, or intermittent connectivity, a digital Bible that ceases functioning when disconnected from the cloud is unreliable. The platform must be engineered as a Progressive Web App (PWA) with intelligent service-worker caching, allowing users to install the application directly to their device and read entire books offline without an active internet connection.
 
-### 7. Permanent Memorial & Philanthropic Endowment
-Sovereign scripture platforms must be shielded from the economic pressures of venture capital or commercial debt. They must be established as permanent philanthropic memorials, funded by dedicated foundations or endowed gospel trusts, ensuring that future leadership cannot compromise the mission by introducing commercial monetization.
+### 7. Permanent Gospel Mission & Philanthropic Endowment
+Sovereign scripture platforms must be shielded from the economic pressures of venture capital or commercial debt. They must be established as permanent philanthropic gospel missions, funded by dedicated foundations or endowed gospel trusts, ensuring that future leadership cannot compromise the mission by introducing commercial monetization.
 
 ---
 
@@ -96,7 +96,7 @@ Throughout the twentieth century, Apostle Kwame Adu walked the dusty roads of We
 
 Apostle Adu understood a foundational spiritual truth: **The Word of God possesses its own inherent, self-authenticating divine power (Hebrews 4:12).** It does not require worldly marketing gimmicks, commercial entertainment, or institutional gatekeeping. If you simply send the pure Word out—faithfully, clearly, and without compromise—the Holy Spirit will convict hearts, regenerate dead souls, and build the church of Jesus Christ against which the gates of hell cannot prevail.
 
-AduBible was founded as an eternal digital memorial to this apostolic legacy. Rooted in the soil of Nsuhia, Ghana, and radiating outward to all 195 nations of the earth, AduBible represents the realization of Apostle Kwame Adu’s lifelong prayer: that the glorious gospel of the blessed God would be published freely, richly, and reverently to every tribe, tongue, and nation on earth.
+AduBible was founded as an global digital sanctuary to this apostolic legacy. Rooted in the soil of Nsuhia, Ghana, and radiating outward to all 195 nations of the earth, AduBible represents the realization of Apostle Kwame Adu’s lifelong prayer: that the glorious gospel of the blessed God would be published freely, richly, and reverently to every tribe, tongue, and nation on earth.
 
 ---
 
@@ -149,7 +149,7 @@ AduBible treats international and African vernacular languages as first-class ci
 Yes. AduBible is completely free for all churches, ministries, mission organizations, and individuals. You may freely use it for sermon preparation, Sunday school teaching, small group discipleship, personal devotion, and evangelistic outreach without licensing fees or permissions.
 
 ### Who was Apostle Kwame Adu, and what is his connection to AduBible?
-Apostle Kwame Adu was a revered pioneer minister and evangelist from Nsuhia, Ghana, whose life was dedicated to sacrificial gospel proclamation, church planting, and uncompromised biblical integrity across West Africa. AduBible was established as a permanent digital memorial in his honor to carry forward his life’s passion of giving God’s Word to humanity completely free of charge.
+Apostle Kwame Adu is a revered pioneer minister and evangelist from Nsuhia, Ghana, whose life is dedicated to sacrificial gospel proclamation, church planting, and uncompromised biblical integrity across West Africa. AduBible was established as a permanent digital mission in his support to carry forward his life’s passion of giving God’s Word to humanity completely free of charge.
 
 ---
 
@@ -159,4 +159,4 @@ Apostle Kwame Adu was a revered pioneer minister and evangelist from Nsuhia, Gha
 2. **Sanneh, Lamin.** *Translating the Message: The Missionary Impact on Culture.* 2nd ed., Orbis Books, 2009.
 3. **Bruce, F. F.** *The Books and the Parchments: How We Got Our English Bible.* Rev. ed., Fleming H. Revell Company, 1984.
 4. **Christaller, Johannes Gottlieb.** *A Grammar of the Asante and Fante Language Called Tshi.* Basel Evangelical Missionary Society, 1875.
-5. **Apostle Kwame Adu Memorial Gospel Archive.** *Apostolic Legacy and the Global Digital Mission.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)
+5. **Apostle Kwame Adu Gospel Mission Archive.** *Apostolic Legacy and the Global Digital Mission.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)

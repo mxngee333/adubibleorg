@@ -31,7 +31,7 @@ export const article01 = {
     },
     {
       question: 'How does an ad-free Bible platform like AduBible fund server and development costs?',
-      answer: 'AduBible operates as a dedicated memorial covenant in honor of Apostle Kwame Adu of Nsuhia, Ghana, built upon philanthropic foundation funding, high-efficiency edge compute (Cloudflare Workers, R2 zero-egress storage, and self-hosted open-source infrastructure), and public-domain / Creative Commons scripture databases. This enables infinite global delivery with zero commercial advertisements, zero subscriptions, and zero donor paywalls.'
+      answer: 'AduBible operates as a sacred gospel mission in support of Apostle Kwame Adu of Nsuhia, Ghana, built upon philanthropic foundation funding, high-efficiency edge compute (Cloudflare Workers, R2 zero-egress storage, and self-hosted open-source infrastructure), and public-domain / Creative Commons scripture databases. This enables infinite global delivery with zero commercial advertisements, zero subscriptions, and zero donor paywalls.'
     },
     {
       question: 'Do ad blockers completely solve the problem of commercial Bible websites?',
@@ -51,6 +51,6 @@ export const article01 = {
     { citation: 'Carr, Nicholas. The Shallows: What the Internet Is Doing to Our Brains. W. W. Norton & Company, 2010.' },
     { citation: 'Society of Biblical Literature. Handbook of Style: For Biblical Studies and Related Disciplines. SBL Press, 2014.', url: 'https://www.sbl-site.org' },
     { citation: 'Comfort, Philip W. New Testament Text and Translation Commentary. Tyndale House Publishers, 2008.' },
-    { citation: 'Apostle Kwame Adu Memorial Gospel Archive, Nsuhia, Ghana.', url: 'https://nsuhia.com/' }
+    { citation: 'Apostle Kwame Adu Gospel Mission Archive, Nsuhia, Ghana.', url: 'https://nsuhia.com/' }
   ]
 };

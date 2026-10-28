@@ -218,7 +218,7 @@ The Ethiopian Orthodox Tewahedo Church possesses the oldest continuous Christian
 Yes. AduBible includes indigenous Akan Twi translations of the ancient historical writings and Apostolic Fathers, allowing Ghanaian believers and diaspora researchers to study early church history in their mother tongue.
 
 ### Is the List of Sixty Sanctuary on AduBible completely free of advertisements?
-Yes. Every section of AduBible is 100% ad-free forever, operating under a permanent philanthropic memorial covenant honoring Apostle Kwame Adu of Nsuhia, Ghana.
+Yes. Every section of AduBible is 100% ad-free forever, operating under a permanent philanthropic gospel covenant in support of Apostle Kwame Adu of Nsuhia, Ghana.
 
 ---
 
@@ -228,4 +228,4 @@ Yes. Every section of AduBible is 100% ad-free forever, operating under a perman
 2. **Charles, R. H., editor.** *The Book of Enoch (1 Enoch).* Oxford University Press, 1912.
 3. **Eusebius of Caesarea.** *Ecclesiastical History (Church History).* Translated by C. F. Cruse, Hendrickson Publishers, 1998.
 4. **Zahn, Theodor.** *Geschichte des Neutestamentlichen Kanons.* 2 vols., Erlangen, 1888–1892.
-5. **Apostle Kwame Adu Memorial Gospel Archive.** *Apostolic Succession, Early Church History, and Scripture Preservation.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)
+5. **Apostle Kwame Adu Gospel Mission Archive.** *Apostolic Succession, Early Church History, and Scripture Preservation.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)

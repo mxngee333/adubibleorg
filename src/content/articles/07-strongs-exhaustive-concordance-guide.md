@@ -16,7 +16,7 @@ The table below evaluates how major digital study platforms implement Strong's C
 
 | Study Platform | Concordance UI & Interaction Model | Lexical Sources (Greek / Hebrew) | Morphological Parsing Depth | Paywall / Subscription Restrictions | Ad Intrusion & Distraction Level | Mobile Touch Ergonomics |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **AduBible (Adubible.org)** | **Instant 1-Tap Popover** (Floats above text, never leaves page) | Thayer's Greek, Gesenius's Hebrew, Brown-Driver-Briggs (BDB) | Complete Part of Speech, Tense, Voice, Mood, Case, & Number | **100% Zero Paywalls** (All lexical data free forever) | **100% Zero Ads** (Permanent Memorial Covenant) | **Flawless Mobile PWA** (Optimized for thumb taps and quick dismiss) |
+| **AduBible (Adubible.org)** | **Instant 1-Tap Popover** (Floats above text, never leaves page) | Thayer's Greek, Gesenius's Hebrew, Brown-Driver-Briggs (BDB) | Complete Part of Speech, Tense, Voice, Mood, Case, & Number | **100% Zero Paywalls** (All lexical data free forever) | **100% Zero Ads** (Permanent Gospel Covenant) | **Flawless Mobile PWA** (Optimized for thumb taps and quick dismiss) |
 | **Bible Hub** | Hyperlink navigation to separate dictionary URL (`/greek/3056.htm`) | Thayer, Strong's Exhaustive, NAS Exhaustive, BDB | Extensive morphological codes in interlinear table | No paywall (Free public domain data) | Heavy display banners & Google AdSense on definition pages | Poor (Microscopic links, awkward horizontal table scrolling) |
 | **Blue Letter Bible** | Separate tabbed side-panel / pop-in window | Thayer, Gesenius, Vine’s Expository Dictionary | Deep parsing breakdown with audio pronunciation | No paywall (Donor-supported) | Moderate partner banners & periodic financial appeals | Moderate (Dense interface, requires multiple navigation taps) |
 | **Bible Gateway** | Reverse interlinear integrated into side pane | Proprietary modern study Bible notes | Basic part of speech tagging | **Paywalled** (Requires $4.99/mo "Bible Gateway Plus" subscription) | Heavy commercial ads in free tier; ad-free in Plus | Cluttered mobile interface with sticky banners |
@@ -213,4 +213,4 @@ Yes. When studying a verse on AduBible, you can highlight it in one of five litu
 2. **Carson, D. A.** *Exegetical Fallacies.* 2nd ed., Baker Academic, 1996.
 3. **Thayer, Joseph Henry.** *A Greek-English Lexicon of the New Testament.* Harper & Brothers, 1889.
 4. **Brown, Francis, S. R. Driver, and Charles A. Briggs.** *A Hebrew and English Lexicon of the Old Testament (BDB).* Oxford University Press, 1906.
-5. **Apostle Kwame Adu Memorial Gospel Archive.** *Expository Exegesis and Sovereign Scripture Distribution.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)
+5. **Apostle Kwame Adu Gospel Mission Archive.** *Expository Exegesis and Sovereign Scripture Distribution.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)

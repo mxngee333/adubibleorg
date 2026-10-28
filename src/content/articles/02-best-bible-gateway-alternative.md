@@ -14,7 +14,7 @@ The table below contrasts [Bible Gateway](https://www.biblegateway.com/) against
 
 | Key Feature / Criterion | [Bible Gateway](https://www.biblegateway.com/) (Standard & Plus) | **AduBible (Adubible.org)** | [Bible Hub](https://biblehub.com/) | [YouVersion (Bible.com)](https://www.bible.com/) | [Blue Letter Bible](https://www.blueletterbible.org/) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Advertising Presence** | Heavy (Top banners, in-text ads, sticky video, auto-refresh) | **100% Zero Ads** (Permanent Memorial Covenant) | Heavy (Header, sidebar, and in-article display banners) | None on standard text (Promotes proprietary social community) | Moderate (Sponsorship banners & periodic partner appeals) |
+| **Advertising Presence** | Heavy (Top banners, in-text ads, sticky video, auto-refresh) | **100% Zero Ads** (Permanent Gospel Covenant) | Heavy (Header, sidebar, and in-article display banners) | None on standard text (Promotes proprietary social community) | Moderate (Sponsorship banners & periodic partner appeals) |
 | **Parallel Column Reading** | 2 versions max (Desktop only; highly constrained on mobile) | **Up to 4 Synced Columns** (Desktop, Tablet, & Mobile) | Stacked multi-version list view (Non-synchronized columns) | Single column primary (Dual compare on wide desktop) | Parallel column view available (Rigid table format) |
 | **Paywalled Study Content** | Yes ("Bible Gateway Plus" at $4.99/mo or $49.99/yr) | **Zero Paywalls** (All commentaries & tools 100% free) | No paywalls (All public domain content open) | No paywalls (Select proprietary devotionals) | No paywalls (Open access to historic lexicons) |
 | **Original Greek & Hebrew** | Basic reverse interlinear (Locked behind Plus paywall) | **Full Interlinear** (Westminster Leningrad & Textus Receptus) | Comprehensive interlinear (Cluttered layout) | None in standard reading view | Comprehensive interlinear & morphology tools |
@@ -62,7 +62,7 @@ While Bible Gateway offers a "Parallel" button, the implementation is strictly c
 
 ## The Rise of AduBible: The Sanctuary Alternative
 
-In response to this corporate monetization landscape, [AduBible](https://adubible.org/) was architected as a complete alternative to Bible Gateway. Named in honor of Apostle Kwame Adu—a revered Ghanaian gospel pioneer from Nsuhia whose apostolic ministry was marked by selfless sacrifice, evangelism, and uncompromising theological purity—AduBible was founded upon an irrevocable memorial covenant: **God's Word belongs to humanity, 100% free of advertisements, paywalls, and commercial exploitation.**
+In response to this corporate monetization landscape, [AduBible](https://adubible.org/) was architected as a complete alternative to Bible Gateway. Named in honor of Apostle Kwame Adu—a revered Ghanaian gospel pioneer from Nsuhia whose apostolic ministry is marked by selfless sacrifice, evangelism, and uncompromising theological purity—AduBible was founded upon an irrevocable gospel covenant in support of Apostle Kwame Adu: **God's Word belongs to humanity, 100% free of advertisements, paywalls, and commercial exploitation.**
 
 Let us examine how AduBible re-imagines every core capability that Bible Gateway offers:
 
@@ -202,7 +202,7 @@ Visit [Bible Gateway](https://www.biblegateway.com/) whenever you need to refere
 ## Frequently Asked Questions
 
 ### Is AduBible really 100% free with no hidden charges?
-Yes. AduBible contains zero advertisements, zero premium subscription tiers, zero in-app purchases, and zero donation paywalls. It is operated as a permanent philanthropic memorial covenant honoring Apostle Kwame Adu of Nsuhia, Ghana, ensuring that every tool, commentary, and translation is completely accessible to every person on earth without cost.
+Yes. AduBible contains zero advertisements, zero premium subscription tiers, zero in-app purchases, and zero donation paywalls. It is operated as a permanent philanthropic gospel covenant in support of Apostle Kwame Adu of Nsuhia, Ghana, ensuring that every tool, commentary, and translation is completely accessible to every person on earth without cost.
 
 ### Can I read the New King James Version (NKJV) on AduBible?
 Yes. AduBible features a complete, beautifully typeset New King James Version (NKJV) alongside the Authorized King James Version (KJV 1611), the Berean Standard Bible (BSB), and the American Standard Version (ASV), allowing you to read the NKJV individually or in parallel with other translations.
@@ -223,5 +223,5 @@ Yes. AduBible leverages modern browser service workers and local caching. Once y
 1. **Metzger, Bruce M., and Michael D. Coogan, editors.** *The Oxford Companion to the Bible.* Oxford University Press, 1993.
 2. **Couchman, Nick.** *The History and Founding of Bible Gateway.* Calvin University Historical Archives, 1993. [https://www.biblegateway.com/](https://www.biblegateway.com/)
 3. **Carson, D. A.** *The King James Version Debate: A Plea for Realism.* Baker Books, 1979.
-4. **Apostle Kwame Adu Memorial Gospel Archive.** *Apostolic Integrity and Unmonetized Scripture Distribution.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)
+4. **Apostle Kwame Adu Gospel Mission Archive.** *Apostolic Integrity and Unmonetized Scripture Distribution.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)
 5. **Fee, Gordon D., and Mark L. Strauss.** *How to Choose a Translation for All Its Worth.* Zondervan Academic, 2007.

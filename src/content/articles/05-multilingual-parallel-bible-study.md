@@ -206,4 +206,4 @@ Yes. AduBible includes an advanced **Language Add-on Studio** that allows users,
 2. **Sanneh, Lamin.** *Translating the Message: The Missionary Impact on Culture.* 2nd ed., Orbis Books, 2009.
 3. **Nida, Eugene A., and Charles R. Taber.** *The Theory and Practice of Translation.* E. J. Brill, 1969.
 4. **Christaller, Johannes Gottlieb.** *Twerɛ Kronkron (Holy Bible in the Asante and Akuapem Twi Languages).* Basel Evangelical Missionary Society, 1871.
-5. **Apostle Kwame Adu Memorial Gospel Archive.** *Multilingual Gospel Transmission and the Missionary Mandate.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)
+5. **Apostle Kwame Adu Gospel Mission Archive.** *Multilingual Gospel Transmission and the Missionary Mandate.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)

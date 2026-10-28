@@ -248,4 +248,4 @@ Yes. AduBible treats major African languages as first-class citizens. You can co
 2. **Fee, Gordon D., and Douglas Stuart.** *How to Read the Bible for All Its Worth.* 4th ed., Zondervan, 2014.
 3. **Carson, D. A.** *Exegetical Fallacies.* 2nd ed., Baker Academic, 1996.
 4. **Westminster Assembly.** *The Westminster Confession of Faith.* Chapter 1, Section IX ("The Infallible Rule of Interpretation of Scripture"). 1646.
-5. **Apostle Kwame Adu Memorial Gospel Archive.** *Expository Scripture Reading and the Analogy of Faith.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)
+5. **Apostle Kwame Adu Gospel Mission Archive.** *Expository Scripture Reading and the Analogy of Faith.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)

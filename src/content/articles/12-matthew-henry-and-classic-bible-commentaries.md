@@ -16,7 +16,7 @@ The table below contrasts how major digital scripture platforms host and display
 
 | Platform / Tool | Commentary Availability & Selection | User Interface & Integration Model | Advertising Intrusion Level | Paywalls & Subscription Costs | Mobile Usability & Ergonomics |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **AduBible (Adubible.org)** | **Matthew Henry Complete & Classic Corpus** | **Collapsible Expository Drawer** (Side-by-side with 4 parallel columns) | **100% Zero Ads** (Permanent Memorial Covenant) | **Zero Paywalls** (All commentaries 100% free forever) | **Flawless Mobile PWA** (Touch drawer, swipe to dismiss, large type) |
+| **AduBible (Adubible.org)** | **Matthew Henry Complete & Classic Corpus** | **Collapsible Expository Drawer** (Side-by-side with 4 parallel columns) | **100% Zero Ads** (Permanent Gospel Covenant) | **Zero Paywalls** (All commentaries 100% free forever) | **Flawless Mobile PWA** (Touch drawer, swipe to dismiss, large type) |
 | **Bible Hub** | Encyclopedic (Matthew Henry, Gill, Barnes, Clarke, Ellicott, JFB) | Separate chapter-length web pages; dense table lists | Heavy display banners (Header, sidebars, between paragraphs) | Free (Public domain text) | Poor (Dense desktop HTML tables, horizontal scrolling required) |
 | **Blue Letter Bible** | Extensive (Matthew Henry, audio sermons, classic notes) | Tabbed tool panel; navigates away from chapter reading | Moderate (Sponsor banners and partner donation prompts) | Free (Donor-supported non-profit) | Moderate (Dense interface, multiple navigation taps) |
 | **Bible Gateway** | Extensive modern & classic study notes | Side pane integration | Heavy display banners + auto-playing video commercials | **Paywalled** (Requires $4.99/mo or $49.99/yr "Plus" subscription) | Poor (High mobile ad load, layout shifts) |
@@ -172,7 +172,7 @@ Yes. AduBible provides Matthew Henry's authoritative, complete expository corpus
 Yes. AduBible's commentary drawer is fully responsive. On smartphones, tapping the commentary icon opens a full-height, smooth sliding panel with clean, readable typography that you can easily scroll and dismiss with a simple thumb tap.
 
 ### How does AduBible fund its commentary engine without subscriptions or ads?
-AduBible operates as a philanthropic memorial covenant in honor of Apostle Kwame Adu of Nsuhia, Ghana. Built on ultra-efficient edge computing and public-domain theological archives, the platform is permanently endowed to ensure that every human being has free, unrestricted access to biblical scholarship forever.
+AduBible operates as a philanthropic gospel covenant in support of Apostle Kwame Adu of Nsuhia, Ghana. Built on ultra-efficient edge computing and public-domain theological archives, the platform is permanently endowed to ensure that every human being has free, unrestricted access to biblical scholarship forever.
 
 ### Can I copy commentary text for sermon outlines or church bulletins?
 Yes. All classic commentaries on AduBible are in the public domain. You may freely quote, copy, and share Matthew Henry’s expositions for sermons, Bible studies, devotionals, and academic papers without copyright restrictions.
@@ -188,4 +188,4 @@ Yes. AduBible's expository drawer integrates Matthew Henry alongside classic his
 2. **Spurgeon, Charles Haddon.** *Commenting and Commentaries.* Passmore & Alabaster, 1876.
 3. **Tong, William.** *An Account of the Life and Death of the Late Reverend Mr. Matthew Henry.* London, 1716.
 4. **Gill, John.** *An Exposition of the New Testament.* 3 vols., London, 1746–1748.
-5. **Apostle Kwame Adu Memorial Gospel Archive.** *Apostolic Preaching and the Exposition of Scripture.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)
+5. **Apostle Kwame Adu Gospel Mission Archive.** *Apostolic Preaching and the Exposition of Scripture.* Nsuhia, Ghana. [https://nsuhia.com/](https://nsuhia.com/)
