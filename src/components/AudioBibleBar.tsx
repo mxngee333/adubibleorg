@@ -879,70 +879,120 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
   if (!isReady || !verses || verses.length === 0) {
     return (
-      <div
-        style={{
-          position: 'sticky',
-          bottom: '16px',
-          zIndex: 45,
-          maxWidth: '1508px',
-          margin: '0 auto 20px',
-          padding: '0 20px',
-        }}
-      >
-        <div
-          style={{
-            padding: '14px 20px',
-            borderRadius: '10px',
-            border: '1px solid var(--line)',
-            background: 'var(--paper)',
-            color: 'var(--ink)',
-            boxShadow: '0 18px 48px rgba(0, 0, 0, 0.36)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '12px',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span
-              style={{
-                width: 18,
-                height: 18,
-                border: '2px solid rgba(255,255,255,0.2)',
-                borderTopColor: 'var(--blue, #38bdf8)',
-                borderRadius: '50%',
-                display: 'inline-block',
-                animation: 'spin 0.8s linear infinite',
-              }}
-            />
-            <span style={{ fontSize: '13px', fontWeight: 600 }}>
-              {statusMessage || `Loading ${bookName} Chapter ${chapter}...`}
-            </span>
+      <div className="audio-bar-wrapper">
+        <div className="audio-bar-container" style={{ padding: '10px 14px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span
+                style={{
+                  width: 16,
+                  height: 16,
+                  border: '2px solid rgba(255,255,255,0.2)',
+                  borderTopColor: '#f59e0b',
+                  borderRadius: '50%',
+                  display: 'inline-block',
+                  animation: 'spin 0.8s linear infinite',
+                }}
+              />
+              <span style={{ fontSize: '12px', fontWeight: 600 }}>
+                {statusMessage || `Loading ${bookName} Chapter ${chapter}...`}
+              </span>
+            </div>
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="audio-bar-icon-btn"
+                style={{ minWidth: '28px', height: '28px', fontSize: '11px' }}
+              >
+                ×
+              </button>
+            )}
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="quiet-button"
-            style={{ fontSize: '12px', padding: '6px 12px', borderRadius: '8px' }}
-          >
-            Close
-          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Minimized Mode: Ultra-compact 44px pill for reading with zero obstruction
+  if (isMinimized) {
+    return (
+      <div className="audio-bar-wrapper">
+        <div className="audio-bar-minimized">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0, overflow: 'hidden' }}>
+            <span style={{ fontSize: '16px', flexShrink: 0 }}>
+              {isLoadingVerse ? '⏳' : isPlaying ? '🔊' : '♫'}
+            </span>
+            <div style={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--ink)' }}>
+                {bookName} {chapter}:{activeVerse}
+              </span>
+              <span style={{ fontSize: '11px', color: '#f59e0b', marginLeft: '6px', fontWeight: 600 }}>
+                {versionName}
+              </span>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexShrink: 0 }}>
+            <button
+              type="button"
+              className="audio-bar-icon-btn"
+              onClick={() => handleStep(-1)}
+              title="Previous Verse"
+              style={{ minWidth: '32px', height: '32px', padding: '0 6px' }}
+            >
+              ⏮
+            </button>
+            <button
+              type="button"
+              className={`audio-bar-play-btn ${isLoadingVerse ? 'is-buffering' : isPlaying ? 'is-playing' : 'is-paused'}`}
+              onClick={handleTogglePlay}
+              style={{ height: '32px', padding: '0 10px', fontSize: '12px' }}
+            >
+              {isLoadingVerse ? '⏳' : isPlaying ? '⏸' : '▶'}
+            </button>
+            <button
+              type="button"
+              className="audio-bar-icon-btn"
+              onClick={() => handleStep(1)}
+              title="Next Verse"
+              style={{ minWidth: '32px', height: '32px', padding: '0 6px' }}
+            >
+              ⏭
+            </button>
+            <button
+              type="button"
+              className="audio-bar-icon-btn"
+              onClick={() => setIsMinimized(false)}
+              title="Expand Audio Controls"
+              aria-label="Expand Audio Controls"
+              style={{ minWidth: '32px', height: '32px', padding: '0 6px' }}
+            >
+              ▴
+            </button>
+            {onClose && (
+              <button
+                type="button"
+                className="audio-bar-icon-btn"
+                onClick={() => {
+                  stopPlayback();
+                  onClose();
+                }}
+                title="Close Audio Bar"
+                aria-label="Close"
+                style={{ minWidth: '32px', height: '32px', padding: '0 6px' }}
+              >
+                ×
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        position: 'sticky',
-        bottom: '16px',
-        zIndex: 45,
-        maxWidth: '1508px',
-        margin: '0 auto 20px',
-        padding: '0 20px',
-      }}
-    >
+    <div className="audio-bar-wrapper">
       {audioUrl && (
         <audio
           ref={studioAudioElRef}
@@ -969,200 +1019,117 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
         />
       )}
 
-      <div
-        style={{
-          padding: '12px 18px',
-          borderRadius: '10px',
-          border: '1px solid var(--line)',
-          background: 'var(--paper)',
-          color: 'var(--ink)',
-          boxShadow: '0 18px 48px rgba(0, 0, 0, 0.36)',
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '12px',
-        }}
-      >
-        {/* Left: Indicator & Track Metadata */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: '220px' }}>
-          <span
-            className="brand-icon"
-            aria-hidden="true"
-            style={{
-              fontSize: '20px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              background: isPlaying ? 'rgba(16, 185, 129, 0.15)' : 'var(--soft)',
-            }}
-          >
-            {isLoadingVerse ? '⏳' : isPlaying ? '🔊' : '♫'}
-          </span>
-          <div>
-            <div style={{ fontSize: '13px', fontWeight: 600 }}>
-              Audio Scripture · {bookName} {chapter}:{activeVerse}
-            </div>
-            <div
+      <div className="audio-bar-container">
+        {/* 1. TOP HEADER & METADATA ROW */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', width: '100%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0, flex: '1 1 auto' }}>
+            <span
+              className="brand-icon"
+              aria-hidden="true"
               style={{
-                fontSize: '12px',
-                color: 'var(--subtle)',
-                display: 'flex',
+                fontSize: '18px',
+                display: 'inline-flex',
                 alignItems: 'center',
-                flexWrap: 'wrap',
-                gap: '6px',
-                marginTop: '2px',
+                justifyContent: 'center',
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                flexShrink: 0,
+                background: isPlaying ? 'rgba(16, 185, 129, 0.15)' : 'var(--soft)',
               }}
             >
-              {statusMessage ? (
-                <span
-                  style={{
-                    color: statusMessage.includes('quota') ? '#e5a54b' : 'var(--ink)',
-                    cursor: onOpenSettings ? 'pointer' : 'default',
-                    textDecoration: onOpenSettings ? 'underline' : 'none',
-                  }}
-                  onClick={() => onOpenSettings && onOpenSettings()}
-                  title={onOpenSettings ? 'Click to open Settings' : undefined}
-                >
-                  {statusMessage}
+              {isLoadingVerse ? '⏳' : isPlaying ? '🔊' : '♫'}
+            </span>
+
+            <div style={{ minWidth: 0, overflow: 'hidden' }}>
+              <div style={{ fontSize: '13px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                <span style={{ color: 'var(--ink)' }}>{bookName} {chapter}:{activeVerse}</span>
+                <span style={{ fontSize: '11px', padding: '1px 6px', borderRadius: '4px', background: 'var(--soft)', color: '#f59e0b', fontWeight: 600 }}>
+                  {versionName}
                 </span>
+                {engineType === 'studio' ? (
+                  <span style={{ fontSize: '10px', padding: '1px 6px', borderRadius: '4px', background: 'rgba(16, 185, 129, 0.16)', color: '#10b981', fontWeight: 600 }}>
+                    Studio MP3
+                  </span>
+                ) : (
+                  <span style={{ fontSize: '10px', padding: '1px 6px', borderRadius: '4px', background: 'var(--soft)', color: 'var(--subtle)' }}>
+                    {engineType === 'native' ? 'Natural Voice' : `24kHz ${selectedVoice}`}
+                  </span>
+                )}
+              </div>
+
+              {statusMessage ? (
+                <div style={{ fontSize: '11px', color: '#e5a54b', marginTop: '1px' }}>
+                  {statusMessage}
+                </div>
               ) : (
-                <>
-                  <span>{versionName}</span>
-                  <span>·</span>
-                  {engineType === 'native' ? (
-                    <span style={{ color: 'var(--green)', fontWeight: 500 }}>
-                      Natural Voice Narration
-                    </span>
-                  ) : engineType === 'studio' ? (
-                    <span style={{ color: 'var(--green)', fontWeight: 500 }}>
-                      Studio Audio MP3
-                    </span>
-                  ) : (
-                    <span style={{ color: 'var(--green)', fontWeight: 500 }}>
-                      Google 24kHz ({selectedVoice})
-                    </span>
+                <div style={{ fontSize: '11px', color: 'var(--subtle)', marginTop: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  {bufferedCount > 0 && <span>⚡ {bufferedCount}/{verses.length} ready</span>}
+                  {bilingualMode && parallelVersionName && (
+                    <span style={{ color: '#f59e0b' }}>⇄ {parallelVersionName}</span>
                   )}
-
-                  {isTwiLanguage(langCode) && (
-                    <span
-                      style={{
-                        padding: '1px 8px',
-                        borderRadius: '999px',
-                        background: 'rgba(212, 175, 55, 0.16)',
-                        color: 'var(--green)',
-                        fontWeight: 600,
-                        border: '1px solid var(--line)',
-                        fontSize: '11px',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                      }}
-                    >
-                      🇬🇭 Asante Twi · {engineType === 'studio' ? 'Authentic Studio Audio' : 'Akan Phonemic TTS'}
-                    </span>
-                  )}
-
-                  {/* Buffering status badge */}
-                  {engineType === 'native' ? (
-                    <span
-                      style={{
-                        padding: '1px 7px',
-                        borderRadius: '4px',
-                        background: 'var(--soft)',
-                        fontSize: '11px',
-                        color: 'var(--green)',
-                        fontWeight: 500,
-                      }}
-                      title="All chapter verses ready in device voice synthesizer for instant gapless playback"
-                    >
-                      ⚡ Ready · All {verses.length} Verses
-                    </span>
-                  ) : bufferedCount > 0 ? (
-                    <span
-                      style={{
-                        padding: '1px 7px',
-                        borderRadius: '4px',
-                        background: 'var(--soft)',
-                        fontSize: '11px',
-                        color: 'var(--green)',
-                        fontWeight: 500,
-                      }}
-                      title="Verses preloaded in memory for 0ms gapless playback"
-                    >
-                      ⚡ Preloaded {bufferedCount}/{verses.length}
-                    </span>
-                  ) : null}
-
-                  {bilingualMode && parallelVersionName ? (
-                    <span style={{ color: 'var(--accent, #e5a54b)', fontWeight: 500 }}>
-                      ⇄ {parallelVersionName}
-                    </span>
-                  ) : null}
-                </>
+                </div>
               )}
             </div>
           </div>
+
+          {/* Header right: Options, Minimize, Close */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+            <button
+              type="button"
+              className={`audio-bar-icon-btn ${showOptions ? 'active' : ''}`}
+              onClick={() => setShowOptions((prev) => !prev)}
+              title={showOptions ? 'Hide Voice & Speed Options' : 'Show Voice & Speed Options'}
+              aria-label="Audio Options"
+              style={{ minWidth: '32px', height: '32px' }}
+            >
+              ⚙️
+            </button>
+            <button
+              type="button"
+              className="audio-bar-icon-btn"
+              onClick={() => setIsMinimized(true)}
+              title="Minimize Player (Reduce screen space)"
+              aria-label="Minimize"
+              style={{ minWidth: '32px', height: '32px' }}
+            >
+              ▾
+            </button>
+            {onClose && (
+              <button
+                type="button"
+                className="audio-bar-icon-btn"
+                onClick={() => {
+                  stopPlayback();
+                  onClose();
+                }}
+                title="Close Audio Bar"
+                aria-label="Close"
+                style={{ minWidth: '32px', height: '32px' }}
+              >
+                ×
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Center/Right: Voice Selector & Playback Controls */}
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-        >
-          {/* Voice Selector */}
-          <select
-            value={selectedVoice}
-            onChange={(e) => handleVoiceChange(e.target.value as GoogleNeuralVoiceName)}
-            style={{
-              height: '36px',
-              padding: '0 10px',
-              borderRadius: '6px',
-              border: '1px solid var(--line)',
-              background: 'var(--surface)',
-              color: 'var(--ink)',
-              fontSize: '12px',
-              cursor: 'pointer',
-            }}
-            title="Select Scripture Narrator Voice"
-          >
-            {GOOGLE_NEURAL_VOICES.map((v) => (
-              <option key={v.id} value={v.id}>
-                {v.name}
-              </option>
-            ))}
-          </select>
-
+        {/* 2. PRIMARY PLAYBACK CONTROLS (Single sleek row on both mobile & desktop) */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%' }}>
           <button
             type="button"
-            className="quiet-button"
+            className="audio-bar-icon-btn"
             onClick={() => handleStep(-1)}
             title="Previous Verse"
-            style={{ minWidth: '36px', height: '36px', padding: '0 8px' }}
+            style={{ minWidth: '38px', height: '36px', fontSize: '14px' }}
           >
             ⏮
           </button>
 
           <button
             type="button"
-            className="add-column"
+            className={`audio-bar-play-btn ${isLoadingVerse ? 'is-buffering' : isPlaying ? 'is-playing' : 'is-paused'}`}
             onClick={handleTogglePlay}
-            style={{
-              minWidth: '105px',
-              height: '36px',
-              fontWeight: 600,
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '6px',
-            }}
+            style={{ minWidth: '110px', height: '36px' }}
           >
             {isLoadingVerse
               ? '⏳ Buffering…'
@@ -1173,203 +1140,162 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
           <button
             type="button"
-            className="quiet-button"
+            className="audio-bar-icon-btn"
             onClick={stopPlayback}
             title="Stop Playback"
-            style={{ minWidth: '36px', height: '36px', padding: '0 8px' }}
+            style={{ minWidth: '38px', height: '36px', fontSize: '14px' }}
           >
             ⏹
           </button>
 
           <button
             type="button"
-            className="quiet-button"
+            className="audio-bar-icon-btn"
             onClick={() => handleStep(1)}
             title="Next Verse"
-            style={{ minWidth: '36px', height: '36px', padding: '0 8px' }}
+            style={{ minWidth: '38px', height: '36px', fontSize: '14px' }}
           >
             ⏭
           </button>
-
-          {/* Continuous Chapter Auto-Play Toggle */}
-          <button
-            type="button"
-            className={`quiet-button ${continuousPlayback ? 'active-pill' : ''}`}
-            onClick={() => setContinuousPlayback((prev) => !prev)}
-            title={
-              continuousPlayback
-                ? 'Continuous Chapter Auto-Play is ON (automatically loads and recites next chapter)'
-                : 'Continuous Chapter Auto-Play is OFF (stops at end of chapter)'
-            }
-            style={{
-              height: '36px',
-              fontSize: '12px',
-              fontWeight: continuousPlayback ? 600 : 400,
-              color: continuousPlayback ? 'var(--green)' : 'var(--ink)',
-              border: continuousPlayback ? '1px solid var(--green)' : '1px solid var(--line)',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '5px',
-              padding: '0 10px',
-            }}
-          >
-            <span>🔁</span>
-            <span>{continuousPlayback ? 'Auto-Next ON' : 'Auto-Next OFF'}</span>
-          </button>
-
-          {/* Auto-Scroll Reader Sync Toggle */}
-          <button
-            type="button"
-            className={`quiet-button ${isAutoSync ? 'active-pill' : ''}`}
-            onClick={() => {
-              if (onToggleAutoSync) {
-                onToggleAutoSync();
-              } else {
-                setInternalAutoSync((prev) => !prev);
-              }
-              if (typeof window !== 'undefined') {
-                setTimeout(() => {
-                  const vNum = verses[currentVerseIdxRef.current]?.verse || activeVerse;
-                  const el =
-                    document.getElementById(`verse-${vNum}`) ||
-                    document.querySelector(`[data-verse="${vNum}"]`);
-                  if (el) {
-                    el.scrollIntoView({
-                      behavior: 'smooth',
-                      block: 'center',
-                      inline: 'nearest',
-                    });
-                  }
-                }, 40);
-              }
-            }}
-            title={
-              isAutoSync
-                ? 'Auto-Sync Reader is ON (Text automatically follows and scrolls smoothly to active voice verse)'
-                : 'Auto-Sync Reader is OFF (Text will not auto-scroll)'
-            }
-            style={{
-              height: '36px',
-              fontSize: '12px',
-              fontWeight: isAutoSync ? 600 : 400,
-              color: isAutoSync ? 'var(--green)' : 'var(--ink)',
-              border: isAutoSync ? '1px solid var(--green)' : '1px solid var(--line)',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '5px',
-              padding: '0 10px',
-            }}
-          >
-            <span>📜</span>
-            <span>{isAutoSync ? 'Auto-Scroll ON' : 'Auto-Scroll OFF'}</span>
-          </button>
-
-          {/* Bilingual Alternate Toggle (e.g. English ⇄ Twi) */}
-          {parallelVerses && parallelVerses.length > 0 && (
-            <button
-              type="button"
-              className={`quiet-button ${bilingualMode ? 'active-pill' : ''}`}
-              onClick={() => {
-                stopPlayback();
-                setBilingualMode(!bilingualMode);
-              }}
-              title="Alternate reciting primary & parallel language verse by verse"
-              style={{
-                height: '36px',
-                fontSize: '12px',
-                fontWeight: bilingualMode ? 600 : 400,
-                color: bilingualMode ? 'var(--green)' : 'var(--ink)',
-                border: bilingualMode ? '1px solid var(--green)' : '1px solid var(--line)',
-              }}
-            >
-              ⇄ Bilingual ({versionName} + {parallelVersionName})
-            </button>
-          )}
-
-          {/* Studio MP3 toggle when pre-recorded narration is available */}
-          {audioUrl && !bilingualMode && (
-            <button
-              type="button"
-              className={`quiet-button ${useStudioMp3 ? 'active-pill' : ''}`}
-              onClick={() => {
-                stopPlayback();
-                setUseStudioMp3(!useStudioMp3);
-              }}
-              title="Switch between Studio Recorded MP3 and Verse-by-Verse Narration"
-              style={{ height: '36px', fontSize: '12px' }}
-            >
-              {useStudioMp3
-                ? isTwiLanguage(langCode)
-                  ? '🎙️ Studio Twi Audio'
-                  : 'Studio MP3'
-                : isTwiLanguage(langCode)
-                  ? 'Akan Phonemic TTS'
-                  : 'Verse Audio'}
-            </button>
-          )}
-
-          {/* Playback speed selector */}
-          <select
-            value={rate}
-            onChange={(e) => {
-              const nextRate = Number(e.target.value);
-              setRate(nextRate);
-              if (activeSourceRef.current) {
-                activeSourceRef.current.playbackRate.value = nextRate;
-              }
-              if (studioAudioElRef.current) {
-                studioAudioElRef.current.playbackRate = nextRate;
-              }
-              if (isNativeSpeechRef.current && isPlayingRef.current) {
-                playVerseAtIndex(currentVerseIdxRef.current);
-              }
-            }}
-            style={{
-              height: '36px',
-              padding: '0 8px',
-              borderRadius: '6px',
-              border: '1px solid var(--line)',
-              background: 'var(--surface)',
-              color: 'var(--ink)',
-              fontSize: '12px',
-            }}
-            aria-label="Playback speed"
-          >
-            <option value={0.85}>0.85x</option>
-            <option value={1.0}>1.0x</option>
-            <option value={1.15}>1.15x</option>
-            <option value={1.3}>1.3x</option>
-          </select>
-
-          {onOpenSettings && (
-            <button
-              type="button"
-              className="quiet-button"
-              onClick={onOpenSettings}
-              title="Audio & Voice Settings"
-              aria-label="Settings"
-              style={{ height: '36px', padding: '0 10px' }}
-            >
-              ⚙️
-            </button>
-          )}
-
-          {onClose && (
-            <button
-              type="button"
-              className="icon-button"
-              onClick={() => {
-                stopPlayback();
-                onClose();
-              }}
-              aria-label="Close Audio Reader"
-              title="Close Audio Bar"
-              style={{ height: '36px', width: '36px' }}
-            >
-              ×
-            </button>
-          )}
         </div>
+
+        {/* 3. EXPANDABLE SECONDARY OPTIONS DRAWER (Voice, Speed, Auto-Next, Studio MP3, Bilingual) */}
+        {showOptions && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              gap: '8px',
+              paddingTop: '8px',
+              marginTop: '4px',
+              borderTop: '1px solid var(--line)',
+            }}
+          >
+            {/* Voice Selector */}
+            <select
+              value={selectedVoice}
+              onChange={(e) => handleVoiceChange(e.target.value as GoogleNeuralVoiceName)}
+              className="audio-bar-select"
+              title="Select Scripture Narrator Voice"
+            >
+              {GOOGLE_NEURAL_VOICES.map((v) => (
+                <option key={v.id} value={v.id}>
+                  {v.name}
+                </option>
+              ))}
+            </select>
+
+            {/* Speed Selector */}
+            <select
+              value={rate}
+              onChange={(e) => {
+                const nextRate = Number(e.target.value);
+                setRate(nextRate);
+                if (activeSourceRef.current) activeSourceRef.current.playbackRate.value = nextRate;
+                if (studioAudioElRef.current) studioAudioElRef.current.playbackRate = nextRate;
+                if (isNativeSpeechRef.current && isPlayingRef.current) {
+                  playVerseAtIndex(currentVerseIdxRef.current);
+                }
+              }}
+              className="audio-bar-select"
+              aria-label="Playback speed"
+              title="Playback Speed"
+            >
+              <option value={0.85}>0.85x</option>
+              <option value={1.0}>1.0x Normal</option>
+              <option value={1.15}>1.15x</option>
+              <option value={1.3}>1.3x</option>
+            </select>
+
+            {/* Continuous Chapter Auto-Play Toggle */}
+            <button
+              type="button"
+              className={`audio-bar-toggle-pill ${continuousPlayback ? 'active' : ''}`}
+              onClick={() => setContinuousPlayback((prev) => !prev)}
+              title={continuousPlayback ? 'Auto-Next is ON (advances to next chapter)' : 'Auto-Next is OFF'}
+            >
+              <span>🔁</span>
+              <span>{continuousPlayback ? 'Auto-Next ON' : 'Auto-Next OFF'}</span>
+            </button>
+
+            {/* Auto-Scroll Reader Sync Toggle */}
+            <button
+              type="button"
+              className={`audio-bar-toggle-pill ${isAutoSync ? 'active' : ''}`}
+              onClick={() => {
+                if (onToggleAutoSync) onToggleAutoSync();
+                else setInternalAutoSync((prev) => !prev);
+                if (typeof window !== 'undefined') {
+                  setTimeout(() => {
+                    const vNum = verses[currentVerseIdxRef.current]?.verse || activeVerse;
+                    const el = document.getElementById(`verse-${vNum}`) || document.querySelector(`[data-verse="${vNum}"]`);
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+                  }, 40);
+                }
+              }}
+              title={isAutoSync ? 'Auto-Scroll is ON (follows spoken verse)' : 'Auto-Scroll is OFF'}
+            >
+              <span>📜</span>
+              <span>{isAutoSync ? 'Scroll ON' : 'Scroll OFF'}</span>
+            </button>
+
+            {/* Studio MP3 toggle */}
+            {audioUrl && !bilingualMode && (
+              <button
+                type="button"
+                className={`audio-bar-toggle-pill ${useStudioMp3 ? 'active' : ''}`}
+                onClick={() => {
+                  stopPlayback();
+                  setUseStudioMp3(!useStudioMp3);
+                }}
+                title="Switch between Studio Recorded MP3 and Verse-by-Verse Narration"
+              >
+                <span>🎙️</span>
+                <span>
+                  {useStudioMp3
+                    ? isTwiLanguage(langCode)
+                      ? 'Studio Twi Audio'
+                      : 'Studio MP3'
+                    : isTwiLanguage(langCode)
+                      ? 'Akan Phonemic TTS'
+                      : 'Verse Audio'}
+                </span>
+              </button>
+            )}
+
+            {/* Bilingual Toggle */}
+            {parallelVerses && parallelVerses.length > 0 && (
+              <button
+                type="button"
+                className={`audio-bar-toggle-pill ${bilingualMode ? 'active' : ''}`}
+                onClick={() => {
+                  stopPlayback();
+                  setBilingualMode(!bilingualMode);
+                }}
+                title="Alternate reciting primary & parallel language verse by verse"
+              >
+                <span>⇄</span>
+                <span>Bilingual ({versionName} + {parallelVersionName})</span>
+              </button>
+            )}
+
+            {/* App Settings button */}
+            {onOpenSettings && (
+              <button
+                type="button"
+                className="audio-bar-icon-btn"
+                onClick={onOpenSettings}
+                title="Audio & Voice Settings"
+                aria-label="Settings"
+                style={{ minWidth: '32px', height: '32px' }}
+              >
+                ⚙️
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
