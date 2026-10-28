@@ -96,12 +96,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   const [bufferedCount, setBufferedCount] = useState<number>(0);
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [showOptions, setShowOptions] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return window.innerWidth >= 1024;
-    }
-    return false;
-  });
+  const [showOptions, setShowOptions] = useState(false);
 
   const isPlayingRef = useRef(false);
   const currentVerseIdxRef = useRef(0);
@@ -1038,19 +1033,19 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       )}
 
       <div className="audio-bar-container">
-        {/* 1. TOP HEADER & METADATA ROW */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', width: '100%' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0, flex: '1 1 auto' }}>
+        {/* 1. SCRIPTURE METADATA SECTION */}
+        <div className="audio-bar-left">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0, overflow: 'hidden' }}>
             <span
               className="brand-icon"
               aria-hidden="true"
               style={{
-                fontSize: '18px',
+                fontSize: '16px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: '32px',
-                height: '32px',
+                width: '30px',
+                height: '30px',
                 borderRadius: '50%',
                 flexShrink: 0,
                 background: isPlaying ? 'rgba(16, 185, 129, 0.15)' : 'var(--soft)',
@@ -1060,7 +1055,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             </span>
 
             <div style={{ minWidth: 0, overflow: 'hidden' }}>
-              <div style={{ fontSize: '13px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+              <div style={{ fontSize: '13px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}>
                 <span style={{ color: 'var(--ink)' }}>{bookName} {chapter}:{activeVerse}</span>
                 <span style={{ fontSize: '11px', padding: '1px 6px', borderRadius: '4px', background: 'var(--soft)', color: '#f59e0b', fontWeight: 600 }}>
                   {versionName}
@@ -1077,22 +1072,21 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
               </div>
 
               {statusMessage ? (
-                <div style={{ fontSize: '11px', color: '#e5a54b', marginTop: '1px' }}>
+                <div style={{ fontSize: '11px', color: '#e5a54b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {statusMessage}
                 </div>
               ) : (
-                <div style={{ fontSize: '11px', color: 'var(--subtle)', marginTop: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  {bufferedCount > 0 && <span>⚡ {bufferedCount}/{verses.length} ready</span>}
-                  {bilingualMode && parallelVersionName && (
-                    <span style={{ color: '#f59e0b' }}>⇄ {parallelVersionName}</span>
-                  )}
-                </div>
+                bufferedCount > 0 ? (
+                  <div style={{ fontSize: '10.5px', color: 'var(--subtle)', whiteSpace: 'nowrap' }}>
+                    ⚡ {bufferedCount}/{verses.length} ready
+                  </div>
+                ) : null
               )}
             </div>
           </div>
 
-          {/* Header right: Options, Minimize, Close */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+          {/* Mobile-only header action buttons */}
+          <div className="audio-bar-mobile-actions">
             <button
               type="button"
               className={`audio-bar-icon-btn ${showOptions ? 'active' : ''}`}
@@ -1131,14 +1125,14 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
           </div>
         </div>
 
-        {/* 2. PRIMARY PLAYBACK CONTROLS (Single sleek row on both mobile & desktop) */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%' }}>
+        {/* 2. PRIMARY PLAYBACK CONTROLS (Center on desktop, Row 2 on mobile) */}
+        <div className="audio-bar-center">
           <button
             type="button"
             className="audio-bar-icon-btn"
             onClick={() => handleStep(-1)}
             title="Previous Verse"
-            style={{ minWidth: '38px', height: '36px', fontSize: '14px' }}
+            style={{ minWidth: '34px', height: '34px', fontSize: '13px' }}
           >
             ⏮
           </button>
@@ -1147,7 +1141,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             type="button"
             className={`audio-bar-play-btn ${isLoadingVerse ? 'is-buffering' : isPlaying ? 'is-playing' : 'is-paused'}`}
             onClick={handleTogglePlay}
-            style={{ minWidth: '110px', height: '36px' }}
+            style={{ minWidth: '105px', height: '34px' }}
           >
             {isLoadingVerse
               ? '⏳ Buffering…'
@@ -1161,7 +1155,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             className="audio-bar-icon-btn"
             onClick={stopPlayback}
             title="Stop Playback"
-            style={{ minWidth: '38px', height: '36px', fontSize: '14px' }}
+            style={{ minWidth: '34px', height: '34px', fontSize: '13px' }}
           >
             ⏹
           </button>
@@ -1171,26 +1165,183 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             className="audio-bar-icon-btn"
             onClick={() => handleStep(1)}
             title="Next Verse"
-            style={{ minWidth: '38px', height: '36px', fontSize: '14px' }}
+            style={{ minWidth: '34px', height: '34px', fontSize: '13px' }}
           >
             ⏭
           </button>
         </div>
 
-        {/* 3. EXPANDABLE SECONDARY OPTIONS DRAWER (Voice, Speed, Auto-Next, Studio MP3, Bilingual) */}
-        {showOptions && (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-              gap: '8px',
-              paddingTop: '8px',
-              marginTop: '4px',
-              borderTop: '1px solid var(--line)',
-            }}
+        {/* 3. DESKTOP CONTROLS & TOGGLES (Single horizontal row on desktop, hidden on mobile) */}
+        <div className="audio-bar-right">
+          {/* Narrator Voice Selector */}
+          <select
+            value={selectedVoice}
+            onChange={(e) => handleVoiceChange(e.target.value as GoogleNeuralVoiceName)}
+            className="audio-bar-select audio-bar-voice-select"
+            title="Select Scripture Narrator Voice"
           >
+            {GOOGLE_NEURAL_VOICES.map((v) => (
+              <option key={v.id} value={v.id}>
+                {v.name}
+              </option>
+            ))}
+          </select>
+
+          {/* Speed Selector */}
+          <select
+            value={rate}
+            onChange={(e) => {
+              const nextRate = Number(e.target.value);
+              setRate(nextRate);
+              if (activeSourceRef.current) activeSourceRef.current.playbackRate.value = nextRate;
+              if (studioAudioElRef.current) studioAudioElRef.current.playbackRate = nextRate;
+              if (isNativeSpeechRef.current && isPlayingRef.current) {
+                playVerseAtIndex(currentVerseIdxRef.current);
+              }
+            }}
+            className="audio-bar-select audio-bar-speed-select"
+            aria-label="Playback speed"
+            title="Playback Speed"
+          >
+            <option value={0.85}>0.85x</option>
+            <option value={1.0}>1.0x Normal</option>
+            <option value={1.15}>1.15x</option>
+            <option value={1.3}>1.3x</option>
+          </select>
+
+          {/* Continuous Chapter Auto-Play Toggle */}
+          <button
+            type="button"
+            className={`audio-bar-toggle-pill ${continuousPlayback ? 'active' : ''}`}
+            onClick={() => setContinuousPlayback((prev) => !prev)}
+            title={continuousPlayback ? 'Auto-Next is ON (advances to next chapter)' : 'Auto-Next is OFF'}
+          >
+            <span>🔁</span>
+            <span className="pill-label">{continuousPlayback ? 'Auto-Next ON' : 'Auto-Next OFF'}</span>
+          </button>
+
+          {/* Auto-Scroll Reader Sync Toggle */}
+          <button
+            type="button"
+            className={`audio-bar-toggle-pill ${isAutoSync ? 'active' : ''}`}
+            onClick={() => {
+              const nextSync = !isAutoSync;
+              if (typeof window !== 'undefined') {
+                (window as any).__adubible_auto_scroll_enabled = nextSync;
+              }
+              if (onSetAutoSync) {
+                onSetAutoSync(nextSync);
+              } else if (onToggleAutoSync) {
+                onToggleAutoSync();
+              } else {
+                setInternalAutoSync(nextSync);
+              }
+
+              if (nextSync && typeof window !== 'undefined') {
+                const vNum = verses[currentVerseIdxRef.current]?.verse || activeVerse;
+                const el =
+                  document.getElementById(`verse-${vNum}`) ||
+                  document.querySelector(`[data-verse="${vNum}"]`);
+                if (el) {
+                  scrollVerseIntoViewIfNeeded(el as HTMLElement);
+                }
+              }
+            }}
+            title={
+              isAutoSync
+                ? 'Auto-Scroll is ON (follows spoken verse — click to turn OFF)'
+                : 'Auto-Scroll is OFF (free manual scrolling — click to turn ON)'
+            }
+          >
+            <span>📜</span>
+            <span className="pill-label">{isAutoSync ? 'Auto-Scroll ON' : 'Auto-Scroll OFF'}</span>
+          </button>
+
+          {/* Studio MP3 toggle */}
+          {audioUrl && !bilingualMode && (
+            <button
+              type="button"
+              className={`audio-bar-toggle-pill ${useStudioMp3 ? 'active' : ''}`}
+              onClick={() => {
+                stopPlayback();
+                setUseStudioMp3(!useStudioMp3);
+              }}
+              title="Switch between Studio Recorded MP3 and Verse-by-Verse Narration"
+            >
+              <span>🎙️</span>
+              <span className="pill-label">
+                {useStudioMp3
+                  ? isTwiLanguage(langCode)
+                    ? 'Studio Twi Audio'
+                    : 'Studio MP3'
+                  : isTwiLanguage(langCode)
+                    ? 'Akan Phonemic TTS'
+                    : 'Verse Audio'}
+              </span>
+            </button>
+          )}
+
+          {/* Bilingual Toggle */}
+          {parallelVerses && parallelVerses.length > 0 && (
+            <button
+              type="button"
+              className={`audio-bar-toggle-pill ${bilingualMode ? 'active' : ''}`}
+              onClick={() => {
+                stopPlayback();
+                setBilingualMode(!bilingualMode);
+              }}
+              title="Alternate reciting primary & parallel language verse by verse"
+            >
+              <span>⇄</span>
+              <span className="pill-label">Bilingual</span>
+            </button>
+          )}
+
+          {/* App Settings button */}
+          {onOpenSettings && (
+            <button
+              type="button"
+              className="audio-bar-icon-btn"
+              onClick={onOpenSettings}
+              title="Audio & Voice Settings"
+              aria-label="Settings"
+              style={{ minWidth: '32px', height: '32px' }}
+            >
+              ⚙️
+            </button>
+          )}
+
+          {/* Desktop Minimize & Close */}
+          <button
+            type="button"
+            className="audio-bar-icon-btn"
+            onClick={() => setIsMinimized(true)}
+            title="Minimize Player (Reduce screen space)"
+            aria-label="Minimize"
+            style={{ minWidth: '32px', height: '32px' }}
+          >
+            ▾
+          </button>
+          {onClose && (
+            <button
+              type="button"
+              className="audio-bar-icon-btn"
+              onClick={() => {
+                stopPlayback();
+                onClose();
+              }}
+              title="Close Audio Bar"
+              aria-label="Close"
+              style={{ minWidth: '32px', height: '32px' }}
+            >
+              ×
+            </button>
+          )}
+        </div>
+
+        {/* 4. MOBILE EXPANDABLE DRAWER (Only rendered on mobile when showOptions is toggled on) */}
+        {showOptions && (
+          <div className="audio-bar-drawer">
             {/* Voice Selector */}
             <select
               value={selectedVoice}
@@ -1255,7 +1406,6 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
                   setInternalAutoSync(nextSync);
                 }
 
-                // If turning Auto-Scroll ON, gently align to the spoken verse; if turning OFF, DO NOT SCROLL AT ALL!
                 if (nextSync && typeof window !== 'undefined') {
                   const vNum = verses[currentVerseIdxRef.current]?.verse || activeVerse;
                   const el =
@@ -1312,7 +1462,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
                 title="Alternate reciting primary & parallel language verse by verse"
               >
                 <span>⇄</span>
-                <span>Bilingual ({versionName} + {parallelVersionName})</span>
+                <span>Bilingual</span>
               </button>
             )}
 

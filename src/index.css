@@ -5408,15 +5408,15 @@ mark.search-highlight {
 }
 
 /* ==========================================================================
-   ✦ AUDIO SCRIPTURE BAR — ULTRA-COMPACT MOBILE ARCHITECTURE & HIGH-CONTRAST CONTROLS
+   ✦ AUDIO SCRIPTURE BAR — ULTRA-COMPACT SINGLE-ROW ARCHITECTURE & HIGH-CONTRAST CONTROLS
    ========================================================================== */
 .audio-bar-wrapper {
   position: sticky;
   bottom: 16px;
   z-index: 45;
-  max-width: 1508px;
-  margin: 0 auto 20px;
-  padding: 0 20px;
+  max-width: 1400px;
+  margin: 0 auto 16px;
+  padding: 0 16px;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -5434,7 +5434,7 @@ mark.search-highlight {
 }
 
 .audio-bar-container {
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: 12px;
   border: 1px solid var(--line);
   background: var(--paper);
@@ -5444,17 +5444,116 @@ mark.search-highlight {
   -webkit-backdrop-filter: blur(16px);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
+/* DESKTOP STREAMLINED SINGLE-ROW BAR (Locked to 52px height!) */
 @media (min-width: 1024px) {
   .audio-bar-container {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 18px;
-    gap: 14px;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    height: 52px !important;
+    padding: 0 16px !important;
+    gap: 12px !important;
   }
+
+  .audio-bar-left {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    overflow: hidden !important;
+  }
+
+  .audio-bar-mobile-actions {
+    display: none !important;
+  }
+
+  .audio-bar-center {
+    flex: 0 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+  }
+
+  .audio-bar-right {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .audio-bar-drawer {
+    display: none !important;
+  }
+}
+
+/* MOBILE & TABLET STACKED BAR */
+@media (max-width: 1023px) {
+  .audio-bar-left {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  .audio-bar-mobile-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .audio-bar-center {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+  }
+
+  .audio-bar-right {
+    display: none !important;
+  }
+
+  .audio-bar-drawer {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    padding-top: 6px !important;
+    margin-top: 4px !important;
+    border-top: 1px solid var(--line) !important;
+  }
+}
+
+/* Medium Desktop (1024px to 1280px) Pill Icon Compact Mode */
+@media (max-width: 1280px) and (min-width: 1024px) {
+  .audio-bar-voice-select {
+    max-width: 110px !important;
+  }
+  .audio-bar-toggle-pill .pill-label {
+    display: none !important;
+  }
+}
+
+/* SCRIPTURE READING VIEW CLEARANCE — PREVENTS AUDIO BAR FROM EVER OBSCURING VERSES */
+.verse-row,
+.verse-cell,
+[data-verse] {
+  scroll-margin-top: 140px !important;
+  scroll-margin-bottom: 160px !important;
+}
+
+.comparison {
+  padding-bottom: 84px !important;
 }
 
 /* Minimized Floating Pill Mode */

@@ -321,32 +321,44 @@ export function parsePassageQuery(query: string, books: BibleBook[]): ParsedPass
 }
 
 /**
- * Smoothly and gently brings a verse into the comfortable reading zone
- * ONLY if it is not already visible. Uses 'nearest' block positioning to
- * guarantee that scrolling never overshoots or slides past the active verse.
+ * Smoothly and gently brings a verse into the comfortable golden reading zone
+ * ONLY if it is not already visible. Positions the active verse in the upper-middle
+ * reading zone (~32% of viewport height) with generous clearance above the fixed bottom
+ * audio bar and below the top navigation bar, guaranteeing the audio bar NEVER obscures the text.
  */
 export function scrollVerseIntoViewIfNeeded(el: HTMLElement | null): void {
   if (typeof window === 'undefined' || !el) return;
   const rect = el.getBoundingClientRect();
   const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
 
-  // Safe comfortable reading zone boundaries:
-  // Top nav/toolbar area (~130px)
-  // Bottom fixed audio bar area (~110px)
-  const safeTop = 130;
-  const safeBottom = viewportHeight - 110;
+  // Measure dynamic audio bar height if active
+  const audioBarEl =
+    document.querySelector('.audio-bar-wrapper') ||
+    document.querySelector('.audio-bar-container') ||
+    document.querySelector('.audio-bar-minimized');
+  const audioBarHeight = audioBarEl ? audioBarEl.getBoundingClientRect().height : 60;
 
-  // If the verse is already comfortably visible within the user's viewport, DO NOT scroll!
+  // Safe comfortable reading zone boundaries:
+  // Top nav/toolbar area (~135px)
+  // Bottom fixed audio bar area (audioBarHeight + 40px safety buffer)
+  const safeTop = 135;
+  const safeBottom = viewportHeight - (audioBarHeight + 40);
+
+  // If the verse is already comfortably visible within this safe zone, DO NOT scroll!
   const isAlreadyVisible = rect.top >= safeTop && rect.bottom <= safeBottom;
   if (isAlreadyVisible) {
     return;
   }
 
-  // Gently bring it into view using 'nearest' block alignment to prevent jumping or overshooting
-  el.scrollIntoView({
+  // Smoothly position verse into the upper-middle golden reading zone (~32% of viewport)
+  // This guarantees ample headroom below top headers and massive clearance above the bottom audio bar
+  const targetOffset = safeTop + (safeBottom - safeTop) * 0.32;
+  const currentScrollY = window.scrollY || window.pageYOffset;
+  const targetScrollY = currentScrollY + rect.top - targetOffset;
+
+  window.scrollTo({
+    top: Math.max(0, targetScrollY),
     behavior: 'smooth',
-    block: 'nearest',
-    inline: 'nearest',
   });
 }
 
