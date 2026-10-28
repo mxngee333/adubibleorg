@@ -2456,6 +2456,69 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   background: rgba(245, 158, 11, 0.08);
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   AUDIO READER AUTO-SYNC & VOICE KARAOKE HIGHLIGHT
+   ══════════════════════════════════════════════════════════════════ */
+.verse-row.audio-active-row {
+  background: rgba(16, 185, 129, 0.12) !important;
+  border-left: 4px solid var(--green, #10b981) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), inset 0 0 24px rgba(16, 185, 129, 0.06);
+  transition: background 0.25s ease, border-left 0.25s ease, box-shadow 0.25s ease;
+}
+
+.verse-row.audio-active-row .verse-gutter {
+  background: var(--paper) !important;
+}
+
+.verse-row.audio-active-row .gutter-num {
+  color: var(--green, #10b981) !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.verse-row.audio-active-row .gutter-num::before {
+  content: '🔊';
+  font-size: 11px;
+  display: inline-block;
+  animation: audioVersePulse 1.2s infinite ease-in-out;
+  margin-right: 2px;
+}
+
+@keyframes audioVersePulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
+.bible-app.theme-symbol-midnight-gold .verse-row.audio-active-row,
+.bible-app.theme-adubible-si .verse-row.audio-active-row,
+.bible-app.theme-architect-gold .verse-row.audio-active-row {
+  background: rgba(212, 175, 55, 0.18) !important;
+  border-left: 4px solid #d4af37 !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.32), inset 0 0 30px rgba(212, 175, 55, 0.1);
+}
+
+.bible-app.theme-symbol-midnight-gold .verse-row.audio-active-row .gutter-num,
+.bible-app.theme-adubible-si .verse-row.audio-active-row .gutter-num {
+  color: #fde047 !important;
+}
+
+.bible-app.theme-parchment .verse-row.audio-active-row {
+  background: rgba(180, 83, 9, 0.15) !important;
+  border-left: 4px solid #b45309 !important;
+  box-shadow: 0 4px 20px rgba(180, 83, 9, 0.12);
+}
+
+.bible-app.theme-parchment .verse-row.audio-active-row .gutter-num {
+  color: #b45309 !important;
+}
+
 /* Sticky Left Verse Number Gutter (BibleHub Style) */
 .verse-gutter {
   position: sticky;

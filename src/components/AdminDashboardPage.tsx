@@ -204,26 +204,26 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
   // If NOT authenticated, show the Sovereign Portal Login
   if (!session) {
     return (
-      <div className="min-h-screen bg-stone-950 text-stone-100 flex flex-col justify-center items-center px-4 font-sans selection:bg-amber-500/30 selection:text-amber-200 relative overflow-hidden">
+      <div className="min-h-screen bg-[var(--paper)] text-[var(--ink)] flex flex-col justify-center items-center px-4 font-sans selection:bg-[var(--green)]/30 selection:text-[var(--ink)] relative overflow-hidden">
         {/* Ambient glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-950/20 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[var(--green)]/10 via-transparent to-transparent pointer-events-none" />
 
-        <div className="max-w-md w-full bg-stone-900/90 border border-stone-800 rounded-3xl p-8 shadow-2xl relative z-10 backdrop-blur-xl">
+        <div className="max-w-md w-full bg-[var(--surface)] border border-[var(--line)] rounded-3xl p-8 shadow-2xl relative z-10 backdrop-blur-xl">
           <div className="text-center mb-8">
-            <div className="inline-flex p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 mb-4 shadow-inner">
+            <div className="inline-flex p-3 rounded-2xl bg-[var(--soft)] border border-[var(--line)] text-[var(--green)] mb-4 shadow-inner">
               <AduBibleLogo size={36} />
             </div>
-            <h1 className="text-2xl font-serif font-bold text-stone-100 tracking-tight">
+            <h1 className="text-2xl font-serif font-bold text-[var(--ink)] tracking-tight">
               AduBible Executive Portal
             </h1>
-            <p className="text-xs text-stone-400 mt-1">
+            <p className="text-xs text-[var(--subtle)] mt-1">
               Sovereign Command Deck &bull; Apostle Kwame Adu Memorial Ministry
             </p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-semibold text-[var(--subtle)] uppercase tracking-wider mb-1.5">
                 Admin Authorized Email
               </label>
               <div className="relative">
@@ -233,13 +233,13 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
                   value={emailInput}
                   onChange={(e) => setEmailInput(e.target.value)}
                   placeholder="mxngee@gmail.com"
-                  className="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-3 text-stone-100 text-sm focus:outline-none focus:border-amber-400 font-mono"
+                  className="w-full bg-[var(--paper)] border border-[var(--line)] rounded-xl px-4 py-3 text-[var(--ink)] text-sm focus:outline-none focus:border-[var(--green)] font-mono"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-semibold text-[var(--subtle)] uppercase tracking-wider mb-1.5">
                 Master Security Key / Password
               </label>
               <div className="relative">
@@ -249,7 +249,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
                   value={passwordInput}
                   onChange={(e) => setPasswordInput(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-3 text-stone-100 text-sm focus:outline-none focus:border-amber-400"
+                  className="w-full bg-[var(--paper)] border border-[var(--line)] rounded-xl px-4 py-3 text-[var(--ink)] text-sm focus:outline-none focus:border-[var(--green)]"
                 />
               </div>
             </div>
@@ -264,25 +264,25 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
             <button
               type="submit"
               disabled={isAuthenticating}
-              className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-sm shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+              className="w-full py-3.5 px-4 rounded-xl bg-[var(--green)] hover:opacity-95 text-[var(--paper)] font-bold text-sm shadow-xl flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
             >
               <Lock className="w-4 h-4" />
               <span>{isAuthenticating ? 'Decrypting Security Vault...' : 'Unlock Sovereign Command Deck'}</span>
             </button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-stone-800/80 text-center">
+          <div className="mt-6 pt-6 border-t border-[var(--line)] text-center">
             <button
               type="button"
               onClick={onBackToReader}
-              className="text-xs text-stone-400 hover:text-amber-300 transition-colors cursor-pointer"
+              className="text-xs text-[var(--subtle)] hover:text-[var(--ink)] transition-colors cursor-pointer"
             >
               &larr; Return to Public Scripture Sanctuary
             </button>
           </div>
         </div>
 
-        <div className="mt-8 text-center text-[11px] text-stone-500 font-mono">
+        <div className="mt-8 text-center text-[11px] text-[var(--subtle)] font-mono">
           AduBible Planetary Edge &bull; 256-Bit Cryptographic Authorization
         </div>
       </div>
@@ -291,43 +291,43 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
 
   // AUTHENTICATED EXECUTIVE DASHBOARD
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100 flex flex-col font-sans selection:bg-amber-500/30 selection:text-amber-200">
+    <div className="min-h-screen bg-[var(--paper)] text-[var(--ink)] flex flex-col font-sans selection:bg-[var(--green)]/30 selection:text-[var(--ink)]">
       {/* EXECUTIVE HEADER */}
-      <header className="border-b border-stone-800/90 bg-stone-900/80 backdrop-blur-md sticky top-0 z-40 px-4 py-3 sm:px-8">
+      <header className="border-b border-[var(--line)] bg-[var(--surface)]/90 backdrop-blur-md sticky top-0 z-40 px-4 py-3 sm:px-8">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <AduBibleLogo size={28} className="rounded shadow" />
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-serif font-bold text-stone-100 text-sm sm:text-base tracking-wide">
+                <h1 className="font-serif font-bold text-[var(--ink)] text-sm sm:text-base tracking-wide">
                   AduBible Sovereign Command Deck
                 </h1>
-                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-bold uppercase tracking-wider hidden sm:inline-block">
+                <span className="px-2 py-0.5 rounded-full bg-[var(--soft)] border border-[var(--line)] text-[var(--green)] text-[10px] font-bold uppercase tracking-wider hidden sm:inline-block">
                   War Room 666
                 </span>
               </div>
-              <p className="text-[11px] text-stone-400 hidden sm:block">
-                Admin: <strong className="text-amber-300 font-mono">{session.email}</strong> &bull; Honoring Apostle Kwame Adu (Nsuhia)
+              <p className="text-[11px] text-[var(--subtle)] hidden sm:block">
+                Admin: <strong className="text-[var(--green)] font-mono">{session.email}</strong> &bull; Honoring Apostle Kwame Adu (Nsuhia)
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 text-xs font-mono font-medium">
+            <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--soft)] border border-[var(--line)] text-[var(--green)] text-xs font-mono font-medium">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>330+ Edge PoPs Live</span>
             </div>
 
             <button
               onClick={onBackToReader}
-              className="text-stone-300 hover:text-amber-200 text-xs font-semibold py-1.5 px-3 rounded-lg bg-stone-800/80 hover:bg-stone-800 border border-stone-700/50 transition-colors cursor-pointer"
+              className="text-[var(--subtle)] hover:text-[var(--ink)] text-xs font-semibold py-1.5 px-3 rounded-lg bg-[var(--soft)] hover:bg-[var(--surface)] border border-[var(--line)] transition-colors cursor-pointer"
             >
               Public Reader &rarr;
             </button>
 
             <button
               onClick={handleLogout}
-              className="p-1.5 rounded-lg bg-stone-800/80 hover:bg-stone-800 border border-stone-700/50 text-stone-400 hover:text-rose-400 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg bg-[var(--soft)] hover:bg-[var(--surface)] border border-[var(--line)] text-[var(--subtle)] hover:text-rose-400 transition-colors cursor-pointer"
               title="Lock & Exit Command Deck"
             >
               <LogOut className="w-4 h-4" />
@@ -340,67 +340,67 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6 sm:px-8 space-y-6">
         {/* HERO METRICS HUD */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-          <div className="p-4 sm:p-5 rounded-2xl bg-stone-900/80 border border-stone-800/80 shadow">
-            <div className="flex items-center justify-between text-stone-400 text-xs mb-2">
+          <div className="p-4 sm:p-5 rounded-2xl bg-[var(--surface)] border border-[var(--line)] shadow">
+            <div className="flex items-center justify-between text-[var(--subtle)] text-xs mb-2">
               <span className="font-semibold uppercase tracking-wider">Readers Reached</span>
               <Users className="w-4 h-4 text-blue-400" />
             </div>
-            <div className="text-2xl sm:text-3xl font-serif font-bold text-stone-100">
+            <div className="text-2xl sm:text-3xl font-serif font-bold text-[var(--ink)]">
               {metrics.totalMonthlyReaders.toLocaleString()}
             </div>
-            <div className="text-[11px] text-emerald-400 mt-1 flex items-center gap-1">
+            <div className="text-[11px] text-[var(--green)] mt-1 flex items-center gap-1">
               <span>Target: 4.2 Billion Global Souls</span>
             </div>
           </div>
 
-          <div className="p-4 sm:p-5 rounded-2xl bg-stone-900/80 border border-stone-800/80 shadow">
-            <div className="flex items-center justify-between text-stone-400 text-xs mb-2">
+          <div className="p-4 sm:p-5 rounded-2xl bg-[var(--surface)] border border-[var(--line)] shadow">
+            <div className="flex items-center justify-between text-[var(--subtle)] text-xs mb-2">
               <span className="font-semibold uppercase tracking-wider">Seed Offerings</span>
-              <Coins className="w-4 h-4 text-amber-400" />
+              <Coins className="w-4 h-4 text-[var(--green)]" />
             </div>
-            <div className="text-2xl sm:text-3xl font-serif font-bold text-amber-300">
+            <div className="text-2xl sm:text-3xl font-serif font-bold text-[var(--green)]">
               ${metrics.totalOfferingsVolumeUSD.toLocaleString()}
             </div>
-            <div className="text-[11px] text-stone-400 mt-1">
+            <div className="text-[11px] text-[var(--subtle)] mt-1">
               Stripe + PayPal + Church Seeds
             </div>
           </div>
 
-          <div className="p-4 sm:p-5 rounded-2xl bg-stone-900/80 border border-stone-800/80 shadow">
-            <div className="flex items-center justify-between text-stone-400 text-xs mb-2">
+          <div className="p-4 sm:p-5 rounded-2xl bg-[var(--surface)] border border-[var(--line)] shadow">
+            <div className="flex items-center justify-between text-[var(--subtle)] text-xs mb-2">
               <span className="font-semibold uppercase tracking-wider">Gospel Subscribers</span>
               <Mail className="w-4 h-4 text-emerald-400" />
             </div>
-            <div className="text-2xl sm:text-3xl font-serif font-bold text-stone-100">
+            <div className="text-2xl sm:text-3xl font-serif font-bold text-[var(--ink)]">
               {metrics.totalSubscribersCount}
             </div>
-            <div className="text-[11px] text-stone-400 mt-1">
+            <div className="text-[11px] text-[var(--subtle)] mt-1">
               Maileroo Daily Scripture Roster
             </div>
           </div>
 
-          <div className="p-4 sm:p-5 rounded-2xl bg-stone-900/80 border border-stone-800/80 shadow">
-            <div className="flex items-center justify-between text-stone-400 text-xs mb-2">
+          <div className="p-4 sm:p-5 rounded-2xl bg-[var(--surface)] border border-[var(--line)] shadow">
+            <div className="flex items-center justify-between text-[var(--subtle)] text-xs mb-2">
               <span className="font-semibold uppercase tracking-wider">Audio Streams (24kHz)</span>
               <Headphones className="w-4 h-4 text-purple-400" />
             </div>
-            <div className="text-2xl sm:text-3xl font-serif font-bold text-stone-100">
+            <div className="text-2xl sm:text-3xl font-serif font-bold text-[var(--ink)]">
               {metrics.totalAudioChaptersStreamed.toLocaleString()}
             </div>
-            <div className="text-[11px] text-stone-400 mt-1">
+            <div className="text-[11px] text-[var(--subtle)] mt-1">
               Zero-Egress via Cloudflare R2
             </div>
           </div>
         </section>
 
         {/* TAB CONTROLS */}
-        <section className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-stone-800/80 scrollbar-none">
+        <section className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-[var(--line)] scrollbar-none">
           <button
             onClick={() => setActiveTab('overview')}
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer flex items-center gap-2 ${
               activeTab === 'overview'
-                ? 'bg-amber-500 text-stone-950 shadow-md'
-                : 'bg-stone-900/60 text-stone-400 hover:text-stone-200 hover:bg-stone-900'
+                ? 'bg-[var(--green)] text-[var(--paper)] shadow-md'
+                : 'bg-[var(--surface)] text-[var(--subtle)] hover:text-[var(--ink)]'
             }`}
           >
             <Sparkles className="w-4 h-4" />
@@ -411,8 +411,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
             onClick={() => setActiveTab('donations')}
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer flex items-center gap-2 ${
               activeTab === 'donations'
-                ? 'bg-amber-500 text-stone-950 shadow-md'
-                : 'bg-stone-900/60 text-stone-400 hover:text-stone-200 hover:bg-stone-900'
+                ? 'bg-[var(--green)] text-[var(--paper)] shadow-md'
+                : 'bg-[var(--surface)] text-[var(--subtle)] hover:text-[var(--ink)]'
             }`}
           >
             <Coins className="w-4 h-4" />
@@ -423,8 +423,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
             onClick={() => setActiveTab('subscribers')}
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer flex items-center gap-2 ${
               activeTab === 'subscribers'
-                ? 'bg-amber-500 text-stone-950 shadow-md'
-                : 'bg-stone-900/60 text-stone-400 hover:text-stone-200 hover:bg-stone-900'
+                ? 'bg-[var(--green)] text-[var(--paper)] shadow-md'
+                : 'bg-[var(--surface)] text-[var(--subtle)] hover:text-[var(--ink)]'
             }`}
           >
             <Mail className="w-4 h-4" />
@@ -435,8 +435,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
             onClick={() => setActiveTab('prayers')}
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer flex items-center gap-2 ${
               activeTab === 'prayers'
-                ? 'bg-amber-500 text-stone-950 shadow-md'
-                : 'bg-stone-900/60 text-stone-400 hover:text-stone-200 hover:bg-stone-900'
+                ? 'bg-[var(--green)] text-[var(--paper)] shadow-md'
+                : 'bg-[var(--surface)] text-[var(--subtle)] hover:text-[var(--ink)]'
             }`}
           >
             <Heart className="w-4 h-4" />
@@ -447,8 +447,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
             onClick={() => setActiveTab('corpus')}
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer flex items-center gap-2 ${
               activeTab === 'corpus'
-                ? 'bg-amber-500 text-stone-950 shadow-md'
-                : 'bg-stone-900/60 text-stone-400 hover:text-stone-200 hover:bg-stone-900'
+                ? 'bg-[var(--green)] text-[var(--paper)] shadow-md'
+                : 'bg-[var(--surface)] text-[var(--subtle)] hover:text-[var(--ink)]'
             }`}
           >
             <BookOpen className="w-4 h-4" />
@@ -459,12 +459,12 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
             onClick={() => setActiveTab('diagnostics')}
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer flex items-center gap-2 ${
               activeTab === 'diagnostics'
-                ? 'bg-amber-500 text-stone-950 shadow-md'
-                : 'bg-stone-900/60 text-stone-400 hover:text-stone-200 hover:bg-stone-900'
+                ? 'bg-[var(--green)] text-[var(--paper)] shadow-md'
+                : 'bg-[var(--surface)] text-[var(--subtle)] hover:text-[var(--ink)]'
             }`}
           >
             <Server className="w-4 h-4" />
-            <span>Gateways &amp; Webhooks</span>
+            <span>Architecture &amp; Security</span>
           </button>
         </section>
 

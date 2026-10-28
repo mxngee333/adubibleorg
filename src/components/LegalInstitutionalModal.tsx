@@ -331,10 +331,25 @@ export const LegalInstitutionalModal: React.FC<LegalInstitutionalModalProps> = (
         </div>
 
         {/* Modal Bottom Actions */}
-        <div className="flex flex-wrap items-center justify-between border-t border-[var(--line)] bg-[var(--surface)] px-4 sm:px-6 py-3 text-xs text-[var(--subtle)]">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-between border-t border-[var(--line)] bg-[var(--surface)] px-4 sm:px-6 py-3 text-xs text-[var(--subtle)] gap-2">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <span>Canonical Folio:</span>
             <code className="text-[var(--green)] font-mono">https://adubible.org/{page}/</code>
+            <span className="hidden sm:inline text-stone-500">·</span>
+            <a
+              href="/donate/"
+              onClick={(e) => {
+                e.preventDefault();
+                onClose();
+                if (typeof window !== 'undefined') {
+                  window.history.pushState({}, '', '/donate/');
+                  window.location.href = '/donate/';
+                }
+              }}
+              className="text-amber-400 font-bold hover:underline inline-flex items-center gap-1"
+            >
+              <span>💛 Support Mission (Donate)</span>
+            </a>
           </div>
           <button
             type="button"

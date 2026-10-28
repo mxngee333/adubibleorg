@@ -29,6 +29,8 @@ interface AudioBibleBarProps {
   autoPlay?: boolean;
   autoPlayNonce?: number;
   onPlaybackStateChange?: (isPlaying: boolean) => void;
+  autoSyncReader?: boolean;
+  onToggleAutoSync?: () => void;
 }
 
 const SAVED_VOICE_KEY = 'elohim_neural_voice_v1';
@@ -51,10 +53,14 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   autoPlay = true,
   autoPlayNonce = 0,
   onPlaybackStateChange,
+  autoSyncReader = true,
+  onToggleAutoSync,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoadingVerse, setIsLoadingVerse] = useState(false);
   const [continuousPlayback, setContinuousPlayback] = useState<boolean>(true);
+  const [internalAutoSync, setInternalAutoSync] = useState<boolean>(true);
+  const isAutoSync = autoSyncReader !== undefined ? autoSyncReader : internalAutoSync;
   const autoPlayNextChapterRef = useRef<boolean>(false);
   const hasInitialAutoPlayedRef = useRef<boolean>(false);
   const lastHandledNonceRef = useRef<number>(autoPlayNonce || 0);
