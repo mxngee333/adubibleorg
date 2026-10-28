@@ -142,6 +142,8 @@ export function saveDonorBadge(badge: DonorBadge): void {
   }
 }
 
+import { getLiveEnvConfig } from './adminService';
+
 /**
  * Initiates Stripe Checkout for Donation
  */
@@ -149,6 +151,7 @@ export async function initiateStripeDonation(
   submission: DonorSubmission,
   originUrl: string
 ): Promise<{ redirectUrl?: string; clientSecret?: string; error?: string }> {
+  const liveEnvs = getLiveEnvConfig();
   const backendBase =
     import.meta.env.VITE_CLOUDFLARE_EDGE_URL ||
     import.meta.env.VITE_HETZNER_ORIGIN_URL ||
@@ -159,9 +162,11 @@ export async function initiateStripeDonation(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${liveEnvs.STRIPE_SECRET_KEY}`,
       },
       body: JSON.stringify({
         ...submission,
+        stripeKey: liveEnvs.STRIPE_SECRET_KEY,
         returnUrl: `${originUrl}/donate/?status=success&gateway=stripe&session_id={CHECKOUT_SESSION_ID}`,
         cancelUrl: `${originUrl}/donate/?status=cancelled`,
       }),
@@ -199,6 +204,7 @@ export async function initiatePayPalDonation(
   submission: DonorSubmission,
   originUrl: string
 ): Promise<{ approvalUrl?: string; orderId?: string; error?: string }> {
+  const liveEnvs = getLiveEnvConfig();
   const backendBase =
     import.meta.env.VITE_CLOUDFLARE_EDGE_URL ||
     import.meta.env.VITE_HETZNER_ORIGIN_URL ||
@@ -212,6 +218,9 @@ export async function initiatePayPalDonation(
       },
       body: JSON.stringify({
         ...submission,
+        clientId: liveEnvs.PAYPAL_CLIENT_ID,
+        clientSecret: liveEnvs.PAYPAL_CLIENT_SECRET,
+        mode: liveEnvs.PAYPAL_MODE,
         returnUrl: `${originUrl}/donate/?status=success&gateway=paypal`,
         cancelUrl: `${originUrl}/donate/?status=cancelled`,
       }),

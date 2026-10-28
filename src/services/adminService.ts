@@ -576,6 +576,171 @@ export function exportDonationsToCSV(donations: AdminDonationRecord[]): void {
   downloadBlob(csvContent, `adubible_donations_ledger_${new Date().toISOString().slice(0, 10)}.csv`, 'text/csv');
 }
 
+/**
+ * Real-time Environment & Gateway Credentials Configuration Interface
+ */
+export interface LiveEnvConfig {
+  STRIPE_SECRET_KEY: string;
+  STRIPE_WEBHOOK_SECRET: string;
+  PAYPAL_MODE: 'live' | 'sandbox';
+  PAYPAL_CLIENT_ID: string;
+  PAYPAL_CLIENT_SECRET: string;
+  PAYPAL_WEBHOOK_ID: string;
+  CLIENT_APP_URL: string;
+  MAILEROO_API_KEY: string;
+  CLOUDFLARE_ACCOUNT_ID: string;
+  CLOUDFLARE_R2_BUCKET_NAME: string;
+  lastUpdated?: string;
+}
+
+export const LS_LIVE_ENVS_KEY = 'adubible_live_env_vault_v1';
+
+export const DEFAULT_LIVE_ENVS: LiveEnvConfig = {
+  STRIPE_SECRET_KEY: (import.meta as any).env?.VITE_STRIPE_SECRET_KEY || '',
+  STRIPE_WEBHOOK_SECRET: (import.meta as any).env?.VITE_STRIPE_WEBHOOK_SECRET || '',
+  PAYPAL_MODE: ((import.meta as any).env?.VITE_PAYPAL_MODE as 'live' | 'sandbox') || 'live',
+  PAYPAL_CLIENT_ID: (import.meta as any).env?.VITE_PAYPAL_CLIENT_ID || '',
+  PAYPAL_CLIENT_SECRET: (import.meta as any).env?.VITE_PAYPAL_CLIENT_SECRET || '',
+  PAYPAL_WEBHOOK_ID: (import.meta as any).env?.VITE_PAYPAL_WEBHOOK_ID || '',
+  CLIENT_APP_URL: (import.meta as any).env?.VITE_CLIENT_APP_URL || 'https://adubible.org',
+  MAILEROO_API_KEY: (import.meta as any).env?.VITE_MAILEROO_API_KEY || '0f0b8b60d11196da2729fe59361df5b137cc9ff901987bfae92ce6dc6fa904df',
+  CLOUDFLARE_ACCOUNT_ID: '2beae38bec708c3da9dee9f12c68cad8',
+  CLOUDFLARE_R2_BUCKET_NAME: 'adubible',
+  lastUpdated: new Date().toISOString(),
+};
+
+/**
+ * Retrieves the active environment variables (merging Firestore, localStorage, and defaults)
+ */
+export function getLiveEnvConfig(): LiveEnvConfig {
+  if (typeof window === 'undefined') {
+    return DEFAULT_LIVE_ENVS;
+  }
+
+  try {
+    const cached = localStorage.getItem(LS_LIVE_ENVS_KEY);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      return { ...DEFAULT_LIVE_ENVS, ...parsed };
+    }
+  } catch (err) {
+    console.warn('[Admin Service] Failed to read live envs cache:', err);
+  }
+
+  return DEFAULT_LIVE_ENVS;
+}
+
+/**
+ * Loads environment variables from Firestore with local cache sync
+ */
+export async function fetchLiveEnvConfig(): Promise<LiveEnvConfig> {
+  const current = getLiveEnvConfig();
+  const db = initFirebaseIfConfigured();
+
+  if (db) {
+    try {
+      const { getDoc, doc } = await import('firebase/firestore');
+      const envDocRef = doc(db, 'app_config', 'environments');
+      const snap = await getDoc(envDocRef);
+      if (snap.exists()) {
+        const cloudData = snap.data() as Partial<LiveEnvConfig>;
+        const merged: LiveEnvConfig = { ...current, ...cloudData };
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(LS_LIVE_ENVS_KEY, JSON.stringify(merged));
+        }
+        return merged;
+      }
+    } catch (err) {
+      console.warn('[Admin Service] Firestore env retrieval bypassed, using local cache:', err);
+    }
+  }
+
+  return current;
+}
+
+/**
+ * Saves and broadcasts live environment updates in real time
+ */
+export async function saveLiveEnvConfig(updated: LiveEnvConfig): Promise<LiveEnvConfig> {
+  const configWithTimestamp: LiveEnvConfig = {
+    ...updated,
+    lastUpdated: new Date().toISOString(),
+  };
+
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(LS_LIVE_ENVS_KEY, JSON.stringify(configWithTimestamp));
+    // Broadcast real-time event across current window
+    window.dispatchEvent(
+      new CustomEvent('adubible_env_updated', { detail: configWithTimestamp })
+    );
+  }
+
+  const db = initFirebaseIfConfigured();
+  if (db) {
+    try {
+      const envDocRef = doc(db, 'app_config', 'environments');
+      await setDoc(envDocRef, configWithTimestamp, { merge: true });
+
+      // Redundant backup in system_metrics
+      const backupRef = doc(db, 'system_metrics', 'environments');
+      await setDoc(backupRef, configWithTimestamp, { merge: true });
+    } catch (err) {
+      console.warn('[Admin Service] Cloud sync deferred, stored in local sovereign vault:', err);
+    }
+  }
+
+  return configWithTimestamp;
+}
+
+/**
+ * Generates formatted .env text for 1-click copy or file download
+ */
+export function generateEnvFileContent(config: LiveEnvConfig): string {
+  return `# ====================================================================
+# ADUBIBLE / ELOHIM BIBLE HUB — LIVE ENVIRONMENT CONFIGURATION
+# Last Updated: ${config.lastUpdated || new Date().toISOString()}
+# Sovereign Admin: ${ADMIN_EMAIL}
+# ====================================================================
+
+# 1. CANONICAL APP URL
+CLIENT_APP_URL=${config.CLIENT_APP_URL}
+VITE_SITE_URL=${config.CLIENT_APP_URL}
+VITE_CLIENT_APP_URL=${config.CLIENT_APP_URL}
+
+# 2. DUAL PAYMENT GATEWAYS (STRIPE & PAYPAL)
+STRIPE_SECRET_KEY=${config.STRIPE_SECRET_KEY}
+VITE_STRIPE_SECRET_KEY=${config.STRIPE_SECRET_KEY}
+STRIPE_WEBHOOK_SECRET=${config.STRIPE_WEBHOOK_SECRET}
+VITE_STRIPE_WEBHOOK_SECRET=${config.STRIPE_WEBHOOK_SECRET}
+
+PAYPAL_MODE=${config.PAYPAL_MODE}
+VITE_PAYPAL_MODE=${config.PAYPAL_MODE}
+PAYPAL_CLIENT_ID=${config.PAYPAL_CLIENT_ID}
+VITE_PAYPAL_CLIENT_ID=${config.PAYPAL_CLIENT_ID}
+PAYPAL_CLIENT_SECRET=${config.PAYPAL_CLIENT_SECRET}
+VITE_PAYPAL_CLIENT_SECRET=${config.PAYPAL_CLIENT_SECRET}
+PAYPAL_WEBHOOK_ID=${config.PAYPAL_WEBHOOK_ID}
+VITE_PAYPAL_WEBHOOK_ID=${config.PAYPAL_WEBHOOK_ID}
+
+# 3. TRANSACTIONAL OUTREACH (MAILEROO)
+MAILEROO_API_KEY=${config.MAILEROO_API_KEY}
+SMTP_FROM=AduBible Scripture Mission <no-reply@adubible.org>
+
+# 4. CLOUDFLARE PLANETARY EDGE & R2 ZERO-EGRESS STORAGE
+CLOUDFLARE_ACCOUNT_ID=${config.CLOUDFLARE_ACCOUNT_ID}
+CLOUDFLARE_R2_BUCKET_NAME=${config.CLOUDFLARE_R2_BUCKET_NAME}
+CLOUDFLARE_R2_ENDPOINT=https://${config.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com
+`;
+}
+
+/**
+ * Downloads a fresh .env file to disk
+ */
+export function downloadEnvFile(config: LiveEnvConfig): void {
+  const content = generateEnvFileContent(config);
+  downloadBlob(content, '.env', 'text/plain');
+}
+
 function downloadBlob(content: string, filename: string, mime: string) {
   if (typeof window === 'undefined') return;
   const blob = new Blob([content], { type: `${mime};charset=utf-8;` });

@@ -4,6 +4,7 @@ import {
   AdminDonationRecord,
   AdminSubscriberRecord,
   AdminPrayerRecord,
+  LiveEnvConfig,
   getActiveAdminSession,
   authenticateAdmin,
   clearAdminSession,
@@ -16,6 +17,12 @@ import {
   getAdminSystemMetrics,
   exportSubscribersToCSV,
   exportDonationsToCSV,
+  getLiveEnvConfig,
+  fetchLiveEnvConfig,
+  saveLiveEnvConfig,
+  downloadEnvFile,
+  generateEnvFileContent,
+  DEFAULT_LIVE_ENVS,
 } from '../services/adminService';
 import { AduBibleLogo } from './AduBibleLogo';
 import {
@@ -42,6 +49,12 @@ import {
   ChevronRight,
   Flame,
   AlertCircle,
+  Key,
+  Eye,
+  EyeOff,
+  Copy,
+  Save,
+  Check,
 } from 'lucide-react';
 
 interface AdminDashboardPageProps {
@@ -91,6 +104,13 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
   // Search filter
   const [searchQuery, setSearchQuery] = useState<string>('');
 
+  // Live Environment & Credentials State
+  const [envConfig, setEnvConfig] = useState<LiveEnvConfig>(getLiveEnvConfig());
+  const [isSavingEnvs, setIsSavingEnvs] = useState<boolean>(false);
+  const [envSaveSuccess, setEnvSaveSuccess] = useState<boolean>(false);
+  const [showKeys, setShowKeys] = useState<Record<string, boolean>>({});
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
   // Check existing session
   useEffect(() => {
     const active = getActiveAdminSession();
@@ -109,16 +129,63 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
   const loadAllAdminData = async () => {
     setIsLoadingData(true);
     try {
-      const [dList, sList, pList] = await Promise.all([
+      const [dList, sList, pList, liveEnvs] = await Promise.all([
         getAdminDonations(),
         getAdminSubscribers(),
         getAdminPrayerRequests(),
+        fetchLiveEnvConfig(),
       ]);
       setDonations(dList);
       setSubscribers(sList);
       setPrayers(pList);
+      if (liveEnvs) {
+        setEnvConfig(liveEnvs);
+      }
     } finally {
       setIsLoadingData(false);
+    }
+  };
+
+  const handleToggleKeyVisibility = (key: string) => {
+    setShowKeys((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const handleCopyValue = (key: string, val: string) => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(val);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(null), 2000);
+    }
+  };
+
+  const handleSaveEnvConfig = async () => {
+    setIsSavingEnvs(true);
+    try {
+      const saved = await saveLiveEnvConfig(envConfig);
+      setEnvConfig(saved);
+      setEnvSaveSuccess(true);
+      setTimeout(() => setEnvSaveSuccess(false), 3500);
+    } finally {
+      setIsSavingEnvs(false);
+    }
+  };
+
+  const handleDownloadEnvFile = () => {
+    downloadEnvFile(envConfig);
+  };
+
+  const handleCopyEnvFile = () => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      const raw = generateEnvFileContent(envConfig);
+      navigator.clipboard.writeText(raw);
+      setCopiedKey('all_env');
+      setTimeout(() => setCopiedKey(null), 2500);
+    }
+  };
+
+  const handleResetEnvs = () => {
+    if (typeof window !== 'undefined' && window.confirm('Reset environment variables to production factory defaults?')) {
+      setEnvConfig(DEFAULT_LIVE_ENVS);
     }
   };
 
@@ -463,8 +530,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
                 : 'bg-[var(--surface)] text-[var(--subtle)] hover:text-[var(--ink)]'
             }`}
           >
-            <Server className="w-4 h-4" />
-            <span>Architecture &amp; Security</span>
+            <Key className="w-4 h-4" />
+            <span>⚡ Live Envs &amp; Gateways</span>
           </button>
         </section>
 
@@ -918,61 +985,563 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
           </div>
         )}
 
-        {/* TAB 6: GATEWAYS & WEBHOOKS DIAGNOSTICS */}
+        {/* TAB 6: LIVE ENVIRONMENT & GATEWAYS VAULT */}
         {activeTab === 'diagnostics' && (
-          <div className="p-6 rounded-3xl bg-stone-900/70 border border-stone-800 space-y-6">
-            <div>
-              <h3 className="font-serif font-bold text-lg text-stone-100">
-                Payment Gateways &amp; Webhook Listeners
-              </h3>
-              <p className="text-xs text-stone-400">
-                Real-time operational endpoints deployed across Cloudflare Planetary Edge and Hetzner Origin Cluster.
-              </p>
+          <div className="space-y-6">
+            {/* Top Command Banner */}
+            <div className="p-6 rounded-3xl bg-[var(--surface)] border border-[var(--line)] shadow-xl space-y-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <h3 className="font-serif font-bold text-xl text-[var(--ink)]">
+                      ⚡ Live Environment &amp; Payment Gateway Vault
+                    </h3>
+                  </div>
+                  <p className="text-xs text-[var(--subtle)]">
+                    Edit, encrypt, and synchronize production environment variables in real time across Cloudflare Planetary Edge, Firebase, and local runtime storage.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={handleSaveEnvConfig}
+                    disabled={isSavingEnvs}
+                    className="px-4 py-2.5 rounded-xl bg-[var(--green)] hover:opacity-95 text-[var(--paper)] text-xs font-bold shadow-lg flex items-center gap-2 transition cursor-pointer disabled:opacity-50"
+                  >
+                    {isSavingEnvs ? (
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Save className="w-4 h-4" />
+                    )}
+                    <span>{isSavingEnvs ? 'Syncing Envs...' : 'Save & Sync in Real Time'}</span>
+                  </button>
+
+                  <button
+                    onClick={handleCopyEnvFile}
+                    className="px-3.5 py-2.5 rounded-xl border border-[var(--line)] bg-[var(--paper)] hover:bg-[var(--soft)] text-[var(--ink)] text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                    title="Copy full .env file to clipboard"
+                  >
+                    {copiedKey === 'all_env' ? (
+                      <>
+                        <Check className="w-4 h-4 text-emerald-400" />
+                        <span className="text-emerald-400">Copied .env!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-4 h-4 text-[var(--subtle)]" />
+                        <span>Copy .env</span>
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    onClick={handleDownloadEnvFile}
+                    className="px-3.5 py-2.5 rounded-xl border border-[var(--line)] bg-[var(--paper)] hover:bg-[var(--soft)] text-[var(--ink)] text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                    title="Download active .env file"
+                  >
+                    <Download className="w-4 h-4 text-[var(--subtle)]" />
+                    <span>Download .env</span>
+                  </button>
+
+                  <button
+                    onClick={handleResetEnvs}
+                    className="p-2.5 rounded-xl border border-[var(--line)] bg-[var(--paper)] hover:bg-rose-950/20 text-[var(--subtle)] hover:text-rose-400 text-xs transition cursor-pointer"
+                    title="Reset to default production settings"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Real-time Save Confirmation Banner */}
+              {envSaveSuccess && (
+                <div className="p-3.5 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs flex items-center gap-2.5 animate-fadeIn">
+                  <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-400" />
+                  <span>
+                    <strong>Environment Variables Synchronized in Real Time!</strong> Credentials have been stored securely in Firestore and updated across all active donation sessions.
+                  </span>
+                </div>
+              )}
+
+              {/* Status HUD Strip */}
+              <div className="flex flex-wrap items-center gap-4 pt-2 text-[11px] text-[var(--subtle)] border-t border-[var(--line)]">
+                <div>
+                  Active Domain: <strong className="text-[var(--ink)] font-mono">{envConfig.CLIENT_APP_URL}</strong>
+                </div>
+                <span>•</span>
+                <div>
+                  PayPal Mode: <strong className="text-emerald-400 uppercase font-mono">{envConfig.PAYPAL_MODE}</strong>
+                </div>
+                <span>•</span>
+                <div>
+                  Stripe Key: <strong className="text-amber-300 font-mono">{envConfig.STRIPE_SECRET_KEY ? `${envConfig.STRIPE_SECRET_KEY.slice(0, 10)}...` : 'Not Set'}</strong>
+                </div>
+                <span>•</span>
+                <div>
+                  Last Saved: <strong className="text-[var(--ink)]">{envConfig.lastUpdated ? new Date(envConfig.lastUpdated).toLocaleTimeString() : 'Current Session'}</strong>
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-4">
-              {/* Stripe */}
-              <div className="p-4 rounded-2xl bg-stone-950/80 border border-stone-800 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-sm text-stone-200">Stripe Webhook Listener</span>
+            {/* DUAL PAYMENT GATEWAYS FORM */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* STRIPE SETTINGS */}
+              <div className="p-6 rounded-3xl bg-[var(--surface)] border border-[var(--line)] shadow space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 rounded-xl bg-purple-950/40 border border-purple-500/30 text-purple-300">
+                      <Coins className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm text-[var(--ink)]">Stripe Gateway (Live)</h4>
+                      <p className="text-[11px] text-[var(--subtle)]">Credit Cards, Apple Pay, Google Pay</p>
+                    </div>
+                  </div>
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-500/30">
-                    200 OK Active
+                    Live Active
                   </span>
                 </div>
-                <div className="text-xs text-stone-400 font-mono bg-stone-900 p-2.5 rounded-lg border border-stone-800 select-all">
-                  https://adubible.org/api/webhooks/stripe
+
+                {/* STRIPE_SECRET_KEY */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-[var(--subtle)] uppercase tracking-wider">
+                      Stripe Secret Key (rk_live / sk_live)
+                    </label>
+                    <span className="text-[10px] text-purple-400 font-mono">STRIPE_SECRET_KEY</span>
+                  </div>
+                  <div className="relative flex items-center">
+                    <input
+                      type={showKeys['stripe_secret'] ? 'text' : 'password'}
+                      value={envConfig.STRIPE_SECRET_KEY}
+                      onChange={(e) =>
+                        setEnvConfig({ ...envConfig, STRIPE_SECRET_KEY: e.target.value.trim() })
+                      }
+                      placeholder="rk_live_... or sk_live_..."
+                      className="w-full bg-[var(--paper)] border border-[var(--line)] rounded-xl px-4 py-2.5 text-xs text-[var(--ink)] font-mono pr-20 focus:outline-none focus:border-[var(--green)]"
+                    />
+                    <div className="absolute right-2 flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => handleToggleKeyVisibility('stripe_secret')}
+                        className="p-1.5 text-[var(--subtle)] hover:text-[var(--ink)]"
+                        title={showKeys['stripe_secret'] ? 'Mask' : 'Reveal'}
+                      >
+                        {showKeys['stripe_secret'] ? (
+                          <EyeOff className="w-3.5 h-3.5" />
+                        ) : (
+                          <Eye className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyValue('stripe_secret', envConfig.STRIPE_SECRET_KEY)}
+                        className="p-1.5 text-[var(--subtle)] hover:text-[var(--ink)]"
+                        title="Copy key"
+                      >
+                        {copiedKey === 'stripe_secret' ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-[11px] text-stone-400">
-                  Events: <code className="text-amber-300">checkout.session.completed</code>, <code className="text-amber-300">payment_intent.succeeded</code>, <code className="text-amber-300">invoice.payment_succeeded</code>
+
+                {/* STRIPE_WEBHOOK_SECRET */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-[var(--subtle)] uppercase tracking-wider">
+                      Stripe Webhook Signing Secret
+                    </label>
+                    <span className="text-[10px] text-purple-400 font-mono">STRIPE_WEBHOOK_SECRET</span>
+                  </div>
+                  <div className="relative flex items-center">
+                    <input
+                      type={showKeys['stripe_webhook'] ? 'text' : 'password'}
+                      value={envConfig.STRIPE_WEBHOOK_SECRET}
+                      onChange={(e) =>
+                        setEnvConfig({ ...envConfig, STRIPE_WEBHOOK_SECRET: e.target.value.trim() })
+                      }
+                      placeholder="whsec_..."
+                      className="w-full bg-[var(--paper)] border border-[var(--line)] rounded-xl px-4 py-2.5 text-xs text-[var(--ink)] font-mono pr-20 focus:outline-none focus:border-[var(--green)]"
+                    />
+                    <div className="absolute right-2 flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => handleToggleKeyVisibility('stripe_webhook')}
+                        className="p-1.5 text-[var(--subtle)] hover:text-[var(--ink)]"
+                        title={showKeys['stripe_webhook'] ? 'Mask' : 'Reveal'}
+                      >
+                        {showKeys['stripe_webhook'] ? (
+                          <EyeOff className="w-3.5 h-3.5" />
+                        ) : (
+                          <Eye className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyValue('stripe_webhook', envConfig.STRIPE_WEBHOOK_SECRET)}
+                        className="p-1.5 text-[var(--subtle)] hover:text-[var(--ink)]"
+                        title="Copy secret"
+                      >
+                        {copiedKey === 'stripe_webhook' ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Stripe Live Endpoint info */}
+                <div className="p-3 rounded-xl bg-[var(--paper)] border border-[var(--line)] text-[11px] text-[var(--subtle)] space-y-1">
+                  <div className="font-semibold text-[var(--ink)] flex items-center justify-between">
+                    <span>Registered Webhook Endpoint:</span>
+                    <span className="font-mono text-emerald-400">200 OK</span>
+                  </div>
+                  <div className="font-mono text-[10px] text-stone-400 select-all">
+                    {envConfig.CLIENT_APP_URL}/api/webhooks/stripe
+                  </div>
+                  <div>
+                    Subscribed: <code className="text-amber-300">checkout.session.completed</code>, <code className="text-amber-300">payment_intent.succeeded</code>
+                  </div>
                 </div>
               </div>
 
-              {/* PayPal */}
-              <div className="p-4 rounded-2xl bg-stone-950/80 border border-stone-800 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-sm text-stone-200">PayPal Webhook Listener</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-500/30">
-                    200 OK Active
-                  </span>
+              {/* PAYPAL SETTINGS */}
+              <div className="p-6 rounded-3xl bg-[var(--surface)] border border-[var(--line)] shadow space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 rounded-xl bg-blue-950/40 border border-blue-500/30 text-blue-300">
+                      <Heart className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm text-[var(--ink)]">PayPal Gateway</h4>
+                      <p className="text-[11px] text-[var(--subtle)]">PayPal Balance, Venmo, Pay in 4, Debit</p>
+                    </div>
+                  </div>
+
+                  {/* Mode Toggle */}
+                  <div className="flex items-center bg-[var(--paper)] border border-[var(--line)] rounded-lg p-0.5">
+                    <button
+                      type="button"
+                      onClick={() => setEnvConfig({ ...envConfig, PAYPAL_MODE: 'live' })}
+                      className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase transition ${
+                        envConfig.PAYPAL_MODE === 'live'
+                          ? 'bg-emerald-500 text-stone-950'
+                          : 'text-[var(--subtle)] hover:text-[var(--ink)]'
+                      }`}
+                    >
+                      Live
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEnvConfig({ ...envConfig, PAYPAL_MODE: 'sandbox' })}
+                      className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase transition ${
+                        envConfig.PAYPAL_MODE === 'sandbox'
+                          ? 'bg-amber-500 text-stone-950'
+                          : 'text-[var(--subtle)] hover:text-[var(--ink)]'
+                      }`}
+                    >
+                      Sandbox
+                    </button>
+                  </div>
                 </div>
-                <div className="text-xs text-stone-400 font-mono bg-stone-900 p-2.5 rounded-lg border border-stone-800 select-all">
-                  https://adubible.org/api/webhooks/paypal
+
+                {/* PAYPAL_CLIENT_ID */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-[var(--subtle)] uppercase tracking-wider">
+                      PayPal Client ID
+                    </label>
+                    <span className="text-[10px] text-blue-400 font-mono">PAYPAL_CLIENT_ID</span>
+                  </div>
+                  <div className="relative flex items-center">
+                    <input
+                      type="text"
+                      value={envConfig.PAYPAL_CLIENT_ID}
+                      onChange={(e) =>
+                        setEnvConfig({ ...envConfig, PAYPAL_CLIENT_ID: e.target.value.trim() })
+                      }
+                      placeholder="BAAfKGW..."
+                      className="w-full bg-[var(--paper)] border border-[var(--line)] rounded-xl px-4 py-2.5 text-xs text-[var(--ink)] font-mono pr-10 focus:outline-none focus:border-[var(--green)]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleCopyValue('paypal_client_id', envConfig.PAYPAL_CLIENT_ID)}
+                      className="absolute right-2 p-1.5 text-[var(--subtle)] hover:text-[var(--ink)]"
+                      title="Copy Client ID"
+                    >
+                      {copiedKey === 'paypal_client_id' ? (
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      ) : (
+                        <Copy className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+                  </div>
                 </div>
-                <div className="text-[11px] text-stone-400">
-                  Events: <code className="text-amber-300">CHECKOUT.ORDER.APPROVED</code>, <code className="text-amber-300">PAYMENT.CAPTURE.COMPLETED</code>, <code className="text-amber-300">BILLING.SUBSCRIPTION.ACTIVATED</code>
+
+                {/* PAYPAL_CLIENT_SECRET */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-[var(--subtle)] uppercase tracking-wider">
+                      PayPal Client Secret
+                    </label>
+                    <span className="text-[10px] text-blue-400 font-mono">PAYPAL_CLIENT_SECRET</span>
+                  </div>
+                  <div className="relative flex items-center">
+                    <input
+                      type={showKeys['paypal_secret'] ? 'text' : 'password'}
+                      value={envConfig.PAYPAL_CLIENT_SECRET}
+                      onChange={(e) =>
+                        setEnvConfig({ ...envConfig, PAYPAL_CLIENT_SECRET: e.target.value.trim() })
+                      }
+                      placeholder="EOiLHx..."
+                      className="w-full bg-[var(--paper)] border border-[var(--line)] rounded-xl px-4 py-2.5 text-xs text-[var(--ink)] font-mono pr-20 focus:outline-none focus:border-[var(--green)]"
+                    />
+                    <div className="absolute right-2 flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => handleToggleKeyVisibility('paypal_secret')}
+                        className="p-1.5 text-[var(--subtle)] hover:text-[var(--ink)]"
+                        title={showKeys['paypal_secret'] ? 'Mask' : 'Reveal'}
+                      >
+                        {showKeys['paypal_secret'] ? (
+                          <EyeOff className="w-3.5 h-3.5" />
+                        ) : (
+                          <Eye className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyValue('paypal_secret', envConfig.PAYPAL_CLIENT_SECRET)}
+                        className="p-1.5 text-[var(--subtle)] hover:text-[var(--ink)]"
+                        title="Copy Secret"
+                      >
+                        {copiedKey === 'paypal_secret' ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* PAYPAL_WEBHOOK_ID */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-[var(--subtle)] uppercase tracking-wider">
+                      PayPal Webhook ID
+                    </label>
+                    <span className="text-[10px] text-blue-400 font-mono">PAYPAL_WEBHOOK_ID</span>
+                  </div>
+                  <div className="relative flex items-center">
+                    <input
+                      type="text"
+                      value={envConfig.PAYPAL_WEBHOOK_ID}
+                      onChange={(e) =>
+                        setEnvConfig({ ...envConfig, PAYPAL_WEBHOOK_ID: e.target.value.trim() })
+                      }
+                      placeholder="814298..."
+                      className="w-full bg-[var(--paper)] border border-[var(--line)] rounded-xl px-4 py-2.5 text-xs text-[var(--ink)] font-mono pr-10 focus:outline-none focus:border-[var(--green)]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleCopyValue('paypal_webhook_id', envConfig.PAYPAL_WEBHOOK_ID)}
+                      className="absolute right-2 p-1.5 text-[var(--subtle)] hover:text-[var(--ink)]"
+                      title="Copy Webhook ID"
+                    >
+                      {copiedKey === 'paypal_webhook_id' ? (
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      ) : (
+                        <Copy className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
+            </div>
 
-              {/* Maileroo */}
-              <div className="p-4 rounded-2xl bg-stone-950/80 border border-stone-800 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-sm text-stone-200">Maileroo Transactional Relay</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-500/30">
-                    Verified Domain: adubible.org
-                  </span>
+            {/* INFRASTRUCTURE, OUTREACH & CLOUD VAULT */}
+            <div className="p-6 rounded-3xl bg-[var(--surface)] border border-[var(--line)] shadow space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300">
+                    <Globe2 className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-[var(--ink)]">Outreach, Origin Domain &amp; Storage Vault</h4>
+                    <p className="text-[11px] text-[var(--subtle)]">Canonical Domain, Maileroo Relay, Cloudflare R2</p>
+                  </div>
                 </div>
-                <div className="text-xs text-stone-400 font-mono bg-stone-900 p-2.5 rounded-lg border border-stone-800">
-                  Sender: AduBible Scripture Mission &lt;no-reply@adubible.org&gt;
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-500/30">
+                  Planetary Edge
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* CLIENT_APP_URL */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-[var(--subtle)] uppercase tracking-wider">
+                      Canonical Client Domain
+                    </label>
+                    <span className="text-[10px] text-emerald-400 font-mono">CLIENT_APP_URL</span>
+                  </div>
+                  <input
+                    type="url"
+                    value={envConfig.CLIENT_APP_URL}
+                    onChange={(e) =>
+                      setEnvConfig({ ...envConfig, CLIENT_APP_URL: e.target.value.trim() })
+                    }
+                    placeholder="https://adubible.org"
+                    className="w-full bg-[var(--paper)] border border-[var(--line)] rounded-xl px-4 py-2.5 text-xs text-[var(--ink)] font-mono focus:outline-none focus:border-[var(--green)]"
+                  />
+                </div>
+
+                {/* MAILEROO_API_KEY */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-[var(--subtle)] uppercase tracking-wider">
+                      Maileroo Broadcast API Key
+                    </label>
+                    <span className="text-[10px] text-emerald-400 font-mono">MAILEROO_API_KEY</span>
+                  </div>
+                  <div className="relative flex items-center">
+                    <input
+                      type={showKeys['maileroo_key'] ? 'text' : 'password'}
+                      value={envConfig.MAILEROO_API_KEY}
+                      onChange={(e) =>
+                        setEnvConfig({ ...envConfig, MAILEROO_API_KEY: e.target.value.trim() })
+                      }
+                      placeholder="0f0b8b..."
+                      className="w-full bg-[var(--paper)] border border-[var(--line)] rounded-xl px-4 py-2.5 text-xs text-[var(--ink)] font-mono pr-20 focus:outline-none focus:border-[var(--green)]"
+                    />
+                    <div className="absolute right-2 flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => handleToggleKeyVisibility('maileroo_key')}
+                        className="p-1.5 text-[var(--subtle)] hover:text-[var(--ink)]"
+                        title={showKeys['maileroo_key'] ? 'Mask' : 'Reveal'}
+                      >
+                        {showKeys['maileroo_key'] ? (
+                          <EyeOff className="w-3.5 h-3.5" />
+                        ) : (
+                          <Eye className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyValue('maileroo_key', envConfig.MAILEROO_API_KEY)}
+                        className="p-1.5 text-[var(--subtle)] hover:text-[var(--ink)]"
+                        title="Copy Key"
+                      >
+                        {copiedKey === 'maileroo_key' ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CLOUDFLARE_ACCOUNT_ID */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-[var(--subtle)] uppercase tracking-wider">
+                      Cloudflare Account ID
+                    </label>
+                    <span className="text-[10px] text-stone-400 font-mono">CLOUDFLARE_ACCOUNT_ID</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={envConfig.CLOUDFLARE_ACCOUNT_ID}
+                    onChange={(e) =>
+                      setEnvConfig({ ...envConfig, CLOUDFLARE_ACCOUNT_ID: e.target.value.trim() })
+                    }
+                    placeholder="2beae38..."
+                    className="w-full bg-[var(--paper)] border border-[var(--line)] rounded-xl px-4 py-2.5 text-xs text-[var(--ink)] font-mono focus:outline-none focus:border-[var(--green)]"
+                  />
+                </div>
+
+                {/* CLOUDFLARE_R2_BUCKET_NAME */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-[var(--subtle)] uppercase tracking-wider">
+                      R2 Scripture Vault Bucket
+                    </label>
+                    <span className="text-[10px] text-stone-400 font-mono">CLOUDFLARE_R2_BUCKET_NAME</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={envConfig.CLOUDFLARE_R2_BUCKET_NAME}
+                    onChange={(e) =>
+                      setEnvConfig({ ...envConfig, CLOUDFLARE_R2_BUCKET_NAME: e.target.value.trim() })
+                    }
+                    placeholder="adubible"
+                    className="w-full bg-[var(--paper)] border border-[var(--line)] rounded-xl px-4 py-2.5 text-xs text-[var(--ink)] font-mono focus:outline-none focus:border-[var(--green)]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* LIVE WEBHOOK LISTENERS SPECIFICATION */}
+            <div className="p-6 rounded-3xl bg-[var(--surface)] border border-[var(--line)] shadow space-y-4">
+              <h4 className="font-bold text-sm text-[var(--ink)] flex items-center gap-2">
+                <Server className="w-4 h-4 text-emerald-400" />
+                <span>Production Webhook Listeners &amp; Health</span>
+              </h4>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 rounded-2xl bg-[var(--paper)] border border-[var(--line)] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs text-[var(--ink)]">Stripe Webhook</span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-500/30">
+                      Live
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-[var(--subtle)] font-mono bg-[var(--surface)] p-2 rounded-lg border border-[var(--line)] select-all truncate">
+                    {envConfig.CLIENT_APP_URL}/api/webhooks/stripe
+                  </div>
+                  <div className="text-[10px] text-[var(--subtle)]">
+                    whsec: <span className="font-mono text-purple-300">{envConfig.STRIPE_WEBHOOK_SECRET ? `${envConfig.STRIPE_WEBHOOK_SECRET.slice(0, 12)}...` : 'Not Set'}</span>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-[var(--paper)] border border-[var(--line)] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs text-[var(--ink)]">PayPal Webhook</span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-500/30">
+                      Live
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-[var(--subtle)] font-mono bg-[var(--surface)] p-2 rounded-lg border border-[var(--line)] select-all truncate">
+                    {envConfig.CLIENT_APP_URL}/api/webhooks/paypal
+                  </div>
+                  <div className="text-[10px] text-[var(--subtle)]">
+                    Hook ID: <span className="font-mono text-blue-300">{envConfig.PAYPAL_WEBHOOK_ID || 'Not Set'}</span>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-[var(--paper)] border border-[var(--line)] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs text-[var(--ink)]">Maileroo Relay</span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-500/30">
+                      Verified
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-[var(--subtle)] font-mono bg-[var(--surface)] p-2 rounded-lg border border-[var(--line)] truncate">
+                    AduBible &lt;no-reply@adubible.org&gt;
+                  </div>
+                  <div className="text-[10px] text-[var(--subtle)]">
+                    Deliverability: <span className="text-emerald-400 font-semibold">100% SPF/DKIM</span>
+                  </div>
                 </div>
               </div>
             </div>

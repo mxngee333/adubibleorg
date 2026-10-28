@@ -102,7 +102,7 @@ export default {
         const returnUrl = body.returnUrl || 'https://adubible.org/donate/?status=success';
         const cancelUrl = body.cancelUrl || 'https://adubible.org/donate/?status=cancelled';
 
-        if (stripeKey && stripeKey.startsWith('sk_')) {
+        if (stripeKey && (stripeKey.startsWith('sk_') || stripeKey.startsWith('rk_'))) {
           const params = new URLSearchParams();
           params.append('success_url', returnUrl);
           params.append('cancel_url', cancelUrl);
