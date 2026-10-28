@@ -889,6 +889,21 @@ export function App() {
     if (!showAudioBar) {
       setShowAudioBar(true);
       setAudioAutoPlayNonce((prev) => prev + 1);
+      if (typeof window !== 'undefined') {
+        setTimeout(() => {
+          const vNum = selectedVerse || 1;
+          const el =
+            document.getElementById(`verse-${vNum}`) ||
+            document.querySelector(`[data-verse="${vNum}"]`);
+          if (el) {
+            el.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+              inline: 'nearest',
+            });
+          }
+        }, 80);
+      }
     } else if (!isAudioPlaying) {
       // Bar is open but paused — clicking Audio immediately starts playback
       setAudioAutoPlayNonce((prev) => prev + 1);
@@ -2626,7 +2641,7 @@ export function App() {
                   <div
                     id={`verse-${verseNumber}`}
                     data-verse={verseNumber}
-                    className={`verse-row ${isActionOpen || selectedVerse === verseNumber ? 'selected-row' : ''}`}
+                    className={`verse-row ${isActionOpen || selectedVerse === verseNumber ? 'selected-row' : ''} ${showAudioBar && isAudioPlaying && selectedVerse === verseNumber ? 'audio-active-row' : ''}`}
                     key={verseNumber}
                   >
                     {/* Sticky Left Verse Number Gutter (BibleHub Style) */}
@@ -3193,7 +3208,9 @@ export function App() {
               : undefined
           }
           activeVerse={selectedVerse || 1}
-          onVerseChange={(v: number) => setSelectedVerse(v)}
+          onVerseChange={handleAudioVerseChange}
+          autoSyncReader={autoSyncReader}
+          onToggleAutoSync={handleToggleAutoSyncReader}
           onClose={() => {
             setShowAudioBar(false);
             setIsAudioPlaying(false);
