@@ -319,3 +319,34 @@ export function parsePassageQuery(query: string, books: BibleBook[]): ParsedPass
     verse: validVerse,
   };
 }
+
+/**
+ * Smoothly and gently brings a verse into the comfortable reading zone
+ * ONLY if it is not already visible. Uses 'nearest' block positioning to
+ * guarantee that scrolling never overshoots or slides past the active verse.
+ */
+export function scrollVerseIntoViewIfNeeded(el: HTMLElement | null): void {
+  if (typeof window === 'undefined' || !el) return;
+  const rect = el.getBoundingClientRect();
+  const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+
+  // Safe comfortable reading zone boundaries:
+  // Top nav/toolbar area (~130px)
+  // Bottom fixed audio bar area (~110px)
+  const safeTop = 130;
+  const safeBottom = viewportHeight - 110;
+
+  // If the verse is already comfortably visible within the user's viewport, DO NOT scroll!
+  const isAlreadyVisible = rect.top >= safeTop && rect.bottom <= safeBottom;
+  if (isAlreadyVisible) {
+    return;
+  }
+
+  // Gently bring it into view using 'nearest' block alignment to prevent jumping or overshooting
+  el.scrollIntoView({
+    behavior: 'smooth',
+    block: 'nearest',
+    inline: 'nearest',
+  });
+}
+

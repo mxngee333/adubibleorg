@@ -658,7 +658,7 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
       </div>
 
       <div className="footer-bottom-bar">
-        {/* Horizontal Legal & Governance Strip */}
+        {/* Horizontal Legal & Governance Strip - Modern Capsule Badges */}
         <nav className="footer-legal-nav" aria-label="Legal & Institutional Policies">
           <a
             href="/about/"
@@ -670,7 +670,6 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
           >
             About AduBible
           </a>
-          <span className="footer-legal-dot" aria-hidden="true">·</span>
           <a
             href="/privacy/"
             onClick={(e) => {
@@ -681,7 +680,6 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
           >
             Privacy Policy
           </a>
-          <span className="footer-legal-dot" aria-hidden="true">·</span>
           <a
             href="/terms/"
             onClick={(e) => {
@@ -692,7 +690,6 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
           >
             Terms of Service
           </a>
-          <span className="footer-legal-dot" aria-hidden="true">·</span>
           <a
             href="/contact/"
             onClick={(e) => {
@@ -703,7 +700,6 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
           >
             Contact Us
           </a>
-          <span className="footer-legal-dot" aria-hidden="true">·</span>
           <a
             href="/cookie-policy/"
             onClick={(e) => {
@@ -714,7 +710,6 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
           >
             Cookie Policy
           </a>
-          <span className="footer-legal-dot" aria-hidden="true">·</span>
           <a
             href="/how-to-use/"
             onClick={(e) => {
@@ -725,7 +720,6 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
           >
             How to Use
           </a>
-          <span className="footer-legal-dot" aria-hidden="true">·</span>
           <a
             href="/editorial-policy/"
             onClick={(e) => {
@@ -736,7 +730,6 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
           >
             Editorial Policy
           </a>
-          <span className="footer-legal-dot" aria-hidden="true">·</span>
           <a
             href="/glossary/"
             onClick={(e) => {
@@ -747,7 +740,6 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
           >
             Glossary
           </a>
-          <span className="footer-legal-dot" aria-hidden="true">·</span>
           <a
             href="/sources/"
             onClick={(e) => {
@@ -758,18 +750,16 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
           >
             Sources
           </a>
-          <span className="footer-legal-dot" aria-hidden="true">·</span>
           <a
             href="/articles/"
             onClick={(e) => {
               e.preventDefault();
               onSelectNavTab('articles');
             }}
-            className="footer-legal-pill text-amber-500 font-bold"
+            className="footer-legal-pill footer-legal-pillar-pill"
           >
-            15 Pillar Guides
+            📖 15 Pillar Guides
           </a>
-          <span className="footer-legal-dot" aria-hidden="true">·</span>
           <a
             href="/donate/"
             onClick={(e) => {
@@ -780,15 +770,14 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }
             }}
-            className="footer-legal-pill font-bold"
-            style={{ color: '#f59e0b' }}
+            className="footer-legal-pill footer-legal-donate-pill"
           >
             💛 Support Scripture Mission (Donate)
           </a>
         </nav>
 
         <div className="footer-copy">
-          © {new Date().getFullYear()} <strong>AduBible</strong> (<a href="https://adubible.org/">adubible.org</a>) · Dedicated to Humanity as a Sacred Ministry in Support of Apostle Kwame Adu · <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer">Nsuhia, Ghana ↗</a> · <span style={{ color: '#10b981', fontWeight: 600 }}>100% Ads-Free Reading Experience</span>.
+          © {new Date().getFullYear()} <strong>AduBible</strong> (<a href="https://adubible.org/">adubible.org</a>) · Dedicated to Humanity as a Sacred Ministry in Support of Apostle Kwame Adu · <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer">Nsuhia, Ghana ↗</a> · <span className="footer-copy-highlight">100% Ads-Free Reading Experience</span>.
         </div>
       </div>
     </footer>

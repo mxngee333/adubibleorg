@@ -3772,57 +3772,139 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
 /* Footer Bottom Bar */
 .footer-bottom-bar {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  gap: 12px;
-  padding-top: 24px;
+  gap: 16px;
+  padding-top: 28px;
   border-top: 1px solid var(--line);
-  font-size: 12px;
   width: 100%;
 }
 
-.footer-copy {
-  color: var(--subtle);
-  line-height: 1.6;
-}
-
-.footer-copy a {
-  color: inherit;
-  text-decoration: underline;
-}
-
-/* Horizontal Legal Navigation Strip */
+/* Horizontal Legal Navigation Strip - Premium Capsule Badges */
 .footer-legal-nav {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 8px 14px;
+  gap: 8px 10px;
   width: 100%;
-  margin-bottom: 8px;
+  max-width: 1120px;
+  margin: 0 auto;
 }
 
 .footer-legal-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 999px;
   color: var(--ink);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
-  text-decoration: none;
-  opacity: 0.85;
-  transition: opacity 0.15s ease, color 0.15s ease;
+  letter-spacing: 0.01em;
+  text-decoration: none !important;
+  opacity: 0.9;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  user-select: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .footer-legal-pill:hover {
-  opacity: 1;
+  background: var(--soft);
+  border-color: var(--green);
   color: var(--green);
+  opacity: 1;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  text-decoration: none !important;
+}
+
+.footer-legal-pill:active {
+  transform: translateY(0);
+}
+
+/* 15 Pillar Guides Capsule */
+.footer-legal-pill.footer-legal-pillar-pill {
+  border-color: rgba(245, 158, 11, 0.35);
+  background: rgba(245, 158, 11, 0.07);
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+.footer-legal-pill.footer-legal-pillar-pill:hover {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: #f59e0b;
+  color: #fbbf24;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
+}
+
+/* Support Scripture Mission (Donate) Capsule */
+.footer-legal-pill.footer-legal-donate-pill {
+  border-color: rgba(245, 158, 11, 0.55);
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.15);
+}
+
+.footer-legal-pill.footer-legal-donate-pill:hover {
+  background: #f59e0b;
+  color: #0c0a09 !important;
+  border-color: #f59e0b;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.45);
+}
+
+/* Footer Copyright & Ministry Attribution */
+.footer-copy {
+  color: var(--subtle);
+  font-size: 12.5px;
+  line-height: 1.7;
+  max-width: 860px;
+  margin: 0 auto;
+  opacity: 0.9;
+}
+
+.footer-copy strong {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.footer-copy a {
+  color: var(--green);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s ease, text-decoration 0.15s ease;
+}
+
+.footer-copy a:hover {
+  color: var(--ink);
   text-decoration: underline;
 }
 
-.footer-legal-dot {
-  color: var(--line);
-  font-size: 10px;
-  user-select: none;
+.footer-copy-highlight {
+  color: #10b981;
+  font-weight: 700;
+  display: inline-block;
+}
+
+@media (max-width: 640px) {
+  .footer-legal-nav {
+    gap: 6px 8px;
+  }
+  .footer-legal-pill {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+  .footer-copy {
+    font-size: 11.5px;
+  }
 }
 
 /* ==========================================================================
