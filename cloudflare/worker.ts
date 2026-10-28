@@ -46,6 +46,42 @@ export default {
       });
     }
 
+    // 1A. Handle High-Fidelity Edge TTS Audio Proxy (/api/v1/tts)
+    if (request.method === 'GET' && (pathname === '/api/v1/tts' || pathname === '/api/tts')) {
+      const qText = url.searchParams.get('text') || '';
+      const qLang = url.searchParams.get('lang') || 'en';
+      if (!qText.trim()) {
+        return new Response(JSON.stringify({ error: 'Text required' }), {
+          status: 400,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+        });
+      }
+      try {
+        const cleanText = qText.slice(0, 200).trim();
+        const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${encodeURIComponent(qLang)}&client=tw-ob&q=${encodeURIComponent(cleanText)}`;
+        const ttsRes = await fetch(googleTtsUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+          },
+        });
+        if (ttsRes.ok) {
+          return new Response(ttsRes.body, {
+            status: 200,
+            headers: {
+              ...CORS_HEADERS,
+              'Content-Type': 'audio/mpeg',
+              'Cache-Control': 'public, max-age=604800, s-maxage=604800, immutable',
+            },
+          });
+        }
+      } catch (err: any) {
+        return new Response(JSON.stringify({ error: err?.message || 'TTS proxy error' }), {
+          status: 502,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
     // 1B. Handle Maileroo Transactional Email Dispatch (/api/v1/email/send)
     if (request.method === 'POST' && pathname === '/api/v1/email/send') {
       try {
@@ -585,7 +621,7 @@ export default {
                 ...CORS_HEADERS,
                 'Content-Type': 'application/json; charset=utf-8',
                 'Cache-Control': SCRIPTURE_CACHE_CONTROL,
-                'X-Edge-Cache', 'MISS-HETZNER-HIT',
+                'X-Edge-Cache': 'MISS-HETZNER-HIT',
                 'X-Scripture-Source': 'Hetzner Origin Dedicated Cluster',
               },
             });

@@ -122,6 +122,8 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
   const [aspectRatio, setAspectRatio] = useState<VideoAspectRatio>('3:4');
   const [voiceName, setVoiceName] = useState<GoogleNeuralVoiceName>('Charon');
   const [includeAmbientMusic, setIncludeAmbientMusic] = useState<boolean>(true);
+  const [boldTypography, setBoldTypography] = useState<boolean>(true);
+  const [voiceBoost, setVoiceBoost] = useState<boolean>(true);
 
   // Playback & Export state
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -167,6 +169,8 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
         voiceName,
         langCode,
         includeAmbientMusic,
+        boldTypography,
+        voiceBoost,
       });
     } else {
       rendererRef.current.updateOptions({
@@ -180,6 +184,8 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
         voiceName,
         langCode,
         includeAmbientMusic,
+        boldTypography,
+        voiceBoost,
       });
     }
 
@@ -192,7 +198,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
         stopPreviewRef.current = null;
       }
     };
-  }, [isOpen, reference, versionName, verseText, secondaryText, secondaryVersionName, includeSecondary, selectedTheme, aspectRatio, voiceName, langCode, includeAmbientMusic]);
+  }, [isOpen, reference, versionName, verseText, secondaryText, secondaryVersionName, includeSecondary, selectedTheme, aspectRatio, voiceName, langCode, includeAmbientMusic, boldTypography, voiceBoost]);
 
   // Cleanup renderer on modal unmount
   useEffect(() => {
@@ -307,22 +313,61 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
     return `"${verseText}" — ${reference} (${versionName})\n\n✨ Created with AduBible Status Sanctuary • 100% Free & Ad-Free Parallel Bible in 35+ Languages at https://adubible.org/`;
   };
 
-  const handleShareWhatsApp = () => {
+  const handleShareWhatsApp = async () => {
+    // 1. If video is already exported, share video file directly via native share
+    if (exportedBlob && navigator.share) {
+      try {
+        const file = new File(
+          [exportedBlob],
+          `AduBible_${reference.replace(/\s+/g, '_')}_Status.${exportedBlob.type.includes('mp4') ? 'mp4' : 'webm'}`,
+          { type: exportedBlob.type }
+        );
+        await navigator.share({
+          title: `${reference} — AduBible Status`,
+          text: getShareText(),
+          files: [file],
+        });
+        setShareNotice('✨ Video shared to WhatsApp Status!');
+        setTimeout(() => setShareNotice(''), 4000);
+        return;
+      } catch {
+        // Fall back to link if cancelled or unsupported
+      }
+    }
+
+    // 2. If not exported yet, prompt user or auto-render
+    if (!exportedBlob && rendererRef.current) {
+      setShareNotice('🎬 Preparing video for WhatsApp Status...');
+      try {
+        const blob = await rendererRef.current.exportVideo((pct) => setExportProgress(pct));
+        setExportedBlob(blob);
+        const url = URL.createObjectURL(blob);
+        setExportedUrl(url);
+
+        if (navigator.share) {
+          const file = new File(
+            [blob],
+            `AduBible_${reference.replace(/\s+/g, '_')}_Status.${blob.type.includes('mp4') ? 'mp4' : 'webm'}`,
+            { type: blob.type }
+          );
+          await navigator.share({
+            title: `${reference} — AduBible Status`,
+            text: getShareText(),
+            files: [file],
+          });
+          setShareNotice('✨ Video shared to WhatsApp Status!');
+          setTimeout(() => setShareNotice(''), 4000);
+          return;
+        }
+      } catch {
+        // Continue to fallback
+      }
+    }
+
+    // 3. Fallback: Open WhatsApp API with verse text and site link
     const text = encodeURIComponent(getShareText());
     const waUrl = `https://api.whatsapp.com/send?text=${text}`;
     window.open(waUrl, '_blank', 'noopener,noreferrer');
-
-    // Also trigger mobile native share sheet if video file is exported
-    if (navigator.share && exportedBlob) {
-      const file = new File([exportedBlob], `AduBible_${reference.replace(/\s+/g, '_')}_Status.mp4`, {
-        type: exportedBlob.type,
-      });
-      navigator.share({
-        title: `${reference} — AduBible Status`,
-        text: getShareText(),
-        files: [file],
-      }).catch(() => {});
-    }
   };
 
   const handleShareFacebook = () => {
@@ -614,6 +659,28 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
                   Reload Voice
                 </button>
               </div>
+
+              <div className="flex flex-wrap items-center justify-between pt-2.5 gap-3 border-t border-stone-800/80 text-xs">
+                <label className="flex items-center gap-2 cursor-pointer text-stone-200 font-semibold">
+                  <input
+                    type="checkbox"
+                    checked={voiceBoost}
+                    onChange={(e) => setVoiceBoost(e.target.checked)}
+                    className="accent-amber-500 rounded"
+                  />
+                  <span className="text-amber-300">⚡ Studio Voice Boost (+3dB)</span>
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer text-stone-200 font-semibold">
+                  <input
+                    type="checkbox"
+                    checked={boldTypography}
+                    onChange={(e) => setBoldTypography(e.target.checked)}
+                    className="accent-amber-500 rounded"
+                  />
+                  <span className="text-amber-200">✦ Bold High-Contrast Text</span>
+                </label>
+              </div>
             </div>
 
             {/* 4. Aspect Ratio & Format */}
@@ -783,14 +850,18 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-xs">
-                {/* 1. WhatsApp Status */}
+                {/* 1. WhatsApp Status - Full Width Hero */}
                 <button
                   type="button"
                   onClick={handleShareWhatsApp}
-                  className="py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center justify-center gap-1.5 shadow-md shadow-emerald-900/30 transition-all"
-                  title="Share to WhatsApp Status & Chats"
+                  className="col-span-2 py-2.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/40 transition-all text-xs sm:text-sm"
+                  title="Share 10s Video Reel directly to WhatsApp Status"
                 >
-                  <span>💬 WhatsApp Status</span>
+                  <span className="text-base">💬</span>
+                  <span>Share 10s Video to WhatsApp Status</span>
+                  <span className="px-1.5 py-0.5 rounded bg-emerald-800 text-[10px] text-emerald-100 uppercase font-extrabold tracking-wider">
+                    Instant Reel
+                  </span>
                 </button>
 
                 {/* 2. Facebook */}
