@@ -378,34 +378,297 @@ Diacritical marks, special Akan vowels (ɛ, ɔ), and tone distinctions are prese
   glossary: {
     key: 'glossary',
     slug: 'glossary',
-    title: 'Biblical Exegesis, Manuscript & Lexical Glossary',
-    metaTitle: 'Biblical Exegesis & Theological Glossary | AduBible.org',
-    metaDescription: 'Comprehensive glossary of biblical exegesis terms: Textus Receptus, Masoretic Text, Septuagint, Strong’s Concordance, Pericope, and Hermeneutics.',
-    badge: 'Scholarly Lexical Glossary · Exegetical Terms',
+    title: 'Biblical Exegesis, Manuscript & Lexical Mega Glossary',
+    metaTitle: 'Mega Biblical Exegesis & Theological Glossary | AduBible.org',
+    metaDescription: 'Master 10-article scholarly glossary of biblical exegesis, ancient languages, manuscript codices, textual criticism, hermeneutics, lexicons, and African vernacular translation.',
+    badge: 'Scholarly Lexical & Exegetical Mega Glossary · 10 Articles',
     lastUpdated: '2026-10-28',
     schemaType: 'WebPage',
     sections: [
       {
-        id: 'manuscript-terms',
-        heading: 'ARTICLE I — Manuscript Lineage & Textual Terms',
-        content: `• Textus Receptus (TR): The "Received Text"—the printed Greek New Testament tradition synthesized by Desiderius Erasmus (1516), refined by Robert Estienne (Stephanus 1550), and Theodore Beza, serving as the textual foundation for the Reformation translations, including the Authorized King James Version (1611) and classical vernacular Bibles.
+        id: 'ancient-languages-and-grammar',
+        heading: 'ARTICLE I — Ancient Biblical Languages & Grammar (Hebrew, Aramaic, Koine Greek & Latin)',
+        content: `• Masoretic Hebrew (Biblical Hebrew / Ivrit Miqra'it): The Northwest Semitic language of the Old Testament / Tanakh. Structured upon a trilateral consonantal root system (shoresh), vocalized through vowel pointings (niqqud), and governed by rich aspectual and stem semantics.
 
-• Masoretic Text (MT): The authoritative Hebrew and Aramaic text of the Tanakh (Old Testament), meticulously preserved, vocalized, and accented by Jewish scribal scholars known as the Masoretes between the 6th and 10th centuries AD, exemplified in the Westminster Leningrad Codex (1008 AD).
+• Tiberian Vocalization: The definitive system of diacritical points, vowel signs, and cantillation accents (te'amim) developed by the Masoretic scholars of Tiberias between the 8th and 10th centuries AD to safeguard the sacred oral pronunciation of the Hebrew Scriptures.
 
-• Septuagint (LXX): The ancient Koine Greek translation of the Hebrew Old Testament produced in Alexandria, Egypt, during the 3rd to 2nd centuries BC, widely quoted by the New Testament Apostles and early Church Fathers.
+• Dagesh (Lene and Forte): The diacritical dot placed within a Hebrew letter indicating either the non-aspirated, hard pronunciation of a begadkepat consonant (Dagesh Lene) or the doubling/gemination of a consonant resulting from assimilation or grammatical intensification (Dagesh Forte).
 
-• Strong’s Exhaustive Concordance: The monumental indexing system compiled by Dr. James Strong in 1890, assigning a unique numerical identifier to every root word in the Hebrew Old Testament (H1 to H8674) and Greek New Testament (G1 to G5624).`
+• Ketiv-Qere (כְּתִיב וּקְרֵי): Ancient scribal notations preserving textual integrity: "Ketiv" ("what is written") marks the traditional consonantal text, while "Qere" ("what is read") instructs the public reader to vocalize a corrected, euphemistic, or reverential alternate reading (e.g., vocalizing Adonai where the sacred Tetragrammaton YHWH is written).
+
+• Hebrew Binyanim (Verbal Stems): The seven foundational morphological paradigms that govern verbal voice and intensity: Qal (simple active), Niphal (simple passive/reflexive), Piel (intensive active), Pual (intensive passive), Hiphil (causative active), Hophal (causative passive), and Hithpael (intensive reflexive).
+
+• Waw Consecutive (Vav Inversive): The distinctive syntactic construction in Biblical Hebrew narrative where the prefix conjunction 'waw' (and) attached to an imperfect verb converts its semantic tense into a consecutive past/perfect narrative action, or attached to a perfect verb converts it into a future/imperfect aspect.
+
+• Tetragrammaton (יהוה — YHWH): The sacred, ineffable four-letter covenant name of the Almighty God revealed to Moses at the burning bush ("I AM WHO I AM", Exodus 3:14). Reverently substituted with Adonai in liturgical recitation and rendered as "LORD" in small capitals across standard English Bible editions.
+
+• Elohim (אֱלֹהִים): The plural form of majesty denoting the one supreme Creator God (Genesis 1:1), syntactically paired with singular verbs and adjectives to signify the absolute fullness of divine power and majesty.
+
+• Ruach Ha-Kodesh (רוּחַ הַקֹּדֶשׁ): The Holy Spirit / Divine Breath; from Ruach (wind, breath, vital life-force) and Kodesh (sacredness, set-apart purity). The personal agent of God in creation, prophetic inspiration, and spiritual regeneration.
+
+• Shekinah (שְׁכִינָה): The glorious, visible manifest presence of God dwelling among His covenant people (from shakhan, "to dwell"), revealed in the pillar of cloud and fire, the Holy of Holies, the Solomonic Temple, and incarnated in Jesus Christ (John 1:14).
+
+• Tanakh (תַּנַ״ךְ): The Hebrew acronym for the tripartite canonical divisions of the Hebrew Bible: Torah (Instruction / Law / Pentateuch), Nevi'im (Prophets), and Ketuvim (Writings), comprising 24 books identical in content to the 39 books of the Protestant Old Testament.
+
+• Koine Greek (Ἑλληνιστική Κοινή): The international lingua franca of the eastern Mediterranean basin from the conquests of Alexander the Great through the Roman era; the divinely prepared, highly expressive grammatical vehicle employed by the Apostles for the New Testament.
+
+• Greek Nominal Case System: The inflectional endings that designate grammatical and relational functions within the sentence: Nominative (subject/predicate nominative), Genitive (source, possession, description), Dative (indirect object, agency, sphere, instrumental means), Accusative (direct object, extent of space/time), and Vocative (direct address).
+
+• Verbal Aspect in Koine Greek: The foundational semantic category of the Greek verb denoting the author's internal or external portrayal of the action rather than chronological time: Imperfective Aspect (ongoing, continuous internal process), Perfective / Aoristic Aspect (complete, summary snapshot viewed externally), and Stative / Perfect Aspect (abiding state resulting from completed past action).
+
+• Hapax Legomenon (ἅπαξ λεγόμενον): A lexical item or phrase that occurs only once in the entire biblical corpus or within the writings of a specific biblical author, demanding meticulous contextual, grammatical, and extra-biblical comparative philology.
+
+• Biblical Aramaic: The Northwest Semitic language closely related to Hebrew used for international diplomacy in the ancient Near East, preserved in inspired Scripture in Daniel 2:4b–7:28, Ezra 4:8–6:18; 7:12–26, Jeremiah 10:11, and reflected in the preserved spoken words of Jesus Christ (e.g., Talitha koum, Eloi Eloi lama sabachthani, Maranatha, Abba).
+
+• Latin Vulgate (Biblia Vulgata): The historic Latin translation produced primarily by Saint Jerome (Hieronymus) between 382 and 405 AD directly from original Hebrew and Greek texts under papal commission, serving as the common theological text of Western Christendom for over a millennium.`
       },
       {
-        id: 'hermeneutical-terms',
-        heading: 'ARTICLE II — Hermeneutical & Exegetical Concepts',
-        content: `• Exegesis: The critical, grammatical, historical, and contextual analysis of a biblical passage to determine its authentic original meaning intended by the divine and human authors, drawn directly out of the text (as opposed to eisegesis, which reads foreign ideas into the text).
+        id: 'ancient-manuscripts-and-codices',
+        heading: 'ARTICLE II — Ancient Manuscripts, Codices & Textual Lineage',
+        content: `• Codex Sinaiticus (א / 01): The celebrated 4th-century parchment uncial manuscript discovered by Constantin von Tischendorf at Saint Catherine's Monastery at Mount Sinai in 1844, containing the oldest complete New Testament and the majority of the Greek Septuagint.
 
-• Pericope: A distinct, cohesive section or narrative unit of Holy Scripture (e.g., a parable, miracle, or discourse) suitable for public reading and expository preaching.
+• Codex Vaticanus (B / 03): The monumental 4th-century vellum uncial codex preserved in the Vatican Library since at least 1475, renowned for its clean, non-harmonized witness to the Alexandrian text-type across both Testaments.
 
-• Interlinear Translation: A study layout that displays the original Hebrew or Greek text directly alongside its literal target-language translation, root grammar, and morphological parsing word-for-word.
+• Codex Alexandrinus (A / 02): A 5th-century parchment codex from Alexandria, Egypt, presented to King Charles I of England in 1627; a premier witness to the Byzantine text in the Gospels and the Alexandrian text in the Epistles and Revelation.
 
-• Twerɛ Kronkron: The sacred title of the Holy Bible in the Asante Twi and Akan languages, literally signifying "The Sacred Written Word".`
+• Codex Ephraemi Rescriptus (C / 04): A 5th-century parchment palimpsest where biblical text was erased in the 12th century to transcribe the ascetic sermons of Saint Ephrem the Syrian, deciphered through chemical reagents and modern multi-spectral imaging by Tischendorf in 1840.
+
+• Codex Bezae Cantabrigiensis (D / 05): A 5th-century bilingual Greek and Latin uncial codex presented by the Reformer Theodore Beza to Cambridge University in 1581, representing the primary witness to the Western text-type with distinctive narrative readings in the Gospels and Acts.
+
+• Codex Washingtonianus (W / 032): The "Freer Gospels" codex dating from the late 4th or early 5th century, housed at the Smithsonian Institution in Washington D.C., notable for its block-mixed text-types and the unique "Freer Logion" after Mark 16:14.
+
+• Westminster Leningrad Codex (B19a): Copied in Cairo in 1008 AD from the authenticated Masoretic manuscripts of Aaron ben Moses ben Asher; the oldest complete extant manuscript of the Hebrew Old Testament, serving as the foundational text for the Biblia Hebraica Stuttgartensia (BHS).
+
+• Aleppo Codex (Keter Aram Tzova): The most renowned Hebrew manuscript of the Tanakh, produced circa 930 AD in Tiberias and verified by Maimonides; approximately one-third of its pages, including nearly all of the Torah, were tragically lost during the 1947 Aleppo riots.
+
+• Dead Sea Scrolls (Qumran Cave Manuscripts): The discovery of over 900 biblical and sectarian scrolls between 1947 and 1956 near Khirbet Qumran, dating between 250 BC and 68 AD. Predating the Leningrad Codex by more than a millennium, scrolls like the Great Isaiah Scroll (1QIsaᵃ) demonstrate the extraordinary, supernatural preservation of the Hebrew biblical text across centuries.
+
+• Papyrus Witnesses (P52, P45, P46, P66, P75): The earliest surviving physical New Testament witnesses written on Egyptian reed papyrus:
+  - P52 (Rylands Library Papyrus, c. 125 AD): The oldest known manuscript fragment of the New Testament (John 18:31–33, 37–38).
+  - P45 (Chester Beatty I, c. 200–250 AD): Early codex containing portions of all four Gospels and the Book of Acts.
+  - P46 (Chester Beatty II, c. 175–225 AD): Monumental early collection of the Pauline Epistles and Hebrews.
+  - P66 (Bodmer II, c. 200 AD): Nearly complete codex of the Gospel of John.
+  - P75 (Bodmer XIV–XV, c. 175–225 AD): Exceptional witness to Luke and John, demonstrating textual affinity with Codex Vaticanus.
+
+• Uncials (Majuscules) vs. Minuscules (Cursives): Uncials are ancient manuscripts written entirely in large, detached Greek capital letters without word spacing or punctuation (scriptio continua) from the 2nd to 9th centuries AD; Minuscules are later manuscripts written in smaller, flowing cursive handwriting with standard accents and breathing marks from the 9th to 16th centuries.
+
+• Palimpsest (παλίμψηστος): A vellum or parchment manuscript whose original text was scraped, washed, or buffed away so the costly animal skin could be reused for a secondary text, now recoverable through ultraviolet analysis and digital reflectance spectroscopy.
+
+• Apparatus Criticus: The concise scholarly notation system situated at the foot of critical Greek or Hebrew biblical editions (e.g., Nestle-Aland NA28 or BHS), rigorously cataloging variant readings, scribal omissions, additions, and manuscript witnesses.`
+      },
+      {
+        id: 'textual-criticism-and-variants',
+        heading: 'ARTICLE III — Textual Criticism, Principles & Variant Classifications',
+        content: `• Lower Criticism (Textual Criticism): The scholarly discipline that analyzes, compares, and evaluates all surviving biblical manuscripts, codices, lectionaries, and patristic citations to reconstruct the exact wording of the original inspired autographs.
+
+• Higher Criticism (Historical-Grammatical / Literary Criticism): The study of literary composition, historical authorship, date, audience, literary integrity, and source origins of biblical books.
+
+• Lectio Difficilior Potior: The premier canon of textual criticism: "The more difficult reading is preferable." Scribes were far more likely to smooth out, explain, harmonize, or soften a challenging, puzzling, or grammatically awkward reading than to introduce one.
+
+• Lectio Brevior Potior: The text-critical guideline: "The shorter reading is preferable." Ancient scribes tended to expand biblical texts by incorporating marginal explanatory glosses, liturgical prayers, and harmonizations from parallel passages.
+
+• Scribal Errors of Sight (Visual Variants):
+  - Dittography: The inadvertent repetition of a letter, word, or entire clause by a copyist whose eye returned to the wrong position.
+  - Haplography: The accidental omission of a letter, word, or sentence when identical or similar characters occur consecutively.
+  - Homoioteleuton: Omission of text occurring when two sentences or clauses end with identical words or endings, causing the scribe's eye to skip forward from the first instance to the second.
+  - Homoioarcton: Omission caused when two lines or clauses begin with identical phrasing, causing the copyist's eye to jump ahead.
+  - Metathesis: The accidental transposition or swapping of adjacent letters, syllables, or words within a line.
+
+• Scribal Errors of Hearing (Auditory Variants):
+  - Itacism (Iotacism): The phonetic shift in Hellenistic Greek where vowels and diphthongs with previously distinct sounds (ι, η, υ, ει, οι, υι) all came to be pronounced as the long "ee" sound, causing acoustic confusion during oral scriptorium dictation (e.g., confusing hēmeis ["we"] with hymeis ["you"]).
+
+• Textus Receptus (TR): The "Received Text"—the family of printed Greek New Testament editions initiated by Desiderius Erasmus (1516), refined by Robert Estienne (Stephanus 1550), Theodore Beza (1565–1604), and the Elzevir brothers (1624/1633). It served as the Greek master text for the Protestant Reformation and the Authorized King James Bible (1611).
+
+• Byzantine Majority Text: The widespread manuscript tradition preserved in over 80% of surviving Greek minuscules and Eastern Church lectionaries, characterized by grammatical polish, full narrative flow, and high harmonization.
+
+• Alexandrian Text-Type: The ancient textual family preserved primarily in Egyptian papyri and early uncials (Sinaiticus, Vaticanus), characterized by concise, abrupt, and non-harmonized readings; forms the primary foundation for modern critical texts (Nestle-Aland / UBS).
+
+• Western Text-Type: An ancient, widely distributed textual tradition attested in Codex Bezae, Old Latin translations, and the early Western Church Fathers (Tertullian, Cyprian), marked by lively narrative paraphrases, explanatory insertions, and biographical details.
+
+• Critical Textual Passages:
+  - Pericope Adulterae (John 7:53–8:11): The account of the woman caught in adultery, absent from the earliest Alexandrian papyri and uncials (P66, P75, א, B), yet cherished throughout Western and Byzantine traditions for its supreme manifestation of Christ's mercy and holiness.
+  - Comma Johanneum (1 John 5:7–8): The explicit Trinitarian clause ("in heaven: the Father, the Word, and the Holy Ghost: and these three are one"), found in late Latin Vulgate witnesses and Erasmus's 1522 Greek edition via Codex Montfortianus.
+  - Markan Shorter and Longer Endings (Mark 16:9–20): The post-resurrection appearances of Christ; present in the overwhelming majority of Greek manuscripts, the Syriac Peshitta, and Old Latin, though absent in Codices Sinaiticus and Vaticanus.`
+      },
+      {
+        id: 'hermeneutics-and-literary-forms',
+        heading: 'ARTICLE IV — Hermeneutics, Exegesis & Literary Forms',
+        content: `• Hermeneutics (Ἑρμηνευτική): The systematic science and art of biblical interpretation. It establishes the theological framework, linguistic rules, and contextual methods required to understand what the biblical text meant in its original setting and what it authoritatively signifies today.
+
+• Exegesis vs. Eisegesis: Exegesis (from ek, "out of") is the rigorous, objective extraction of the author's intended meaning out of the biblical text; eisegesis (from eis, "into") is the subjective, illegitimate insertion of personal assumptions, cultural biases, or theological presuppositions into the text.
+
+• Analogia Fidei (Analogy of Faith): The classic Reformation hermeneutical maxim that "Scripture interprets Scripture" (Scriptura Sacra sui ipsius interpres). Clear, didactic passages illuminate obscure, figurative passages, and no single verse may be interpreted so as to contradict the unified theological witness of the entire canon.
+
+• Grammatical-Historical Method: The hermeneutical approach that analyzes the grammar, syntax, lexical semantics, historical occasion, cultural customs, and geographical circumstances of a biblical passage to discover the original author's intended meaning.
+
+• Sensus Plenior: The "fuller meaning" intended by God as the divine Author that transcends the conscious awareness of the human prophet, unveiled through subsequent progressive revelation and fulfilled in the New Testament (e.g., the virgin birth typology in Isaiah 7:14 and Matthew 1:22–23).
+
+• Typology (Type and Antitype): The divinely orchestrated historical correspondence between Old Testament persons, institutions, sacrifices, or historical events (the Type, e.g., the Passover Lamb, the Tabernacle, Melchizedek) and their ultimate spiritual realization in Jesus Christ and His Kingdom (the Antitype).
+
+• Chiasm / Chiastic Structure: An artistic Hebrew and Greek literary device where words, concepts, or narrative blocks are arranged in an inverted parallel order (A-B-C-B'-A' or A-B-C-D-C'-B'-A'), deliberately focusing the reader's attention upon the thematic climax at the center (C or D).
+
+• Inclusio (Envelope Construction): A literary frame in which a narrative, psalm, or discourse begins and ends with the identical phrase, keyword, or theological statement, marking the boundary of a cohesive literary unit (e.g., Psalm 8:1 and 8:9: "O LORD our Lord, how excellent is thy name in all the earth!").
+
+• Hebrew Poetic Parallelism: The correspondence of thought, rhythm, and theological meaning between adjacent lines of Hebrew poetry:
+  - Synonymous Parallelism: The second poetic line restates the thought of the first line using different vocabulary (Psalm 19:1: "The heavens declare the glory of God; and the firmament sheweth his handywork").
+  - Antithetic Parallelism: The second line sharpens the first by stating the contrasting opposite truth (Proverbs 10:1: "A wise son maketh a glad father: but a foolish son is the heaviness of his mother").
+  - Synthetic / Climactic Parallelism: The second line builds upon, completes, or escalates the thought begun in the first (Psalm 29:1: "Give unto the LORD, O ye mighty, give unto the LORD glory and strength").
+
+• Pericope: An identifiable, cohesive passage or narrative segment of Holy Scripture (e.g., a miracle narrative, a parable, or a liturgical hymn) suitable for liturgical reading, preaching, or standalone exegetical analysis.
+
+• Sitz im Leben: The "setting in life"—the specific historical, social, political, and religious environment in which a biblical text was first composed, spoken, or utilized within the ancient covenant community.
+
+• Biblical Literary Genres: The distinct literary forms employed by the Holy Spirit: Historical Narrative, Mosaic Law/Torah, Wisdom Literature, Poetic Lyrics, Prophetic Oracles, Gospels, Epistles, and Apocalyptic Visions.`
+      },
+      {
+        id: 'lexicons-and-concordances',
+        heading: 'ARTICLE V — Lexicons, Concordances & Exegetical Reference Systems',
+        content: `• Strong’s Exhaustive Concordance: The monumental indexing masterwork completed in 1890 by Dr. James Strong and over 100 colleagues. It catalogs every occurrence of every word in the King James Version, assigning a unique numerical identifier to every Hebrew root word (H1 to H8674) and Greek root word (G1 to G5624), unlocking original-language study for believers worldwide.
+
+• Brown-Driver-Briggs (BDB): *A Hebrew and English Lexicon of the Old Testament* (1906), prepared by Francis Brown, S. R. Driver, and Charles A. Briggs based on Gesenius. Arranged by triliteral root, it remains the standard reference for Semitic etymologies, cognates, and classical Old Testament lexicography.
+
+• Gesenius' Hebrew and Chaldee Lexicon: Wilhelm Gesenius's foundational 19th-century philological masterwork, translated and updated by Samuel Prideaux Tregelles, providing rigorous grammatical analysis of Old Testament Hebrew and Aramaic.
+
+• BDAG (Bauer-Danker-Arndt-Gingrich): *A Greek-English Lexicon of the New Testament and Other Early Christian Literature* (3rd Edition, 2000). Globally acclaimed as the undisputed standard academic lexicon for New Testament Greek, Hellenistic papyri, and the Apostolic Fathers.
+
+• Thayer’s Greek-English Lexicon: Joseph Henry Thayer's celebrated 1889 translation and revision of Christian Gottlob Wilke's *Clavis Novi Testamenti*, renowned for rich theological explanations, classical citations, and seamless integration with Strong's numbering system.
+
+• Liddell-Scott-Jones (LSJ): *A Greek-English Lexicon* (Oxford University Press), the definitive master lexicon spanning the entire breadth of ancient Greek literature from Homer (8th century BC) through Byzantine times.
+
+• Theological Dictionary of the New Testament (TDNT / "Kittel"): The monumental multi-volume theological reference work edited by Gerhard Kittel and Gerhard Friedrich, tracing the linguistic, Septuagintal, intertestamental, and rabbinic background of every major New Testament theological concept.
+
+• Theological Wordbook of the Old Testament (TWOT): R. Laird Harris, Gleason L. Archer Jr., and Bruce K. Waltke's 2-volume evangelical lexical guide, providing deep theological treatises on the religious significance of Old Testament Hebrew vocabulary.
+
+• Louw-Nida Semantic Domains: *Greek-English Lexicon of the New Testament Based on Semantic Domains* (Johannes P. Louw and Eugene A. Nida), categorizing Greek vocabulary by conceptual domains rather than alphabetical roots, revolutionizing modern translation theory.
+
+• Interlinear Scripture Engine: The computational presentation of Holy Scripture that displays the original Hebrew, Aramaic, or Greek text aligned vertically word-for-word with its English translation, root lemma, grammatical morphology parsing, and Strong's concordance tag.`
+      },
+      {
+        id: 'historical-translations-and-lineage',
+        heading: 'ARTICLE VI — Historical Translations, Protestant Reformation & English Bible Lineage',
+        content: `• John Wycliffe's Bible (1382): The first complete English translation of Holy Scripture, rendered from the Latin Vulgate by the "Morning Star of the Reformation" and distributed by itinerant Lollard preachers across England despite fierce ecclesiastical persecution.
+
+• William Tyndale New Testament (1526): The revolutionary masterwork translated directly from original Greek (Erasmus TR) and Hebrew into vibrant Early Modern English. Tyndale's heroic scholarship gave the English language over 80% of the phrasing found in the King James Bible. Betrayed and martyred at Vilvoorde in 1536, his dying prayer was: "Lord, open the King of England's eyes."
+
+• Miles Coverdale Bible (1535): The first complete printed English Bible, compiled by Myles Coverdale by synthesizing Tyndale's translations with additional German and Latin versions under the patronage of Thomas Cromwell.
+
+• Matthew Bible (1537): Prepared by Tyndale's disciple John Rogers under the pseudonym Thomas Matthew, combining Tyndale's published New Testament, Tyndale's unpublished Old Testament manuscripts (Genesis through 2 Chronicles), and Coverdale, with the first extensive English marginal study notes.
+
+• The Great Bible (1539): The first authorized English Bible commissioned by King Henry VIII and edited by Miles Coverdale, ordered to be chained to the pulpit of every parish church across England for public reading (the "Chained Bible").
+
+• The Geneva Bible (1560): The beloved Bible of the English Reformers, the Puritans, William Shakespeare, and the Mayflower Pilgrims. Produced in Geneva by Marian exiles including William Whittingham and John Knox, it was the first English Bible to feature numbered verses, chapter summaries, maps, and extensive Calvinistic study notes.
+
+• The Bishops’ Bible (1568): A revision of the Great Bible prepared by bishops of the Church of England under Archbishop Matthew Parker during the reign of Queen Elizabeth I to counter the popular influence of the Geneva Bible.
+
+• The Authorized King James Version (1611): Commissioned by King James I at the Hampton Court Conference (1604) and produced by 47 eminent scholars organized into six companies at Westminster, Oxford, and Cambridge. Translated directly from the Hebrew Masoretic Text and Greek Textus Receptus, it represents the supreme crown jewel of English prose and sacred literature.
+
+• The 1769 Oxford Blayney Edition: The definitive revision of the King James Version executed by Dr. Benjamin Blayney at Oxford University. It standardized archaic spelling, modernized punctuation, verified italicized supplied words, and expanded cross-references, establishing the standard KJV text in global use today.
+
+• The New King James Version (NKJV 1982): A conservative, reverent modernization commissioned by Thomas Nelson, retaining the lyric majesty, cadence, and Textus Receptus foundation of the 1611 KJV while updating archaic pronouns and vocabulary.
+
+• The Berean Standard Bible (BSB 2023): A modern, exquisitely accurate, transparent English translation created by the Berean Translation Committee, dedicated entirely to the Public Domain (CC0) for unhindered worldwide ministry and technological integration.`
+      },
+      {
+        id: 'african-vernacular-heritage',
+        heading: 'ARTICLE VII — African Vernacular Translation & Ghanaian Mother-Tongue Heritage',
+        content: `• The Basel Evangelical Missionary Society (Basler Mission): The pietist missionary society founded in Switzerland (1815) that established deep educational, linguistic, agricultural, and theological roots on the Gold Coast (Ghana) starting in 1828, championing native mother-tongue literacy.
+
+• Johannes Gottlieb Christaller (1827–1895): The preeminent German philologist and Basel missionary who codified the grammar and orthography of the Akan language. He translated the monumental complete 1871 Twi Bible (Anyamesɛm Anaa Twerɛ Kronkron), authored the 1875 Twi Grammar, and compiled the 1881 *Dictionary of the Asante and Fante Language Called Tshi (Chwee, Twi)*, universally recognized as a masterpiece of African linguistics.
+
+• David Asante (1834–1892): The first ordained native Gold Coast Basel missionary, royal prince of Akropong-Akuapem, and scholar who co-labored with Christaller to translate the full Holy Scriptures into Akan, also translating John Bunyan's *Pilgrim's Progress* (Kristofo Akwantuo) into Twi.
+
+• Twerɛ Kronkron (Asante Twi): The sacred Holy Bible translated into the Asante dialect of Akan, beloved across millions of believers in Ghana and the worldwide diaspora, noted for its expressive oral resonance, rich metaphors, and theological depth.
+
+• Kyerew Kronkron (Akuapem Twi): The historic literary standard translation produced at Akropong-Akuapem, providing the foundational orthography, grammar, and formal theological prose for Akan biblical literature.
+
+• Mfantse Bible (Nwoma Kronkron): The Holy Scriptures translated into the coastal Fante dialect of Akan, pioneered through Methodist missions and Cape Coast indigenous scholarship.
+
+• Onyankopɔn (O-Nyame-koro-pɔn): The Great and Only God of Eternity; the supreme, uncreated Creator God in traditional Akan cosmology who created all things (Bɔrebɔre) and rules sovereignly over the cosmos.
+
+• Tweaduampɔn (Tweaduampɔn Kwame): The Almighty God who supports everything without stumbling; the rock-solid pillar upon whom humanity can lean without fear of collapse.
+
+• Nyame (Onyame): The living God, the giver of light, life, and breath; the loving, all-sustaining Deity whom every child knows by innate instinct ("Obi nkyerɛ abofra Nyame"—"No one needs to teach a child that God exists").
+
+• Ogyefo & Agyenkwa: The Akan theological titles for our Lord Jesus Christ: Ogyefo (The Mighty Redeemer who snatches the captive from the clutches of death) and Agyenkwa (The Life-Giver and Savior who imparts everlasting zoe-life).
+
+• Honhom Kronkron: The Holy Spirit in the Akan language—Honhom (Breath, Wind, Invisible Divine Essence) and Kronkron (Holiness, purity, immaculate radiance, set apart).
+
+• Asɛm No (The Logos): The Divine Word of God incarnate in Jesus Christ (John 1:1, 14: "Mfididie no mu na Asɛm no wɔe, na Asɛm no ne Nyankopɔn na ɛwɔe, na Asɛm no nso ne Nyankopɔn").
+
+• Nkwagyeɛ: Salvation, deliverance, and holistic preservation of life; the complete rescue of the human soul and body through the finished cross of Christ.
+
+• Adom: Unmerited favor, sovereign grace, divine gift; the freely given grace of God upon which all redemption and eternal life rest.
+
+• Johannes Zimmermann (1825–1876): Basel missionary who codified the Ga language of Accra, translating the entire Holy Bible into Ga (Ga Biblia) in 1866 and compiling the first Ga dictionary.`
+      },
+      {
+        id: 'systematic-theology-and-covenants',
+        heading: 'ARTICLE VIII — Systematic Theology, Christology & Biblical Covenants',
+        content: `• Biblical Covenants (Foedus): The sovereign divine pacts structuring redemptive history:
+  - Adamic Covenant: Creation mandate and probationary covenant of works in Eden (Genesis 1–2; Hosea 6:7).
+  - Noahic Covenant: Common grace covenant preserving creation and seasonal regularity (Genesis 9).
+  - Abrahamic Covenant: Unconditional covenant of election, nationhood, seed, and global blessing (Genesis 12, 15, 17).
+  - Mosaic Covenant: The legal and pedagogical covenant delivered at Mount Sinai structuring Israel's civil, ceremonial, and moral holiness (Exodus 19–24; Galatians 3:24).
+  - Davidic Covenant: The eternal royal dynastic covenant promising that David's royal seed shall reign forever upon the throne (2 Samuel 7; Psalm 89).
+  - The New Covenant (B'rit Chadashah): The eternal covenant instituted by Jesus Christ in His own blood, imparting regeneration, forgiveness of sins, and the law written upon the heart (Jeremiah 31:31–34; Luke 22:20; Hebrews 8).
+
+• The Five Solas of the Protestant Reformation:
+  - Sola Scriptura: Scripture alone is the sole infallible rule of faith and practice.
+  - Sola Fide: Justification is received through faith alone, without human merit or works.
+  - Sola Gratia: Salvation is by unmerited divine grace alone from regeneration to final glorification.
+  - Solus Christus: Christ alone is the mediator, Redeemer, and head of the Church.
+  - Soli Deo Gloria: All glory belongs to God alone in creation, providence, and redemption.
+
+• Verbal Plenary Inspiration: The historic doctrine that every single word (verbal) and all parts (plenary) of Holy Scripture in the original autographs were breathed out by God (theopneustos, 2 Timothy 3:16) through human instruments without error.
+
+• Inerrancy & Infallibility: Inerrancy means the Scriptures are wholly true, free from error in all matters they affirm (scientific, historical, geographical, and theological); infallibility means the Scriptures cannot fail or lead astray in their divine purpose.
+
+• Hypostatic Union: The theological truth formulated at the Council of Chalcededon (451 AD) that our Lord Jesus Christ is one divine Person possessing two complete, distinct, and unconfused natures—truly God and truly man—forever united without division, change, or separation.
+
+• Penal Substitutionary Atonement: The core gospel doctrine that Jesus Christ on the cross bore the full divine wrath and legal penalty due for the sins of His people, satisfying divine justice as their blameless substitute (Isaiah 53; Romans 3:25; 2 Corinthians 5:21).
+
+• Justification: The judicial act of God whereby He declares a guilty sinner righteous solely through the imputed righteousness of Jesus Christ received by faith alone.
+
+• Sanctification & Glorification: Sanctification is the progressive, lifetime work of the Holy Spirit conforming the believer into the image of Christ; Glorification is the final, instantaneous transformation of the believer's body and soul into sinless, immortal perfection at the Parousia.
+
+• Regeneration (New Birth / Palin-genesia): The sovereign, monergistic work of the Holy Spirit imparting spiritual life to dead sinners, enabling faith and repentance.
+
+• Eschatology & Parousia: The doctrine of last things; the Parousia (Personal, bodily, glorious second coming of Jesus Christ to judge the living and the dead, resurrect the saints, and inaugurate the New Heavens and the New Earth).`
+      },
+      {
+        id: 'biblical-canon-and-apocrypha',
+        heading: 'ARTICLE IX — The Biblical Canon, Deuterocanon & Ancient Apocrypha',
+        content: `• Biblical Canon (Kanon / קָנֶה): From the reed or measuring rod; the authoritative collection of divinely inspired books recognized by the Church as the standard of truth and faith.
+
+• Proto-Canonical Books: The 66 books (39 Old Testament, 27 New Testament) whose divine inspiration and canonical status have been universally acknowledged by orthodox Judaism and the historic Protestant Church.
+
+• Deuterocanonical Books: The 7 books (Tobit, Judith, 1 & 2 Maccabees, Wisdom of Solomon, Sirach/Ecclesiasticus, Baruch) and additions to Esther and Daniel, accepted as canonical by the Roman Catholic Church (Trent 1546) and Eastern Orthodox churches, but recognized as non-inspired historical and ethical writings by the Protestant Reformers.
+
+• The Apocrypha: From apokryphos ("hidden"); the intertestamental Jewish writings excluded from the Hebrew canon of the Old Testament. As declared in Article VI of the 39 Articles of Religion (1562), "the Church doth read them for example of life and instruction of manners; but yet doth it not apply them to establish any doctrine."
+
+• Pseudepigrapha: Ancient religious texts falsely attributed to biblical patriarchs or prophets (e.g., 1 Enoch, Jubilees, Testaments of the Twelve Patriarchs, Apocalypse of Baruch), valuable for understanding Jewish apocalyptic thought in the Second Temple period.
+
+• Historical Councils on the Canon:
+  - Council of Rome (382 AD) & Council of Carthage (397 AD): Early Western ecclesiastical synods that affirmed the 27 books of the New Testament.
+  - Council of Trent (1546 AD): The Counter-Reformation Roman Catholic council that dogmatically canonized the Vulgate and the Deuterocanonical books under anathema.
+  - Westminster Confession of Faith (1646): The definitive Reformed confessional statement affirming the 66 canonical books as the sole infallible Word of God.`
+      },
+      {
+        id: 'expository-preaching-and-liturgy',
+        heading: 'ARTICLE X — Expository Preaching, Liturgy & Devotional Terms',
+        content: `• Expository Preaching (Lectio Continua): The systematic, verse-by-verse preaching through entire books of Holy Scripture, ensuring that the central point of the biblical passage becomes the central point of the sermon.
+
+• Lectio Divina: The ancient Christian practice of contemplative prayer and meditation on Scripture comprising four movements: Lectio (reading), Meditatio (meditation), Oratio (prayer), and Contemplatio (resting in the presence of God).
+
+• Doxology & Benediction: A doxology is an expression of praise to the Triune God (e.g., Jude 24–25; Romans 11:33–36); a benediction is an authoritative pronouncement of divine blessing upon the assembled congregation (e.g., Numbers 6:24–26; 2 Corinthians 13:14).
+
+• Epiclesis & Anaphora: Epiclesis is the liturgical invocation of the Holy Spirit upon the Word or communion elements; Anaphora is the great Eucharistic prayer of thanksgiving and dedication.
+
+• Classic Commentary Tradition:
+  - Matthew Henry (1662–1714): The renowned Nonconformist English minister whose 6-volume *Exposition of the Old and New Testaments* provides unmatched practical, devotional, and pastoral exposition.
+  - Jamieson-Fausset-Brown (JFB 1871): The comprehensive, verse-by-verse critical, explanatory, and practical commentary produced by Robert Jamieson, A. R. Fausset, and David Brown, balancing textual scholarship with warm evangelical piety.
+
+• AduBible Sovereign Study Vault: The integrated digital repository combining parallel scriptures (KJV, NKJV, Asante Twi, Akuapem Twi, Berean Standard Bible, Greek TR, and Hebrew MT) with verse-by-verse classic commentaries, Strong's Greek/Hebrew lexicons, and mother-tongue audio streaming for global discipleship.`
       }
     ]
   },
