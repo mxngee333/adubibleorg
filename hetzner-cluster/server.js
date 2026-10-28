@@ -637,21 +637,20 @@ if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
 
   async function dispatchReceiptEmail(mailerooKey, donorEmail, donorName, amount, currency, frequency, designation, transactionId) {
     const donorClean = donorName || 'Beloved Scripture Partner';
+    const currencyClean = (currency || 'USD').toUpperCase();
+    const currencySymbol = currencyClean === 'USD' ? '$' : currencyClean === 'EUR' ? '€' : currencyClean === 'GBP' ? '£' : `${currencyClean} `;
     const frequencyClean = frequency === 'monthly' ? 'Monthly Sustaining Covenant Partner' : 'One-Time Seed Offering';
     const currentDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     const payload = new URLSearchParams({
       from: 'Apostle Kwame Adu <pastor@adubible.org>',
       reply_to: 'pastor@adubible.org',
       to: donorEmail,
-      subject: `${donorClean}, thank you for standing with the Word of God`,
+      subject: `Receipt (${currencySymbol}${amount.toFixed(2)}) — Stand with the Word of God`,
       html: `
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="utf-8"><title>A Personal Note from Apostle Kwame Adu</title></head>
+<head><meta charset="utf-8"><title>Donation Receipt (${currencySymbol}${amount.toFixed(2)}) — AduBible Stewardship Record</title></head>
 <body style="margin:0;padding:0;background-color:#f6f8f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1c241b;line-height:1.65;">
-  <div style="display:none;font-size:1px;color:#fff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">
-    Grace and peace to you, ${donorClean}. Thank you for your offering of ${currency} ${amount.toFixed(2)}.
-  </div>
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#f6f8f5;padding:28px 12px;">
     <tr><td align="center">
       <table role="presentation" width="100%" style="max-width:560px;background-color:#fff;border:1px solid #dfe5dc;border-top:4px solid #8EA486;border-radius:12px;overflow:hidden;">
@@ -664,14 +663,14 @@ if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
                   <span style="color:#8EA486;">Adu</span><span style="color:#B8AC94;">Bible</span><span style="color:#8E968D;font-size:14px;font-weight:600;">.org</span>
                 </span>
               </td>
-              <td style="text-align:right;vertical-align:middle;font-size:12px;color:#8E968D;">Pastoral Letter</td>
+              <td style="text-align:right;vertical-align:middle;font-size:12px;font-weight:600;color:#677953;">Official Stewardship Receipt</td>
             </tr>
           </table>
         </td></tr>
         <tr><td style="padding:28px 28px 24px;">
           <p style="font-size:16px;margin:0 0 16px;color:#171d17;">Grace and peace to you in Christ Jesus, <strong>${donorClean}</strong>,</p>
           <p style="font-size:15px;color:#2d3729;margin:0 0 16px;">
-            Thank you for your generous offering of <strong>${currency} ${amount.toFixed(2)}</strong>. Because of your sacrificial seed, God's Word remains 100% free, unmonetized, and without commercial advertisement across 35+ languages.
+            Thank you for your generous seed offering of <strong>${currencySymbol}${amount.toFixed(2)}</strong>. Please find your official electronic donation receipt and stewardship summary below for your personal and tax records. Because of your sacrificial support, God's Word remains 100% free, unmonetized, and without commercial advertisement across 35+ languages.
           </p>
           <table role="presentation" width="100%" style="background-color:#fbfcfb;border:1px solid #e1e7de;border-radius:8px;margin:22px 0;font-size:14px;border-collapse:collapse;">
             <tr style="background-color:#f1f5ef;"><td colspan="2" style="padding:10px 14px;font-size:12px;font-weight:700;color:#677953;text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid #e1e7de;">Offering Record &amp; Stewardship Summary</td></tr>

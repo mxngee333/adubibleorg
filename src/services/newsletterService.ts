@@ -88,9 +88,6 @@ export async function subscribeToNewsletter(
   <title>Welcome to AduBible</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #f6f8f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1c241b; line-height: 1.65;">
-  <div style="display: none; font-size: 1px; color: #ffffff; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
-    Grace and peace to you, ${cleanName}. I am honored to welcome you into our Scripture sanctuary family.
-  </div>
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f6f8f5; padding: 28px 12px;">
     <tr>
       <td align="center">

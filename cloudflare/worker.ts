@@ -934,7 +934,9 @@ async function sendDonationReceipt(
   const fromAddr = 'Apostle Kwame Adu <pastor@adubible.org>';
   const replyTo = 'pastor@adubible.org';
   const donorClean = donorName || 'Beloved Scripture Partner';
-  const subject = `${donorClean}, thank you for standing with the Word of God`;
+  const currencyClean = (currency || 'USD').toUpperCase();
+  const currencySymbol = currencyClean === 'USD' ? '$' : currencyClean === 'EUR' ? '€' : currencyClean === 'GBP' ? '£' : `${currencyClean} `;
+  const subject = `Receipt (${currencySymbol}${amount.toFixed(2)}) — Stand with the Word of God`;
   const frequencyClean = frequency === 'monthly' ? 'Monthly Sustaining Covenant Partner' : 'One-Time Seed Offering';
   const currentDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
@@ -943,12 +945,9 @@ async function sendDonationReceipt(
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>A Personal Note from Apostle Kwame Adu</title>
+  <title>Donation Receipt (${currencySymbol}${amount.toFixed(2)}) — AduBible Stewardship Record</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #f6f8f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1c241b; line-height: 1.65;">
-  <div style="display: none; font-size: 1px; color: #ffffff; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
-    Grace and peace to you, ${donorClean}. I wanted to write you personally to thank you for standing with God's Word.
-  </div>
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f6f8f5; padding: 28px 12px;">
     <tr>
       <td align="center">
@@ -964,8 +963,8 @@ async function sendDonationReceipt(
                       <span style="color: #8EA486;">Adu</span><span style="color: #B8AC94;">Bible</span><span style="color: #8E968D; font-size: 14px; font-weight: 600;">.org</span>
                     </span>
                   </td>
-                  <td style="text-align: right; vertical-align: middle; font-size: 12px; color: #8E968D; letter-spacing: 0.04em;">
-                    Pastoral Letter
+                  <td style="text-align: right; vertical-align: middle; font-size: 12px; font-weight: 600; color: #677953; letter-spacing: 0.04em;">
+                    Official Stewardship Receipt
                   </td>
                 </tr>
               </table>
@@ -980,7 +979,11 @@ async function sendDonationReceipt(
               </p>
 
               <p style="font-size: 15px; color: #2d3729; margin: 0 0 16px; line-height: 1.7;">
-                I am writing to you with a heart full of thanksgiving. Because of your sacrificial seed of <strong>${currency} ${amount.toFixed(2)}</strong>, the Holy Scriptures remain <strong>100% free, unmonetized, and completely unhindered by commercial advertisements</strong> for millions of souls worldwide across 35+ languages.
+                Thank you for your generous seed offering of <strong>${currencySymbol}${amount.toFixed(2)}</strong>. Please find your official electronic donation receipt and stewardship summary below for your personal and tax records.
+              </p>
+
+              <p style="font-size: 15px; color: #2d3729; margin: 0 0 16px; line-height: 1.7;">
+                Because of your sacrificial support, the Holy Scriptures remain <strong>100% free, unmonetized, and completely unhindered by commercial advertisements</strong> for millions of souls worldwide across 35+ languages.
               </p>
 
               <p style="font-size: 15px; color: #2d3729; margin: 0 0 20px; line-height: 1.7;">
