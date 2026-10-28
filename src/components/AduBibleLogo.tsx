@@ -35,9 +35,9 @@ export const AduBibleLogo: React.FC<AduBibleLogoProps> = ({
         />
       </div>
       <div className="logo-wordmark">
-        <span className="logo-word-adu" style={{ color: 'var(--logo-adu-color, #B83853)' }}>Adu</span>
-        <span className="logo-word-bible" style={{ color: 'var(--logo-bible-color, #C9A662)' }}>Bible</span>
-        <span className="logo-word-tld" style={{ color: 'var(--logo-tld-color, #6E947A)' }}>.org</span>
+        <span className="logo-word-adu" style={{ color: 'var(--logo-adu-color, #A8354D)' }}>Adu</span>
+        <span className="logo-word-bible" style={{ color: 'var(--logo-bible-color, #E8E2D6)' }}>Bible</span>
+        <span className="logo-word-tld" style={{ color: 'var(--logo-tld-color, #8E968F)' }}>.org</span>
       </div>
     </div>
   );

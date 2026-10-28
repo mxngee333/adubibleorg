@@ -2,9 +2,9 @@
 
 :root {
   color-scheme: dark;
-  --logo-adu-color: #B83853; /* Regal Sacramental Velvet Wine */
-  --logo-bible-color: #C9A662; /* Illuminated Antique Gold */
-  --logo-tld-color: #6E947A; /* Peaceful Biblical Olive Sage */
+  --logo-adu-color: #A8354D; /* Smooth Regal Velvet Wine */
+  --logo-bible-color: #E8E2D6; /* Smooth Warm Ivory */
+  --logo-tld-color: #8E968F; /* Subtle Muted Slate */
 }
 
 * {
@@ -4961,34 +4961,35 @@ mark.search-highlight {
 }
 
 .logo-word-adu {
-  font-weight: 800;
-  color: var(--logo-adu-color, #B83853) !important; /* Regal Sacramental Velvet Wine */
+  font-weight: 700;
+  color: var(--logo-adu-color, #A8354D) !important; /* Smooth Regal Velvet Wine */
   letter-spacing: -0.015em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  text-shadow: none;
 }
 
 .logo-word-bible {
-  font-weight: 700;
-  color: var(--logo-bible-color, #C9A662) !important; /* Illuminated Antique Gold */
+  font-weight: 600;
+  color: var(--logo-bible-color, #E8E2D6) !important; /* Smooth Warm Ivory */
   margin-left: 0;
   letter-spacing: -0.01em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  text-shadow: none;
 }
 
 .logo-word-tld {
-  font-weight: 700;
+  font-weight: 500;
   font-size: 0.82em;
-  color: var(--logo-tld-color, #6E947A) !important; /* Peaceful Biblical Olive Sage */
+  color: var(--logo-tld-color, #8E968F) !important; /* Subtle Muted Slate */
   letter-spacing: -0.02em;
   margin-left: 1px;
+  text-shadow: none;
 }
 
 .bible-app.theme-daylight,
 .bible-app.theme-parchment,
 .bible-app.theme-lilac-light {
-  --logo-adu-color: #821D35;
-  --logo-bible-color: #8E6D2B;
-  --logo-tld-color: #486851;
+  --logo-adu-color: #781B2F;
+  --logo-bible-color: #232B24;
+  --logo-tld-color: #5E6961;
 }
 
 .bible-app.theme-daylight .logo-word-adu,
