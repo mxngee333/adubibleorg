@@ -3382,6 +3382,8 @@ export function App() {
           autoSyncReader={autoSyncReader}
           onToggleAutoSync={handleToggleAutoSyncReader}
           onSetAutoSync={handleSetAutoSyncReader}
+          isFullscreen={isFullscreen}
+          onToggleFullscreen={handleToggleFullscreen}
           onClose={() => {
             setShowAudioBar(false);
             setIsAudioPlaying(false);

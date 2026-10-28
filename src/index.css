@@ -5640,12 +5640,69 @@ mark.search-highlight {
   scroll-margin-bottom: 260px !important;
 }
 
-.comparison {
-  padding-bottom: max(75vh, 600px) !important;
+.workspace,
+#reader,
+#reading-shell,
+.reading-shell,
+.comparison,
+.verse-rows {
+  padding-bottom: max(85vh, 750px) !important;
 }
 
-.verse-rows {
-  padding-bottom: max(60vh, 500px) !important;
+/* FULLSCREEN PRESENTATION MODE FOR SANCTUARY / CHURCH SCREEN PROJECTION */
+.fullscreen-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.fullscreen-btn.fullscreen-active {
+  background: rgba(245, 158, 11, 0.22) !important;
+  border-color: #f59e0b !important;
+  color: #f59e0b !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.3) !important;
+}
+
+body.presentation-fullscreen-mode {
+  background: var(--surface) !important;
+  overflow-x: hidden !important;
+}
+
+body.presentation-fullscreen-mode .topbar,
+body.presentation-fullscreen-mode .global-footer,
+body.presentation-fullscreen-mode .footer-newsletter-banner,
+body.presentation-fullscreen-mode .mobile-dock,
+body.presentation-fullscreen-mode .category-hero-banner {
+  display: none !important;
+}
+
+body.presentation-fullscreen-mode .workspace {
+  max-width: 98vw !important;
+  width: 98vw !important;
+  padding: 16px 24px max(85vh, 750px) !important;
+  margin: 0 auto !important;
+}
+
+body.presentation-fullscreen-mode #reading-shell,
+body.presentation-fullscreen-mode .reading-shell {
+  border-radius: 12px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7) !important;
+}
+
+body.presentation-fullscreen-mode .verse-row.audio-active-row,
+body.presentation-fullscreen-mode .verse-row.selected-row {
+  background: rgba(245, 158, 11, 0.2) !important;
+  border-left: 6px solid #f59e0b !important;
+  box-shadow: 0 4px 28px rgba(245, 158, 11, 0.25) !important;
+  border-radius: 4px !important;
+}
+
+body.presentation-fullscreen-mode .verse-text-body p {
+  font-size: calc(var(--reading-size) * 1.08) !important;
+  line-height: 1.7 !important;
 }
 
 /* Minimized Floating Pill Mode */

@@ -39,6 +39,8 @@ interface AudioBibleBarProps {
   autoSyncReader?: boolean;
   onToggleAutoSync?: () => void;
   onSetAutoSync?: (enabled: boolean) => void;
+  isFullscreen?: boolean;
+  onToggleFullscreen?: () => void;
 }
 
 const SAVED_VOICE_KEY = 'elohim_neural_voice_v1';
@@ -66,6 +68,8 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   autoSyncReader = true,
   onToggleAutoSync,
   onSetAutoSync,
+  isFullscreen = false,
+  onToggleFullscreen,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoadingVerse, setIsLoadingVerse] = useState(false);
@@ -1282,6 +1286,23 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             <span className="pill-label">{isAutoSync ? 'Auto-Scroll ON' : 'Auto-Scroll OFF'}</span>
           </button>
 
+          {/* Fullscreen Presentation Mode Toggle for Sanctuary / Projection */}
+          {onToggleFullscreen && (
+            <button
+              type="button"
+              className={`audio-bar-toggle-pill ${isFullscreen ? 'active' : ''}`}
+              onClick={onToggleFullscreen}
+              title={
+                isFullscreen
+                  ? 'Exit Fullscreen Presentation (Esc or F11)'
+                  : 'Enter Fullscreen Presentation Mode for Church Screen Projection'
+              }
+            >
+              <span>{isFullscreen ? '🗗' : '⛶'}</span>
+              <span className="pill-label">{isFullscreen ? 'Windowed' : 'Fullscreen'}</span>
+            </button>
+          )}
+
           {/* Studio MP3 toggle */}
           {audioUrl && !bilingualMode && (
             <button
@@ -1452,6 +1473,23 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
               <span>📜</span>
               <span>{isAutoSync ? 'Auto-Scroll ON' : 'Auto-Scroll OFF'}</span>
             </button>
+
+            {/* Fullscreen Presentation Mode Toggle */}
+            {onToggleFullscreen && (
+              <button
+                type="button"
+                className={`audio-bar-toggle-pill ${isFullscreen ? 'active' : ''}`}
+                onClick={onToggleFullscreen}
+                title={
+                  isFullscreen
+                    ? 'Exit Fullscreen Presentation (Esc or F11)'
+                    : 'Enter Fullscreen Presentation Mode for Church Screen Projection'
+                }
+              >
+                <span>{isFullscreen ? '🗗' : '⛶'}</span>
+                <span>{isFullscreen ? 'Windowed' : 'Fullscreen'}</span>
+              </button>
+            )}
 
             {/* Studio MP3 toggle */}
             {audioUrl && !bilingualMode && (
