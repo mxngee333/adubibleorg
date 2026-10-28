@@ -435,8 +435,8 @@ export async function broadcastOutreachEmail(params: {
         subject: params.subject,
         html: params.htmlContent,
         text: plainText,
-        from: 'Apostle Kwame Adu <pastor@adubible.org>',
-        replyTo: 'pastor@adubible.org',
+        from: 'AduBible <info@adubible.org>',
+        replyTo: 'info@adubible.org',
       });
       dispatched++;
     }

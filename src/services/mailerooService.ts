@@ -35,8 +35,8 @@ export interface SendDonationReceiptOptions {
   prayerRequest?: string;
 }
 
-const DEFAULT_FROM = 'Apostle Kwame Adu <pastor@adubible.org>';
-const DEFAULT_REPLY_TO = 'pastor@adubible.org';
+const DEFAULT_FROM = 'AduBible <info@adubible.org>';
+const DEFAULT_REPLY_TO = 'info@adubible.org';
 
 /**
  * Direct Maileroo HTTP API sender using application/x-www-form-urlencoded
@@ -121,7 +121,7 @@ export async function sendDonationReceiptEmail(opts: SendDonationReceiptOptions)
   const currencySymbol = currencyClean === 'USD' ? '$' : currencyClean === 'EUR' ? '€' : currencyClean === 'GBP' ? '£' : `${currencyClean} `;
 
   // Updates Tab Route (Path B): Explicit Receipt and formatted amount triggers Gmail's transactional parser
-  const subject = opts.subject || `Receipt (${currencySymbol}${amountFormatted}) — Stand with the Word of God`;
+  const subject = opts.subject || `Receipt (${currencySymbol}${amountFormatted}) - Stand with the Word of God`;
 
   const html = `
 <!DOCTYPE html>

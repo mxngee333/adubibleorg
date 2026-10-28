@@ -642,10 +642,10 @@ if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
     const frequencyClean = frequency === 'monthly' ? 'Monthly Sustaining Covenant Partner' : 'One-Time Seed Offering';
     const currentDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     const payload = new URLSearchParams({
-      from: 'Apostle Kwame Adu <pastor@adubible.org>',
-      reply_to: 'pastor@adubible.org',
+      from: 'AduBible <info@adubible.org>',
+      reply_to: 'info@adubible.org',
       to: donorEmail,
-      subject: `Receipt (${currencySymbol}${amount.toFixed(2)}) — Stand with the Word of God`,
+      subject: `Receipt (${currencySymbol}${amount.toFixed(2)}) - Stand with the Word of God`,
       html: `
 <!DOCTYPE html>
 <html lang="en">

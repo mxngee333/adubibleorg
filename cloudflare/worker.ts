@@ -931,12 +931,12 @@ async function sendDonationReceipt(
   designation: string,
   transactionId: string
 ): Promise<void> {
-  const fromAddr = 'Apostle Kwame Adu <pastor@adubible.org>';
-  const replyTo = 'pastor@adubible.org';
+  const fromAddr = 'AduBible <info@adubible.org>';
+  const replyTo = 'info@adubible.org';
   const donorClean = donorName || 'Beloved Scripture Partner';
   const currencyClean = (currency || 'USD').toUpperCase();
   const currencySymbol = currencyClean === 'USD' ? '$' : currencyClean === 'EUR' ? '€' : currencyClean === 'GBP' ? '£' : `${currencyClean} `;
-  const subject = `Receipt (${currencySymbol}${amount.toFixed(2)}) — Stand with the Word of God`;
+  const subject = `Receipt (${currencySymbol}${amount.toFixed(2)}) - Stand with the Word of God`;
   const frequencyClean = frequency === 'monthly' ? 'Monthly Sustaining Covenant Partner' : 'One-Time Seed Offering';
   const currentDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 

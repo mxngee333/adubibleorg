@@ -344,6 +344,104 @@ export function App() {
   }, []);
   const [copiedNotice, setCopiedNotice] = useState<boolean>(false);
   const [themeSyncNotice, setThemeSyncNotice] = useState<string>('');
+
+  // Fullscreen Presentation Mode State (for Church Sanctuary / Projector Screen)
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(() => {
+    if (typeof document === 'undefined') return false;
+    return !!(
+      document.fullscreenElement ||
+      (document as any).webkitFullscreenElement ||
+      (document as any).mozFullScreenElement ||
+      (document as any).msFullscreenElement
+    );
+  });
+
+  const handleToggleFullscreen = useCallback(() => {
+    if (typeof document === 'undefined') return;
+    const doc = document as any;
+    const docEl = document.documentElement as any;
+
+    const isCurrentlyFull = !!(
+      doc.fullscreenElement ||
+      doc.webkitFullscreenElement ||
+      doc.mozFullScreenElement ||
+      doc.msFullscreenElement
+    );
+
+    if (!isCurrentlyFull) {
+      if (docEl.requestFullscreen) {
+        docEl.requestFullscreen().catch(() => {});
+      } else if (docEl.webkitRequestFullscreen) {
+        docEl.webkitRequestFullscreen();
+      } else if (docEl.mozRequestFullScreen) {
+        docEl.mozRequestFullScreen();
+      } else if (docEl.msRequestFullscreen) {
+        docEl.msRequestFullscreen();
+      }
+    } else {
+      if (doc.exitFullscreen) {
+        doc.exitFullscreen().catch(() => {});
+      } else if (doc.webkitExitFullscreen) {
+        doc.webkitExitFullscreen();
+      } else if (doc.mozCancelFullScreen) {
+        doc.mozCancelFullScreen();
+      } else if (doc.msExitFullscreen) {
+        doc.msExitFullscreen();
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    const handleFullscreenChange = () => {
+      const isFull = !!(
+        document.fullscreenElement ||
+        (document as any).webkitFullscreenElement ||
+        (document as any).mozFullScreenElement ||
+        (document as any).msFullscreenElement
+      );
+      setIsFullscreen(isFull);
+      if (isFull) {
+        document.body.classList.add('presentation-fullscreen-mode');
+      } else {
+        document.body.classList.remove('presentation-fullscreen-mode');
+      }
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+    // Global keyboard shortcut: Pressing 'f' (when not inside an input/textarea/select) toggles presentation fullscreen
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        (e.key === 'f' || e.key === 'F') &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.altKey
+      ) {
+        const target = e.target as HTMLElement | null;
+        const tag = target?.tagName?.toLowerCase();
+        if (tag === 'input' || tag === 'textarea' || tag === 'select' || target?.isContentEditable) {
+          return;
+        }
+        e.preventDefault();
+        handleToggleFullscreen();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleToggleFullscreen]);
+
   const scrollBoxRef = useRef<HTMLDivElement | null>(null);
 
   const handleSwipeScroll = (direction: 'left' | 'right') => {
@@ -2400,6 +2498,28 @@ export function App() {
               </button>
               <button type="button" onClick={handleCopyShareLink}>
                 {copiedNotice ? 'Copied' : 'Copy link'}
+              </button>
+              <button
+                type="button"
+                className={`fullscreen-btn ${isFullscreen ? 'fullscreen-active settings-active' : ''}`}
+                onClick={handleToggleFullscreen}
+                title={
+                  isFullscreen
+                    ? 'Exit Fullscreen Presentation (Esc or F)'
+                    : 'Enter Fullscreen Presentation Mode for Church Screen Projection (F)'
+                }
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  background: isFullscreen ? 'rgba(245, 158, 11, 0.2)' : undefined,
+                  borderColor: isFullscreen ? '#f59e0b' : undefined,
+                  color: isFullscreen ? '#f59e0b' : undefined,
+                  fontWeight: isFullscreen ? 700 : undefined,
+                }}
+              >
+                <span style={{ fontSize: '14px' }}>{isFullscreen ? '🗗' : '⛶'}</span>
+                <span>{isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}</span>
               </button>
             </div>
           </div>

@@ -79,7 +79,7 @@ export async function subscribeToNewsletter(
 
   // 3. Dispatch reverent personal welcome email via Maileroo (Primary Inbox Optimized)
   try {
-    const welcomeSubject = `Grace and peace to you, ${cleanName} — Welcome to AduBible`;
+    const welcomeSubject = `Grace and peace to you, ${cleanName} - Welcome to AduBible`;
     const welcomeHtml = `
 <!DOCTYPE html>
 <html lang="en">
@@ -182,8 +182,8 @@ https://adubible.org`;
       subject: welcomeSubject,
       html: welcomeHtml,
       text: welcomeText,
-      from: 'Apostle Kwame Adu <pastor@adubible.org>',
-      replyTo: 'pastor@adubible.org',
+      from: 'AduBible <info@adubible.org>',
+      replyTo: 'info@adubible.org',
     });
   } catch (mailErr) {
     console.warn('[Newsletter] Welcome email dispatch notice:', mailErr);
