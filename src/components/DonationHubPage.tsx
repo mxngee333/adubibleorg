@@ -146,10 +146,18 @@ export const DonationHubPage: React.FC<DonationHubPageProps> = ({
           window.location.href = result.redirectUrl;
           return;
         }
+        if (result.error) {
+          setSubmitError(result.error);
+          return;
+        }
       } else {
         const result = await initiatePayPalDonation(submission, origin);
         if (result.approvalUrl) {
           window.location.href = result.approvalUrl;
+          return;
+        }
+        if (result.error) {
+          setSubmitError(result.error);
           return;
         }
       }

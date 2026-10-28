@@ -379,11 +379,14 @@ if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
       const origin = returnUrl || 'https://adubible.org/donate/?status=success';
       const cancel = cancelUrl || 'https://adubible.org/donate/?status=cancelled';
 
-      if (stripeKey && stripeKey.startsWith('sk_')) {
+      if (stripeKey && (stripeKey.startsWith('sk_') || stripeKey.startsWith('rk_'))) {
         const params = new URLSearchParams();
+        params.append('managed_payments[enabled]', 'false');
         params.append('success_url', origin);
         params.append('cancel_url', cancel);
-        params.append('customer_email', donorEmail || '');
+        if (donorEmail) {
+          params.append('customer_email', donorEmail);
+        }
         params.append('client_reference_id', `adubible_${Date.now()}`);
         params.append('metadata[designation]', designation);
         params.append('metadata[donor_name]', donorName || 'Beloved Scripture Partner');
@@ -418,13 +421,12 @@ if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
         if (sessionData.url) {
           return res.json({ url: sessionData.url, id: sessionData.id });
         }
+        if (sessionData.error?.message) {
+          return res.status(400).json({ error: sessionData.error.message });
+        }
       }
 
-      // Hosted Stripe Fallback
-      const direct = frequency === 'monthly'
-        ? `https://buy.stripe.com/adubible_partner_${numAmount}`
-        : `https://donate.stripe.com/adubible_seed_${numAmount}`;
-      return res.json({ url: `${direct}?prefilled_email=${encodeURIComponent(donorEmail || '')}` });
+      return res.status(400).json({ error: 'Stripe gateway credentials unconfigured.' });
     } catch (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -453,10 +455,91 @@ if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
         });
         const authData = await authRes.json();
         if (authData.access_token) {
+          const accessToken = authData.access_token;
+
+          // Monthly recurring subscription support
+          if (frequency === 'monthly') {
+            try {
+              const prodRes = await fetch(`${baseUrl}/v1/catalogs/products`, {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  name: 'AduBible Monthly Mission Partner',
+                  description: `Monthly scripture mission donation · ${designation}`,
+                  type: 'DIGITAL',
+                  category: 'CHARITY',
+                }),
+              });
+              const prodData = await prodRes.json();
+              if (prodData?.id) {
+                const planRes = await fetch(`${baseUrl}/v1/billing/plans`, {
+                  method: 'POST',
+                  headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    product_id: prodData.id,
+                    name: `AduBible Monthly Partner ($${numAmount})`,
+                    description: 'AduBible Monthly Mission Partnership Sustainer',
+                    billing_cycles: [
+                      {
+                        frequency: { interval_unit: 'MONTH', interval_count: 1 },
+                        tenure_type: 'REGULAR',
+                        sequence: 1,
+                        total_cycles: 0,
+                        pricing_scheme: {
+                          fixed_price: {
+                            value: numAmount.toFixed(2),
+                            currency_code: currency,
+                          },
+                        },
+                      },
+                    ],
+                    payment_preferences: {
+                      auto_bill_outstanding: true,
+                      setup_fee_failure_action: 'CONTINUE',
+                      payment_failure_threshold: 3,
+                    },
+                  }),
+                });
+                const planData = await planRes.json();
+                if (planData?.id) {
+                  const subRes = await fetch(`${baseUrl}/v1/billing/subscriptions`, {
+                    method: 'POST',
+                    headers: {
+                      'Authorization': `Bearer ${accessToken}`,
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      plan_id: planData.id,
+                      application_context: {
+                        brand_name: 'AduBible Scripture Mission',
+                        return_url: origin,
+                        cancel_url: cancel,
+                      },
+                    }),
+                  });
+                  const subData = await subRes.json();
+                  const subApproval = subData.links?.find((l) => l.rel === 'approve')?.href;
+                  if (subApproval) {
+                    return res.json({ approvalUrl: subApproval, orderId: subData.id });
+                  }
+                }
+              }
+            } catch (subErr) {
+              console.warn('[Hetzner PayPal Subscription Error]', subErr);
+            }
+          }
+
+          // One-Time Order
           const orderRes = await fetch(`${baseUrl}/v2/checkout/orders`, {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${authData.access_token}`,
+              'Authorization': `Bearer ${accessToken}`,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -484,19 +567,13 @@ if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
           if (approvalLink) {
             return res.json({ approvalUrl: approvalLink, orderId: orderData.id });
           }
+          if (orderData?.message) {
+            return res.status(400).json({ error: orderData.message });
+          }
         }
       }
 
-      // Hosted PayPal Fallback
-      const ppParams = new URLSearchParams({
-        business: 'donations@adubible.org',
-        amount: numAmount.toFixed(2),
-        currency_code: currency,
-        item_name: `AduBible Scripture Mission (${frequency})`,
-        return: origin,
-        cancel_return: cancel,
-      });
-      return res.json({ approvalUrl: `https://www.paypal.com/donate?${ppParams.toString()}` });
+      return res.status(400).json({ error: 'PayPal gateway credentials unconfigured.' });
     } catch (err) {
       return res.status(500).json({ error: err.message });
     }
