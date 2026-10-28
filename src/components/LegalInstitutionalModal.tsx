@@ -348,7 +348,7 @@ export const LegalInstitutionalModal: React.FC<LegalInstitutionalModalProps> = (
               }}
               className="text-amber-400 font-bold hover:underline inline-flex items-center gap-1"
             >
-              <span>💛 Support Mission (Donate)</span>
+              <span>💛 Support the Mission</span>
             </a>
           </div>
           <button

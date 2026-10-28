@@ -3844,7 +3844,7 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
 }
 
-/* Support Scripture Mission (Donate) Capsule */
+/* Support the Mission Capsule */
 .footer-legal-pill.footer-legal-donate-pill {
   border-color: rgba(245, 158, 11, 0.55);
   background: rgba(245, 158, 11, 0.12);

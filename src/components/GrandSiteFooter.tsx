@@ -507,7 +507,7 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
                 className="footer-text-link"
                 style={{ color: '#f59e0b', fontWeight: 700 }}
               >
-                <span>💛 Support Scripture Mission (Donate)</span>
+                <span>💛 Support the Mission</span>
                 <ChevronRight className="footer-link-chevron" />
               </a>
             </li>
@@ -772,7 +772,7 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
             }}
             className="footer-legal-pill footer-legal-donate-pill"
           >
-            💛 Support Scripture Mission (Donate)
+            💛 Support the Mission
           </a>
         </nav>
 
