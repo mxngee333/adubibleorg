@@ -154,6 +154,43 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     };
   }, []);
 
+  // Proportional time-update listener for Studio MP3 chapter audio synchronization
+  const handleStudioTimeUpdate = useCallback(() => {
+    if (!studioAudioElRef.current || !verses || verses.length === 0) return;
+    const currentTime = studioAudioElRef.current.currentTime;
+    const duration = studioAudioElRef.current.duration;
+    if (!duration || isNaN(duration) || duration <= 0) return;
+
+    const verseWeights = verses.map((v) =>
+      Math.max(1, (v.text || '').trim().split(/\s+/).length)
+    );
+    const totalWeight = verseWeights.reduce((a, b) => a + b, 0);
+    if (totalWeight <= 0) return;
+
+    let accumulated = 0;
+    let activeIdx = 0;
+    for (let i = 0; i < verses.length; i++) {
+      const startSec = (accumulated / totalWeight) * duration;
+      accumulated += verseWeights[i];
+      const endSec = (accumulated / totalWeight) * duration;
+
+      if (currentTime >= startSec && currentTime < endSec) {
+        activeIdx = i;
+        break;
+      }
+      if (i === verses.length - 1 && currentTime >= startSec) {
+        activeIdx = i;
+      }
+    }
+
+    if (activeIdx !== currentVerseIdxRef.current) {
+      currentVerseIdxRef.current = activeIdx;
+      if (verses[activeIdx]) {
+        onVerseChange(verses[activeIdx].verse);
+      }
+    }
+  }, [verses, onVerseChange]);
+
   const getOrCreateAudioContext = useCallback((): AudioContext => {
     if (!audioContextRef.current) {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
@@ -687,6 +724,23 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       }
     }
   }, [autoPlayNonce, verses, startPlayback]);
+
+  // Seamlessly jump playback when activeVerse changes externally (e.g. user taps verse in reader)
+  useEffect(() => {
+    if (!isPlayingRef.current || !activeVerse || !verses || verses.length === 0) return;
+    const currentVerseNum = verses[currentVerseIdxRef.current]?.verse;
+    if (currentVerseNum !== undefined && currentVerseNum !== activeVerse) {
+      const targetIdx = verses.findIndex((v) => v.verse === activeVerse);
+      if (targetIdx >= 0) {
+        stopPlayback();
+        setTimeout(() => {
+          setIsPlaying(true);
+          isPlayingRef.current = true;
+          playVerseAtIndex(targetIdx);
+        }, 50);
+      }
+    }
+  }, [activeVerse, verses]);
 
   const handleStep = (delta: number) => {
     stopPlayback();
