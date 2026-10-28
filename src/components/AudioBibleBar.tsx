@@ -10,6 +10,7 @@ import {
 } from '../services/neuralTtsService';
 import { isTwiLanguage } from '../services/twiAudioService';
 import { transphonemizeTwiForSpeech } from '../services/twiPhonemeEngine';
+import { scrollVerseIntoViewIfNeeded } from '../services/passageService';
 
 interface AudioBibleBarProps {
   bookName: string;
@@ -33,6 +34,7 @@ interface AudioBibleBarProps {
   onPlaybackStateChange?: (isPlaying: boolean) => void;
   autoSyncReader?: boolean;
   onToggleAutoSync?: () => void;
+  onSetAutoSync?: (enabled: boolean) => void;
 }
 
 const SAVED_VOICE_KEY = 'elohim_neural_voice_v1';
@@ -59,6 +61,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   onPlaybackStateChange,
   autoSyncReader = true,
   onToggleAutoSync,
+  onSetAutoSync,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoadingVerse, setIsLoadingVerse] = useState(false);
@@ -214,6 +217,11 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     const duration = studioAudioElRef.current.duration;
     if (!duration || isNaN(duration) || duration <= 0) return;
 
+    // Account for 3.5s narrator chapter title announcement so verse 1 never rushes ahead
+    const introPreambleSec = 3.5;
+    const effectiveTime = Math.max(0, currentTime - introPreambleSec);
+    const effectiveDuration = Math.max(1, duration - introPreambleSec);
+
     const verseWeights = verses.map((v) =>
       Math.max(1, (v.text || '').trim().split(/\s+/).length)
     );
@@ -223,15 +231,15 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     let accumulated = 0;
     let activeIdx = 0;
     for (let i = 0; i < verses.length; i++) {
-      const startSec = (accumulated / totalWeight) * duration;
+      const startSec = (accumulated / totalWeight) * effectiveDuration;
       accumulated += verseWeights[i];
-      const endSec = (accumulated / totalWeight) * duration;
+      const endSec = (accumulated / totalWeight) * effectiveDuration;
 
-      if (currentTime >= startSec && currentTime < endSec) {
+      if (effectiveTime >= startSec && effectiveTime < endSec) {
         activeIdx = i;
         break;
       }
-      if (i === verses.length - 1 && currentTime >= startSec) {
+      if (i === verses.length - 1 && effectiveTime >= startSec) {
         activeIdx = i;
       }
     }
@@ -1236,26 +1244,36 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
               className={`audio-bar-toggle-pill ${isAutoSync ? 'active' : ''}`}
               onClick={() => {
                 const nextSync = !isAutoSync;
-                if (onToggleAutoSync) {
+                if (typeof window !== 'undefined') {
+                  (window as any).__adubible_auto_scroll_enabled = nextSync;
+                }
+                if (onSetAutoSync) {
+                  onSetAutoSync(nextSync);
+                } else if (onToggleAutoSync) {
                   onToggleAutoSync();
                 } else {
                   setInternalAutoSync(nextSync);
                 }
-                // Only scroll if turning Auto-Scroll ON; when turning OFF, freeze position immediately
+
+                // If turning Auto-Scroll ON, gently align to the spoken verse; if turning OFF, DO NOT SCROLL AT ALL!
                 if (nextSync && typeof window !== 'undefined') {
                   const vNum = verses[currentVerseIdxRef.current]?.verse || activeVerse;
                   const el =
                     document.getElementById(`verse-${vNum}`) ||
                     document.querySelector(`[data-verse="${vNum}"]`);
                   if (el) {
-                    el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+                    scrollVerseIntoViewIfNeeded(el as HTMLElement);
                   }
                 }
               }}
-              title={isAutoSync ? 'Auto-Scroll is ON (follows spoken verse)' : 'Auto-Scroll is OFF (free manual scrolling)'}
+              title={
+                isAutoSync
+                  ? 'Auto-Scroll is ON (follows spoken verse — click to turn OFF)'
+                  : 'Auto-Scroll is OFF (free manual scrolling — click to turn ON)'
+              }
             >
               <span>📜</span>
-              <span>{isAutoSync ? 'Scroll ON' : 'Scroll OFF'}</span>
+              <span>{isAutoSync ? 'Auto-Scroll ON' : 'Auto-Scroll OFF'}</span>
             </button>
 
             {/* Studio MP3 toggle */}
