@@ -3053,54 +3053,435 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   .mobile-cell-badge {
     display: none !important;
   }
+}
 
-  /* Mobile Luxury Grand Site Footer */
-  /* Cornerstone Scripture Quotes */
+/* ==========================================================================
+   GRAND SITE FOOTER (UNIVERSAL & DESKTOP PC LUXURY STYLES)
+   ========================================================================== */
+.grand-site-footer {
+  margin-top: 56px;
+  padding-top: 40px;
+  padding-bottom: 64px;
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 1. Cornerstone Scripture Quotes (Trio) */
 .footer-scripture-trio {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 14px;
-  margin-bottom: 32px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 36px;
 }
 
 .footer-scripture-card {
-  padding: 14px 16px;
+  padding: 18px 20px;
   border-radius: 12px;
-  background: var(--soft);
+  background: var(--surface);
   border: 1px solid var(--line);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.footer-scripture-card:hover {
+  border-color: var(--green);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
 }
 
 .footer-scripture-text {
-  margin: 0 0 8px 0;
+  margin: 0 0 10px 0;
   font-style: italic;
   color: var(--ink);
-  line-height: 1.5;
-  font-size: 13px;
+  line-height: 1.6;
+  font-size: 13.5px;
+  font-family: Georgia, "Iowan Old Style", "Palatino", serif;
 }
 
 .footer-scripture-ref {
   font-size: 11px;
   font-weight: 700;
   color: var(--green);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
-/* Hubs and Themes */
+/* 2. Newsletter Signup Banner */
+.footer-newsletter-banner {
+  padding: 24px 32px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  margin-bottom: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.14);
+}
+
+.footer-newsletter-header {
+  margin-bottom: 16px;
+}
+
+.footer-newsletter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  padding: 3px 8px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+
+.footer-newsletter-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 6px 0;
+  font-family: Georgia, serif;
+}
+
+.footer-newsletter-desc {
+  font-size: 13px;
+  color: var(--subtle);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.footer-newsletter-form {
+  margin-top: 16px;
+}
+
+.footer-newsletter-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.footer-field-wrapper {
+  flex: 1;
+  min-width: 200px;
+}
+
+.footer-field-input {
+  width: 100%;
+  height: 42px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 13px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.footer-field-input:focus {
+  border-color: var(--green);
+}
+
+.footer-subscribe-btn {
+  height: 42px;
+  padding: 0 20px;
+  border-radius: 8px;
+  border: none;
+  background: var(--green);
+  color: #0c0a09;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.footer-subscribe-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.footer-newsletter-guarantee {
+  margin-top: 10px;
+  font-size: 11.5px;
+  color: var(--subtle);
+}
+
+.footer-newsletter-success-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.footer-success-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+.footer-success-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.footer-newsletter-re-sub {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--subtle);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.footer-newsletter-error-msg {
+  color: #f87171;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+/* 3. Four-Column Luxury Footer Grid on PC Desktop */
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
+  align-items: stretch;
+}
+
+.footer-col {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px 18px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.footer-col-title {
+  font-size: 11.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--green);
+  margin: 0 0 16px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Interactive card rows for desktop PC links & buttons */
+.footer-btn-link,
+.footer-text-link,
+.footer-static-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  padding: 9px 12px !important;
+  border-radius: 8px !important;
+  background: var(--paper) !important;
+  border: 1px solid var(--line) !important;
+  font-size: 12.5px !important;
+  color: var(--ink) !important;
+  text-decoration: none !important;
+  transition: all 0.15s ease !important;
+  box-sizing: border-box !important;
+  cursor: pointer;
+  font-family: inherit;
+  min-height: 40px;
+  line-height: 1.35;
+}
+
+.footer-btn-link:hover,
+.footer-text-link:hover {
+  background: var(--soft) !important;
+  border-color: var(--green) !important;
+  color: var(--green) !important;
+  transform: translateY(-1px);
+  text-decoration: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.footer-static-item {
+  cursor: default;
+}
+
+.footer-link-chevron {
+  width: 15px;
+  height: 15px;
+  opacity: 0.55;
+  flex-shrink: 0;
+  margin-left: 8px;
+  transition: all 0.15s ease;
+}
+
+.footer-btn-link:hover .footer-link-chevron,
+.footer-text-link:hover .footer-link-chevron {
+  opacity: 1;
+  transform: translateX(3px);
+  color: var(--green);
+}
+
+.footer-heritage-link .footer-link-chevron {
+  opacity: 0.6;
+}
+
+/* Feature status badges */
+.footer-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2.5px 7px;
+  border-radius: 5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  margin-left: 8px;
+  line-height: 1.2;
+}
+
+.footer-badge.badge-on {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.footer-badge.badge-off {
+  background: rgba(168, 162, 158, 0.12);
+  color: var(--subtle);
+  border: 1px solid var(--line);
+}
+
+/* Column 2: Theme Chips */
+.footer-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.footer-theme-chip {
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-theme-chip:hover {
+  border-color: var(--green);
+  background: var(--soft);
+  color: var(--green);
+  transform: translateY(-1px);
+}
+
+/* Column 3: African & Global Languages Grid */
+.footer-languages-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 7px;
+}
+
+.footer-language-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.15s ease;
+  min-height: 38px;
+  box-sizing: border-box;
+}
+
+.footer-language-chip:hover {
+  background: var(--soft);
+  border-color: var(--green);
+  color: var(--green);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.flag-icon {
+  font-size: 11px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 20px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--line);
+  color: var(--subtle);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Quick Scripture Hubs */
 .footer-hubs-wrapper {
   border-top: 1px dashed var(--line);
-  padding-top: 8px;
-  margin-top: 8px;
+  padding-top: 12px;
+  margin-top: 12px;
 }
 
 .footer-hubs-label {
   font-size: 11px;
   color: var(--subtle);
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 
 .footer-hubs-container {
@@ -3109,79 +3490,71 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   gap: 6px;
 }
 
-.footer-theme-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 6px;
-  margin-bottom: 8px;
-}
-
-.footer-languages-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.footer-language-chip {
-  color: var(--subtle);
-  text-decoration: none;
-  font-size: 13px;
+.footer-pill-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  transition: color 0.15s ease;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s ease;
 }
 
-.footer-language-chip:hover {
-  color: var(--ink);
+.footer-pill-link:hover {
+  border-color: var(--green);
+  color: var(--green);
+  background: var(--soft);
+  transform: translateY(-1px);
+}
+
+/* Footer Bottom Bar */
+.footer-bottom-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  width: 100%;
+}
+
+.footer-copy {
+  color: var(--subtle);
+  line-height: 1.6;
+}
+
+.footer-copy a {
+  color: inherit;
   text-decoration: underline;
 }
 
-.footer-language-chip .flag-icon {
-  font-size: 14px;
+/* ==========================================================================
+   TABLET RESPONSIVE OVERRIDES (769px - 1024px)
+   ========================================================================== */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px !important;
+  }
+
+  .footer-scripture-trio {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+  }
 }
 
-.footer-tool-item {
-  margin-top: 2px;
-}
-
-.footer-badge {
-  font-size: 9.5px;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 4px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  margin-left: auto;
-}
-
-.footer-badge.badge-on {
-  background: rgba(34, 197, 94, 0.15);
-  color: #22c55e;
-  border: 1px solid rgba(34, 197, 94, 0.35);
-}
-
-.footer-badge.badge-off {
-  background: rgba(168, 162, 158, 0.15);
-  color: var(--subtle);
-  border: 1px solid var(--line);
-}
-
-.footer-link-chevron {
-  width: 14px;
-  height: 14px;
-  opacity: 0.45;
-  transition: opacity 0.15s ease, transform 0.15s ease;
-  margin-left: auto;
-}
-
-.footer-btn-link:hover .footer-link-chevron,
-.footer-text-link:hover .footer-link-chevron {
-  opacity: 0.9;
-  transform: translateX(2px);
-}
-
-.grand-site-footer {
+/* ==========================================================================
+   MOBILE RESPONSIVE OVERRIDES (<= 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .grand-site-footer {
     padding-top: 24px !important;
     padding-bottom: calc(125px + env(safe-area-inset-bottom)) !important;
     margin-top: 28px !important;
@@ -3206,90 +3579,9 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   }
 
   .footer-col {
-    background: var(--paper) !important;
-    border: 1px solid var(--line) !important;
-    border-radius: 14px !important;
     padding: 16px 14px !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15) !important;
   }
 
-  .footer-col-title {
-    font-size: 11.5px !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.08em !important;
-    color: var(--green) !important;
-    margin: 0 0 12px 0 !important;
-    padding-bottom: 8px !important;
-    border-bottom: 1px solid var(--line) !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-  }
-
-  .footer-links {
-    gap: 6px !important;
-  }
-
-  /* Mobile Touch Cards for Buttons, Links & Static Items */
-  .footer-btn-link,
-  .footer-text-link,
-  .footer-static-item {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    padding: 10px 12px !important;
-    border-radius: 9px !important;
-    background: var(--surface) !important;
-    border: 1px solid var(--line) !important;
-    font-size: 12.5px !important;
-    color: var(--ink) !important;
-    text-decoration: none !important;
-    transition: all 0.15s ease !important;
-    width: 100% !important;
-    min-height: 42px !important;
-    box-sizing: border-box !important;
-  }
-
-  .footer-btn-link:active,
-  .footer-text-link:active {
-    background: var(--soft) !important;
-    border-color: var(--green) !important;
-  }
-
-  .footer-static-item {
-    background: rgba(0, 0, 0, 0.15) !important;
-    color: var(--subtle) !important;
-  }
-
-  /* Mobile 2-Column Compact Languages Grid */
-  .footer-languages-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 7px !important;
-  }
-
-  .footer-language-chip {
-    display: flex !important;
-    align-items: center !important;
-    gap: 7px !important;
-    padding: 9px 11px !important;
-    border-radius: 9px !important;
-    background: var(--surface) !important;
-    border: 1px solid var(--line) !important;
-    color: var(--ink) !important;
-    text-decoration: none !important;
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    min-height: 40px !important;
-    box-sizing: border-box !important;
-  }
-
-  .footer-language-chip:active {
-    background: var(--soft) !important;
-    border-color: var(--green) !important;
-  }
-
-  /* Mobile Newsletter Banner */
   .footer-newsletter-banner {
     padding: 18px 14px !important;
     margin-bottom: 20px !important;
@@ -3300,118 +3592,20 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
     font-size: 16px !important;
   }
 
-  .footer-newsletter-desc {
-    font-size: 12px !important;
-  }
-
-  .footer-newsletter-fields {
-    flex-direction: column !important;
-    width: 100% !important;
-    gap: 8px !important;
-  }
-
   .footer-field-wrapper {
-    width: 100% !important;
-    flex: none !important;
+    min-width: 100% !important;
   }
 
   .footer-subscribe-btn {
     width: 100% !important;
+    justify-content: center !important;
   }
 
-  .footer-newsletter-success-box {
-    flex-direction: column !important;
-    text-align: center !important;
-    padding: 14px !important;
-  }
-
-  .footer-newsletter-re-sub {
-    margin-left: 0 !important;
-    margin-top: 6px !important;
-  }
-
-  /* Mobile Themes 2-Column Grid */
-  .footer-theme-grid {
+  .footer-languages-grid {
+    display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 6px !important;
-    margin-bottom: 10px !important;
+    gap: 7px !important;
   }
-
-  .footer-theme-chip {
-    padding: 9px 10px !important;
-    font-size: 11.5px !important;
-    min-height: 40px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    gap: 6px !important;
-    width: 100% !important;
-    border-radius: 9px !important;
-  }
-
-  .footer-pill-link {
-    padding: 5px 10px !important;
-    font-size: 11px !important;
-    border-radius: 999px !important;
-    min-height: 28px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-  }
-
-  .footer-bottom-bar {
-    flex-direction: column !important;
-    align-items: center !important;
-    text-align: center !important;
-    gap: 10px !important;
-    padding-top: 20px !important;
-  }
-
-  .footer-copy,
-  .footer-security-note {
-    text-align: center !important;
-    width: 100% !important;
-    line-height: 1.55 !important;
-  }
-}
-
-/* Footer Theme Chips & Pill Links */
-.footer-theme-chip {
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid var(--line);
-  background: var(--paper);
-  color: var(--ink);
-  font-size: 11.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  text-align: left;
-  white-space: nowrap;
-}
-
-.footer-theme-chip:hover {
-  border-color: var(--green);
-  background: var(--surface);
-  color: var(--green);
-  transform: translateY(-1px);
-}
-
-.footer-pill-link {
-  display: inline-block;
-  padding: 3px 8px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--paper);
-  color: var(--ink);
-  font-size: 11px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.15s ease;
-}
-
-.footer-pill-link:hover {
-  border-color: var(--green);
-  color: var(--green);
 }
 
 .mobile-quick-btn.apo-dc-btn {
@@ -4639,89 +4833,6 @@ mark.search-highlight {
   text-decoration: underline;
   font-weight: 700;
 }
-
-.footer-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 28px;
-  margin-bottom: 36px;
-}
-
-.footer-col-title {
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--green);
-  margin: 0 0 14px 0;
-}
-
-.footer-links {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-}
-
-.footer-btn-link {
-  border: none;
-  background: transparent;
-  color: var(--subtle);
-  font-size: 13px;
-  text-align: left;
-  padding: 0;
-  cursor: pointer;
-  transition: color 0.15s ease;
-  font-family: inherit;
-}
-
-.footer-btn-link:hover {
-  color: var(--ink);
-  text-decoration: underline;
-}
-
-.footer-text-link {
-  color: var(--subtle);
-  text-decoration: none;
-  font-size: 13px;
-  transition: color 0.15s ease;
-}
-
-.footer-text-link:hover {
-  color: var(--ink);
-  text-decoration: underline;
-}
-
-.footer-static-item {
-  color: var(--subtle);
-  font-size: 13px;
-}
-
-.footer-bottom-bar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  gap: 12px;
-  padding-top: 20px;
-  border-top: 1px solid var(--line);
-  font-size: 12px;
-  width: 100%;
-}
-
-.footer-copy {
-  color: var(--subtle);
-  line-height: 1.6;
-}
-
-.footer-copy a {
-  color: inherit;
-  text-decoration: underline;
-}
-
 
 /* ==========================================================================
    SIMPLE & ELEGANT ADUBIBLE LOGO (EDITORIAL LUXURY)
