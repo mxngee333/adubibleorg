@@ -1,0 +1,271 @@
+{
+  "translation": {
+    "id": "ewe_bib",
+    "name": "Biblica® Se aɖeke mebla Biblia zazã o Agbenya La™",
+    "website": "https://ebible.org/Scriptures/details.php?id=ewe",
+    "licenseUrl": "https://ebible.org/Scriptures/details.php?id=ewe",
+    "license": {
+      "attribution": "required",
+      "commercialUse": "allowed",
+      "derivatives": "allowed",
+      "copyleft": true,
+      "publicDomain": false
+    },
+    "shortName": "BIB",
+    "englishName": "Éwé Bible",
+    "language": "ewe",
+    "textDirection": "ltr",
+    "sha256": "8131a0b15f93ab4f7c4ebb4ba531adfc300102a36b060c3b4a2d5541765f95b2",
+    "availableFormats": [
+      "json"
+    ],
+    "listOfBooksApiLink": "/api/ewe_bib/books.json",
+    "completeTranslationApiLink": "/api/ewe_bib/complete.json",
+    "simpleCompleteTranslationApiLink": "/api/ewe_bib/complete.simple.json",
+    "numberOfBooks": 66,
+    "totalNumberOfChapters": 1189,
+    "totalNumberOfVerses": 31103,
+    "languageName": "Eʋegbe",
+    "languageEnglishName": "Ewe"
+  },
+  "book": {
+    "id": "EPH",
+    "translationId": "ewe_bib",
+    "name": "Efesotɔwo",
+    "commonName": "Efesotɔwo",
+    "title": "Paulo ƒe agbalẽ si wòŋlɔ na Efesotɔwo",
+    "order": 49,
+    "numberOfChapters": 6,
+    "sha256": "1e5fea341e361232ebf3234919fe2aa73237da1186c53be1597386ebf505df50",
+    "firstChapterNumber": 1,
+    "firstChapterApiLink": "/api/ewe_bib/EPH/1.json",
+    "firstChapterReference": {
+      "translationId": "ewe_bib",
+      "book": "EPH",
+      "chapter": 1
+    },
+    "lastChapterNumber": 6,
+    "lastChapterApiLink": "/api/ewe_bib/EPH/6.json",
+    "lastChapterReference": {
+      "translationId": "ewe_bib",
+      "book": "EPH",
+      "chapter": 6
+    },
+    "totalNumberOfVerses": 155
+  },
+  "chapter": {
+    "number": 1,
+    "content": [
+      {
+        "type": "verse",
+        "number": 1,
+        "content": [
+          "Nye Paulo, ame si Mawu tia be manye Yesu Kristo ƒe apostolo la gbɔe agbalẽ sia tso,",
+          {
+            "lineBreak": true
+          },
+          "Na ame kɔkɔewo kple xɔsetɔwo le Kristo Yesu me le Efeso:"
+        ]
+      },
+      {
+        "type": "line_break"
+      },
+      {
+        "type": "verse",
+        "number": 2,
+        "content": [
+          "Amenuveve kple ŋutifafa si tso Mawu, mía Fofo kple Aƒetɔ Yesu Kristo gbɔ la nanɔ anyi kpli mi."
+        ]
+      },
+      {
+        "type": "line_break"
+      },
+      {
+        "type": "heading",
+        "content": [
+          "Gbɔgbɔmeyayrawo le Kristo Yesu me"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 3,
+        "content": [
+          "Míetsɔ kafukafu na Mawu, míaƒe Aƒetɔ Yesu Kristo Fofo, ame si tsɔ gbɔgbɔmeyayra ɖe sia ɖe si le dziƒonutowo me la kɔ ɖe mía dzi le Kristo me."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 4,
+        "content": [
+          "Etia mí le eya amea me hafi wɔ xexea me be míanye ame kɔkɔewo kple ame siwo ŋu fɔɖiɖi mele o la le eƒe ŋkume."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 5,
+        "content": [
+          "Le lɔlɔ̃ me la, ewɔ ɖoɖo tɔxɛ ɖe mía ŋu be míanye ye viwo to Yesu Kristo dzi. Mawu wɔ esia, esi wòɖo Yesu Kristo ɖa be wòaku ɖe mía ta. Ewɔ ɖoɖo sia to eya ŋutɔ ƒe dzidzɔkpɔkpɔ kple lɔlɔ̃nu me!"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 6,
+        "content": [
+          "Azɔ la, mitsɔ kafukafu na Mawu ɖe eƒe dɔmenyo gã sia ta. Mikafui ɖe eƒe amenuveve sɔgbɔ si wòkɔ ɖe mía dzi la ta, ɖe esi míenye Via lɔlɔ̃a tɔ ta."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 7,
+        "content": [
+          "Eƒe dɔmenyo la gbã go ɖe mía dzi ale gbegbe be wòɖe míaƒe nu vɔ̃wo katã ɖa to Via ƒe ʋu la me, ame si dzi wòto ɖe mí,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 8,
+        "content": [
+          "eye wòtsɔ eƒe amenuveve xɔasi la kɔ ɖe mía dzi, elabena ekɔ nunya kple gɔmesese ɖe mía dzi."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 9,
+        "content": [
+          "Mawu gblɔ eƒe susu ɣaɣla si ta wòɖo Kristo ɖa la na mí. Ewɔ ɖoɖo sia ɖe nublanuikpɔkpɔ na mí ta."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 10,
+        "content": [
+          "Eƒe taɖodzinue nye be ne ɣeyiɣi si wòɖo la de la, aƒo nuwo katã nu ƒu tso afi sia afi, eɖanye dziƒo alo anyigba dzi o, ɖe Kristo te, tso mavɔ me yi mavɔ me."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 11,
+        "content": [
+          "Gawu la, le nu si Kristo wɔ ɖe mía nu ta la, míezu nunana xɔasi siwo ŋuti Mawu kpɔa dzidzɔ le la, elabena abe ɖoɖo si Mawu wɔ la ƒe akpa aɖe ene la, etia mí tso gɔmedzedzea me ke be míanye ye tɔwo, eye nu siawo katã le eme vam pɛpɛpɛ abe ale si wòɖoe tso blema ke ene."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 12,
+        "content": [
+          "Mawu ƒe ɖoɖo le nu sia mee nye be mí ame siwo nye ame gbãtɔ siwo dze si Kristo la, míakafui, atsɔ ŋutikɔkɔe nɛ ɖe dɔ gã siwo katã wòwɔ na mí la ta."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 13,
+        "content": [
+          "Eye ɖe dɔ si Kristo wɔ ta la, mi ame siwo se nyateƒe la ƒe nya la, eye miexɔ Kristo dzi se la, Gbɔgbɔ Kɔkɔe si ŋugbe wòdo na mí kristotɔwo la de dzesi mi be mienye kristotɔwo."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 14,
+        "content": [
+          "Eƒe mía me nɔnɔ nye kpeɖodzi tso Mawu gbɔ be awɔ nu sia nu si ŋugbe wòdo na mí la godoo. Gbɔgbɔ la ƒe mía me nɔnɔ fia be Mawu ƒle mí xoxo, eye wòɖo kpe edzi be yeakplɔ mí ava eɖokui gbɔe hena eƒe ŋutikɔkɔe ƒe kafukafu."
+        ]
+      },
+      {
+        "type": "heading",
+        "content": [
+          "Akpedada kple gbedodoɖa"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 15,
+        "content": [
+          "Esia ta tso ɣeyiɣi si mese xɔse si le mia si le Aƒetɔ Yesu me kple lɔlɔ̃ si le mia me na ame kɔkɔewo katã la,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 16,
+        "content": [
+          "nyemedzudzɔ akpedada na Mawu ɖe mia ta o, eye meɖoa ŋku mia dzi ɖaa le nye gbedodoɖawo me."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 17,
+        "content": [
+          "Mebiaa míaƒe Aƒetɔ Yesu Kristo ƒe Mawu si nye ŋutikɔkɔe Fofo la be wòana Gbɔgbɔ la ƒe nunya kple ɖeɖefia mi be miaganyae ɖe edzi wu."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 18,
+        "content": [
+          "Medoa gbe ɖa be miaƒe gbɔgbɔmeŋkuwo naʋu, eye dzi nyanu nanɔ mia si be míade dzesi mɔkpɔkpɔ si wòyɔ mí na, eƒe kesinɔnu, ŋutikɔkɔe ƒe domenyinyi si wòna ame kɔkɔewo,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 19,
+        "content": [
+          "kple eƒe ŋusẽ gã triakɔ si wona mí ame siwo xɔ edzi se la. Ŋusẽ triakɔ sia le abe eƒe ŋusẽ gã la ƒe dɔwɔwɔ ene."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 20,
+        "content": [
+          "Ŋusẽ triakɔ siae fɔ Kristo ɖe tsitre tso ame kukuwo dome, eye wòtsɔe ɖo bubuteƒe le Mawu ƒe nuɖusime le dziƒo."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 21,
+        "content": [
+          "Teƒe si kɔ wu dziɖulawo tɔ kple ŋusẽ kple ŋutete kple aƒetɔnyenye ɖe sia ɖe tɔ, kpakple ŋkɔ si kɔ wu ŋkɔ siwo katã le xexe sia me kple xexe si gbɔna la me."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 22,
+        "content": [
+          "Mawu tsɔ nuwo katã de eƒe afɔ te, eye wòwɔe hame la ƒe tatɔ gãtɔe."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 23,
+        "content": [
+          "Hame sia nye eya ŋutɔ ƒe ŋutilã. Eyɔ hame la fũu, eye eƒe nɔnɔme le nu sia nu me."
+        ]
+      }
+    ],
+    "footnotes": []
+  },
+  "thisChapterLink": "/api/ewe_bib/EPH/1.json",
+  "thisChapterReference": {
+    "translationId": "ewe_bib",
+    "book": "EPH",
+    "chapter": 1
+  },
+  "thisChapterAudioLinks": {},
+  "nextChapterApiLink": "/api/ewe_bib/EPH/2.json",
+  "nextChapterReference": {
+    "translationId": "ewe_bib",
+    "book": "EPH",
+    "chapter": 2
+  },
+  "nextChapterAudioLinks": {},
+  "previousChapterApiLink": "/api/ewe_bib/GAL/6.json",
+  "previousChapterReference": {
+    "translationId": "ewe_bib",
+    "book": "GAL",
+    "chapter": 6
+  },
+  "previousChapterAudioLinks": {},
+  "thisChapterAudioTimings": {},
+  "nextChapterAudioTimings": {},
+  "previousChapterAudioTimings": {},
+  "numberOfVerses": 23,
+  "simpleChapterApiLink": "/api/ewe_bib/EPH/1.simple.json"
+}

@@ -1,0 +1,184 @@
+{
+  "translation": {
+    "id": "gaa_bible",
+    "name": "Ŋmalɛ Krɔŋkrɔŋ Lɛ (Ga Bible)",
+    "language": "gaa",
+    "languageName": "Ga",
+    "website": "https://biblesociety-ghana.org",
+    "licenseUrl": "https://biblesociety-ghana.org",
+    "shortName": "NEGAB",
+    "englishName": "Ga Bible (NEGAB)"
+  },
+  "book": {
+    "id": "EPH",
+    "name": "Efeso",
+    "commonName": "Efesobii"
+  },
+  "chapter": {
+    "number": 1,
+    "content": [
+      {
+        "type": "verse",
+        "number": 1,
+        "content": [
+          "Paulo ni ji Yesu Kristo bɔfo yɛ Nyɔŋmɔ suɔmɔ naa lɛ ŋma yahã mɛi krɔŋkrɔŋi ni ji heyelɔi yɛ Kristo Yesu mli ni yɔɔ Efeso lɛ:"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 2,
+        "content": [
+          "Dromɔ kɛ hejɔlɛ ni jɛ wɔNyɔŋmɔ lɛ kɛ Nuŋtsɔ Yesu Kristo dɛŋ lɛ ahã nyɛ!"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 3,
+        "content": [
+          "Ajɔɔ Nyɔŋmɔ, wɔ Nuŋtsɔ Yesu Kristo Tsɛ lɛ, mɔ ni kɛ mumɔŋ jɔɔmɔ ejɔɔ wɔ yɛ ŋwɛiniiaŋ yɛ Kristo mli lɛ."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 4,
+        "content": [
+          "Nyɔŋmɔ nɛɛ, lɛ ehala wɔ yɛ lɛ nɔŋŋ emli dani ato jeŋ shishi, koni wɔfee krɔŋkrɔŋ ni wɔhe akahi kpa ko yɛ ehiɛ."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 5,
+        "content": [
+          "Ni ejɛ suɔmɔ mli ejie wɔ eto ni wɔtsɔ̃mɔ ebii yɛ Yesu Kristo hewɔ, tamɔ bɔ ni sa ehiɛ yɛ esuɔmɔ naa lɛ;"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 6,
+        "content": [
+          "koni akɛjie edromɔ ni ekɛduro wɔ yɛ mɔ ni esumɔɔ lɛ lɛ mli lɛ anunyam lɛ yi."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 7,
+        "content": [
+          "Lɛ emli wɔna kpɔ̃mɔ lɛ yɛ, ni ji nɔtɔmɔi afaa lɛ, kɛtsɔ̃ elá lɛ nɔ, yɛ edromɔ falɛ lɛ naa."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 8,
+        "content": [
+          "Ehã dromɔ fa kɛteke nɔ ehã wɔ yɛ jwɛŋmɔ kɛ niiashishinumɔ fɛɛ mli lɛ."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 9,
+        "content": [
+          "Ehã wɔle eyiŋtoo ni ji teemɔ sane lɛ ni ekpɛ mli eto bɔ ni sa ehiɛ yɛ Kristo mli."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 10,
+        "content": [
+          "Ebaahã egbɛjianɔtoo lɛ aba mli yɛ be ni sa lɛ mli, koni eŋɔ nibii fɛɛ eto yitso kome shishi yɛ Kristo mli, nii ni yɔɔ shikpɔŋ lɛ nɔ fɛɛ."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 11,
+        "content": [
+          "Lɛ emli wɔna gboshinii lɛ hu yɛ, wɔ mɛi ni ajie wɔ ato yɛ mɔ ni tsuɔ nibii fiaa lɛ gbɛjianɔtoo naa, yɛ eyiŋ ni eto bɔ ni lɛ diɛŋtsɛ esumɔɔ lɛ naa,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 12,
+        "content": [
+          "bɔ ni afee ni wɔ mɛi ni wɔtsɔ̃ hiɛ wɔkɛ wɔhiɛ efɔ̃ Kristo nɔ lɛ, wɔtsɔ̃mɔ enunyam lɛ yijiemɔ."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 13,
+        "content": [
+          "Lɛ emli akɛ Mumɔ Krɔŋkrɔŋ ni awo he shi lɛ sɔo nyɛ hu nyɛnaa yɛ be ni nyɛnu anɔkwale lɛ wiemɔ lɛ ni ji yiwalaheremɔ Sanekpakpa lɛ ni nyɛhe nyɛye lɛ."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 14,
+        "content": [
+          "Mumɔ Krɔŋkrɔŋ lɛ ji wɔgboshinii lɛ ayibaafoonɔ kɛyashi Nyɔŋmɔ aaakpɔ̃ mɛi ni ji lɛ diɛŋtsɛ enii lɛ hã enunyam lɛ yijiemɔ."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 15,
+        "content": [
+          "Enɛ hewɔ lɛ, mi hu, be ni minu nyɛhemɔkɛyeli ni nyɛyɔɔ yɛ Nuŋtsɔ Yesu mli lɛ kɛ nyɛsuɔmɔ ni nyɛkɛsumɔɔ mɛi krɔŋkrɔŋi lɛ fɛɛ he lɛ,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 16,
+        "content": [
+          "mifɔ̃ɔɔ Nyɔŋmɔ shidaa, shi mikaiɔ nyɛ yɛ misɔlemɔi amli,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 17,
+        "content": [
+          "koni wɔNuŋtsɔ Yesu Kristo Nyɔŋmɔ lɛ ni ji anunyam Tsɛ lɛ ahã nyɛ nilee kɛ kpojiemɔ mumɔ yɛ le ni nyɛaale lɛ jogbaŋŋ lɛ mli."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 18,
+        "content": [
+          "Nyɛmligbɛ hiŋmɛii anɔ atse, koni nyɛna nyɛle nɔ ni ji hiɛnɔkãmɔ ni yɔɔ etsɛmɔ lɛ mli, kɛ egboshinii lɛ anunyam lɛ falɛ yɛ mɛi krɔŋkrɔŋi amli,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 19,
+        "content": [
+          "kɛ nɔ ni ji ehewalɛ lɛ dalɛ ni tekeɔ nɔ babaoo hãa wɔ mɛi ni wɔheɔ wɔyeɔ lɛ yɛ enyɛmɔ hewalɛ nitsumɔ lɛ naa lɛ."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 20,
+        "content": [
+          "Hewalɛ nitsumɔ nɛɛ etsu yɛ Kristo mli, be ni etee lɛ shi kɛjɛ gbohii ateŋ, ni ekɛ lɛ ta eninejurɔ nɔ yɛ ŋwɛiniiaŋ,"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 21,
+        "content": [
+          "yɛ onukpayeli kɛ hegbɛ kɛ hewalɛ lɛ nɔyeli fɛɛ kɛ gbɛi fɛɛ gbɛi ni awo, jeee be nɛ be nɛɛ mli kɛkɛ, shi be ni baaba lɛ mli hu lɛ anɔ."
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 22,
+        "content": [
+          "Ni ekɛ nibii fiaa ewo enajiaŋshi, ni ekɛ lɛ efee nibii fɛɛ yitso ehã asafo lɛ"
+        ]
+      },
+      {
+        "type": "verse",
+        "number": 23,
+        "content": [
+          "ni ji egbɔmɔtso lɛ kɛ lɛ mɔ ni ewoɔ mɛi fɛɛ obɔ̃ yɛ nii fɛɛ mli lɛ obɔ̃yimɔ lɛ."
+        ]
+      }
+    ]
+  },
+  "numberOfVerses": 23
+}

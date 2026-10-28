@@ -2,9 +2,9 @@
 
 :root {
   color-scheme: dark;
-  --logo-adu-color: #A8354D; /* Smooth Regal Velvet Wine */
-  --logo-bible-color: #E8E2D6; /* Smooth Warm Ivory */
-  --logo-tld-color: #8E968F; /* Subtle Muted Slate */
+  --logo-adu-color: #10B981; /* Sovereign Emerald Green */
+  --logo-bible-color: #BD913F; /* Canonical Logo Antique Gold */
+  --logo-tld-color: #BD913F; /* Canonical Logo Antique Gold */
 }
 
 * {
@@ -4961,24 +4961,25 @@ mark.search-highlight {
 }
 
 .logo-word-adu {
-  font-weight: 700;
-  color: var(--logo-adu-color, #A8354D) !important; /* Smooth Regal Velvet Wine */
+  font-weight: 800;
+  color: var(--logo-adu-color, #10B981) !important; /* Sovereign Emerald Green */
   letter-spacing: -0.015em;
   text-shadow: none;
 }
 
 .logo-word-bible {
-  font-weight: 600;
-  color: var(--logo-bible-color, #E8E2D6) !important; /* Smooth Warm Ivory */
+  font-weight: 700;
+  color: var(--logo-bible-color, #BD913F) !important; /* Canonical Logo Antique Gold */
   margin-left: 0;
   letter-spacing: -0.01em;
   text-shadow: none;
 }
 
 .logo-word-tld {
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.82em;
-  color: var(--logo-tld-color, #8E968F) !important; /* Subtle Muted Slate */
+  color: var(--logo-tld-color, #BD913F) !important; /* Canonical Logo Antique Gold */
+  opacity: 0.85;
   letter-spacing: -0.02em;
   margin-left: 1px;
   text-shadow: none;
@@ -4987,9 +4988,9 @@ mark.search-highlight {
 .bible-app.theme-daylight,
 .bible-app.theme-parchment,
 .bible-app.theme-lilac-light {
-  --logo-adu-color: #781B2F;
-  --logo-bible-color: #232B24;
-  --logo-tld-color: #5E6961;
+  --logo-adu-color: #0D7A55;
+  --logo-bible-color: #8C651F;
+  --logo-tld-color: #8C651F;
 }
 
 .bible-app.theme-daylight .logo-word-adu,

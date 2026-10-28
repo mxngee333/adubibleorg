@@ -603,40 +603,112 @@ export async function resolveChapterData(
     }
   }
 
-  // 4E. Try bible-api.com base English + adapt to target language if needed
-  try {
-    const res = await fetchWithTimeout(
-      `https://bible-api.com/${encodeURIComponent(book.names.en)}+${validChapter}?translation=kjv`,
-      2500
-    );
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data?.verses) && data.verses.length > 0) {
-        const verses: VerseData[] = data.verses.map(
-          (v: { verse?: number; text?: string }, i: number) => {
-            const vNum = Number(v.verse) || i + 1;
-            const raw = String(v.text || '').replace(/\s+/g, ' ').trim();
-            return {
-              verse: vNum,
-              text: adaptVerseToLanguage(raw, book.slug, validChapter, vNum, versionId),
-            };
-          }
+  // 4D-GA. Dedicated Authentic Ga Scripture Provider (Bible Society of Ghana NEGAB / Ŋmalɛ Krɔŋkrɔŋ Lɛ)
+  if (versionId === 'gaa' || verMeta?.langCode === 'gaa') {
+    try {
+      const usfmBook = book.id.toUpperCase();
+      const gaRes = await fetchWithTimeout(
+        `https://www.bible.com/bible/2708/${encodeURIComponent(usfmBook)}.${validChapter}.NEGAB`,
+        3500
+      );
+      if (gaRes.ok) {
+        const gaHtml = await gaRes.text();
+        const strippedHtml = gaHtml.replace(/<span class="[^"]*note[^"]*"[\s\S]*?<\/span>\s*<\/span>/gi, '');
+        const reg = new RegExp(
+          `data-usfm="${usfmBook}\\.${validChapter}\\.(\\d+)"[^>]*>([\\s\\S]*?)(?=<span class="[^"]*verse" data-usfm="${usfmBook}\\.${validChapter}\\.|\\<\\/div\\>|$)`,
+          'gi'
         );
-        const result: ChapterData = {
-          versionId,
-          bookId: book.id,
-          bookSlug: book.slug,
-          chapter: validChapter,
-          verses,
-          source: 'Open Scripture Cloud Stream',
-        };
-        memoryCache.set(memKey, result);
-        await setCachedChapter(result);
-        return result;
+        const versesMap: Record<number, string> = {};
+        let m: RegExpExecArray | null;
+        while ((m = reg.exec(strippedHtml)) !== null) {
+          const vNum = parseInt(m[1], 10);
+          const segment = m[2];
+          const contentMatches = [...segment.matchAll(/class="[^"]*content"[^>]*>([\s\S]*?)<\/span>/gi)];
+          const cleanVerse = contentMatches
+            .map((cm) => cm[1].replace(/<[^>]+>/g, '').trim())
+            .filter(Boolean)
+            .join(' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+          if (cleanVerse) {
+            if (!versesMap[vNum]) {
+              versesMap[vNum] = cleanVerse;
+            } else if (!versesMap[vNum].includes(cleanVerse)) {
+              versesMap[vNum] += ' ' + cleanVerse;
+            }
+          }
+        }
+
+        const vKeys = Object.keys(versesMap)
+          .map(Number)
+          .sort((a, b) => a - b);
+        if (vKeys.length > 0) {
+          const verses: VerseData[] = vKeys.map((vNum) => ({
+            verse: vNum,
+            text: versesMap[vNum],
+          }));
+          const result: ChapterData = {
+            versionId: 'gaa',
+            bookId: book.id,
+            bookSlug: book.slug,
+            bookLocalName: book.names.gaa || book.names.en,
+            chapter: validChapter,
+            verses,
+            source: 'Bible Society of Ghana (NEGAB Ŋmalɛ Krɔŋkrɔŋ Lɛ)',
+            licenseText: 'The Bible Society of Ghana (NEGAB)',
+          };
+          memoryCache.set(memKey, result);
+          await setCachedChapter(result);
+          return result;
+        }
       }
+    } catch {
+      // Fall through to prebundled or safe fallback
     }
-  } catch {
-    // Offline fallback below
+  }
+
+  // 4E. Try bible-api.com base English + adapt to target language if needed
+  // (Strict rule: NEVER disguise English KJV text as Ga or Ewe vernacular)
+  if (
+    versionId !== 'gaa' &&
+    versionId !== 'ee' &&
+    verMeta?.langCode !== 'gaa' &&
+    verMeta?.langCode !== 'ee'
+  ) {
+    try {
+      const res = await fetchWithTimeout(
+        `https://bible-api.com/${encodeURIComponent(book.names.en)}+${validChapter}?translation=kjv`,
+        2500
+      );
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data?.verses) && data.verses.length > 0) {
+          const verses: VerseData[] = data.verses.map(
+            (v: { verse?: number; text?: string }, i: number) => {
+              const vNum = Number(v.verse) || i + 1;
+              const raw = String(v.text || '').replace(/\s+/g, ' ').trim();
+              return {
+                verse: vNum,
+                text: adaptVerseToLanguage(raw, book.slug, validChapter, vNum, versionId),
+              };
+            }
+          );
+          const result: ChapterData = {
+            versionId,
+            bookId: book.id,
+            bookSlug: book.slug,
+            chapter: validChapter,
+            verses,
+            source: 'Open Scripture Cloud Stream',
+          };
+          memoryCache.set(memKey, result);
+          await setCachedChapter(result);
+          return result;
+        }
+      }
+    } catch {
+      // Offline fallback below
+    }
   }
 
   // 5. Ultimate Offline Sanctuary Fallback
@@ -669,7 +741,7 @@ export function parseBibleHubUrlPath(pathname: string): {
   chapter?: number;
   isParallelRoute?: boolean;
   legalPage?: 'about' | 'how-to-use' | 'privacy' | 'terms' | 'editorial-policy' | 'glossary' | 'sources';
-  targetTab?: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles';
+  targetTab?: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate';
   articleSlug?: string;
 } {
   const cleanPath = pathname
@@ -682,6 +754,16 @@ export function parseBibleHubUrlPath(pathname: string): {
   }
 
   const lower = cleanPath.toLowerCase();
+
+  // Support /donate/ or /give/
+  if (lower === 'donate' || lower === 'donation' || lower === 'donations' || lower === 'give') {
+    return {
+      versionId: 'nkjv',
+      bookSlug: 'ephesians',
+      chapter: 1,
+      targetTab: 'donate',
+    };
+  }
 
   // Articles & Scripture Pillar Guides
   if (lower === 'articles' || lower === 'blog' || lower.startsWith('articles/') || lower.startsWith('blog/')) {
