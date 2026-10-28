@@ -33,6 +33,20 @@ import { getCachedChapter, setCachedChapter } from './studyVaultService';
 const licensesMap = licensesJson as Record<string, { url: string; text: string }>;
 const memoryCache = new Map<string, ChapterData>();
 
+// Helper for resilient timeout-bounded fetch with zero-hang guarantee
+const fetchWithTimeout = async (url: string, timeoutMs = 2500): Promise<Response> => {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(timer);
+    return res;
+  } catch (e) {
+    clearTimeout(timer);
+    throw e;
+  }
+};
+
 function parseHelloaoChapterPayload(
   json: any,
   versionId: string,
@@ -268,7 +282,21 @@ export async function resolveChapterData(
   const memKey = `${versionId}:${book.id}:${validChapter}`;
 
   if (memoryCache.has(memKey)) {
-    return memoryCache.get(memKey)!;
+    const cachedMem = memoryCache.get(memKey)!;
+    // Auto-heal: Purge any legacy poisoned responses containing legal disputes
+    const isPoisoned = cachedMem.verses?.some((v) => {
+      const t = String(v.text || '');
+      return (
+        t.includes('prohibited me') ||
+        t.includes('Biblica, Inc.') ||
+        t.includes('choose truly free translations')
+      );
+    });
+    if (isPoisoned) {
+      memoryCache.delete(memKey);
+    } else {
+      return cachedMem;
+    }
   }
 
   // 1. Check Custom User Add-on local chapters
@@ -367,19 +395,66 @@ export async function resolveChapterData(
     return cached;
   }
 
-  // Helper for resilient timeout-bounded fetch
-  const fetchWithTimeout = async (url: string, timeoutMs = 2500): Promise<Response> => {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
+  // 3B. Dedicated Authentic NIV Scripture Vault (Local 0ms Seed + Worldwide CDN Fallback)
+  if (versionId === 'niv') {
     try {
-      const res = await fetch(url, { signal: controller.signal });
-      clearTimeout(timer);
-      return res;
-    } catch (e) {
-      clearTimeout(timer);
-      throw e;
+      const nivRes = await fetchWithTimeout(`/seed/niv/${encodeURIComponent(book.slug)}.json`, 1800);
+      if (nivRes.ok) {
+        const nivBookData = await nivRes.json();
+        const chObj = nivBookData.chapters?.find((c: any) => Number(c.chapter) === validChapter);
+        if (chObj && Array.isArray(chObj.verses) && chObj.verses.length > 0) {
+          const verses: VerseData[] = chObj.verses.map((v: any) => ({
+            verse: Number(v.verse),
+            text: String(v.text || '').replace(/\s+/g, ' ').trim(),
+          }));
+          const result: ChapterData = {
+            versionId: 'niv',
+            bookId: book.id,
+            bookSlug: book.slug,
+            bookLocalName: book.names.en,
+            chapter: validChapter,
+            verses,
+            source: 'AduBible Authentic NIV Corpus (0ms)',
+          };
+          memoryCache.set(memKey, result);
+          await setCachedChapter(result);
+          return result;
+        }
+      }
+    } catch {
+      // Fallback to jsDelivr CDN
+      try {
+        const cdnRes = await fetchWithTimeout(
+          `https://cdn.jsdelivr.net/gh/aruljohn/Bible-niv@master/${encodeURIComponent(book.names.en)}.json`,
+          2500
+        );
+        if (cdnRes.ok) {
+          const cdnData = await cdnRes.json();
+          const chObj = cdnData.chapters?.find((c: any) => Number(c.chapter) === validChapter);
+          if (chObj && Array.isArray(chObj.verses) && chObj.verses.length > 0) {
+            const verses: VerseData[] = chObj.verses.map((v: any) => ({
+              verse: Number(v.verse),
+              text: String(v.text || '').replace(/\s+/g, ' ').trim(),
+            }));
+            const result: ChapterData = {
+              versionId: 'niv',
+              bookId: book.id,
+              bookSlug: book.slug,
+              bookLocalName: book.names.en,
+              chapter: validChapter,
+              verses,
+              source: 'Authentic NIV Cloud Corpus',
+            };
+            memoryCache.set(memKey, result);
+            await setCachedChapter(result);
+            return result;
+          }
+        }
+      } catch {
+        // Fall through
+      }
     }
-  };
+  }
 
   // 4A. Cloudflare Planetary Edge & R2 Zero-Egress Vault (Scale: 4 Billion Readers)
   const edgeBaseUrl = (
@@ -447,8 +522,9 @@ export async function resolveChapterData(
   // 4C. Try Free Use Bible API (bible.helloao.org)
   if (helloaoId) {
     try {
-      const res = await fetch(
-        `https://bible.helloao.org/api/${encodeURIComponent(helloaoId)}/${book.id}/${validChapter}.json`
+      const res = await fetchWithTimeout(
+        `https://bible.helloao.org/api/${encodeURIComponent(helloaoId)}/${book.id}/${validChapter}.json`,
+        2500
       );
       if (res.ok) {
         const json = await res.json();
@@ -471,40 +547,55 @@ export async function resolveChapterData(
     }
   }
 
-  // 4B. Try Bolls.life API
-  if (bollsId) {
+  // 4D. Try Bolls.life API with strict anti-poison & dispute message rejection
+  if (bollsId && versionId !== 'niv') {
     try {
-      const res = await fetch(
-        `https://bolls.life/get-text/${encodeURIComponent(bollsId)}/${book.number}/${validChapter}/`
+      const res = await fetchWithTimeout(
+        `https://bolls.life/get-text/${encodeURIComponent(bollsId)}/${book.number}/${validChapter}/`,
+        2500
       );
       if (res.ok) {
         const arr = await res.json();
         if (Array.isArray(arr) && arr.length > 0) {
-          const verses: VerseData[] = arr.map(
-            (item: { verse?: number; text?: string }, i: number) => {
-              const { cleanText, strongsCodes } = stripHtmlAndExtractStrongs(
-                String(item.text || '')
-              );
-              return {
-                verse: Number(item.verse) || i + 1,
-                text: cleanText,
-                crossRefs: strongsCodes.map(
-                  (num) => `${book.testament === 'OT' ? 'H' : 'G'}${num}`
-                ),
-              };
-            }
-          );
-          const result: ChapterData = {
-            versionId,
-            bookId: book.id,
-            bookSlug: book.slug,
-            chapter: validChapter,
-            verses,
-            source: `Bolls Exegetical Cloud (${bollsId})`,
-          };
-          memoryCache.set(memKey, result);
-          await setCachedChapter(result);
-          return result;
+          // Reject any copyright/legal rant message returned instead of Scripture
+          const isPoisonedNotice = arr.some((item: any) => {
+            const str = String(item?.text || '');
+            return (
+              str.includes('prohibited me') ||
+              str.includes('Biblica, Inc.') ||
+              str.includes('choose truly free translations')
+            );
+          });
+
+          if (!isPoisonedNotice) {
+            const verses: VerseData[] = arr.map(
+              (item: { verse?: number; text?: string }, i: number) => {
+                const { cleanText, strongsCodes } = stripHtmlAndExtractStrongs(
+                  String(item.text || '')
+                );
+                return {
+                  verse: Number(item.verse) || i + 1,
+                  text: cleanText,
+                  crossRefs: strongsCodes.map(
+                    (num) => `${book.testament === 'OT' ? 'H' : 'G'}${num}`
+                  ),
+                };
+              }
+            );
+            const result: ChapterData = {
+              versionId,
+              bookId: book.id,
+              bookSlug: book.slug,
+              chapter: validChapter,
+              verses,
+              source: `Bolls Exegetical Cloud (${bollsId})`,
+            };
+            memoryCache.set(memKey, result);
+            await setCachedChapter(result);
+            return result;
+          } else {
+            console.warn(`[BibleEngine] Rejected poisoned Bolls text for ${versionId} ${book.id} ${validChapter}`);
+          }
         }
       }
     } catch {
@@ -512,10 +603,11 @@ export async function resolveChapterData(
     }
   }
 
-  // 4C. Try bible-api.com base English + adapt to target language if needed
+  // 4E. Try bible-api.com base English + adapt to target language if needed
   try {
-    const res = await fetch(
-      `https://bible-api.com/${encodeURIComponent(book.names.en)}+${validChapter}?translation=kjv`
+    const res = await fetchWithTimeout(
+      `https://bible-api.com/${encodeURIComponent(book.names.en)}+${validChapter}?translation=kjv`,
+      2500
     );
     if (res.ok) {
       const data = await res.json();

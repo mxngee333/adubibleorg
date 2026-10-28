@@ -1,0 +1,332 @@
+[
+  {
+    "name": "Genesis",
+    "slug": "genesis",
+    "path": "/seed/niv/genesis.json"
+  },
+  {
+    "name": "Exodus",
+    "slug": "exodus",
+    "path": "/seed/niv/exodus.json"
+  },
+  {
+    "name": "Leviticus",
+    "slug": "leviticus",
+    "path": "/seed/niv/leviticus.json"
+  },
+  {
+    "name": "Numbers",
+    "slug": "numbers",
+    "path": "/seed/niv/numbers.json"
+  },
+  {
+    "name": "Deuteronomy",
+    "slug": "deuteronomy",
+    "path": "/seed/niv/deuteronomy.json"
+  },
+  {
+    "name": "Joshua",
+    "slug": "joshua",
+    "path": "/seed/niv/joshua.json"
+  },
+  {
+    "name": "Judges",
+    "slug": "judges",
+    "path": "/seed/niv/judges.json"
+  },
+  {
+    "name": "Ruth",
+    "slug": "ruth",
+    "path": "/seed/niv/ruth.json"
+  },
+  {
+    "name": "1 Samuel",
+    "slug": "1-samuel",
+    "path": "/seed/niv/1-samuel.json"
+  },
+  {
+    "name": "2 Samuel",
+    "slug": "2-samuel",
+    "path": "/seed/niv/2-samuel.json"
+  },
+  {
+    "name": "1 Kings",
+    "slug": "1-kings",
+    "path": "/seed/niv/1-kings.json"
+  },
+  {
+    "name": "2 Kings",
+    "slug": "2-kings",
+    "path": "/seed/niv/2-kings.json"
+  },
+  {
+    "name": "1 Chronicles",
+    "slug": "1-chronicles",
+    "path": "/seed/niv/1-chronicles.json"
+  },
+  {
+    "name": "2 Chronicles",
+    "slug": "2-chronicles",
+    "path": "/seed/niv/2-chronicles.json"
+  },
+  {
+    "name": "Ezra",
+    "slug": "ezra",
+    "path": "/seed/niv/ezra.json"
+  },
+  {
+    "name": "Nehemiah",
+    "slug": "nehemiah",
+    "path": "/seed/niv/nehemiah.json"
+  },
+  {
+    "name": "Esther",
+    "slug": "esther",
+    "path": "/seed/niv/esther.json"
+  },
+  {
+    "name": "Job",
+    "slug": "job",
+    "path": "/seed/niv/job.json"
+  },
+  {
+    "name": "Psalms",
+    "slug": "psalms",
+    "path": "/seed/niv/psalms.json"
+  },
+  {
+    "name": "Proverbs",
+    "slug": "proverbs",
+    "path": "/seed/niv/proverbs.json"
+  },
+  {
+    "name": "Ecclesiastes",
+    "slug": "ecclesiastes",
+    "path": "/seed/niv/ecclesiastes.json"
+  },
+  {
+    "name": "Song Of Solomon",
+    "slug": "song-of-solomon",
+    "path": "/seed/niv/song-of-solomon.json"
+  },
+  {
+    "name": "Isaiah",
+    "slug": "isaiah",
+    "path": "/seed/niv/isaiah.json"
+  },
+  {
+    "name": "Jeremiah",
+    "slug": "jeremiah",
+    "path": "/seed/niv/jeremiah.json"
+  },
+  {
+    "name": "Lamentations",
+    "slug": "lamentations",
+    "path": "/seed/niv/lamentations.json"
+  },
+  {
+    "name": "Ezekiel",
+    "slug": "ezekiel",
+    "path": "/seed/niv/ezekiel.json"
+  },
+  {
+    "name": "Daniel",
+    "slug": "daniel",
+    "path": "/seed/niv/daniel.json"
+  },
+  {
+    "name": "Hosea",
+    "slug": "hosea",
+    "path": "/seed/niv/hosea.json"
+  },
+  {
+    "name": "Joel",
+    "slug": "joel",
+    "path": "/seed/niv/joel.json"
+  },
+  {
+    "name": "Amos",
+    "slug": "amos",
+    "path": "/seed/niv/amos.json"
+  },
+  {
+    "name": "Obadiah",
+    "slug": "obadiah",
+    "path": "/seed/niv/obadiah.json"
+  },
+  {
+    "name": "Jonah",
+    "slug": "jonah",
+    "path": "/seed/niv/jonah.json"
+  },
+  {
+    "name": "Micah",
+    "slug": "micah",
+    "path": "/seed/niv/micah.json"
+  },
+  {
+    "name": "Nahum",
+    "slug": "nahum",
+    "path": "/seed/niv/nahum.json"
+  },
+  {
+    "name": "Habakkuk",
+    "slug": "habakkuk",
+    "path": "/seed/niv/habakkuk.json"
+  },
+  {
+    "name": "Zephaniah",
+    "slug": "zephaniah",
+    "path": "/seed/niv/zephaniah.json"
+  },
+  {
+    "name": "Haggai",
+    "slug": "haggai",
+    "path": "/seed/niv/haggai.json"
+  },
+  {
+    "name": "Zechariah",
+    "slug": "zechariah",
+    "path": "/seed/niv/zechariah.json"
+  },
+  {
+    "name": "Malachi",
+    "slug": "malachi",
+    "path": "/seed/niv/malachi.json"
+  },
+  {
+    "name": "Matthew",
+    "slug": "matthew",
+    "path": "/seed/niv/matthew.json"
+  },
+  {
+    "name": "Mark",
+    "slug": "mark",
+    "path": "/seed/niv/mark.json"
+  },
+  {
+    "name": "Luke",
+    "slug": "luke",
+    "path": "/seed/niv/luke.json"
+  },
+  {
+    "name": "John",
+    "slug": "john",
+    "path": "/seed/niv/john.json"
+  },
+  {
+    "name": "Acts",
+    "slug": "acts",
+    "path": "/seed/niv/acts.json"
+  },
+  {
+    "name": "Romans",
+    "slug": "romans",
+    "path": "/seed/niv/romans.json"
+  },
+  {
+    "name": "1 Corinthians",
+    "slug": "1-corinthians",
+    "path": "/seed/niv/1-corinthians.json"
+  },
+  {
+    "name": "2 Corinthians",
+    "slug": "2-corinthians",
+    "path": "/seed/niv/2-corinthians.json"
+  },
+  {
+    "name": "Galatians",
+    "slug": "galatians",
+    "path": "/seed/niv/galatians.json"
+  },
+  {
+    "name": "Ephesians",
+    "slug": "ephesians",
+    "path": "/seed/niv/ephesians.json"
+  },
+  {
+    "name": "Philippians",
+    "slug": "philippians",
+    "path": "/seed/niv/philippians.json"
+  },
+  {
+    "name": "Colossians",
+    "slug": "colossians",
+    "path": "/seed/niv/colossians.json"
+  },
+  {
+    "name": "1 Thessalonians",
+    "slug": "1-thessalonians",
+    "path": "/seed/niv/1-thessalonians.json"
+  },
+  {
+    "name": "2 Thessalonians",
+    "slug": "2-thessalonians",
+    "path": "/seed/niv/2-thessalonians.json"
+  },
+  {
+    "name": "1 Timothy",
+    "slug": "1-timothy",
+    "path": "/seed/niv/1-timothy.json"
+  },
+  {
+    "name": "2 Timothy",
+    "slug": "2-timothy",
+    "path": "/seed/niv/2-timothy.json"
+  },
+  {
+    "name": "Titus",
+    "slug": "titus",
+    "path": "/seed/niv/titus.json"
+  },
+  {
+    "name": "Philemon",
+    "slug": "philemon",
+    "path": "/seed/niv/philemon.json"
+  },
+  {
+    "name": "Hebrews",
+    "slug": "hebrews",
+    "path": "/seed/niv/hebrews.json"
+  },
+  {
+    "name": "James",
+    "slug": "james",
+    "path": "/seed/niv/james.json"
+  },
+  {
+    "name": "1 Peter",
+    "slug": "1-peter",
+    "path": "/seed/niv/1-peter.json"
+  },
+  {
+    "name": "2 Peter",
+    "slug": "2-peter",
+    "path": "/seed/niv/2-peter.json"
+  },
+  {
+    "name": "1 John",
+    "slug": "1-john",
+    "path": "/seed/niv/1-john.json"
+  },
+  {
+    "name": "2 John",
+    "slug": "2-john",
+    "path": "/seed/niv/2-john.json"
+  },
+  {
+    "name": "3 John",
+    "slug": "3-john",
+    "path": "/seed/niv/3-john.json"
+  },
+  {
+    "name": "Jude",
+    "slug": "jude",
+    "path": "/seed/niv/jude.json"
+  },
+  {
+    "name": "Revelation",
+    "slug": "revelation",
+    "path": "/seed/niv/revelation.json"
+  }
+]

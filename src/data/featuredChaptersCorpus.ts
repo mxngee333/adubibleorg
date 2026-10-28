@@ -1589,6 +1589,13 @@ export function getPrebundledChapter(
   const verMeta = getVersionById(cleanVer);
   const langCode = verMeta.langCode;
 
+  // If a specific English version was requested (e.g., NIV, ESV, NLT, AMP) and is not
+  // explicitly present in chMap, do NOT disguise NKJV as that version!
+  // Return null so resolveChapterData can fetch the authentic, distinct translation.
+  if (langCode === 'en' && cleanVer !== 'nkjv' && !chMap[cleanVer]) {
+    return null;
+  }
+
   const baseArray =
     chMap[cleanVer] ||
     chMap[langCode] ||
@@ -1602,7 +1609,7 @@ export function getPrebundledChapter(
     (langCode === 'he' ? chMap['wlc'] : undefined) ||
     (langCode === 'el' ? chMap['tr-gk'] : undefined) ||
     (langCode === 'la' ? chMap['vul'] : undefined) ||
-    chMap['nkjv'];
+    (cleanVer === 'nkjv' ? chMap['nkjv'] : undefined);
 
   if (!baseArray) return null;
 

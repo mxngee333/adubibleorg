@@ -83,7 +83,27 @@ export async function getCachedChapter(
       const tx = db.transaction(STORE_CHAPTERS, 'readonly');
       const store = tx.objectStore(STORE_CHAPTERS);
       const req = store.get(cacheKey);
-      req.onsuccess = () => resolve(req.result ? (req.result.data as ChapterData) : null);
+      req.onsuccess = () => {
+        if (!req.result) return resolve(null);
+        const chapterData = req.result.data as ChapterData;
+        // Auto-heal: Purge any legacy poisoned responses containing legal disputes
+        const isPoisoned = chapterData.verses?.some((v) => {
+          const t = String(v.text || '');
+          return (
+            t.includes('prohibited me') ||
+            t.includes('Biblica, Inc.') ||
+            t.includes('choose truly free translations')
+          );
+        });
+        if (isPoisoned) {
+          try {
+            const delTx = db.transaction(STORE_CHAPTERS, 'readwrite');
+            delTx.objectStore(STORE_CHAPTERS).delete(cacheKey);
+          } catch {}
+          return resolve(null);
+        }
+        resolve(chapterData);
+      };
       req.onerror = () => resolve(null);
     });
   } catch {

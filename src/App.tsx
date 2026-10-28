@@ -439,6 +439,10 @@ export function App() {
             customAddons
           );
           nextMap[vId] = data;
+          // Stream pane data into state immediately as each translation resolves (0ms latency)
+          if (!cancelled) {
+            setChaptersByVersion((prev) => ({ ...prev, [vId]: data }));
+          }
         })
       );
       if (!cancelled) {

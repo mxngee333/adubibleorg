@@ -405,7 +405,6 @@ export const BIBLE_VERSIONS: BibleVersion[] = [
     copyright: 'Biblica®',
     hasStrongs: false,
     dir: 'ltr',
-    bollsId: 'NIV',
     description: 'The world’s most popular modern English Bible translation, balancing accuracy, clarity, and liturgical dignity.',
   },
   {
