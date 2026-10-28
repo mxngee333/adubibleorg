@@ -78,97 +78,10 @@ export interface AdminSystemMetrics {
   serverClusterHealth: 'optimal' | 'degraded';
 }
 
-// Initial seed ledger for demonstration and financial modeling
-const SEED_DONATIONS: AdminDonationRecord[] = [
-  {
-    id: 'tx_stripe_98412',
-    donorName: 'Ebenezer Mensah',
-    donorEmail: 'e.mensah@ghana-faith.org',
-    amount: 250,
-    currency: 'USD',
-    frequency: 'monthly',
-    designation: 'Apostle Kwame Adu Gospel Translation Fund',
-    gateway: 'stripe',
-    transactionId: 'ch_3M48K2N91AposAdu',
-    tributeName: 'In honor of the ministry of Apostle Kwame Adu (Nsuhia)',
-    prayerRequest: 'Pray for our church planting work in Sunyani and Kumasi.',
-    status: 'completed',
-    createdAt: '2026-10-27T14:32:00Z',
-  },
-  {
-    id: 'tx_paypal_88124',
-    donorName: 'Sister Grace Osei',
-    donorEmail: 'grace.osei@londonscripture.co.uk',
-    amount: 100,
-    currency: 'GBP',
-    frequency: 'once',
-    designation: 'African & Indigenous Languages Digitization',
-    gateway: 'paypal',
-    transactionId: 'PP-99042AduBible',
-    tributeName: 'For Asante Twi & Akuapem translation digitization',
-    prayerRequest: 'Peace and divine healing for my family in Accra.',
-    status: 'completed',
-    createdAt: '2026-10-26T18:15:00Z',
-  },
-  {
-    id: 'tx_stripe_77192',
-    donorName: 'Dr. David Van Der Merwe',
-    donorEmail: 'david.vdm@stellenbosch.ac.za',
-    amount: 500,
-    currency: 'USD',
-    frequency: 'monthly',
-    designation: 'Ancient Codices & Interlinear Research',
-    gateway: 'stripe',
-    transactionId: 'ch_3L99B4InterlinearHebrew',
-    tributeName: 'Honoring Textus Receptus and Septuagint preservation',
-    prayerRequest: 'For biblical literacy in rural universities.',
-    status: 'completed',
-    createdAt: '2026-10-25T09:40:00Z',
-  },
-  {
-    id: 'tx_manual_66014',
-    donorName: 'Nsuhia Community Assembly of God',
-    donorEmail: 'assembly@nsuhia.com',
-    amount: 3500,
-    currency: 'GHS',
-    frequency: 'once',
-    designation: 'General Global Scripture Mission',
-    gateway: 'manual',
-    transactionId: 'MAN-2026-NSUHIA-001',
-    tributeName: 'Direct Church Offering from Nsuhia, Ghana',
-    prayerRequest: 'Continued expansion of AduBible across all Ghanaian dialects.',
-    status: 'completed',
-    createdAt: '2026-10-24T12:00:00Z',
-  },
-];
-
-const SEED_PRAYERS: AdminPrayerRecord[] = [
-  {
-    id: 'prayer-001',
-    requesterName: 'Ebenezer Mensah',
-    requesterEmail: 'e.mensah@ghana-faith.org',
-    requestText: 'Pray for our church planting mission and pastors serving in rural Nsuhia and Ashanti region.',
-    tribute: 'In honor of the ministry of Apostle Kwame Adu',
-    status: 'interceded',
-    submittedAt: '2026-10-27T14:32:00Z',
-  },
-  {
-    id: 'prayer-002',
-    requesterName: 'Sister Grace Osei',
-    requesterEmail: 'grace.osei@londonscripture.co.uk',
-    requestText: 'Please stand with me in prayer for divine health, peace, and spiritual renewal for my children.',
-    tribute: 'Twi Bible Translation Mission',
-    status: 'pending',
-    submittedAt: '2026-10-26T18:15:00Z',
-  },
-  {
-    id: 'prayer-003',
-    requesterName: 'Kofi Boateng',
-    requestText: 'Praying for open doors to distribute audio Bibles in prisons and remote health clinics.',
-    status: 'pending',
-    submittedAt: '2026-10-25T11:20:00Z',
-  },
-];
+export interface RealTelemetryData {
+  readersReached: number;
+  audioStreams: number;
+}
 
 /**
  * Checks if active admin session exists and is valid
@@ -261,7 +174,7 @@ function sanitizeMinistryText(text?: string): string | undefined {
 }
 
 /**
- * Fetches real-time donations ledger
+ * Fetches real-time donations ledger (100% authentic live records only)
  */
 export async function getAdminDonations(): Promise<AdminDonationRecord[]> {
   const localList: AdminDonationRecord[] = [];
@@ -269,17 +182,29 @@ export async function getAdminDonations(): Promise<AdminDonationRecord[]> {
     try {
       const raw = localStorage.getItem(LS_DONATIONS_LEDGER);
       if (raw) {
-        localList.push(...JSON.parse(raw));
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          // Ruthlessly purge any legacy demo seed entries
+          const clean = parsed.filter(
+            (d) =>
+              !d.id?.startsWith('tx_stripe_98412') &&
+              !d.id?.startsWith('tx_paypal_88124') &&
+              !d.id?.startsWith('tx_stripe_77192') &&
+              !d.id?.startsWith('tx_manual_66014')
+          );
+          localList.push(...clean);
+          localStorage.setItem(LS_DONATIONS_LEDGER, JSON.stringify(clean));
+        }
       }
     } catch {}
   }
 
-  // Fetch from Firestore
+  // Fetch real records from Firestore
   const cloudList: AdminDonationRecord[] = [];
   try {
     const { db } = initFirebaseIfConfigured();
     if (db) {
-      const snap = await getDocs(query(collection(db, 'donations'), orderBy('createdAt', 'desc'), limit(100)));
+      const snap = await getDocs(query(collection(db, 'donations'), orderBy('createdAt', 'desc'), limit(200)));
       snap.forEach((d) => {
         cloudList.push({ id: d.id, ...(d.data() as any) });
       });
@@ -288,9 +213,8 @@ export async function getAdminDonations(): Promise<AdminDonationRecord[]> {
     console.warn('[Admin Donations] Firestore read fallback to local ledger:', err);
   }
 
-  // Deduplicate and merge: Cloud -> Local -> Seed
+  // Deduplicate and merge: Cloud -> Local (ZERO seed data)
   const map = new Map<string, AdminDonationRecord>();
-  SEED_DONATIONS.forEach((d) => map.set(d.id, d));
   localList.forEach((d) => map.set(d.id, d));
   cloudList.forEach((d) => map.set(d.id, d));
 
@@ -301,12 +225,6 @@ export async function getAdminDonations(): Promise<AdminDonationRecord[]> {
   })).sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
-
-  if (typeof window !== 'undefined') {
-    try {
-      localStorage.setItem(LS_DONATIONS_LEDGER, JSON.stringify(items));
-    } catch {}
-  }
 
   return items;
 }
@@ -371,41 +289,12 @@ export async function getAdminSubscribers(): Promise<AdminSubscriberRecord[]> {
     console.warn('[Admin Subscribers] Firestore query notice:', err);
   }
 
-  // 2. Default Seed Subscribers if list is beginning
-  if (subs.length === 0) {
-    subs.push(
-      {
-        id: 'sub_01',
-        firstName: 'Samuel',
-        email: 'samuel.mensah@ministry.org',
-        subscribedAt: '2026-10-27T10:14:00Z',
-        source: 'footer_signup',
-        active: true,
-      },
-      {
-        id: 'sub_02',
-        firstName: 'Hannah',
-        email: 'hannah.addo@accrachristian.com',
-        subscribedAt: '2026-10-26T16:22:00Z',
-        source: 'mobile_status_studio',
-        active: true,
-      },
-      {
-        id: 'sub_03',
-        firstName: 'Daniel',
-        email: 'pastor.daniel@faithtabernacle.org',
-        subscribedAt: '2026-10-25T08:05:00Z',
-        source: 'ephesians_parallel_reader',
-        active: true,
-      }
-    );
-  }
-
+  // 100% authentic live subscribers only — zero fake/seed entries
   return subs;
 }
 
 /**
- * Fetches prayer requests wall
+ * Fetches prayer requests wall (100% authentic live records only)
  */
 export async function getAdminPrayerRequests(): Promise<AdminPrayerRecord[]> {
   const list: AdminPrayerRecord[] = [];
@@ -413,13 +302,42 @@ export async function getAdminPrayerRequests(): Promise<AdminPrayerRecord[]> {
     try {
       const raw = localStorage.getItem(LS_PRAYER_WALL);
       if (raw) {
-        list.push(...JSON.parse(raw));
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          // Ruthlessly purge legacy demo seed prayers
+          const clean = parsed.filter(
+            (p) => !['prayer-001', 'prayer-002', 'prayer-003'].includes(p.id)
+          );
+          list.push(...clean);
+          localStorage.setItem(LS_PRAYER_WALL, JSON.stringify(clean));
+        }
       }
     } catch {}
   }
 
+  // Fetch real prayer requests from Firestore
+  try {
+    const { db } = initFirebaseIfConfigured();
+    if (db) {
+      const snap = await getDocs(query(collection(db, 'prayer_requests'), limit(200)));
+      snap.forEach((d) => {
+        const data = d.data();
+        list.push({
+          id: d.id,
+          requesterName: data.name || data.requesterName || 'Beloved in Christ',
+          requesterEmail: data.email || data.requesterEmail,
+          requestText: data.request || data.requestText || '',
+          tribute: data.tribute,
+          status: data.status || 'pending',
+          submittedAt: data.createdAt || data.submittedAt || new Date().toISOString(),
+        });
+      });
+    }
+  } catch (err) {
+    console.warn('[Admin Prayers] Firestore query notice:', err);
+  }
+
   const map = new Map<string, AdminPrayerRecord>();
-  SEED_PRAYERS.forEach((p) => map.set(p.id, p));
   list.forEach((p) => map.set(p.id, p));
 
   const items = Array.from(map.values()).map((p) => ({
@@ -428,12 +346,6 @@ export async function getAdminPrayerRequests(): Promise<AdminPrayerRecord[]> {
   })).sort(
     (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
   );
-
-  if (typeof window !== 'undefined') {
-    try {
-      localStorage.setItem(LS_PRAYER_WALL, JSON.stringify(items));
-    } catch {}
-  }
 
   return items;
 }

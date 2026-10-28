@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, ExternalLink, Sparkles, CheckCircle, Send, Heart } from 'lucide-react';
+import { ChevronRight, ExternalLink, Sparkles, CheckCircle, Send } from 'lucide-react';
 import { LegalPageKey } from './LegalInstitutionalModal';
 import {
   subscribeToNewsletter,
@@ -657,64 +657,9 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
         </div>
       </div>
 
-      {/* Consecrated 100% Ads-Free Support & Donation Callout */}
-      <section className="footer-donate-strip" aria-label="Support AduBible Scripture Mission">
-        <div className="footer-donate-inner">
-          <div className="footer-donate-text-group">
-            <div className="footer-donate-tag">
-              <Heart className="footer-donate-tag-icon" />
-              <span>100% ADS-FREE SACRED MINISTRY COVENANT</span>
-            </div>
-            <h4 className="footer-donate-heading">
-              Keep God&apos;s Holy Word Pure &amp; Free for Millions Worldwide
-            </h4>
-            <p className="footer-donate-subtext">
-              AduBible is consecrated to remain forever free of commercial advertising, intrusive tracking, and subscription barriers. Your voluntary offering helps sustain global cloud hosting, ultra-low latency audio servers, and multilingual translation expansions in honor of Apostle Kwame Adu of Nsuhia, Bono Region, Ghana.
-            </p>
-          </div>
-          <div className="footer-donate-action-group">
-            <a
-              href="/donate/"
-              onClick={(e) => {
-                e.preventDefault();
-                onSelectNavTab('donate');
-                if (typeof window !== 'undefined') {
-                  window.history.pushState({}, '', '/donate/');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-              }}
-              className="footer-donate-cta"
-            >
-              <Heart style={{ width: 17, height: 17 }} />
-              <span>💛 Support Scripture Mission (Donate)</span>
-              <ChevronRight style={{ width: 16, height: 16 }} />
-            </a>
-            <div className="footer-donate-microcopy">
-              <span>Zero ads · Secure Stripe &amp; PayPal · Freely received, freely give</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <div className="footer-bottom-bar">
         {/* Horizontal Legal & Governance Strip */}
         <nav className="footer-legal-nav" aria-label="Legal & Institutional Policies">
-          <a
-            href="/donate/"
-            onClick={(e) => {
-              e.preventDefault();
-              onSelectNavTab('donate');
-              if (typeof window !== 'undefined') {
-                window.history.pushState({}, '', '/donate/');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }
-            }}
-            className="footer-legal-pill footer-legal-donate-pill font-bold"
-            style={{ color: '#f59e0b' }}
-          >
-            💛 Support Scripture Mission (Donate)
-          </a>
-          <span className="footer-legal-dot" aria-hidden="true">·</span>
           <a
             href="/about/"
             onClick={(e) => {
@@ -826,19 +771,19 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
           </a>
           <span className="footer-legal-dot" aria-hidden="true">·</span>
           <a
-            href="/admin/"
+            href="/donate/"
             onClick={(e) => {
               e.preventDefault();
-              onSelectNavTab('admin');
+              onSelectNavTab('donate');
               if (typeof window !== 'undefined') {
-                window.history.pushState({}, '', '/admin/');
+                window.history.pushState({}, '', '/donate/');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }
             }}
-            className="footer-legal-pill text-stone-500 hover:text-amber-400 font-mono text-[11px]"
-            title="Sovereign Executive Admin Deck (mxngee@gmail.com)"
+            className="footer-legal-pill font-bold"
+            style={{ color: '#f59e0b' }}
           >
-            🔒 Admin Deck
+            💛 Support Scripture Mission (Donate)
           </a>
         </nav>
 

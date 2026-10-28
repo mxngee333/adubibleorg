@@ -553,7 +553,6 @@ function buildSSG() {
           <footer style="margin-top:3.5rem;padding-top:2rem;border-top:1px solid #2d382c;font-size:13px;color:#8e968d;">
             <nav style="margin-bottom:1.25rem;display:flex;flex-wrap:wrap;gap:8px 14px;">
               <a href="/" style="color:#b7c99f;font-weight:600;">AduBible Home</a> |
-              <a href="/donate/" style="color:#f59e0b;font-weight:700;">💛 Support Scripture Mission (Donate)</a> |
               <a href="/about/" style="color:#8e968d;">About</a> |
               <a href="/privacy/" style="color:#8e968d;">Privacy Policy</a> |
               <a href="/terms/" style="color:#8e968d;">Terms of Service</a> |
@@ -563,7 +562,8 @@ function buildSSG() {
               <a href="/editorial-policy/" style="color:#8e968d;">Editorial Policy</a> |
               <a href="/glossary/" style="color:#8e968d;">Glossary</a> |
               <a href="/sources/" style="color:#8e968d;">Sources</a> |
-              <a href="/articles/" style="color:#b7c99f;font-weight:600;">15 Pillar Articles</a>
+              <a href="/articles/" style="color:#b7c99f;font-weight:600;">15 Pillar Articles</a> |
+              <a href="/donate/" style="color:#f59e0b;font-weight:700;">💛 Support Scripture Mission (Donate)</a>
             </nav>
             <p>&copy; 2026 <a href="https://adubible.org/" style="color:inherit;text-decoration:none;font-weight:600;">AduBible.org</a> &middot; Dedicated to Humanity as a Sacred Ministry in Support of Apostle Kwame Adu &middot; <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" style="color:#b7c99f;">Nsuhia, Ghana ↗</a> &middot; <span style="color:#4ade80;">100% Ads-Free Reading Experience</span></p>
           </footer>
