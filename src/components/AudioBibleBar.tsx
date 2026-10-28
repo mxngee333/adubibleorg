@@ -13,7 +13,9 @@ import { transphonemizeTwiForSpeech } from '../services/twiPhonemeEngine';
 
 interface AudioBibleBarProps {
   bookName: string;
+  bookSlug?: string;
   chapter: number;
+  chapterReady?: boolean;
   versionName: string;
   langCode: string;
   verses: VerseData[];
@@ -37,7 +39,9 @@ const SAVED_VOICE_KEY = 'elohim_neural_voice_v1';
 
 export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   bookName,
+  bookSlug,
   chapter,
+  chapterReady,
   versionName,
   langCode,
   verses,
@@ -61,6 +65,9 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   const [continuousPlayback, setContinuousPlayback] = useState<boolean>(true);
   const [internalAutoSync, setInternalAutoSync] = useState<boolean>(true);
   const isAutoSync = autoSyncReader !== undefined ? autoSyncReader : internalAutoSync;
+  const isTransitioningChapterRef = useRef<boolean>(false);
+  const currentChapterKey = `${bookSlug || bookName}:${chapter}`;
+  const lastReadChapterKeyRef = useRef<string>(currentChapterKey);
   const autoPlayNextChapterRef = useRef<boolean>(false);
   const hasInitialAutoPlayedRef = useRef<boolean>(false);
   const lastHandledNonceRef = useRef<number>(autoPlayNonce || 0);
@@ -85,6 +92,13 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   const [statusMessage, setStatusMessage] = useState<string>('');
   const [bufferedCount, setBufferedCount] = useState<number>(0);
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [showOptions, setShowOptions] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 1024;
+    }
+    return false;
+  });
 
   const isPlayingRef = useRef(false);
   const currentVerseIdxRef = useRef(0);
@@ -132,21 +146,50 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     setUseStudioMp3(Boolean(audioUrl));
   }, [audioUrl]);
 
-  // Continuous Auto-Advance to Next Chapter Listener
+  // Continuous Auto-Advance & Chapter Change Listener
   useEffect(() => {
-    if (autoPlayNextChapterRef.current && verses && verses.length > 0) {
+    const isReady =
+      chapterReady !== undefined ? chapterReady : Boolean(verses && verses.length > 0);
+
+    if (!isReady || !verses || verses.length === 0) {
+      return;
+    }
+
+    const chapterChanged = lastReadChapterKeyRef.current !== currentChapterKey;
+
+    if (
+      isTransitioningChapterRef.current ||
+      autoPlayNextChapterRef.current ||
+      (isPlayingRef.current && chapterChanged)
+    ) {
+      isTransitioningChapterRef.current = false;
       autoPlayNextChapterRef.current = false;
+      lastReadChapterKeyRef.current = currentChapterKey;
       setIsPlaying(true);
       isPlayingRef.current = true;
       currentVerseIdxRef.current = 0;
-      onVerseChange(verses[0].verse);
+      setIsLoadingVerse(false);
       setStatusMessage('');
+
+      if (verses[0]) {
+        onVerseChange(verses[0].verse);
+      }
+
+      // Unconditionally wake up and flush SpeechSynthesis queue in Chromium
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.resume();
+        } catch {}
+      }
+
       const timer = setTimeout(() => {
         playVerseAtIndex(0);
-      }, 160);
+      }, 100);
       return () => clearTimeout(timer);
+    } else {
+      lastReadChapterKeyRef.current = currentChapterKey;
     }
-  }, [chapter, verses]);
+  }, [currentChapterKey, chapterReady, verses]);
 
   useEffect(() => {
     return () => {
@@ -397,6 +440,11 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     isPlayingRef.current = true;
     setStatusMessage('');
 
+    utterance.onstart = () => {
+      setIsLoadingVerse(false);
+      setStatusMessage('');
+    };
+
     utterance.onend = () => {
       (window as any).__activeScriptureUtterance = null;
       activeUtteranceRef.current = null;
@@ -421,9 +469,16 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     const dispatchSpeak = () => {
       if (!isPlayingRef.current) return;
       try {
+        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+          try {
+            window.speechSynthesis.resume();
+          } catch {}
+        }
         window.speechSynthesis.speak(utterance);
-        if (window.speechSynthesis.paused) {
-          window.speechSynthesis.resume();
+        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+          try {
+            window.speechSynthesis.resume();
+          } catch {}
         }
       } catch (err) {
         console.warn('[AudioBibleBar] Failed to call window.speechSynthesis.speak:', err);
@@ -450,11 +505,15 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       if (index >= verses.length && continuousPlayback && onNextChapter) {
         setIsLoadingVerse(true);
         setStatusMessage(`Loading ${bookName} Chapter ${chapter + 1}...`);
+        isTransitioningChapterRef.current = true;
         autoPlayNextChapterRef.current = true;
+        isPlayingRef.current = true;
+        setIsPlaying(true);
 
         if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
           try {
             window.speechSynthesis.cancel();
+            window.speechSynthesis.resume();
           } catch {}
           (window as any).__activeScriptureUtterance = null;
         }
@@ -464,9 +523,16 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
           } catch {}
           activeSourceRef.current = null;
         }
+        if (studioAudioElRef.current) {
+          try {
+            studioAudioElRef.current.pause();
+          } catch {}
+        }
 
         const hasNext = onNextChapter();
         if (!hasNext) {
+          isTransitioningChapterRef.current = false;
+          autoPlayNextChapterRef.current = false;
           stopPlayback();
           setStatusMessage('Scripture reading complete.');
           setTimeout(() => setStatusMessage(''), 3000);
@@ -727,33 +793,58 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
   // Seamlessly jump playback when activeVerse changes externally (e.g. user taps verse in reader)
   useEffect(() => {
+    if (isTransitioningChapterRef.current) return;
     if (!isPlayingRef.current || !activeVerse || !verses || verses.length === 0) return;
     const currentVerseNum = verses[currentVerseIdxRef.current]?.verse;
     if (currentVerseNum !== undefined && currentVerseNum !== activeVerse) {
       const targetIdx = verses.findIndex((v) => v.verse === activeVerse);
       if (targetIdx >= 0) {
-        stopPlayback();
-        setTimeout(() => {
-          setIsPlaying(true);
-          isPlayingRef.current = true;
-          playVerseAtIndex(targetIdx);
+        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+          try {
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.resume();
+          } catch {}
+        }
+        if (activeSourceRef.current) {
+          try {
+            activeSourceRef.current.stop();
+          } catch {}
+          activeSourceRef.current = null;
+        }
+        currentVerseIdxRef.current = targetIdx;
+        const timer = setTimeout(() => {
+          if (isPlayingRef.current) {
+            playVerseAtIndex(targetIdx);
+          }
         }, 50);
+        return () => clearTimeout(timer);
       }
     }
   }, [activeVerse, verses]);
 
   const handleStep = (delta: number) => {
-    stopPlayback();
     if (delta > 0 && currentVerseIdxRef.current >= verses.length - 1 && onNextChapter) {
       setIsLoadingVerse(true);
       setStatusMessage(`Advancing to ${bookName} Chapter ${chapter + 1}...`);
+      isTransitioningChapterRef.current = true;
       autoPlayNextChapterRef.current = true;
+      isPlayingRef.current = true;
+      setIsPlaying(true);
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.resume();
+        } catch {}
+      }
       const hasNext = onNextChapter();
       if (!hasNext) {
+        isTransitioningChapterRef.current = false;
+        autoPlayNextChapterRef.current = false;
         stopPlayback();
       }
       return;
     }
+    stopPlayback();
     const nextIdx = Math.min(
       verses.length - 1,
       Math.max(0, currentVerseIdxRef.current + delta)
@@ -783,7 +874,63 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     }
   };
 
-  if (!verses || verses.length === 0) return null;
+  const isReady =
+    chapterReady !== undefined ? chapterReady : Boolean(verses && verses.length > 0);
+
+  if (!isReady || !verses || verses.length === 0) {
+    return (
+      <div
+        style={{
+          position: 'sticky',
+          bottom: '16px',
+          zIndex: 45,
+          maxWidth: '1508px',
+          margin: '0 auto 20px',
+          padding: '0 20px',
+        }}
+      >
+        <div
+          style={{
+            padding: '14px 20px',
+            borderRadius: '10px',
+            border: '1px solid var(--line)',
+            background: 'var(--paper)',
+            color: 'var(--ink)',
+            boxShadow: '0 18px 48px rgba(0, 0, 0, 0.36)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span
+              style={{
+                width: 18,
+                height: 18,
+                border: '2px solid rgba(255,255,255,0.2)',
+                borderTopColor: 'var(--blue, #38bdf8)',
+                borderRadius: '50%',
+                display: 'inline-block',
+                animation: 'spin 0.8s linear infinite',
+              }}
+            />
+            <span style={{ fontSize: '13px', fontWeight: 600 }}>
+              {statusMessage || `Loading ${bookName} Chapter ${chapter}...`}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="quiet-button"
+            style={{ fontSize: '12px', padding: '6px 12px', borderRadius: '8px' }}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -804,10 +951,15 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
           onEnded={() => {
             if (continuousPlayback && onNextChapter) {
               setIsLoadingVerse(true);
-              setStatusMessage('Advancing to next chapter audio...');
+              setStatusMessage(`Advancing to ${bookName} Chapter ${chapter + 1}...`);
+              isTransitioningChapterRef.current = true;
               autoPlayNextChapterRef.current = true;
+              isPlayingRef.current = true;
+              setIsPlaying(true);
               const hasNext = onNextChapter();
               if (!hasNext) {
+                isTransitioningChapterRef.current = false;
+                autoPlayNextChapterRef.current = false;
                 stopPlayback();
               }
             } else {

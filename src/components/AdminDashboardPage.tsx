@@ -74,7 +74,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
   const [manualAmount, setManualAmount] = useState<string>('100');
   const [manualCurrency, setManualCurrency] = useState<string>('GHS');
   const [manualDesignation, setManualDesignation] = useState<string>(
-    'Apostle Kwame Adu Memorial Translation Fund'
+    'Apostle Kwame Adu Gospel Translation Fund'
   );
   const [manualTribute, setManualTribute] = useState<string>('');
 
@@ -217,7 +217,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
               AduBible Executive Portal
             </h1>
             <p className="text-xs text-[var(--subtle)] mt-1">
-              Sovereign Command Deck &bull; Apostle Kwame Adu Memorial Ministry
+              Sovereign Command Deck &bull; Apostle Kwame Adu Ministry
             </p>
           </div>
 
@@ -476,7 +476,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
               <div className="lg:col-span-2 p-6 rounded-3xl bg-stone-900/70 border border-stone-800 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-serif font-bold text-lg text-amber-200">
-                    Apostle Kwame Adu Memorial Gospel Mission
+                    Apostle Kwame Adu Gospel Mission
                   </h3>
                   <span className="text-xs text-stone-400">Headquarters: Nsuhia, Ghana</span>
                 </div>
@@ -1063,7 +1063,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onBackTo
                   onChange={(e) => setManualDesignation(e.target.value)}
                   className="w-full bg-stone-950 border border-stone-800 rounded-xl px-3 py-2 text-stone-100 text-xs focus:outline-none focus:border-amber-400"
                 >
-                  <option value="Apostle Kwame Adu Memorial Translation Fund">Apostle Kwame Adu Memorial Translation Fund</option>
+                  <option value="Apostle Kwame Adu Gospel Translation Fund">Apostle Kwame Adu Gospel Translation Fund</option>
                   <option value="General Global Scripture Mission">General Global Scripture Mission</option>
                   <option value="African & Indigenous Languages Digitization">African & Indigenous Languages Digitization</option>
                   <option value="Ancient Codices & Interlinear Research">Ancient Codices & Interlinear Research</option>

@@ -395,7 +395,7 @@ if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
           params.append('line_items[0][price_data][unit_amount]', String(Math.round(numAmount * 100)));
           params.append('line_items[0][price_data][recurring][interval]', 'month');
           params.append('line_items[0][price_data][product_data][name]', 'AduBible Monthly Scripture Partner');
-          params.append('line_items[0][price_data][product_data][description]', `Apostle Kwame Adu Memorial Scripture Mission · ${designation}`);
+          params.append('line_items[0][price_data][product_data][description]', `Apostle Kwame Adu Gospel Scripture Mission · ${designation}`);
           params.append('line_items[0][quantity]', '1');
         } else {
           params.append('mode', 'payment');

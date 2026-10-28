@@ -3180,7 +3180,15 @@ export function App() {
       {showAudioBar && (
         <AudioBibleBar
           bookName={getBookDisplayName(currentBook)}
+          bookSlug={currentBook.slug}
           chapter={currentChapter}
+          chapterReady={
+            !loadingChapters &&
+            Boolean(primaryChapterData) &&
+            primaryChapterData.chapter === currentChapter &&
+            primaryChapterData.bookSlug === currentBook.slug &&
+            primaryVerses.length > 0
+          }
           versionName={
             allVersions.find((v) => v.id === primaryVersionId)?.shortName ||
             'NKJV'
@@ -3189,10 +3197,22 @@ export function App() {
             allVersions.find((v) => v.id === primaryVersionId)?.languageCode ||
             'en'
           }
-          verses={primaryVerses}
-          audioUrl={primaryChapterData?.audioUrl}
+          verses={
+            primaryChapterData?.chapter === currentChapter &&
+            primaryChapterData?.bookSlug === currentBook.slug
+              ? primaryVerses
+              : []
+          }
+          audioUrl={
+            primaryChapterData?.chapter === currentChapter &&
+            primaryChapterData?.bookSlug === currentBook.slug
+              ? primaryChapterData?.audioUrl
+              : undefined
+          }
           parallelVerses={
-            activeVersionIds[1]
+            activeVersionIds[1] &&
+            chaptersByVersion[activeVersionIds[1]]?.chapter === currentChapter &&
+            chaptersByVersion[activeVersionIds[1]]?.bookSlug === currentBook.slug
               ? chaptersByVersion[activeVersionIds[1]]?.verses
               : undefined
           }

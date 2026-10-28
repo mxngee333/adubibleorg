@@ -87,10 +87,10 @@ const SEED_DONATIONS: AdminDonationRecord[] = [
     amount: 250,
     currency: 'USD',
     frequency: 'monthly',
-    designation: 'Apostle Kwame Adu Memorial Translation Fund',
+    designation: 'Apostle Kwame Adu Gospel Translation Fund',
     gateway: 'stripe',
     transactionId: 'ch_3M48K2N91AposAdu',
-    tributeName: 'In memory of beloved Apostle Kwame Adu (Nsuhia)',
+    tributeName: 'In honor of the ministry of Apostle Kwame Adu (Nsuhia)',
     prayerRequest: 'Pray for our church planting work in Sunyani and Kumasi.',
     status: 'completed',
     createdAt: '2026-10-27T14:32:00Z',
@@ -148,7 +148,7 @@ const SEED_PRAYERS: AdminPrayerRecord[] = [
     requesterName: 'Ebenezer Mensah',
     requesterEmail: 'e.mensah@ghana-faith.org',
     requestText: 'Pray for our church planting mission and pastors serving in rural Nsuhia and Ashanti region.',
-    tribute: 'In memory of Apostle Kwame Adu',
+    tribute: 'In honor of the ministry of Apostle Kwame Adu',
     status: 'interceded',
     submittedAt: '2026-10-27T14:32:00Z',
   },
@@ -236,7 +236,7 @@ export async function authenticateAdmin(
   if (cleanPass === 'VBNvbn10!!!') {
     const session: AdminSession = {
       email: cleanEmail,
-      displayName: 'AduBible Sovereign Commander (Apostle Kwame Adu Memorial)',
+      displayName: 'AduBible Sovereign Commander (Apostle Kwame Adu Ministry)',
       token: `adubible_sovereign_${Date.now()}`,
       authenticatedAt: Date.now(),
       expiresAt: Date.now() + 1000 * 60 * 60 * 12,
@@ -248,6 +248,16 @@ export async function authenticateAdmin(
   }
 
   return { success: false, error: 'Invalid password. Please verify credentials and try again.' };
+}
+
+function sanitizeMinistryText(text?: string): string | undefined {
+  if (!text) return text;
+  return text
+    .replace(/In memory of beloved Apostle Kwame Adu/gi, 'In honor of the ministry of Apostle Kwame Adu')
+    .replace(/In memory of Apostle Kwame Adu/gi, 'In honor of the ministry of Apostle Kwame Adu')
+    .replace(/\bMemorial\b/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
 }
 
 /**
@@ -284,9 +294,21 @@ export async function getAdminDonations(): Promise<AdminDonationRecord[]> {
   localList.forEach((d) => map.set(d.id, d));
   cloudList.forEach((d) => map.set(d.id, d));
 
-  return Array.from(map.values()).sort(
+  const items = Array.from(map.values()).map((d) => ({
+    ...d,
+    designation: sanitizeMinistryText(d.designation) || d.designation,
+    tributeName: sanitizeMinistryText(d.tributeName),
+  })).sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
+
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(LS_DONATIONS_LEDGER, JSON.stringify(items));
+    } catch {}
+  }
+
+  return items;
 }
 
 /**
@@ -400,9 +422,20 @@ export async function getAdminPrayerRequests(): Promise<AdminPrayerRecord[]> {
   SEED_PRAYERS.forEach((p) => map.set(p.id, p));
   list.forEach((p) => map.set(p.id, p));
 
-  return Array.from(map.values()).sort(
+  const items = Array.from(map.values()).map((p) => ({
+    ...p,
+    tribute: sanitizeMinistryText(p.tribute),
+  })).sort(
     (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
   );
+
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(LS_PRAYER_WALL, JSON.stringify(items));
+    } catch {}
+  }
+
+  return items;
 }
 
 /**

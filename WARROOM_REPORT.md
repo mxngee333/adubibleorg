@@ -37,7 +37,7 @@ Build, integrate, and deploy a complete, production-grade **Donation & Mission P
 - **Plutus (Payments Engineer)**: Configured dual gateway checkout:
   - **Stripe**: One-time payment mode + monthly recurring subscription mode.
   - **PayPal**: REST API `intent: 'CAPTURE'` + PayPal Hosted Donate fallback.
-- **Poseidon (Realtime & Email God)**: Implemented automated Maileroo transactional donation receipt dispatch with Apostle Kwame Adu memorial blessings (2 Corinthians 9:7&ndash;10 and Ephesians 1:3).
+- **Poseidon (Realtime & Email God)**: Implemented automated Maileroo transactional donation receipt dispatch with Apostle Kwame Adu apostolic blessings (2 Corinthians 9:7&ndash;10 and Ephesians 1:3).
 - **Artemis (Mobile Engineer)**: Styled mobile-first touch targets, responsive tier buttons, sticky checkout CTAs, and compact form fields.
 
 ---
