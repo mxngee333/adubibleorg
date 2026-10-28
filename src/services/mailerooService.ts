@@ -136,8 +136,9 @@ export async function sendScriptureShareEmail(opts: SendScriptureEmailOptions): 
           <!-- Footer -->
           <tr>
             <td style="padding: 24px 32px; background-color: #141210; border-top: 1px solid #292524; text-align: center; font-size: 12px; color: #78716c; line-height: 1.5;">
-              <p style="margin: 0;">Dedicated to Humanity · 100% Ads-Free Multilingual Study Sanctuary</p>
-              <p style="margin: 4px 0 0;">Nsuhia, Ghana (<a href="https://nsuhia.com" style="color: #a8a29e; text-decoration: underline;">https://nsuhia.com</a>)</p>
+              <p style="margin: 0; line-height: 1.6;">
+                © ${new Date().getFullYear()} AduBible (<a href="https://adubible.org" style="color: #fbbf24; text-decoration: underline;">adubible.org</a>) · Dedicated to Humanity; A Global Ministry of Apostle Kwame Adu · <a href="https://nsuhia.com" target="_blank" rel="noopener noreferrer" style="color: #a8a29e; text-decoration: underline;">Nsuhia, Ghana ↗</a> · 100% Ads-Free Reading Experience.
+              </p>
             </td>
           </tr>
         </table>
