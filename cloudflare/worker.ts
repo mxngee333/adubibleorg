@@ -933,8 +933,8 @@ async function sendDonationReceipt(
 ): Promise<void> {
   const fromAddr = 'Apostle Kwame Adu <pastor@adubible.org>';
   const replyTo = 'pastor@adubible.org';
-  const subject = `Your AduBible Offering Receipt & Blessing (${currency} ${amount.toFixed(2)})`;
   const donorClean = donorName || 'Beloved Scripture Partner';
+  const subject = `${donorClean}, thank you for standing with the Word of God`;
   const frequencyClean = frequency === 'monthly' ? 'Monthly Sustaining Covenant Partner' : 'One-Time Seed Offering';
   const currentDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
@@ -943,77 +943,106 @@ async function sendDonationReceipt(
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Offering Receipt - AduBible</title>
+  <title>A Personal Note from Apostle Kwame Adu</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #f5f5f4; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1c1917; line-height: 1.65;">
+<body style="margin: 0; padding: 0; background-color: #f6f8f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1c241b; line-height: 1.65;">
   <div style="display: none; font-size: 1px; color: #ffffff; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
-    Grace and peace to you, ${donorClean}. Thank you for your faithful offering of ${currency} ${amount.toFixed(2)} supporting 100% ad-free Scripture across 35+ languages.
+    Grace and peace to you, ${donorClean}. I wanted to write you personally to thank you for standing with God's Word.
   </div>
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f5f5f4; padding: 24px 12px;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f6f8f5; padding: 28px 12px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="100%" style="max-width: 580px; background-color: #ffffff; border: 1px solid #e7e5e4; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);">
+        <table role="presentation" width="100%" style="max-width: 560px; background-color: #ffffff; border: 1px solid #dfe5dc; border-top: 4px solid #8EA486; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 6px rgba(23, 29, 23, 0.04);">
+          <!-- Header with Logo Mark and Brand Colors -->
           <tr>
-            <td style="padding: 28px 24px 16px; border-bottom: 1px solid #f5f5f4;">
-              <div style="font-size: 13px; font-weight: 700; color: #b45309; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
-                AduBible Scripture Sanctuary
-              </div>
-              <div style="font-size: 12px; color: #78716c;">
-                A Global Scripture Mission in Honor of Apostle Kwame Adu · Nsuhia, Ghana
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding: 24px;">
-              <p style="font-size: 16px; margin: 0 0 16px; color: #1c1917;">
-                Grace and peace to you in Christ Jesus, <strong>${donorClean}</strong>,
-              </p>
-              <p style="font-size: 15px; color: #292524; margin: 0 0 16px;">
-                I am writing to personally thank you for your generous offering of <strong>${currency} ${amount.toFixed(2)}</strong>. Because of your sacrificial seed, the Holy Scriptures remain <strong>100% free, unmonetized, and without commercial advertisement</strong> for over 4 billion souls worldwide across 35+ languages.
-              </p>
-              <table role="presentation" width="100%" style="background-color: #fafaf9; border: 1px solid #e7e5e4; border-radius: 8px; margin: 20px 0; font-size: 14px; border-collapse: collapse;">
+            <td style="padding: 22px 28px 18px; border-bottom: 1px solid #edf2eb;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
-                  <td style="padding: 10px 14px; color: #78716c; border-bottom: 1px solid #e7e5e4;">Offering Amount</td>
-                  <td style="padding: 10px 14px; font-weight: 700; color: #b45309; text-align: right; border-bottom: 1px solid #e7e5e4;">${currency} ${amount.toFixed(2)}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px 14px; color: #78716c; border-bottom: 1px solid #e7e5e4;">Gift Frequency</td>
-                  <td style="padding: 10px 14px; color: #1c1917; text-align: right; border-bottom: 1px solid #e7e5e4;">${frequencyClean}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px 14px; color: #78716c; border-bottom: 1px solid #e7e5e4;">Mission Allocation</td>
-                  <td style="padding: 10px 14px; color: #1c1917; text-align: right; border-bottom: 1px solid #e7e5e4;">${designation}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px 14px; color: #78716c; border-bottom: 1px solid #e7e5e4;">Reference Number</td>
-                  <td style="padding: 10px 14px; font-family: monospace; color: #44403c; text-align: right; border-bottom: 1px solid #e7e5e4;">${transactionId}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px 14px; color: #78716c;">Receipt Date</td>
-                  <td style="padding: 10px 14px; color: #1c1917; text-align: right;">${currentDate}</td>
+                  <td style="vertical-align: middle;">
+                    <img src="https://adubible.org/brand/icon-128.png" alt="AduBible Logo" width="34" height="34" style="display: inline-block; vertical-align: middle; border-radius: 6px; margin-right: 10px;" />
+                    <span style="font-size: 20px; font-weight: 700; font-family: Georgia, serif; vertical-align: middle;">
+                      <span style="color: #8EA486;">Adu</span><span style="color: #B8AC94;">Bible</span><span style="color: #8E968D; font-size: 14px; font-weight: 600;">.org</span>
+                    </span>
+                  </td>
+                  <td style="text-align: right; vertical-align: middle; font-size: 12px; color: #8E968D; letter-spacing: 0.04em;">
+                    Pastoral Letter
+                  </td>
                 </tr>
               </table>
-              <blockquote style="margin: 22px 0; padding: 14px 18px; background-color: #fafaf9; border-left: 3px solid #b45309; color: #1c1917; font-size: 14px; font-style: italic; line-height: 1.6;">
+            </td>
+          </tr>
+
+          <!-- Letter Body -->
+          <tr>
+            <td style="padding: 28px 28px 24px;">
+              <p style="font-size: 16px; margin: 0 0 16px; color: #171d17;">
+                Grace, peace, and manifold blessings to you, <strong>${donorClean}</strong>,
+              </p>
+
+              <p style="font-size: 15px; color: #2d3729; margin: 0 0 16px; line-height: 1.7;">
+                I am writing to you with a heart full of thanksgiving. Because of your sacrificial seed of <strong>${currency} ${amount.toFixed(2)}</strong>, the Holy Scriptures remain <strong>100% free, unmonetized, and completely unhindered by commercial advertisements</strong> for millions of souls worldwide across 35+ languages.
+              </p>
+
+              <p style="font-size: 15px; color: #2d3729; margin: 0 0 20px; line-height: 1.7;">
+                Your partnership directly supports the ongoing gospel translation work and rural Scripture distribution planted in Nsuhia, Ghana, bringing God's Word to students, rural villages, and believers seeking truth.
+              </p>
+
+              <!-- Official Offering Record in AduBible Brand Palette -->
+              <table role="presentation" width="100%" style="background-color: #fbfcfb; border: 1px solid #e1e7de; border-radius: 8px; margin: 22px 0; font-size: 14px; border-collapse: collapse;">
+                <tr style="background-color: #f1f5ef;">
+                  <td colspan="2" style="padding: 10px 14px; font-size: 12px; font-weight: 700; color: #677953; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid #e1e7de;">
+                    Offering Record &amp; Stewardship Summary
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 14px; color: #6a7966; border-bottom: 1px solid #edf2eb;">Amount Contributed</td>
+                  <td style="padding: 10px 14px; font-weight: 700; color: #677953; text-align: right; border-bottom: 1px solid #edf2eb;">${currency} ${amount.toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 14px; color: #6a7966; border-bottom: 1px solid #edf2eb;">Gift Frequency</td>
+                  <td style="padding: 10px 14px; color: #171d17; text-align: right; border-bottom: 1px solid #edf2eb;">${frequencyClean}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 14px; color: #6a7966; border-bottom: 1px solid #edf2eb;">Mission Focus</td>
+                  <td style="padding: 10px 14px; color: #171d17; text-align: right; border-bottom: 1px solid #edf2eb;">${designation}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 14px; color: #6a7966; border-bottom: 1px solid #edf2eb;">Reference Code</td>
+                  <td style="padding: 10px 14px; font-family: monospace; color: #2d3729; text-align: right; border-bottom: 1px solid #edf2eb;">${transactionId}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 14px; color: #6a7966;">Record Date</td>
+                  <td style="padding: 10px 14px; color: #171d17; text-align: right;">${currentDate}</td>
+                </tr>
+              </table>
+
+              <!-- Scripture Blessing in Brand Tone -->
+              <blockquote style="margin: 22px 0; padding: 14px 18px; background-color: #f8faf7; border-left: 4px solid #8EA486; color: #20271f; font-size: 14px; font-style: italic; line-height: 1.65;">
                 &ldquo;Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver. And God is able to bless you abundantly, so that in all things at all times, having all that you need, you will abound in every good work.&rdquo;
-                <div style="margin-top: 6px; font-size: 12px; font-weight: 700; color: #b45309; font-style: normal;">
+                <div style="margin-top: 6px; font-size: 12px; font-weight: 700; color: #8EA486; font-style: normal;">
                   &mdash; 2 Corinthians 9:7&ndash;8
                 </div>
               </blockquote>
-              <p style="font-size: 14px; color: #44403c; margin: 16px 0;">
-                If you ever need prayer, biblical counsel, or have questions regarding our ongoing translation and rural distribution efforts, simply <strong>hit reply to this email</strong>. I read and hold our partners in prayer personally.
+
+              <p style="font-size: 15px; color: #2d3729; margin: 20px 0 16px; line-height: 1.7;">
+                If you ever have a personal prayer request, a biblical question, or simply need spiritual encouragement, <strong>please hit reply directly to this message</strong>. I read and hold our partners in prayer personally.
               </p>
-              <div style="margin-top: 24px; font-size: 14px; color: #1c1917; line-height: 1.5;">
-                Yours in Christ Jesus,<br>
-                <strong style="font-size: 15px; color: #1c1917;">Apostle Kwame Adu</strong><br>
-                <span style="font-size: 13px; color: #78716c;">AduBible Scripture Sanctuary · Nsuhia, Ghana</span><br>
-                <a href="https://adubible.org" style="color: #b45309; text-decoration: none; font-size: 13px;">adubible.org</a>
+
+              <!-- Personal Sign-Off -->
+              <div style="margin-top: 28px; font-size: 15px; color: #171d17; line-height: 1.6;">
+                With deep pastoral gratitude and prayers,<br>
+                <strong style="color: #171d17; font-size: 16px;">Apostle Kwame Adu</strong><br>
+                <span style="font-size: 13px; color: #6a7966;">AduBible Scripture Sanctuary &middot; Nsuhia, Ghana</span><br>
+                <a href="https://adubible.org" style="color: #677953; text-decoration: none; font-size: 13px; font-weight: 600;">adubible.org &rarr;</a>
               </div>
             </td>
           </tr>
+
+          <!-- Minimal Footer with Brand Colors -->
           <tr>
-            <td style="padding: 16px 24px; background-color: #fafaf9; border-top: 1px solid #f5f5f4; text-align: center; font-size: 11px; color: #a8a29e; line-height: 1.5;">
-              This email serves as your official electronic donation receipt.<br>
-              AduBible Gospel Mission · Dedicated to Humanity · 100% Ads-Free Covenant.
+            <td style="padding: 16px 28px; background-color: #f6f8f5; border-top: 1px solid #edf2eb; text-align: center; font-size: 11px; color: #8E968D; line-height: 1.5;">
+              Official Electronic Donation Record &middot; AduBible Scripture Mission<br>
+              Dedicated to Humanity &middot; 100% Ads-Free Covenant &middot; <a href="https://adubible.org" style="color: #8EA486;">adubible.org</a>
             </td>
           </tr>
         </table>
@@ -1023,7 +1052,7 @@ async function sendDonationReceipt(
 </body>
 </html>
   `;
-  const plain = `AduBible Offering Receipt & Blessing\n\nDear ${donorClean},\n\nGrace and peace to you in Christ Jesus. Thank you for your faithful offering of ${currency} ${amount.toFixed(2)} (${frequencyClean}). Reference No: ${transactionId}.\n\n\"Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver. And God is able to bless you abundantly...\" — 2 Corinthians 9:7-8\n\nIf you ever need prayer, simply reply directly to this email.\n\nYours in Christ Jesus,\nApostle Kwame Adu\nAduBible Scripture Sanctuary · Nsuhia, Ghana\nhttps://adubible.org`;
+  const plain = `Grace, peace, and manifold blessings to you, ${donorClean},\n\nI am writing to you with a heart full of thanksgiving. Because of your sacrificial seed of ${currency} ${amount.toFixed(2)}, the Holy Scriptures remain 100% free, unmonetized, and completely unhindered by commercial advertisements for millions of souls worldwide across 35+ languages.\n\nOFFERING RECORD & STEWARDSHIP SUMMARY:\n- Amount Contributed: ${currency} ${amount.toFixed(2)}\n- Gift Frequency: ${frequencyClean}\n- Mission Focus: ${designation}\n- Reference Code: ${transactionId}\n- Record Date: ${currentDate}\n\n\"Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver. And God is able to bless you abundantly...\" — 2 Corinthians 9:7-8\n\nIf you ever have a personal prayer request or simply need spiritual encouragement, please reply directly to this message. I read and hold our partners in prayer personally.\n\nWith deep pastoral gratitude and prayers,\nApostle Kwame Adu\nAduBible Scripture Sanctuary · Nsuhia, Ghana\nhttps://adubible.org`;
 
   const payload = new URLSearchParams({
     from: fromAddr,
