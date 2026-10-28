@@ -410,7 +410,7 @@ function buildSSG() {
       html = html.replace('</head>', jsonLdBlock);
 
       // Inject full article body inside #root
-      const articleSsrBlock = `<div id="root"><main style="max-width:960px;margin:0 auto;padding:2rem 1.25rem;font-family:Georgia,serif;color:#f5f5f4;background:#1c1917;line-height:1.75;"><header style="margin-bottom:2rem;border-bottom:1px solid #292524;padding-bottom:1.5rem;"><nav aria-label="Breadcrumb" style="font-size:13px;color:#a8a29e;margin-bottom:1rem;"><a href="/" style="color:#f59e0b;text-decoration:none;">AduBible</a> &rsaquo; <a href="/articles/" style="color:#f59e0b;text-decoration:none;">Articles</a> &rsaquo; <span>${art.category}</span></nav><div style="font-size:12px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">${art.category} &bull; ${art.readTimeMinutes} Min Read</div><h1 style="font-size:2.25rem;line-height:1.2;color:#fafaf9;margin:0 0 1rem 0;">${art.title}</h1><p style="font-size:1.15rem;color:#d6d3d1;font-style:italic;margin:0 0 1rem 0;">${art.subtitle}</p><div style="font-size:13px;color:#a8a29e;">By <strong>${art.author}</strong> &bull; Published ${art.datePublished} &bull; Updated ${art.dateModified} &bull; <span>${art.wordCount.toLocaleString()} Words</span></div><div style="margin-top:1.5rem;"><picture><source srcset="/assets/articles/${art.slug}-16x9.webp" type="image/webp" /><img src="/assets/articles/${art.slug}-16x9.webp" alt="${art.title}" width="1600" height="900" style="width:100%;height:auto;border-radius:12px;border:1px solid #292524;" loading="eager" fetchpriority="high" /></picture></div></header><article class="article-body" style="font-size:1.05rem;line-height:1.8;">${art.contentHtml}</article><footer style="margin-top:3rem;padding-top:2rem;border-top:1px solid #292524;font-size:13px;color:#a8a29e;"><nav style="margin-bottom:1rem;"><a href="/articles/" style="color:#f59e0b;">&larr; Back to All Articles</a> | <a href="/" style="color:#f59e0b;">AduBible Home</a> | <a href="/about/" style="color:#a8a29e;">About</a> | <a href="/privacy/" style="color:#a8a29e;">Privacy Policy</a> | <a href="/terms/" style="color:#a8a29e;">Terms of Service</a> | <a href="/contact/" style="color:#a8a29e;">Contact Us</a></nav><p>&copy; 2026 AduBible.org &middot; Dedicated to Humanity in Honor of the Legacy of Apostle Kwame Adu &middot; Nsuhia, Ghana &middot; 100% Ads-Free Reading Experience.</p></footer></main></div>`;
+      const articleSsrBlock = `<div id="root"><main style="max-width:960px;margin:0 auto;padding:2rem 1.25rem;font-family:Georgia,serif;color:#f5f5f4;background:#1c1917;line-height:1.75;"><header style="margin-bottom:2rem;border-bottom:1px solid #292524;padding-bottom:1.5rem;"><nav aria-label="Breadcrumb" style="font-size:13px;color:#a8a29e;margin-bottom:1rem;"><a href="/" style="color:#f59e0b;text-decoration:none;">AduBible</a> &rsaquo; <a href="/articles/" style="color:#f59e0b;text-decoration:none;">Articles</a> &rsaquo; <span>${art.category}</span></nav><div style="font-size:12px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">${art.category} &bull; ${art.readTimeMinutes} Min Read</div><h1 style="font-size:2.25rem;line-height:1.2;color:#fafaf9;margin:0 0 1rem 0;">${art.title}</h1><p style="font-size:1.15rem;color:#d6d3d1;font-style:italic;margin:0 0 1rem 0;">${art.subtitle}</p><div style="font-size:13px;color:#a8a29e;">By <strong>${art.author}</strong> &bull; Published ${art.datePublished} &bull; Updated ${art.dateModified} &bull; <span>${art.wordCount.toLocaleString()} Words</span></div><div style="margin-top:1.5rem;"><picture><source srcset="/assets/articles/${art.slug}-16x9.webp" type="image/webp" /><img src="/assets/articles/${art.slug}-16x9.webp" alt="${art.title}" width="1600" height="900" style="width:100%;height:auto;border-radius:12px;border:1px solid #292524;" loading="eager" fetchpriority="high" /></picture></div></header><article class="article-body" style="font-size:1.05rem;line-height:1.8;">${art.contentHtml}</article><footer style="margin-top:3rem;padding-top:2rem;border-top:1px solid #292524;font-size:13px;color:#a8a29e;"><nav style="margin-bottom:1rem;"><a href="/articles/" style="color:#f59e0b;">&larr; Back to All Articles</a> | <a href="/" style="color:#f59e0b;">AduBible Home</a> | <a href="/donate/" style="color:#f59e0b;font-weight:700;">💛 Support Mission (Donate)</a> | <a href="/about/" style="color:#a8a29e;">About</a> | <a href="/privacy/" style="color:#a8a29e;">Privacy Policy</a> | <a href="/terms/" style="color:#a8a29e;">Terms of Service</a> | <a href="/contact/" style="color:#a8a29e;">Contact Us</a></nav><p>&copy; 2026 AduBible.org &middot; Dedicated to Humanity in Honor of the Legacy of Apostle Kwame Adu &middot; Nsuhia, Ghana &middot; 100% Ads-Free Reading Experience.</p></footer></main></div>`;
       html = html.replace('<div id="root"></div>', articleSsrBlock);
     } else if (item.legalPageData) {
       const lp = item.legalPageData;
@@ -467,20 +467,64 @@ function buildSSG() {
       const jsonLdBlock = `\n    <script type="application/ld+json">\n${JSON.stringify([pageSchema, breadcrumbSchema], null, 2)}\n    </script>\n  </head>`;
       html = html.replace('</head>', jsonLdBlock);
 
-      // Render full sections HTML
+      // Render full sections HTML with formatted tables and email obfuscation
+      const renderLegalContent = (content) => {
+        const blocks = content.split('\n\n');
+        return blocks
+          .map((block) => {
+            const lines = block.trim().split('\n');
+            if (lines.length >= 2 && lines[0].includes('|') && lines[1].includes('|')) {
+              const headerCols = lines[0]
+                .split('|')
+                .map((c) => c.trim())
+                .filter(Boolean);
+              const rowLines = lines.slice(2).filter((l) => l.trim().startsWith('|'));
+              const ths = headerCols
+                .map(
+                  (c) =>
+                    `<th style="padding:10px 14px;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:#b7c99f;background:#151b15;border-bottom:1px solid #2d382c;text-align:left;">${c.replace(/\*\*/g, '')}</th>`
+                )
+                .join('');
+              const trs = rowLines
+                .map((r) => {
+                  const cols = r.split('|').map((c) => c.trim()).filter(Boolean);
+                  const tds = cols
+                    .map((c) => {
+                      const formatted = c.replace(
+                        /\*\*([^*]+)\*\*/g,
+                        '<strong style="color:#b7c99f;">$1</strong>'
+                      );
+                      return `<td style="padding:10px 14px;border-bottom:1px solid #2d382c;color:#e3e6d8;font-size:13px;line-height:1.5;">${formatted}</td>`;
+                    })
+                    .join('');
+                  return `<tr style="border-bottom:1px solid #2d382c;">${tds}</tr>`;
+                })
+                .join('');
+              return `<div style="overflow-x:auto;margin:1.25rem 0;border:1px solid #2d382c;border-radius:10px;background:#181f18;"><table style="width:100%;border-collapse:collapse;text-align:left;"><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table></div>`;
+            }
+
+            let formatted = block
+              .replace(
+                /([a-zA-Z0-9._-]+\[at\][a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+                (match) => {
+                  const realEmail = match.replace('[at]', '@');
+                  return `<a href="mailto:${realEmail}" style="color:#b7c99f;text-decoration:underline;">${match}</a>`;
+                }
+              )
+              .replace(/\*\*([^*]+)\*\*/g, '<strong style="color:#fdfbf7;">$1</strong>');
+
+            return `<p style="margin:0 0 1rem 0;line-height:1.8;color:#e3e6d8;font-size:15px;">${formatted.replace(/\n/g, '<br/>')}</p>`;
+          })
+          .join('');
+      };
+
       const sectionsHtml = lp.sections
         .map(
           (sec) => `
-        <section id="${sec.id}" style="margin-bottom:2rem;background:#292524;border:1px solid #3d3835;border-radius:12px;padding:1.5rem;">
-          <h2 style="font-size:1.35rem;color:#f59e0b;margin-top:0;margin-bottom:1rem;border-bottom:1px solid #44403c;padding-bottom:0.5rem;">${sec.heading}</h2>
-          <div style="font-size:1rem;line-height:1.75;color:#e7e5e4;white-space:pre-line;">
-            ${sec.content.replace(
-              /([a-zA-Z0-9._-]+\[at\][a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
-              (match) => {
-                const realEmail = match.replace('[at]', '@');
-                return `<a href="mailto:${realEmail}" style="color:#fbbf24;text-decoration:underline;">${match}</a>`;
-              }
-            )}
+        <section id="${sec.id}" style="margin-bottom:2rem;background:#1a221a;border:1px solid #2d382c;border-radius:14px;padding:1.75rem;">
+          <h2 style="font-size:1.35rem;color:#b7c99f;margin-top:0;margin-bottom:1rem;border-bottom:1px solid #2d382c;padding-bottom:0.6rem;font-weight:700;letter-spacing:-0.01em;">${sec.heading}</h2>
+          <div style="font-size:1rem;line-height:1.8;color:#e3e6d8;">
+            ${renderLegalContent(sec.content)}
           </div>
         </section>
       `
@@ -488,39 +532,40 @@ function buildSSG() {
         .join('\n');
 
       const legalSsrBlock = `<div id="root">
-        <main style="max-width:960px;margin:0 auto;padding:2rem 1.25rem;font-family:Georgia,serif;color:#f5f5f4;background:#1c1917;line-height:1.75;">
-          <header style="margin-bottom:2rem;border-bottom:1px solid #292524;padding-bottom:1.5rem;">
-            <nav aria-label="Breadcrumb" style="font-size:13px;color:#a8a29e;margin-bottom:1rem;">
-              <a href="/" style="color:#f59e0b;text-decoration:none;">AduBible</a> &rsaquo;
-              <a href="/about/" style="color:#f59e0b;text-decoration:none;">Institutional Governance</a> &rsaquo;
+        <main style="max-width:960px;margin:0 auto;padding:2.5rem 1.25rem;font-family:Georgia,serif;color:#e3e6d8;background:#121712;line-height:1.8;">
+          <header style="margin-bottom:2.5rem;border-bottom:1px solid #2d382c;padding-bottom:1.75rem;">
+            <nav aria-label="Breadcrumb" style="font-size:13px;color:#8e968d;margin-bottom:1rem;">
+              <a href="/" style="color:#b7c99f;text-decoration:none;font-weight:600;">AduBible</a> &rsaquo;
+              <a href="/about/" style="color:#b7c99f;text-decoration:none;">Institutional Governance</a> &rsaquo;
               <span>${lp.title}</span>
             </nav>
-            <div style="font-size:12px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">
+            <div style="display:inline-block;padding:4px 12px;background:#243024;border:1px solid #3d4f3d;border-radius:999px;font-size:11px;font-weight:700;color:#b7c99f;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;">
               ${lp.badge} &bull; Last Updated: ${lp.lastUpdated}
             </div>
-            <h1 style="font-size:2.25rem;line-height:1.2;color:#fafaf9;margin:0 0 1rem 0;">${lp.title}</h1>
-            <p style="font-size:1.1rem;color:#d6d3d1;font-style:italic;margin:0;">${lp.metaDescription}</p>
+            <h1 style="font-size:2.25rem;line-height:1.2;color:#fdfbf7;margin:0 0 1rem 0;font-weight:800;letter-spacing:-0.02em;">${lp.title}</h1>
+            <p style="font-size:1.1rem;color:#c2c9bc;font-style:italic;margin:0;line-height:1.6;">${lp.metaDescription}</p>
           </header>
 
           <article class="legal-body">
             ${sectionsHtml}
           </article>
 
-          <footer style="margin-top:3rem;padding-top:2rem;border-top:1px solid #292524;font-size:13px;color:#a8a29e;">
-            <nav style="margin-bottom:1rem;display:flex;flex-wrap:wrap;gap:8px 14px;">
-              <a href="/" style="color:#f59e0b;">AduBible Home</a> |
-              <a href="/about/" style="color:#a8a29e;">About</a> |
-              <a href="/privacy/" style="color:#a8a29e;">Privacy Policy</a> |
-              <a href="/terms/" style="color:#a8a29e;">Terms of Service</a> |
-              <a href="/contact/" style="color:#a8a29e;">Contact Us</a> |
-              <a href="/cookie-policy/" style="color:#a8a29e;">Cookie Policy</a> |
-              <a href="/how-to-use/" style="color:#a8a29e;">How to Use</a> |
-              <a href="/editorial-policy/" style="color:#a8a29e;">Editorial Policy</a> |
-              <a href="/glossary/" style="color:#a8a29e;">Glossary</a> |
-              <a href="/sources/" style="color:#a8a29e;">Sources</a> |
-              <a href="/articles/" style="color:#f59e0b;">15 Pillar Articles</a>
+          <footer style="margin-top:3.5rem;padding-top:2rem;border-top:1px solid #2d382c;font-size:13px;color:#8e968d;">
+            <nav style="margin-bottom:1.25rem;display:flex;flex-wrap:wrap;gap:8px 14px;">
+              <a href="/" style="color:#b7c99f;font-weight:600;">AduBible Home</a> |
+              <a href="/donate/" style="color:#f59e0b;font-weight:700;">💛 Support Scripture Mission (Donate)</a> |
+              <a href="/about/" style="color:#8e968d;">About</a> |
+              <a href="/privacy/" style="color:#8e968d;">Privacy Policy</a> |
+              <a href="/terms/" style="color:#8e968d;">Terms of Service</a> |
+              <a href="/contact/" style="color:#8e968d;">Contact Us</a> |
+              <a href="/cookie-policy/" style="color:#8e968d;">Cookie Policy</a> |
+              <a href="/how-to-use/" style="color:#8e968d;">How to Use</a> |
+              <a href="/editorial-policy/" style="color:#8e968d;">Editorial Policy</a> |
+              <a href="/glossary/" style="color:#8e968d;">Glossary</a> |
+              <a href="/sources/" style="color:#8e968d;">Sources</a> |
+              <a href="/articles/" style="color:#b7c99f;font-weight:600;">15 Pillar Articles</a>
             </nav>
-            <p>&copy; 2026 <a href="https://adubible.org/" style="color:inherit;text-decoration:none;">AduBible.org</a> &middot; Dedicated to Humanity as a Sacred Ministry in Support of Apostle Kwame Adu &middot; <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" style="color:#f59e0b;">Nsuhia, Ghana ↗</a> &middot; <span style="color:#10b981;">100% Ads-Free Reading Experience</span></p>
+            <p>&copy; 2026 <a href="https://adubible.org/" style="color:inherit;text-decoration:none;font-weight:600;">AduBible.org</a> &middot; Dedicated to Humanity as a Sacred Ministry in Support of Apostle Kwame Adu &middot; <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" style="color:#b7c99f;">Nsuhia, Ghana ↗</a> &middot; <span style="color:#4ade80;">100% Ads-Free Reading Experience</span></p>
           </footer>
         </main>
       </div>`;
@@ -555,6 +600,25 @@ function buildSSG() {
     fs.mkdirSync(outDir, { recursive: true });
     fs.writeFileSync(path.join(outDir, 'index.html'), html, 'utf-8');
   }
+
+  // Generate physical /admin/ entry point (Strictly noindex, nofollow; excluded from sitemaps)
+  const adminDir = path.join(DIST_DIR, 'admin');
+  fs.mkdirSync(adminDir, { recursive: true });
+  let adminHtml = baseHtml
+    .replace(/<title>[\s\S]*?<\/title>/i, '<title>AduBible Mission Command Deck &amp; Executive Admin | AduBible.org</title>')
+    .replace(
+      /<meta\s+name="robots"\s+content="[^"]*"\s*\/?>/i,
+      '<meta name="robots" content="noindex, nofollow" />'
+    )
+    .replace(
+      /<link\s+rel="canonical"\s+href="[^"]*"\s*\/?>/i,
+      `<link rel="canonical" href="${BASE_URL}/admin/" />`
+    )
+    .replace(
+      '<div id="root"></div>',
+      '<div id="root"><main style="max-width:760px;margin:4rem auto;padding:2rem;font-family:Georgia,serif;color:#f5f5f4;text-align:center;"><h1 style="color:#e3e6d8;font-size:2rem;margin-bottom:0.75rem;">AduBible Mission Command Deck</h1><p style="color:#9ca3af;font-size:1rem;">Initializing Sovereign Executive Authentication...</p></main></div>'
+    );
+  fs.writeFileSync(path.join(adminDir, 'index.html'), adminHtml, 'utf-8');
 
   // Generate sitemap.xml
   const sitemapEntries = CANONICAL_ROUTES.map(

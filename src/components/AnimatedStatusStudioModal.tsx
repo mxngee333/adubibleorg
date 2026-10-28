@@ -402,22 +402,22 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
       aria-modal="true"
       aria-labelledby="status-studio-title"
     >
-      <div className="relative w-full max-w-5xl bg-stone-900 border border-amber-500/30 rounded-2xl shadow-2xl shadow-amber-950/40 text-stone-100 overflow-hidden flex flex-col max-h-[96vh]">
+      <div className="relative w-full max-w-5xl bg-[var(--paper)] border border-[var(--line)] rounded-2xl shadow-2xl text-[var(--ink)] overflow-hidden flex flex-col max-h-[96vh]">
         {/* Top Header */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-stone-800 bg-stone-950/60">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-[var(--line)] bg-[var(--surface)]">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-600/30 border border-amber-500/40 flex items-center justify-center text-amber-400">
+            <div className="w-8 h-8 rounded-lg bg-[var(--soft)] border border-[var(--line)] flex items-center justify-center text-[var(--green)]">
               <Film className="w-4 h-4" />
             </div>
             <div>
-              <h2 id="status-studio-title" className="text-base sm:text-lg font-serif font-bold text-amber-200 flex items-center gap-2">
+              <h2 id="status-studio-title" className="text-base sm:text-lg font-serif font-bold text-[var(--ink)] flex items-center gap-2">
                 10s Animated Scripture Status Studio
-                <span className="text-[10px] font-sans uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                <span className="text-[10px] font-sans uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[var(--soft)] text-[var(--green)] border border-[var(--line)]">
                   Viral Reels
                 </span>
               </h2>
-              <p className="text-xs text-stone-400">
-                Generate 10s kinetic text videos with 24kHz Google neural voice &amp; permanent <span className="text-amber-300 font-semibold">Adubible.org</span> watermark
+              <p className="text-xs text-[var(--subtle)]">
+                Generate 10s kinetic text videos with 24kHz Google neural voice &amp; permanent <span className="text-[var(--green)] font-semibold">Adubible.org</span> watermark
               </p>
             </div>
           </div>
@@ -425,7 +425,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-stone-400 hover:text-stone-200 hover:bg-stone-800 transition-colors"
+            className="p-1.5 rounded-lg text-[var(--subtle)] hover:text-[var(--ink)] hover:bg-[var(--soft)] transition-colors"
             aria-label="Close Studio"
           >
             <X className="w-5 h-5" />

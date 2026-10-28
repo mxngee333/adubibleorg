@@ -215,17 +215,17 @@ export const VerseCardStudioModal: React.FC<VerseCardStudioModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
-      <div className="relative flex flex-col w-full max-w-2xl rounded-2xl border border-amber-500/30 bg-stone-950 text-stone-100 shadow-2xl overflow-hidden">
-        <div className="flex items-center justify-between border-b border-stone-800 bg-stone-900 px-5 py-3.5">
+      <div className="relative flex flex-col w-full max-w-2xl rounded-2xl border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] shadow-2xl overflow-hidden">
+        <div className="flex items-center justify-between border-b border-[var(--line)] bg-[var(--surface)] px-5 py-3.5">
           <div className="flex items-center gap-2">
-            <ImageIcon className="h-5 w-5 text-amber-400" />
-            <h3 className="text-sm sm:text-base font-bold text-amber-200">
+            <ImageIcon className="h-5 w-5 text-[var(--green)]" />
+            <h3 className="text-sm sm:text-base font-bold text-[var(--ink)]">
               Parallel Verse Art &amp; Citation Studio — {reference}
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-800 hover:text-white"
+            className="rounded-lg p-1.5 text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)]"
           >
             <X className="h-5 w-5" />
           </button>
@@ -235,13 +235,13 @@ export const VerseCardStudioModal: React.FC<VerseCardStudioModalProps> = ({
           <div className="md:col-span-3 flex justify-center">
             <canvas
               ref={canvasRef}
-              className="w-full max-w-[340px] aspect-square rounded-xl border border-amber-500/30 shadow-xl"
+              className="w-full max-w-[340px] aspect-square rounded-xl border border-[var(--line)] shadow-xl"
             />
           </div>
 
           <div className="md:col-span-2 space-y-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--subtle)] mb-2">
                 Sanctuary Art Theme
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -251,8 +251,8 @@ export const VerseCardStudioModal: React.FC<VerseCardStudioModalProps> = ({
                     onClick={() => setSelectedTheme(t)}
                     className={`rounded-xl border px-3 py-2 text-xs font-semibold text-left transition ${
                       selectedTheme.id === t.id
-                        ? 'border-amber-400 bg-amber-500/15 text-amber-200'
-                        : 'border-stone-800 bg-stone-900 text-stone-300 hover:border-stone-700'
+                        ? 'border-[var(--green)] bg-[var(--soft)] text-[var(--ink)]'
+                        : 'border-[var(--line)] bg-[var(--surface)] text-[var(--subtle)] hover:border-[var(--green)]'
                     }`}
                   >
                     {t.name}
@@ -262,12 +262,12 @@ export const VerseCardStudioModal: React.FC<VerseCardStudioModalProps> = ({
             </div>
 
             {secondaryText && (
-              <label className="flex items-center gap-2 text-xs text-stone-300 cursor-pointer">
+              <label className="flex items-center gap-2 text-xs text-[var(--ink)] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={includeParallel}
                   onChange={(e) => setIncludeParallel(e.target.checked)}
-                  className="rounded accent-amber-500"
+                  className="rounded accent-[var(--green)]"
                 />
                 <span>Include Parallel ({secondaryVersionName}) on Card</span>
               </label>
@@ -281,23 +281,23 @@ export const VerseCardStudioModal: React.FC<VerseCardStudioModalProps> = ({
                     onClose();
                     onOpenVideoStudio();
                   }}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-amber-500/50 bg-gradient-to-r from-amber-500/20 via-amber-500/30 to-amber-500/20 py-2.5 text-xs font-bold text-amber-200 hover:brightness-125 shadow-lg shadow-amber-950/40 transition"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--line)] bg-[var(--soft)] py-2.5 text-xs font-bold text-[var(--green)] hover:opacity-90 shadow-lg transition"
                 >
-                  <Sparkles className="h-4 w-4 text-amber-400" />
+                  <Sparkles className="h-4 w-4 text-[var(--green)]" />
                   🎬 Switch to 10s Animated Video Studio (WhatsApp/Reels)
                 </button>
               )}
 
               <button
                 onClick={handleDownloadImage}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 py-2.5 text-xs font-bold text-stone-950 hover:bg-amber-400 transition"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--green)] py-2.5 text-xs font-bold text-[var(--paper)] hover:opacity-90 transition"
               >
                 <Download className="h-4 w-4" />
                 Download 1080p Verse Card (PNG)
               </button>
               <button
                 onClick={handleCopyCitation}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-stone-700 bg-stone-900 py-2.5 text-xs font-semibold text-stone-200 hover:bg-stone-800 transition"
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface)] py-2.5 text-xs font-semibold text-[var(--ink)] hover:bg-[var(--soft)] transition"
               >
                 {copied ? (
                   <>
@@ -306,15 +306,15 @@ export const VerseCardStudioModal: React.FC<VerseCardStudioModalProps> = ({
                   </>
                 ) : (
                   <>
-                    <Copy className="h-4 w-4 text-amber-400" />
+                    <Copy className="h-4 w-4 text-[var(--green)]" />
                     Copy Parallel Text Citation
                   </>
                 )}
               </button>
             </div>
 
-            <div className="rounded-xl border border-stone-800 bg-stone-900/50 p-3 text-[11px] text-stone-400 flex items-start gap-2">
-              <Sparkles className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
+            <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-3 text-[11px] text-[var(--subtle)] flex items-start gap-2">
+              <Sparkles className="h-4 w-4 text-[var(--green)] shrink-0 mt-0.5" />
               <span>
                 Zero watermarks or third-party ads. Ready to share on WhatsApp, Telegram, X, or sermon slides.
               </span>

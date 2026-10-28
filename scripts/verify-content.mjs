@@ -90,12 +90,13 @@ if (fs.existsSync(dist)) {
   for (const file of htmlFiles) {
     const html = fs.readFileSync(file, 'utf8');
     const is404 = path.basename(file) === '404.html';
+    const isAdmin = /[\\/]admin[\\/]/.test(file);
     const c = (html.match(/<link\s+rel="canonical"\s+href="([^"]+)"/i) || [])[1];
     
     if (!is404 && !c) {
       failures.push(`${path.relative(dist, file)}: missing canonical tag`);
     }
-    if (!is404 && /name="robots"\s+content="[^"]*noindex/i.test(html)) {
+    if (!is404 && !isAdmin && /name="robots"\s+content="[^"]*noindex/i.test(html)) {
       failures.push(`${path.relative(dist, file)}: unexpected noindex on indexable page`);
     }
     if (is404 && !/name="robots"\s+content="[^"]*noindex/i.test(html)) {

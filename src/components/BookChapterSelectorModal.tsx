@@ -119,32 +119,32 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
 
   return (
     <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/75 backdrop-blur-sm p-3 sm:p-6">
-      <div className="relative flex flex-col w-full max-w-4xl max-h-[88vh] rounded-2xl border border-amber-500/30 bg-stone-950 text-stone-100 shadow-2xl overflow-hidden">
+      <div className="relative flex flex-col w-full max-w-4xl max-h-[88vh] rounded-2xl border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-stone-800 bg-gradient-to-r from-stone-900 via-stone-900 to-amber-950/40 px-5 py-3.5">
+        <div className="flex items-center justify-between border-b border-[var(--line)] bg-[var(--surface)] px-5 py-3.5">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--soft)] border border-[var(--line)] text-[var(--green)]">
               <BookOpen className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-amber-200">
+              <h2 className="text-base font-bold text-[var(--ink)]">
                 {headerMeta.title}
               </h2>
-              <p className="text-xs text-stone-400">
+              <p className="text-xs text-[var(--subtle)]">
                 {headerMeta.desc}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-800 hover:text-white transition"
+            className="rounded-lg p-1.5 text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)] transition"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Filter Bar */}
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 border-b border-stone-800 bg-stone-900/70 px-5 py-3">
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 border-b border-[var(--line)] bg-[var(--surface)] px-5 py-3">
           <div className="flex flex-wrap items-center gap-1.5">
             <button
               onClick={() => {
@@ -153,8 +153,8 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
               }}
               className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
                 testamentFilter === 'CANONICAL'
-                  ? 'bg-amber-500 text-stone-950'
-                  : 'bg-stone-800 text-stone-300 hover:text-white'
+                  ? 'bg-[var(--green)] text-[var(--paper)]'
+                  : 'bg-[var(--soft)] text-[var(--ink)] hover:opacity-80'
               }`}
               title="66 Accepted Canonical Books (OT 39 + NT 27)"
             >
@@ -167,8 +167,8 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
               }}
               className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
                 testamentFilter === 'OT'
-                  ? 'bg-amber-500 text-stone-950'
-                  : 'bg-stone-800 text-stone-300 hover:text-white'
+                  ? 'bg-[var(--green)] text-[var(--paper)]'
+                  : 'bg-[var(--soft)] text-[var(--ink)] hover:opacity-80'
               }`}
             >
               Old Testament (39)
@@ -180,8 +180,8 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
               }}
               className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
                 testamentFilter === 'NT'
-                  ? 'bg-amber-500 text-stone-950'
-                  : 'bg-stone-800 text-stone-300 hover:text-white'
+                  ? 'bg-[var(--green)] text-[var(--paper)]'
+                  : 'bg-[var(--soft)] text-[var(--ink)] hover:opacity-80'
               }`}
             >
               New Testament (27)
@@ -193,8 +193,8 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
               }}
               className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
                 testamentFilter === 'DC'
-                  ? 'bg-amber-500 text-stone-950'
-                  : 'bg-amber-950/70 border border-amber-600/50 text-amber-300 hover:text-amber-100'
+                  ? 'bg-[var(--green)] text-[var(--paper)]'
+                  : 'bg-[var(--soft)] text-[var(--ink)] hover:opacity-80'
               }`}
               title="16 Deuterocanonical Books (Tobit, Judith, 1-2 Maccabees, Wisdom, Sirach, Baruch...)"
             >
@@ -207,8 +207,8 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
               }}
               className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
                 testamentFilter === 'PSEUD'
-                  ? 'bg-amber-500 text-stone-950'
-                  : 'bg-purple-950/70 border border-purple-600/50 text-purple-300 hover:text-purple-100'
+                  ? 'bg-[var(--green)] text-[var(--paper)]'
+                  : 'bg-[var(--soft)] text-[var(--ink)] hover:opacity-80'
               }`}
               title="25 Apocrypha Books (1 Enoch, Jubilees, Book of Jasher, 2 Esdras, Patriarchs...)"
             >
@@ -221,8 +221,8 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
               }}
               className={`rounded-xl px-2.5 py-1 text-xs font-bold transition ${
                 testamentFilter === 'ALL'
-                  ? 'bg-amber-500 text-stone-950'
-                  : 'bg-stone-800 text-stone-300 hover:text-white'
+                  ? 'bg-[var(--green)] text-[var(--paper)]'
+                  : 'bg-[var(--soft)] text-[var(--ink)] hover:opacity-80'
               }`}
               title="View all 107 Holy Scriptures"
             >
@@ -231,7 +231,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
           </div>
 
           <div className="relative flex-1 min-w-[130px] max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400 pointer-events-none" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--subtle)] pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
@@ -240,23 +240,23 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                 setStep('books');
               }}
               placeholder="Search scripture, book, chapter..."
-              className="w-full rounded-xl border border-stone-700 bg-stone-950 pl-9 pr-3 py-2 text-sm sm:text-xs text-white placeholder-stone-500 focus:border-amber-500 focus:outline-none min-h-[38px]"
+              className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] pl-9 pr-3 py-2 text-sm sm:text-xs text-[var(--ink)] placeholder-[var(--subtle)] focus:border-[var(--green)] focus:outline-none min-h-[38px]"
             />
           </div>
         </div>
 
         {/* Mobile Step Toggle */}
-        <div className="flex md:hidden border-b border-stone-800 bg-stone-900/40 px-4 py-2 text-xs">
+        <div className="flex md:hidden border-b border-[var(--line)] bg-[var(--surface)] px-4 py-2 text-xs">
           <button
             onClick={() => setStep('books')}
-            className={`font-bold ${step === 'books' ? 'text-amber-400' : 'text-stone-400'}`}
+            className={`font-bold ${step === 'books' ? 'text-[var(--green)]' : 'text-[var(--subtle)]'}`}
           >
             1. Select Book ({uiLanguageCode !== 'en' && activeBook?.names[uiLanguageCode] ? activeBook.names[uiLanguageCode] : activeBook?.names.en})
           </button>
-          <ChevronRight className="h-4 w-4 mx-1 text-stone-600" />
+          <ChevronRight className="h-4 w-4 mx-1 text-[var(--subtle)]" />
           <button
             onClick={() => setStep('chapters')}
-            className={`font-bold ${step === 'chapters' ? 'text-amber-400' : 'text-stone-400'}`}
+            className={`font-bold ${step === 'chapters' ? 'text-[var(--green)]' : 'text-[var(--subtle)]'}`}
           >
             2. Select Chapter ({activeBook?.chapters} Chapters)
           </button>
@@ -266,7 +266,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
         <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
           {/* Books List */}
           <div
-            className={`w-full md:w-3/5 border-r border-stone-800 overflow-y-auto p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 ${
+            className={`w-full md:w-3/5 border-r border-[var(--line)] overflow-y-auto p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 ${
               step === 'chapters' ? 'hidden md:grid' : 'grid'
             }`}
           >
@@ -281,13 +281,13 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                   }}
                   className={`flex items-center justify-between rounded-xl border p-3 text-left transition ${
                     isSelected
-                      ? 'border-amber-400 bg-amber-500/15 text-amber-200 shadow'
-                      : 'border-stone-800/80 bg-stone-900/50 text-stone-200 hover:border-stone-700 hover:bg-stone-900'
+                      ? 'border-[var(--green)] bg-[var(--soft)] text-[var(--ink)] shadow'
+                      : 'border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] hover:border-[var(--green)] hover:bg-[var(--soft)]'
                   }`}
                 >
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-mono font-bold rounded bg-stone-800 px-1.5 py-0.5 text-amber-400">
+                      <span className="text-[10px] font-mono font-bold rounded bg-[var(--soft)] px-1.5 py-0.5 text-[var(--green)] border border-[var(--line)]">
                         {book.number}
                       </span>
                       <span className="font-bold text-sm truncate">
@@ -296,13 +296,13 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                           : book.names.en}
                       </span>
                     </div>
-                    <div className="text-[11px] text-amber-300/80 truncate mt-0.5">
+                    <div className="text-[11px] text-[var(--subtle)] truncate mt-0.5">
                       {uiLanguageCode !== 'en' && book.names[uiLanguageCode]
                         ? `${book.names.en} • ${book.chapters} ch`
                         : `${book.category} • ${book.chapters} ch`}
                     </div>
                   </div>
-                  <span className="shrink-0 rounded-lg bg-stone-800/90 px-2 py-1 text-[11px] font-mono text-stone-400">
+                  <span className="shrink-0 rounded-lg bg-[var(--soft)] px-2 py-1 text-[11px] font-mono text-[var(--subtle)] border border-[var(--line)]">
                     {book.chapters} ch
                   </span>
                 </button>
@@ -312,14 +312,14 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
 
           {/* Chapters Grid */}
           <div
-            className={`w-full md:w-2/5 overflow-y-auto p-5 bg-stone-900/30 ${
+            className={`w-full md:w-2/5 overflow-y-auto p-5 bg-[var(--surface)] ${
               step === 'books' ? 'hidden md:block' : 'block'
             }`}
           >
             {activeBook && (
               <div>
-                <div className="mb-4 pb-3 border-b border-stone-800">
-                  <div className="flex items-center gap-2 text-xs text-amber-400 font-bold uppercase tracking-wider">
+                <div className="mb-4 pb-3 border-b border-[var(--line)]">
+                  <div className="flex items-center gap-2 text-xs text-[var(--green)] font-bold uppercase tracking-wider">
                     <Sparkles className="h-3.5 w-3.5" />
                     {activeBook.category} •{' '}
                     {activeBook.testament === 'OT'
@@ -330,17 +330,17 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                       ? 'Deuterocanonical'
                       : 'List of Sixty & Apocrypha'}
                   </div>
-                  <h3 className="text-lg font-bold text-white mt-0.5">
+                  <h3 className="text-lg font-bold text-[var(--ink)] mt-0.5">
                     {uiLanguageCode !== 'en' && activeBook.names[uiLanguageCode]
                       ? `${activeBook.names[uiLanguageCode]} (${activeBook.names.en})`
                       : activeBook.names.en}
                   </h3>
                   {activeBook.canonStatus && (
-                    <p className="text-[11px] text-amber-300/80 mt-0.5 leading-relaxed">
+                    <p className="text-[11px] text-[var(--subtle)] mt-0.5 leading-relaxed">
                       🏛️ {activeBook.canonStatus} {activeBook.historicalEra ? `(${activeBook.historicalEra})` : ''}
                     </p>
                   )}
-                  <p className="text-xs text-stone-400 mt-1">
+                  <p className="text-xs text-[var(--subtle)] mt-1">
                     Select a chapter (1 – {activeBook.chapters})
                   </p>
                 </div>
@@ -358,8 +358,8 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                         }}
                         className={`h-10 rounded-xl font-mono text-xs font-bold transition flex items-center justify-center ${
                           isCurrent
-                            ? 'bg-amber-500 text-stone-950 shadow-lg ring-2 ring-amber-300'
-                            : 'border border-stone-800 bg-stone-900 text-stone-200 hover:border-amber-500/50 hover:bg-amber-500/15 hover:text-amber-300'
+                            ? 'bg-[var(--green)] text-[var(--paper)] shadow-lg ring-2 ring-[var(--green)]'
+                            : 'border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] hover:border-[var(--green)] hover:bg-[var(--soft)]'
                         }`}
                       >
                         {chNum}
@@ -371,7 +371,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
             )}
 
             {/* Discreet Historical Non-Canonical Zone Link */}
-            <div className="border-t border-stone-800/80 pt-3 mt-4 text-center text-xs text-stone-400">
+            <div className="border-t border-[var(--line)] pt-3 mt-4 text-center text-xs text-[var(--subtle)]">
               <span>Historical Non-Canonical Writings:</span>
               <a
                 href="/deuterocanon"
@@ -383,11 +383,11 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                     window.dispatchEvent(new PopStateEvent('popstate'));
                   }
                 }}
-                className="text-amber-400/90 hover:underline font-semibold ml-2 inline-block"
+                className="text-[var(--green)] hover:underline font-semibold ml-2 inline-block"
               >
                 16 Deuterocanonicals Zone →
               </a>
-              <span className="mx-1.5 text-stone-600">·</span>
+              <span className="mx-1.5 text-[var(--subtle)]">·</span>
               <a
                 href="/list-of-sixty"
                 onClick={(e) => {
@@ -398,7 +398,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                     window.dispatchEvent(new PopStateEvent('popstate'));
                   }
                 }}
-                className="text-amber-400/90 hover:underline font-semibold inline-block"
+                className="text-[var(--green)] hover:underline font-semibold inline-block"
               >
                 25 Apocrypha Zone →
               </a>

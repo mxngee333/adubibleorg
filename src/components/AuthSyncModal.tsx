@@ -158,23 +158,23 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="relative w-full max-w-md rounded-2xl border border-amber-500/30 bg-stone-950 text-stone-100 shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-md rounded-2xl border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-stone-800 bg-gradient-to-r from-amber-950/70 via-stone-900 to-stone-950 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-[var(--line)] bg-[var(--surface)] px-6 py-4">
           <div className="flex items-center gap-3">
             <AduBibleLogo size="md" />
-            <div className="border-l border-stone-800 pl-3">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-amber-400">
+            <div className="border-l border-[var(--line)] pl-3">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--green)]">
                 Cloud Study Sync
               </span>
-              <p className="text-[11px] text-stone-400">
+              <p className="text-[11px] text-[var(--subtle)]">
                 100% Ads-Free • Sovereign Privacy
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-800 hover:text-white transition"
+            className="rounded-lg p-1.5 text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)] transition"
             aria-label="Close modal"
           >
             <X className="h-5 w-5" />
@@ -183,22 +183,22 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
 
         <div className="p-6">
           {/* Vault Stats Banner */}
-          <div className="mb-5 grid grid-cols-4 gap-2 rounded-xl border border-stone-800 bg-stone-900/70 p-3 text-center">
+          <div className="mb-5 grid grid-cols-4 gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface)] p-3 text-center">
             <div>
-              <div className="text-base font-bold text-amber-400">{pins.length}</div>
-              <div className="text-[11px] text-stone-400">Pinned</div>
+              <div className="text-base font-bold text-[var(--green)]">{pins.length}</div>
+              <div className="text-[11px] text-[var(--subtle)]">Pinned</div>
             </div>
             <div>
               <div className="text-base font-bold text-emerald-400">{highlights.length}</div>
-              <div className="text-[11px] text-stone-400">Highlights</div>
+              <div className="text-[11px] text-[var(--subtle)]">Highlights</div>
             </div>
             <div>
               <div className="text-base font-bold text-sky-400">{bookmarks.length}</div>
-              <div className="text-[11px] text-stone-400">Bookmarks</div>
+              <div className="text-[11px] text-[var(--subtle)]">Bookmarks</div>
             </div>
             <div>
               <div className="text-base font-bold text-rose-400">{notes.length}</div>
-              <div className="text-[11px] text-stone-400">Notes</div>
+              <div className="text-[11px] text-[var(--subtle)]">Notes</div>
             </div>
           </div>
 
@@ -217,19 +217,19 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
 
           {user ? (
             <div className="space-y-4">
-              <div className="flex items-center gap-3.5 rounded-xl border border-amber-500/30 bg-amber-950/20 p-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500 text-stone-950 font-bold text-lg">
+              <div className="flex items-center gap-3.5 rounded-xl border border-[var(--line)] bg-[var(--surface)] p-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--green)] text-[var(--paper)] font-bold text-lg">
                   {(user.displayName || user.email || 'S')[0].toUpperCase()}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
-                    <h3 className="font-bold text-white truncate">{user.displayName}</h3>
+                    <h3 className="font-bold text-[var(--ink)] truncate">{user.displayName}</h3>
                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-medium text-emerald-300 border border-emerald-500/30">
                       <ShieldCheck className="h-3 w-3" /> Synced
                     </span>
                   </div>
-                  <p className="text-xs text-stone-400 truncate">{user.email}</p>
-                  <p className="text-[11px] text-amber-300/80 mt-1">
+                  <p className="text-xs text-[var(--subtle)] truncate">{user.email}</p>
+                  <p className="text-[11px] text-[var(--green)] mt-1">
                     🔥 {user.streakDays} Day Study Streak • {user.chaptersRead} Chapters Read
                   </p>
                 </div>
@@ -239,16 +239,16 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
                 <button
                   onClick={handleManualSync}
                   disabled={syncing}
-                  className="flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-stone-950 hover:bg-amber-400 transition disabled:opacity-50"
+                  className="flex items-center justify-center gap-2 rounded-xl bg-[var(--green)] px-4 py-2.5 text-xs font-bold text-[var(--paper)] hover:opacity-90 transition disabled:opacity-50"
                 >
                   <RefreshCw className={`h-4 w-4 ${syncing ? 'animate-spin' : ''}`} />
                   {syncing ? 'Syncing...' : 'Sync Now'}
                 </button>
                 <button
                   onClick={handleExportVaultJson}
-                  className="flex items-center justify-center gap-2 rounded-xl border border-stone-700 bg-stone-900 px-4 py-2.5 text-xs font-semibold text-stone-200 hover:bg-stone-800 transition"
+                  className="flex items-center justify-center gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-4 py-2.5 text-xs font-semibold text-[var(--ink)] hover:bg-[var(--soft)] transition"
                 >
-                  <Download className="h-4 w-4 text-amber-400" />
+                  <Download className="h-4 w-4 text-[var(--green)]" />
                   Backup JSON
                 </button>
               </div>
@@ -269,7 +269,7 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
             <div>
               {/* Auth Branding Hero */}
               <div className="mb-4 text-center">
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-stone-900 border border-stone-800 shadow-lg mb-2">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--surface)] border border-[var(--line)] shadow-lg mb-2">
                   <img src="/brand/Symbol_Transparent.png" alt="AduBible" className="h-9 w-9 object-contain" />
                 </div>
                 <div className="flex items-center justify-center gap-1 font-serif text-base font-bold mb-1">
@@ -277,23 +277,23 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
                   <span style={{ color: 'var(--logo-bible-color, #B8AC94)' }}>Bible</span>
                   <span style={{ color: 'var(--logo-tld-color, #8E968D)' }}>.org</span>
                 </div>
-                <h3 className="text-sm font-bold text-white tracking-wide">
+                <h3 className="text-sm font-bold text-[var(--ink)] tracking-wide">
                   {activeTab === 'signin' ? 'Welcome Back to AduBible' : 'Create Your Sovereign Study Vault'}
                 </h3>
-                <p className="text-xs text-stone-400 mt-0.5">
+                <p className="text-xs text-[var(--subtle)] mt-0.5">
                   Synchronize your bookmarks, pins, and study streak across all devices
                 </p>
               </div>
 
               {/* Tabs */}
-              <div className="mb-4 grid grid-cols-2 rounded-xl bg-stone-900 p-1 border border-stone-800">
+              <div className="mb-4 grid grid-cols-2 rounded-xl bg-[var(--surface)] p-1 border border-[var(--line)]">
                 <button
                   type="button"
                   onClick={() => handleTabSwitch('signin')}
                   className={`rounded-lg py-2 text-xs font-bold transition ${
                     activeTab === 'signin'
-                      ? 'bg-amber-500 text-stone-950 shadow'
-                      : 'text-stone-400 hover:text-white'
+                      ? 'bg-[var(--green)] text-[var(--paper)] shadow'
+                      : 'text-[var(--subtle)] hover:text-[var(--ink)]'
                   }`}
                 >
                   Sign In
@@ -303,8 +303,8 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
                   onClick={() => handleTabSwitch('signup')}
                   className={`rounded-lg py-2 text-xs font-bold transition ${
                     activeTab === 'signup'
-                      ? 'bg-amber-500 text-stone-950 shadow'
-                      : 'text-stone-400 hover:text-white'
+                      ? 'bg-[var(--green)] text-[var(--paper)] shadow'
+                      : 'text-[var(--subtle)] hover:text-[var(--ink)]'
                   }`}
                 >
                   Create Account
@@ -314,33 +314,33 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
               {activeTab === 'signin' ? (
                 <form onSubmit={handleSignIn} className="space-y-3.5">
                   <div>
-                    <label className="mb-1 block text-xs font-medium text-stone-300">
+                    <label className="mb-1 block text-xs font-medium text-[var(--ink)]">
                       Email Address
                     </label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-2.5 h-4 w-4 text-stone-500" />
+                      <Mail className="absolute left-3 top-2.5 h-4 w-4 text-[var(--subtle)]" />
                       <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="scholar@elohimbible.org"
-                        className="w-full rounded-xl border border-stone-800 bg-stone-900 pl-9 pr-3 py-2 text-sm text-white placeholder-stone-500 focus:border-amber-500 focus:outline-none"
+                        placeholder="scholar@adubible.org"
+                        className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] pl-9 pr-3 py-2 text-sm text-[var(--ink)] placeholder-[var(--subtle)] focus:border-[var(--green)] focus:outline-none"
                         required
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="mb-1 block text-xs font-medium text-stone-300">
+                    <label className="mb-1 block text-xs font-medium text-[var(--ink)]">
                       Password
                     </label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-2.5 h-4 w-4 text-stone-500" />
+                      <Lock className="absolute left-3 top-2.5 h-4 w-4 text-[var(--subtle)]" />
                       <input
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
-                        className="w-full rounded-xl border border-stone-800 bg-stone-900 pl-9 pr-3 py-2 text-sm text-white placeholder-stone-500 focus:border-amber-500 focus:outline-none"
+                        className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] pl-9 pr-3 py-2 text-sm text-[var(--ink)] placeholder-[var(--subtle)] focus:border-[var(--green)] focus:outline-none"
                         required
                       />
                     </div>
@@ -348,7 +348,7 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full rounded-xl bg-amber-500 py-2.5 text-sm font-bold text-stone-950 hover:bg-amber-400 transition disabled:opacity-50"
+                    className="w-full rounded-xl bg-[var(--green)] py-2.5 text-sm font-bold text-[var(--paper)] hover:opacity-90 transition disabled:opacity-50"
                   >
                     {loading ? 'Signing In...' : 'Sign In & Sync Vault'}
                   </button>
@@ -356,59 +356,59 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
               ) : (
                 <form onSubmit={handleSignUp} className="space-y-3.5">
                   <div>
-                    <label className="mb-1 block text-xs font-medium text-stone-300">
+                    <label className="mb-1 block text-xs font-medium text-[var(--ink)]">
                       Scholar Display Name
                     </label>
                     <div className="relative">
-                      <User className="absolute left-3 top-2.5 h-4 w-4 text-stone-500" />
+                      <User className="absolute left-3 top-2.5 h-4 w-4 text-[var(--subtle)]" />
                       <input
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Kwame Elohim"
-                        className="w-full rounded-xl border border-stone-800 bg-stone-900 pl-9 pr-3 py-2 text-sm text-white placeholder-stone-500 focus:border-amber-500 focus:outline-none"
+                        className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] pl-9 pr-3 py-2 text-sm text-[var(--ink)] placeholder-[var(--subtle)] focus:border-[var(--green)] focus:outline-none"
                         required
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="mb-1 block text-xs font-medium text-stone-300">
+                    <label className="mb-1 block text-xs font-medium text-[var(--ink)]">
                       Email Address
                     </label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-2.5 h-4 w-4 text-stone-500" />
+                      <Mail className="absolute left-3 top-2.5 h-4 w-4 text-[var(--subtle)]" />
                       <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="scholar@elohimbible.org"
-                        className="w-full rounded-xl border border-stone-800 bg-stone-900 pl-9 pr-3 py-2 text-sm text-white placeholder-stone-500 focus:border-amber-500 focus:outline-none"
+                        placeholder="scholar@adubible.org"
+                        className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] pl-9 pr-3 py-2 text-sm text-[var(--ink)] placeholder-[var(--subtle)] focus:border-[var(--green)] focus:outline-none"
                         required
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="mb-1 block text-xs font-medium text-stone-300">
+                    <label className="mb-1 block text-xs font-medium text-[var(--ink)]">
                       Password
                     </label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-2.5 h-4 w-4 text-stone-500" />
+                      <Lock className="absolute left-3 top-2.5 h-4 w-4 text-[var(--subtle)]" />
                       <input
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Create password"
-                        className="w-full rounded-xl border border-stone-800 bg-stone-900 pl-9 pr-3 py-2 text-sm text-white placeholder-stone-500 focus:border-amber-500 focus:outline-none"
+                        className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] pl-9 pr-3 py-2 text-sm text-[var(--ink)] placeholder-[var(--subtle)] focus:border-[var(--green)] focus:outline-none"
                         required
                       />
                     </div>
                   </div>
-                  <label className="flex items-start gap-2 text-xs text-stone-400 cursor-pointer">
+                  <label className="flex items-start gap-2 text-xs text-[var(--subtle)] cursor-pointer">
                     <input
                       type="checkbox"
                       checked={consent}
                       onChange={(e) => setConsent(e.target.checked)}
-                      className="mt-0.5 rounded border-stone-700 accent-amber-500"
+                      className="mt-0.5 rounded border-[var(--line)] accent-[var(--green)]"
                     />
                     <span>
                       Sync my bookmarks, pins, highlights, and notes across devices with zero tracking or ads.
@@ -417,7 +417,7 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full rounded-xl bg-amber-500 py-2.5 text-sm font-bold text-stone-950 hover:bg-amber-400 transition disabled:opacity-50"
+                    className="w-full rounded-xl bg-[var(--green)] py-2.5 text-sm font-bold text-[var(--paper)] hover:opacity-90 transition disabled:opacity-50"
                   >
                     {loading ? 'Creating Vault...' : 'Create Free Cloud Account'}
                   </button>
@@ -425,16 +425,16 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
               )}
 
               <div className="my-4 flex items-center gap-3">
-                <div className="h-px flex-1 bg-stone-800" />
-                <span className="text-[11px] uppercase tracking-wider text-stone-500">or</span>
-                <div className="h-px flex-1 bg-stone-800" />
+                <div className="h-px flex-1 bg-[var(--line)]" />
+                <span className="text-[11px] uppercase tracking-wider text-[var(--subtle)]">or</span>
+                <div className="h-px flex-1 bg-[var(--line)]" />
               </div>
 
               <button
                 type="button"
                 onClick={handleGoogleLogin}
                 disabled={loading}
-                className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-stone-700 bg-stone-900 py-2.5 text-xs font-semibold text-white hover:bg-stone-800 transition"
+                className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-[var(--line)] bg-[var(--surface)] py-2.5 text-xs font-semibold text-[var(--ink)] hover:bg-[var(--soft)] transition"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />

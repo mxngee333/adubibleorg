@@ -81,6 +81,7 @@ import { GrandSiteFooter } from './components/GrandSiteFooter';
 import { AduBibleLogo } from './components/AduBibleLogo';
 import { AskAduBibleModal } from './components/AskAduBibleModal';
 import { DonationHubPage } from './components/DonationHubPage';
+import { AdminDashboardPage } from './components/AdminDashboardPage';
 import { Search, User, Headphones, Volume2, Heart } from 'lucide-react';
 import { AskAduBibleContext } from './services/askAduBibleService';
 
@@ -171,13 +172,14 @@ export function App() {
     initialRoute.chapter || 1
   );
 
-  // Active Canon Navigation Tab: 'canonical' (Default Scripture Reader) | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate'
-  const [activeNavTab, setActiveNavTab] = useState<'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate'>(() => {
+  // Active Canon Navigation Tab: 'canonical' (Default Scripture Reader) | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin'
+  const [activeNavTab, setActiveNavTab] = useState<'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin'>(() => {
     if (initialRoute.targetTab) return initialRoute.targetTab;
     if (typeof window !== 'undefined') {
       const qTab = new URLSearchParams(window.location.search).get('tab');
-      if (qTab === 'deuterocanon' || qTab === 'list-of-sixty' || qTab === 'articles' || qTab === 'donate') return qTab;
+      if (qTab === 'deuterocanon' || qTab === 'list-of-sixty' || qTab === 'articles' || qTab === 'donate' || qTab === 'admin') return qTab;
       const p = window.location.pathname.toLowerCase();
+      if (p.includes('admin') || p.includes('dashboard') || p.includes('command')) return 'admin';
       if (p.includes('donate') || p.includes('giving') || p.includes('partner')) return 'donate';
       if (p.includes('articles') || p.includes('blog')) return 'articles';
       if (p.includes('deuterocanon') || p.includes('apocrypha')) return 'deuterocanon';
@@ -1310,7 +1312,7 @@ export function App() {
       )}
 
       {/* QUICK TRANSLATION VERSION RIBBON (BIBLEHUB-STYLE 1-TAP SWITCHER) */}
-      {activeNavTab !== 'articles' && activeNavTab !== 'donate' && (
+      {activeNavTab !== 'articles' && activeNavTab !== 'donate' && activeNavTab !== 'admin' && (
         <QuickVersionRibbon
           activeVersionIds={activeVersionIds}
           allVersions={allVersions}
@@ -1459,6 +1461,16 @@ export function App() {
               handleSelectBookChapter(b.slug, chapter);
             }
             setActiveNavTab('canonical');
+          }}
+        />
+      ) : activeNavTab === 'admin' ? (
+        <AdminDashboardPage
+          onBackToReader={() => {
+            setActiveNavTab('canonical');
+            if (typeof window !== 'undefined') {
+              window.history.pushState({}, '', '/');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
         />
       ) : (

@@ -350,7 +350,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   fontSize: '11px',
                   padding: '3px 8px',
                   borderRadius: '999px',
-                  background: 'rgba(212, 175, 55, 0.12)',
+                  background: 'var(--soft)',
                   color: 'var(--green)',
                   border: '1px solid var(--line)',
                   fontWeight: 600,
@@ -740,7 +740,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 padding: '16px',
                 borderRadius: '8px',
                 border: '1px solid var(--line)',
-                background: 'rgba(0, 0, 0, 0.15)',
+                background: 'var(--surface)',
               }}
             >
               <div

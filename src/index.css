@@ -1079,6 +1079,193 @@ body:has(.theme-symbol-midnight-gold) ::-webkit-scrollbar-thumb:hover {
 }
 
 /* ==========================================================================
+   THEME 10: WARM DAYLIGHT PARCHMENT (Editorial Scroll Light Mode)
+   Ancient Vellum & Warm Amber Parchment
+   ========================================================================== */
+.bible-app.theme-parchment {
+  --paper: #fdfbf7;
+  --surface: #f5efe6;
+  --ink: #292524;
+  --subtle: #78716c;
+  --line: rgba(120, 113, 108, 0.28);
+  --green: #b45309;
+  --soft: #ede4d8;
+  color-scheme: light;
+}
+
+.bible-app.theme-parchment .brand-icon {
+  background: rgba(180, 83, 9, 0.12);
+  border: 1px solid rgba(180, 83, 9, 0.35);
+  color: #b45309;
+}
+
+.bible-app.theme-parchment .reading-shell {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 36px rgba(120, 113, 108, 0.15);
+}
+
+.bible-app.theme-parchment .passage-toolbar {
+  background: var(--soft);
+  border-bottom: 1px solid var(--line);
+}
+
+.bible-app.theme-parchment .footnotes-grid {
+  background: var(--soft);
+  border-top: 1px solid var(--line);
+}
+
+.bible-app.theme-parchment .chapter-intro h2 {
+  color: #292524;
+}
+
+.bible-app.theme-parchment .chapter-intro h2 span {
+  color: #b45309;
+}
+
+.bible-app.theme-parchment .add-column {
+  background: #b45309;
+  border: 1px solid #92400e;
+  color: #ffffff;
+}
+
+.bible-app.theme-parchment .quiet-button.active-pill,
+.bible-app.theme-parchment .preset-row button.active,
+.bible-app.theme-parchment .languages-grid button.active,
+.bible-app.theme-parchment .reader-tools button.settings-active {
+  background: #b45309;
+  border-color: #92400e;
+  color: #ffffff;
+}
+
+.bible-app.theme-parchment .verse-row:hover {
+  background: rgba(180, 83, 9, 0.05);
+}
+
+.bible-app.theme-parchment .verse-row.selected-row {
+  background: rgba(180, 83, 9, 0.12);
+  border-left: 3px solid #b45309;
+}
+
+.bible-app.theme-parchment .wisdom-toggle.on {
+  background: #b45309;
+  border-color: #92400e;
+}
+
+.bible-app.theme-parchment .wisdom-toggle.on .wisdom-toggle-knob {
+  background: #ffffff;
+}
+
+/* ==========================================================================
+   THEME 11: CRISP EDITORIAL DAYLIGHT (Modern Light Mode)
+   Clean High-Contrast Daylight
+   ========================================================================== */
+.bible-app.theme-daylight {
+  --paper: #ffffff;
+  --surface: #f8fafc;
+  --ink: #0f172a;
+  --subtle: #64748b;
+  --line: rgba(148, 163, 184, 0.35);
+  --green: #0284c7;
+  --soft: #e2e8f0;
+  color-scheme: light;
+}
+
+.bible-app.theme-daylight .brand-icon {
+  background: rgba(2, 132, 199, 0.1);
+  border: 1px solid rgba(2, 132, 199, 0.3);
+  color: #0284c7;
+}
+
+.bible-app.theme-daylight .reading-shell {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08);
+}
+
+.bible-app.theme-daylight .chapter-intro h2 {
+  color: #0f172a;
+}
+
+.bible-app.theme-daylight .chapter-intro h2 span {
+  color: #0284c7;
+}
+
+.bible-app.theme-daylight .add-column {
+  background: #0284c7;
+  border: 1px solid #0369a1;
+  color: #ffffff;
+}
+
+.bible-app.theme-daylight .wisdom-toggle.on {
+  background: #0284c7;
+  border-color: #0369a1;
+}
+
+.bible-app.theme-daylight .wisdom-toggle.on .wisdom-toggle-knob {
+  background: #ffffff;
+}
+
+/* ==========================================================================
+   THEME 12: TEMPLE OBSIDIAN & AMBER GOLD (Deep Sanctuary Dark Mode)
+   Pitch Obsidian Black & Candlelight Amber
+   ========================================================================== */
+.bible-app.theme-midnight,
+.bible-app.theme-obsidian {
+  --paper: #0c0a09;
+  --surface: #050403;
+  --ink: #fdfbf7;
+  --subtle: #a8a29e;
+  --line: rgba(245, 158, 11, 0.25);
+  --green: #f59e0b;
+  --soft: #1c1917;
+  color-scheme: dark;
+}
+
+.bible-app.theme-midnight .brand-icon,
+.bible-app.theme-obsidian .brand-icon {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #f59e0b;
+}
+
+.bible-app.theme-midnight .reading-shell,
+.bible-app.theme-obsidian .reading-shell {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.75);
+}
+
+.bible-app.theme-midnight .chapter-intro h2,
+.bible-app.theme-obsidian .chapter-intro h2 {
+  color: #fdfbf7;
+}
+
+.bible-app.theme-midnight .chapter-intro h2 span,
+.bible-app.theme-obsidian .chapter-intro h2 span {
+  color: #f59e0b;
+}
+
+.bible-app.theme-midnight .add-column,
+.bible-app.theme-obsidian .add-column {
+  background: #d97706;
+  border: 1px solid #f59e0b;
+  color: #0c0a09;
+  font-weight: 700;
+}
+
+.bible-app.theme-midnight .wisdom-toggle.on,
+.bible-app.theme-obsidian .wisdom-toggle.on {
+  background: #f59e0b;
+  border-color: #f59e0b;
+}
+
+.bible-app.theme-midnight .wisdom-toggle.on .wisdom-toggle-knob,
+.bible-app.theme-obsidian .wisdom-toggle.on .wisdom-toggle-knob {
+  background: #0c0a09;
+}
+
+/* ==========================================================================
    THEME 9: USER CUSTOM PALETTE (Interactive Theme Studio)
    Uses dynamic CSS custom properties applied on .bible-app
    ========================================================================== */
@@ -1818,21 +2005,21 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
 .add-column {
   height: 40px;
   padding: 0 14px;
-  border: 1px solid #f59e0b;
+  border: 1px solid var(--green);
   border-radius: 6px;
-  background: #f59e0b;
-  color: #0c0a09;
+  background: var(--green);
+  color: var(--paper);
   cursor: pointer;
   font-size: 13px;
   font-weight: 700;
-  box-shadow: 0 2px 12px rgba(245, 158, 11, 0.28);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
   transition: all 0.15s ease;
 }
 
 .add-column:hover:not(:disabled) {
-  background: #fbbf24;
-  border-color: #fbbf24;
-  color: #0c0a09;
+  opacity: 0.9;
+  border-color: var(--green);
+  color: var(--paper);
 }
 
 .add-column:disabled {
@@ -2605,11 +2792,11 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   max-height: min(82vh, 720px);
   overflow: auto;
   border-radius: 14px;
-  border: 1px solid rgba(245, 158, 11, 0.3);
-  background: #14120e;
-  color: #f5f5f4;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
   padding: 22px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
 }
 
 .picker-head {
@@ -2625,12 +2812,17 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   font-family: Georgia, "Times New Roman", serif;
   font-weight: 400;
   font-size: 26px;
-  color: #fef3c7;
+  color: var(--ink);
 }
 
 .picker-dialog .picker-search {
   width: 100%;
   margin-bottom: 16px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
 }
 
 .picker-groups {
@@ -2675,9 +2867,9 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
 }
 
 .picker-option.active {
-  background: rgba(245, 158, 11, 0.18);
-  border-color: #f59e0b;
-  color: #fde68a;
+  background: var(--soft);
+  border-color: var(--green);
+  color: var(--ink);
 }
 
 .picker-option span {
@@ -2686,7 +2878,7 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
 }
 
 .picker-option.active span {
-  color: #fef3c7;
+  color: var(--green);
 }
 
 /* Toggle Switch for Settings Modal */
@@ -2704,22 +2896,22 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
 }
 
 .wisdom-toggle.on {
-  background: #f59e0b;
-  border-color: #f59e0b;
+  background: var(--green);
+  border-color: var(--green);
 }
 
 .wisdom-toggle-knob {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #e3e6d8;
+  background: var(--ink);
   transition: transform 0.2s ease;
   display: block;
 }
 
 .wisdom-toggle.on .wisdom-toggle-knob {
   transform: translateX(20px);
-  background: #0c0a09;
+  background: var(--paper);
 }
 
 /* ==========================================================================
@@ -3512,6 +3704,127 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   color: var(--green);
   background: var(--soft);
   transform: translateY(-1px);
+}
+
+/* Consecrated Support & Donation Callout Strip */
+.footer-donate-strip {
+  width: 100%;
+  margin: 32px 0 24px 0;
+  padding: 24px 28px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid #f59e0b;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.25);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-donate-strip:hover {
+  border-color: #f59e0b;
+}
+
+.footer-donate-inner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.footer-donate-text-group {
+  flex: 1;
+  min-width: 0;
+}
+
+.footer-donate-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #f59e0b;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.footer-donate-tag-icon {
+  width: 13px;
+  height: 13px;
+  color: #f59e0b;
+  fill: #f59e0b;
+}
+
+.footer-donate-heading {
+  margin: 0 0 6px 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  font-family: Georgia, serif;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.footer-donate-subtext {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--subtle);
+  max-width: 760px;
+}
+
+.footer-donate-action-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.footer-donate-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  background: #f59e0b;
+  color: #0c0a09 !important;
+  font-size: 14px;
+  font-weight: 800;
+  border-radius: 12px;
+  text-decoration: none !important;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+
+.footer-donate-cta:hover {
+  background: #fbbf24;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
+}
+
+.footer-donate-microcopy {
+  font-size: 11px;
+  color: var(--subtle);
+  opacity: 0.85;
+}
+
+@media (max-width: 768px) {
+  .footer-donate-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .footer-donate-action-group {
+    align-items: flex-start;
+    width: 100%;
+  }
+  .footer-donate-cta {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* Footer Bottom Bar */

@@ -775,7 +775,7 @@ export function parseBibleHubUrlPath(pathname: string): {
     | 'sources'
     | 'contact'
     | 'cookie-policy';
-  targetTab?: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate';
+  targetTab?: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin';
   articleSlug?: string;
 } {
   const cleanPath = pathname
@@ -788,6 +788,16 @@ export function parseBibleHubUrlPath(pathname: string): {
   }
 
   const lower = cleanPath.toLowerCase();
+
+  // Support /admin/ or /dashboard/
+  if (lower === 'admin' || lower === 'dashboard' || lower === 'command') {
+    return {
+      versionId: 'nkjv',
+      bookSlug: 'ephesians',
+      chapter: 1,
+      targetTab: 'admin',
+    };
+  }
 
   // Support /donate/ or /give/
   if (lower === 'donate' || lower === 'donation' || lower === 'donations' || lower === 'give') {

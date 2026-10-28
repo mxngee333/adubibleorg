@@ -268,28 +268,28 @@ Ready for your next question on **${context.bookNameEn} ${context.chapter}** (${
       }}
     >
       <div
-        className="relative w-full max-w-3xl flex flex-col h-[90vh] max-h-[780px] rounded-2xl border border-amber-500/30 bg-stone-950 shadow-2xl overflow-hidden"
+        className="relative w-full max-w-3xl flex flex-col h-[90vh] max-h-[780px] rounded-2xl border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] shadow-2xl overflow-hidden"
         style={{
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 158, 11, 0.15)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.6)',
         }}
       >
         {/* Top Header */}
-        <div className="flex items-center justify-between border-b border-stone-800/90 bg-gradient-to-r from-stone-900 via-stone-900 to-amber-950/40 px-4 py-3 sm:px-5">
+        <div className="flex items-center justify-between border-b border-[var(--line)] bg-[var(--surface)] px-4 py-3 sm:px-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-purple-600 shadow-md shadow-amber-500/20 text-white font-bold">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--soft)] border border-[var(--line)] text-[var(--green)] font-bold">
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base sm:text-lg font-bold text-white tracking-tight flex items-center gap-1.5">
+                <h3 className="text-base sm:text-lg font-bold text-[var(--ink)] tracking-tight flex items-center gap-1.5">
                   ✦ Ask AduBible
                 </h3>
-                <span className="rounded-full border border-amber-500/40 bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-300">
+                <span className="rounded-full border border-[var(--line)] bg-[var(--soft)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--green)]">
                   AI Scripture Scholar
                 </span>
               </div>
-              <p className="text-xs text-stone-400">
-                Context: <strong className="text-amber-200">{context.bookNameEn} {context.chapter}</strong>
+              <p className="text-xs text-[var(--subtle)]">
+                Context: <strong className="text-[var(--green)]">{context.bookNameEn} {context.chapter}</strong>
                 {context.bookNameTw ? ` (${context.bookNameTw})` : ''} • Parallel: {context.activeVersions.join(', ').toUpperCase()} • 100% Ads Free
               </p>
             </div>
@@ -299,7 +299,7 @@ Ready for your next question on **${context.bookNameEn} ${context.chapter}** (${
             <button
               type="button"
               onClick={handleResetChat}
-              className="rounded-lg p-2 text-stone-400 hover:bg-stone-800 hover:text-white transition"
+              className="rounded-lg p-2 text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)] transition"
               title="Reset conversation"
             >
               <RotateCcw className="h-4 w-4" />
@@ -307,7 +307,7 @@ Ready for your next question on **${context.bookNameEn} ${context.chapter}** (${
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg p-2 text-stone-400 hover:bg-stone-800 hover:text-white transition"
+              className="rounded-lg p-2 text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)] transition"
               title="Close (ESC)"
             >
               <X className="h-5 w-5" />
@@ -316,8 +316,8 @@ Ready for your next question on **${context.bookNameEn} ${context.chapter}** (${
         </div>
 
         {/* Quick Suggestion Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto border-b border-stone-800/80 bg-stone-900/50 px-3 py-2 scrollbar-none">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400 shrink-0 ml-1">
+        <div className="flex items-center gap-1.5 overflow-x-auto border-b border-[var(--line)] bg-[var(--surface)] px-3 py-2 scrollbar-none">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--subtle)] shrink-0 ml-1">
             Prompt Ideas:
           </span>
           {QUICK_PROMPTS.map((qp, idx) => {
@@ -328,9 +328,9 @@ Ready for your next question on **${context.bookNameEn} ${context.chapter}** (${
                 type="button"
                 onClick={() => handleSendMessage(qp.prompt)}
                 disabled={isLoading}
-                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg border border-stone-700/80 bg-stone-800/60 px-2.5 py-1 text-xs font-medium text-stone-200 hover:border-amber-400/60 hover:bg-amber-950/30 hover:text-amber-200 transition disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg border border-[var(--line)] bg-[var(--paper)] px-2.5 py-1 text-xs font-medium text-[var(--ink)] hover:border-[var(--green)] hover:bg-[var(--soft)] transition disabled:opacity-50"
               >
-                <Icon className="h-3 w-3 text-amber-400" />
+                <Icon className="h-3 w-3 text-[var(--green)]" />
                 {qp.label}
               </button>
             );
@@ -340,7 +340,7 @@ Ready for your next question on **${context.bookNameEn} ${context.chapter}** (${
         {/* Chat History Messages Scroll Area */}
         <div
           ref={chatScrollRef}
-          className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 bg-stone-950/80"
+          className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 bg-[var(--paper)]"
         >
           {messages.map((msg) => {
             const isUser = msg.sender === 'user';
@@ -352,8 +352,8 @@ Ready for your next question on **${context.bookNameEn} ${context.chapter}** (${
                 <div
                   className={`max-w-[92%] sm:max-w-[85%] rounded-2xl p-4 shadow-md ${
                     isUser
-                      ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-tr-none'
-                      : 'border border-stone-800 bg-stone-900/90 text-stone-100 rounded-tl-none shadow-black/40'
+                      ? 'bg-[var(--green)] text-[var(--paper)] rounded-tr-none font-medium'
+                      : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] rounded-tl-none'
                   }`}
                 >
                   {isUser ? (
@@ -369,7 +369,7 @@ Ready for your next question on **${context.bookNameEn} ${context.chapter}** (${
                     <button
                       type="button"
                       onClick={() => handleCopy(msg.id, msg.text)}
-                      className="inline-flex items-center gap-1 text-[11px] text-stone-400 hover:text-amber-300 transition"
+                      className="inline-flex items-center gap-1 text-[11px] text-[var(--subtle)] hover:text-[var(--green)] transition"
                       title="Copy response to clipboard"
                     >
                       {copiedId === msg.id ? (
@@ -389,7 +389,7 @@ Ready for your next question on **${context.bookNameEn} ${context.chapter}** (${
                       <button
                         type="button"
                         onClick={() => handlePinToNotes(msg)}
-                        className="inline-flex items-center gap-1 text-[11px] text-stone-400 hover:text-amber-300 transition"
+                        className="inline-flex items-center gap-1 text-[11px] text-[var(--subtle)] hover:text-[var(--green)] transition"
                         title="Save note to Study Vault"
                       >
                         {pinnedId === msg.id ? (
@@ -410,7 +410,7 @@ Ready for your next question on **${context.bookNameEn} ${context.chapter}** (${
                       <button
                         type="button"
                         onClick={() => onNavigateToVerse(context.bookSlug, context.chapter)}
-                        className="inline-flex items-center gap-1 text-[11px] text-stone-500 hover:text-stone-300 transition"
+                        className="inline-flex items-center gap-1 text-[11px] text-[var(--subtle)] hover:text-[var(--ink)] transition"
                       >
                         <BookOpen className="h-3 w-3" />
                         <span>{msg.bookContext}</span>
@@ -424,15 +424,15 @@ Ready for your next question on **${context.bookNameEn} ${context.chapter}** (${
 
           {/* Loading Indicator */}
           {isLoading && (
-            <div className="flex items-center gap-2 text-stone-400 text-xs py-2 px-3 rounded-xl bg-stone-900/60 border border-stone-800 w-fit animate-pulse">
-              <Sparkles className="h-4 w-4 text-amber-400 animate-spin" />
+            <div className="flex items-center gap-2 text-[var(--subtle)] text-xs py-2 px-3 rounded-xl bg-[var(--surface)] border border-[var(--line)] w-fit animate-pulse">
+              <Sparkles className="h-4 w-4 text-[var(--green)] animate-spin" />
               <span>Ask AduBible is examining the Greek, Hebrew, and parallel scriptures...</span>
             </div>
           )}
         </div>
 
         {/* Input Bar */}
-        <div className="border-t border-stone-800 bg-stone-900/90 p-3 sm:p-4">
+        <div className="border-t border-[var(--line)] bg-[var(--surface)] p-3 sm:p-4">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -447,7 +447,7 @@ Ready for your next question on **${context.bookNameEn} ${context.chapter}** (${
                 value={inputQuery}
                 onChange={(e) => setInputQuery(e.target.value)}
                 placeholder={`Ask about ${context.bookNameEn} ${context.chapter}, Greek/Hebrew root words, or Twi meanings...`}
-                className="w-full rounded-xl border border-stone-700 bg-stone-950 px-4 py-2.5 text-sm text-white placeholder-stone-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500/50"
+                className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-4 py-2.5 text-sm text-[var(--ink)] placeholder-[var(--subtle)] focus:border-[var(--green)] focus:outline-none"
                 disabled={isLoading}
               />
             </div>
@@ -455,14 +455,14 @@ Ready for your next question on **${context.bookNameEn} ${context.chapter}** (${
             <button
               type="submit"
               disabled={isLoading || !inputQuery.trim()}
-              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2.5 text-sm font-bold text-stone-950 hover:from-amber-400 hover:to-amber-500 disabled:opacity-40 transition shadow-md shadow-amber-500/20"
+              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[var(--green)] px-4 py-2.5 text-sm font-bold text-[var(--paper)] hover:opacity-90 disabled:opacity-40 transition shadow-md"
             >
               <Send className="h-4 w-4" />
               <span className="hidden sm:inline">Ask</span>
             </button>
           </form>
 
-          <div className="mt-2 flex items-center justify-between text-[11px] text-stone-400 px-1">
+          <div className="mt-2 flex items-center justify-between text-[11px] text-[var(--subtle)] px-1">
             <span>Honoring Apostle Kwame Adu • Nsuhia, Ghana</span>
             <span>100% Ads-Free • Greek/Hebrew • Asante Twi</span>
           </div>

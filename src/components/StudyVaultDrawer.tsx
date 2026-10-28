@@ -179,18 +179,18 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
 
   return (
     <div className="fixed inset-0 z-[2000] flex justify-end bg-black/70 backdrop-blur-sm">
-      <div className="relative flex h-full w-full max-w-xl flex-col border-l border-amber-500/30 bg-stone-950 text-stone-100 shadow-2xl">
+      <div className="relative flex h-full w-full max-w-xl flex-col border-l border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-stone-800 bg-gradient-to-r from-stone-900 via-stone-900 to-amber-950/40 px-5 py-4">
+        <div className="flex items-center justify-between border-b border-[var(--line)] bg-[var(--surface)] px-5 py-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--soft)] border border-[var(--line)] text-[var(--green)]">
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-amber-200">
-                Personal Study & Sync Vault
+              <h2 className="text-base font-bold text-[var(--ink)]">
+                Personal Study &amp; Sync Vault
               </h2>
-              <p className="text-xs text-stone-400">
+              <p className="text-xs text-[var(--subtle)]">
                 Pins • Highlights • Bookmarks • Exegetical Notes
               </p>
             </div>
@@ -199,12 +199,12 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
             <button
               onClick={handleExportMarkdown}
               title="Export Study Notes as Markdown"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-stone-700 bg-stone-900 px-2.5 py-1.5 text-xs font-medium text-stone-200 hover:bg-stone-800 transition"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--line)] bg-[var(--paper)] px-2.5 py-1.5 text-xs font-medium text-[var(--ink)] hover:bg-[var(--soft)] transition"
             >
-              <Download className="h-3.5 w-3.5 text-amber-400" />
+              <Download className="h-3.5 w-3.5 text-[var(--green)]" />
               <span className="hidden sm:inline">Export MD</span>
             </button>
-            <label className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg border border-stone-700 bg-stone-900 px-2.5 py-1.5 text-xs font-medium text-stone-200 hover:bg-stone-800 transition">
+            <label className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg border border-[var(--line)] bg-[var(--paper)] px-2.5 py-1.5 text-xs font-medium text-[var(--ink)] hover:bg-[var(--soft)] transition">
               {importSuccess ? (
                 <Check className="h-3.5 w-3.5 text-emerald-400" />
               ) : (
@@ -220,7 +220,7 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
             </label>
             <button
               onClick={onClose}
-              className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-800 hover:text-white transition"
+              className="rounded-lg p-1.5 text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)] transition"
               aria-label="Close vault"
             >
               <X className="h-5 w-5" />
@@ -229,13 +229,13 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
         </div>
 
         {/* Navigation Tabs */}
-        <div className="grid grid-cols-4 gap-1 border-b border-stone-800 bg-stone-900/80 p-2">
+        <div className="grid grid-cols-4 gap-1 border-b border-[var(--line)] bg-[var(--surface)] p-2">
           <button
             onClick={() => setActiveTab('pins')}
             className={`flex items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-bold transition ${
               activeTab === 'pins'
-                ? 'bg-amber-500 text-stone-950 shadow'
-                : 'text-stone-400 hover:bg-stone-800 hover:text-white'
+                ? 'bg-[var(--green)] text-[var(--paper)] shadow'
+                : 'text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)]'
             }`}
           >
             <Pin className="h-3.5 w-3.5" />
@@ -245,8 +245,8 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
             onClick={() => setActiveTab('highlights')}
             className={`flex items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-bold transition ${
               activeTab === 'highlights'
-                ? 'bg-amber-500 text-stone-950 shadow'
-                : 'text-stone-400 hover:bg-stone-800 hover:text-white'
+                ? 'bg-[var(--green)] text-[var(--paper)] shadow'
+                : 'text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)]'
             }`}
           >
             <Highlighter className="h-3.5 w-3.5" />
@@ -256,8 +256,8 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
             onClick={() => setActiveTab('bookmarks')}
             className={`flex items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-bold transition ${
               activeTab === 'bookmarks'
-                ? 'bg-amber-500 text-stone-950 shadow'
-                : 'text-stone-400 hover:bg-stone-800 hover:text-white'
+                ? 'bg-[var(--green)] text-[var(--paper)] shadow'
+                : 'text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)]'
             }`}
           >
             <Bookmark className="h-3.5 w-3.5" />
@@ -267,8 +267,8 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
             onClick={() => setActiveTab('notes')}
             className={`flex items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-bold transition ${
               activeTab === 'notes'
-                ? 'bg-amber-500 text-stone-950 shadow'
-                : 'text-stone-400 hover:bg-stone-800 hover:text-white'
+                ? 'bg-[var(--green)] text-[var(--paper)] shadow'
+                : 'text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)]'
             }`}
           >
             <FileText className="h-3.5 w-3.5" />
@@ -280,30 +280,30 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
           {activeTab === 'pins' && (
             <div className="space-y-3">
-              <p className="text-xs text-stone-400">
+              <p className="text-xs text-[var(--subtle)]">
                 Pinned verses stay docked in your quick study bar so you can cross-compare passages effortlessly.
               </p>
               {pins.length === 0 ? (
-                <div className="rounded-2xl border border-stone-800 bg-stone-900/40 p-8 text-center text-sm text-stone-400">
+                <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-8 text-center text-sm text-[var(--subtle)]">
                   No pinned verses yet. Tap any verse in the reader and click <strong>Pin</strong> to anchor it!
                 </div>
               ) : (
                 pins.map((pin) => (
                   <div
                     key={pin.id}
-                    className="rounded-xl border border-amber-500/25 bg-stone-900/70 p-4 hover:border-amber-500/50 transition"
+                    className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-4 hover:border-[var(--green)] transition"
                   >
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/20 px-2 py-0.5 text-xs font-bold text-amber-300">
+                        <span className="inline-flex items-center gap-1 rounded-md bg-[var(--soft)] px-2 py-0.5 text-xs font-bold text-[var(--green)] border border-[var(--line)]">
                           <Pin className="h-3 w-3" />
                           {pin.verseKey}
                         </span>
-                        <span className="rounded bg-stone-800 px-2 py-0.5 text-[11px] font-mono uppercase text-stone-300">
+                        <span className="rounded bg-[var(--paper)] border border-[var(--line)] px-2 py-0.5 text-[11px] font-mono uppercase text-[var(--subtle)]">
                           {pin.versionId}
                         </span>
                         {pin.label && (
-                          <span className="text-xs text-amber-200/80 font-medium">
+                          <span className="text-xs text-[var(--green)] font-medium">
                             • {pin.label}
                           </span>
                         )}
@@ -314,20 +314,20 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
                             onJumpToVerse(pin.bookSlug, pin.chapter, pin.verse);
                             onClose();
                           }}
-                          className="inline-flex items-center gap-1 rounded-lg bg-amber-500/20 px-2.5 py-1 text-xs font-semibold text-amber-300 hover:bg-amber-500/30 transition"
+                          className="inline-flex items-center gap-1 rounded-lg bg-[var(--soft)] px-2.5 py-1 text-xs font-semibold text-[var(--green)] hover:opacity-80 transition"
                         >
                           Open <ArrowUpRight className="h-3.5 w-3.5" />
                         </button>
                         <button
                           onClick={() => onRemovePin(pin.id)}
-                          className="rounded-lg p-1 text-stone-500 hover:bg-rose-950/50 hover:text-rose-400 transition"
+                          className="rounded-lg p-1 text-[var(--subtle)] hover:bg-rose-950/50 hover:text-rose-400 transition"
                           title="Unpin verse"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
                     </div>
-                    <p className="font-serif text-sm leading-relaxed text-stone-200">
+                    <p className="font-serif text-sm leading-relaxed text-[var(--ink)]">
                       &ldquo;{pin.text}&rdquo;
                     </p>
                   </div>
@@ -344,8 +344,8 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
                   onClick={() => setColorFilter('all')}
                   className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
                     colorFilter === 'all'
-                      ? 'bg-white text-stone-950'
-                      : 'bg-stone-900 text-stone-400 hover:text-white'
+                      ? 'bg-[var(--green)] text-[var(--paper)]'
+                      : 'bg-[var(--surface)] text-[var(--subtle)] border border-[var(--line)] hover:text-[var(--ink)]'
                   }`}
                 >
                   All Colors ({highlights.length})
@@ -357,7 +357,7 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
                     className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium transition ${
                       colorFilter === c
                         ? COLOR_BADGES[c].bg
-                        : 'border-stone-800 bg-stone-900 text-stone-400 hover:text-white'
+                        : 'border-[var(--line)] bg-[var(--surface)] text-[var(--subtle)] hover:text-[var(--ink)]'
                     }`}
                   >
                     <span className={`h-2.5 w-2.5 rounded-full ${COLOR_BADGES[c].dot}`} />
@@ -367,7 +367,7 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
               </div>
 
               {filteredHighlights.length === 0 ? (
-                <div className="rounded-2xl border border-stone-800 bg-stone-900/40 p-8 text-center text-sm text-stone-400">
+                <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-8 text-center text-sm text-[var(--subtle)]">
                   No highlighted verses match this filter. Tap any verse in the reader to apply a highlight color!
                 </div>
               ) : (
@@ -419,22 +419,22 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
           {activeTab === 'bookmarks' && (
             <div className="space-y-3">
               {bookmarks.length === 0 ? (
-                <div className="rounded-2xl border border-stone-800 bg-stone-900/40 p-8 text-center text-sm text-stone-400">
+                <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-8 text-center text-sm text-[var(--subtle)]">
                   No bookmarks saved yet. Tap any verse and select <strong>Bookmark</strong> to organize your favorite scriptures.
                 </div>
               ) : (
                 bookmarks.map((bm) => (
                   <div
                     key={bm.id}
-                    className="rounded-xl border border-stone-800 bg-stone-900/70 p-4 hover:border-sky-500/40 transition"
+                    className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-4 hover:border-[var(--green)] transition"
                   >
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center gap-1 rounded-md bg-sky-500/20 px-2 py-0.5 text-xs font-bold text-sky-300">
+                        <span className="inline-flex items-center gap-1 rounded-md bg-[var(--soft)] border border-[var(--line)] px-2 py-0.5 text-xs font-bold text-[var(--green)]">
                           <Bookmark className="h-3 w-3" />
                           {bm.verseKey}
                         </span>
-                        <span className="rounded bg-stone-800 px-2 py-0.5 text-[11px] text-stone-300">
+                        <span className="rounded bg-[var(--paper)] border border-[var(--line)] px-2 py-0.5 text-[11px] text-[var(--subtle)]">
                           {bm.folder}
                         </span>
                       </div>
@@ -444,19 +444,19 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
                             onJumpToVerse(bm.bookSlug, bm.chapter, bm.verse);
                             onClose();
                           }}
-                          className="inline-flex items-center gap-1 rounded-lg bg-sky-500/20 px-2.5 py-1 text-xs font-semibold text-sky-300 hover:bg-sky-500/30 transition"
+                          className="inline-flex items-center gap-1 rounded-lg bg-[var(--soft)] px-2.5 py-1 text-xs font-semibold text-[var(--green)] hover:opacity-80 transition"
                         >
                           Open <ArrowUpRight className="h-3.5 w-3.5" />
                         </button>
                         <button
                           onClick={() => onRemoveBookmark(bm.id)}
-                          className="rounded-lg p-1 text-stone-500 hover:text-rose-400 transition"
+                          className="rounded-lg p-1 text-[var(--subtle)] hover:text-rose-400 transition"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
                     </div>
-                    <p className="font-serif text-sm leading-relaxed text-stone-200">
+                    <p className="font-serif text-sm leading-relaxed text-[var(--ink)]">
                       &ldquo;{bm.text}&rdquo;
                     </p>
                   </div>
@@ -468,12 +468,12 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
           {activeTab === 'notes' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <p className="text-xs text-stone-400">
-                  Write deep theological & parallel language reflections linked to any verse.
+                <p className="text-xs text-[var(--subtle)]">
+                  Write deep theological &amp; parallel language reflections linked to any verse.
                 </p>
                 <button
                   onClick={() => setIsCreatingNote(!isCreatingNote)}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-amber-500 px-3 py-1.5 text-xs font-bold text-stone-950 hover:bg-amber-400 transition"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--green)] px-3 py-1.5 text-xs font-bold text-[var(--paper)] hover:opacity-90 transition"
                 >
                   <Plus className="h-3.5 w-3.5" />
                   New Study Note
@@ -483,21 +483,21 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
               {isCreatingNote && (
                 <form
                   onSubmit={handleCreateNoteSubmit}
-                  className="rounded-2xl border border-amber-500/40 bg-stone-900 p-4 space-y-3"
+                  className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 space-y-3"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-amber-300 uppercase">
+                    <span className="text-xs font-bold text-[var(--green)] uppercase">
                       New Note for {currentBookSlug.toUpperCase()} {currentChapter}
                     </span>
                     <div className="flex items-center gap-2">
-                      <label className="text-xs text-stone-400">Verse #:</label>
+                      <label className="text-xs text-[var(--subtle)]">Verse #:</label>
                       <input
                         type="number"
                         min={1}
                         max={176}
                         value={noteVerseNum}
                         onChange={(e) => setNoteVerseNum(Number(e.target.value) || 1)}
-                        className="w-16 rounded-lg border border-stone-700 bg-stone-950 px-2 py-1 text-xs text-white"
+                        className="w-16 rounded-lg border border-[var(--line)] bg-[var(--paper)] px-2 py-1 text-xs text-[var(--ink)]"
                       />
                     </div>
                   </div>
@@ -506,7 +506,7 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
                     value={noteTitle}
                     onChange={(e) => setNoteTitle(e.target.value)}
                     placeholder="Exegetical Note Title (e.g., Greek Eulogia & Twi Nhyira)"
-                    className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs text-white placeholder-stone-500 focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-xs text-[var(--ink)] placeholder-[var(--subtle)] focus:border-[var(--green)] focus:outline-none"
                     required
                   />
                   <textarea
@@ -514,7 +514,7 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
                     value={noteBody}
                     onChange={(e) => setNoteBody(e.target.value)}
                     placeholder="Write your theological insights, Strong's word links, or parallel translation comparisons..."
-                    className="w-full rounded-xl border border-stone-700 bg-stone-950 p-3 text-xs text-white placeholder-stone-500 focus:border-amber-500 focus:outline-none"
+                    className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] p-3 text-xs text-[var(--ink)] placeholder-[var(--subtle)] focus:border-[var(--green)] focus:outline-none"
                     required
                   />
                   <input
@@ -522,19 +522,19 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
                     value={noteTags}
                     onChange={(e) => setNoteTags(e.target.value)}
                     placeholder="Comma-separated tags (e.g. Ephesians, Twi, Strongs)"
-                    className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-1.5 text-xs text-stone-300"
+                    className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-1.5 text-xs text-[var(--ink)] placeholder-[var(--subtle)] focus:border-[var(--green)] focus:outline-none"
                   />
                   <div className="flex justify-end gap-2">
                     <button
                       type="button"
                       onClick={() => setIsCreatingNote(false)}
-                      className="rounded-lg px-3 py-1.5 text-xs text-stone-400 hover:text-white"
+                      className="rounded-lg px-3 py-1.5 text-xs text-[var(--subtle)] hover:text-[var(--ink)]"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="rounded-xl bg-amber-500 px-4 py-1.5 text-xs font-bold text-stone-950 hover:bg-amber-400"
+                      className="rounded-xl bg-[var(--green)] px-4 py-1.5 text-xs font-bold text-[var(--paper)] hover:opacity-90"
                     >
                       Save Note
                     </button>
@@ -545,7 +545,7 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
               {notes.map((note) => (
                 <div
                   key={note.id}
-                  className="rounded-2xl border border-stone-800 bg-stone-900/70 p-4 space-y-2.5"
+                  className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 space-y-2.5"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
@@ -553,9 +553,9 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
                         <span className="rounded-md bg-rose-500/20 px-2 py-0.5 text-xs font-bold text-rose-300">
                           {note.verseKey}
                         </span>
-                        <h4 className="font-bold text-sm text-amber-200">{note.title}</h4>
+                        <h4 className="font-bold text-sm text-[var(--green)]">{note.title}</h4>
                       </div>
-                      <p className="text-xs italic text-stone-400 mt-1 line-clamp-2">
+                      <p className="text-xs italic text-[var(--subtle)] mt-1 line-clamp-2">
                         &ldquo;{note.verseText}&rdquo;
                       </p>
                     </div>
@@ -565,19 +565,19 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
                           onJumpToVerse(note.bookSlug, note.chapter, note.verse);
                           onClose();
                         }}
-                        className="inline-flex items-center gap-1 rounded-lg bg-stone-800 px-2.5 py-1 text-xs font-semibold text-amber-300 hover:bg-stone-700 transition"
+                        className="inline-flex items-center gap-1 rounded-lg bg-[var(--soft)] px-2.5 py-1 text-xs font-semibold text-[var(--green)] hover:opacity-80 transition"
                       >
                         Open <ArrowUpRight className="h-3.5 w-3.5" />
                       </button>
                       <button
                         onClick={() => onRemoveNote(note.id)}
-                        className="rounded-lg p-1 text-stone-500 hover:text-rose-400 transition"
+                        className="rounded-lg p-1 text-[var(--subtle)] hover:text-rose-400 transition"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </div>
-                  <p className="text-xs sm:text-sm leading-relaxed text-stone-200 whitespace-pre-line">
+                  <p className="text-xs sm:text-sm leading-relaxed text-[var(--ink)] whitespace-pre-line">
                     {note.body}
                   </p>
                   {note.tags && note.tags.length > 0 && (
@@ -585,7 +585,7 @@ export const StudyVaultDrawer: React.FC<StudyVaultDrawerProps> = ({
                       {note.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded-full bg-stone-800 px-2.5 py-0.5 text-[10px] font-medium text-amber-300/90"
+                          className="rounded-full bg-[var(--soft)] border border-[var(--line)] px-2.5 py-0.5 text-[10px] font-medium text-[var(--green)]"
                         >
                           #{tag}
                         </span>

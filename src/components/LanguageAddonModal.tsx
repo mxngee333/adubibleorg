@@ -254,25 +254,25 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/75 backdrop-blur-sm p-3 sm:p-6">
-      <div className="relative flex flex-col w-full max-w-5xl max-h-[90vh] rounded-2xl border border-amber-500/30 bg-stone-950 text-stone-100 shadow-2xl overflow-hidden">
+      <div className="relative flex flex-col w-full max-w-5xl max-h-[90vh] rounded-2xl border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] shadow-2xl overflow-hidden">
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-stone-800 bg-gradient-to-r from-stone-900 via-stone-900 to-amber-950/40 px-5 py-4">
+        <div className="flex items-center justify-between border-b border-[var(--line)] bg-[var(--surface)] px-5 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--soft)] border border-[var(--line)] text-[var(--green)]">
               <Globe className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-amber-200">
-                Multilingual & Parallel Version Add-on Engine
+              <h2 className="text-base sm:text-lg font-bold text-[var(--ink)]">
+                Multilingual &amp; Parallel Version Add-on Engine
               </h2>
-              <p className="text-xs text-stone-400">
+              <p className="text-xs text-[var(--subtle)]">
                 Twi (Twerɛ Kronkron) • 24 Mega-Multilingual SEO Languages • Original Hebrew/Greek • 1,000+ Live Translations
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-stone-400 hover:bg-stone-800 hover:text-white transition"
+            className="rounded-lg p-1.5 text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)] transition"
             aria-label="Close modal"
           >
             <X className="h-5 w-5" />
@@ -280,25 +280,25 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
         </div>
 
         {/* Top Mode Tabs */}
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-stone-800 bg-stone-900/70 px-5 py-2.5">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--line)] bg-[var(--surface)] px-5 py-2.5">
           <div className="flex flex-wrap gap-1.5">
             <button
               onClick={() => setActiveTab('catalog')}
               className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition ${
                 activeTab === 'catalog'
-                  ? 'bg-amber-500 text-stone-950 shadow'
-                  : 'text-stone-300 hover:bg-stone-800'
+                  ? 'bg-[var(--green)] text-[var(--paper)] shadow'
+                  : 'text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)]'
               }`}
             >
               <Layers className="h-3.5 w-3.5" />
-              Built-In & Parallel Languages ({allVersions.length})
+              Built-In &amp; Parallel Languages ({allVersions.length})
             </button>
             <button
               onClick={() => setActiveTab('live-repo')}
               className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition ${
                 activeTab === 'live-repo'
-                  ? 'bg-amber-500 text-stone-950 shadow'
-                  : 'text-stone-300 hover:bg-stone-800'
+                  ? 'bg-[var(--green)] text-[var(--paper)] shadow'
+                  : 'text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)]'
               }`}
             >
               <CloudDownload className="h-3.5 w-3.5" />
@@ -308,8 +308,8 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
               onClick={() => setActiveTab('create-addon')}
               className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition ${
                 activeTab === 'create-addon'
-                  ? 'bg-amber-500 text-stone-950 shadow'
-                  : 'text-stone-300 hover:bg-stone-800'
+                  ? 'bg-[var(--green)] text-[var(--paper)] shadow'
+                  : 'text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)]'
               }`}
             >
               <BookPlus className="h-3.5 w-3.5" />
@@ -317,7 +317,7 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
             </button>
           </div>
 
-          <div className="flex items-center gap-1.5 text-xs text-amber-300">
+          <div className="flex items-center gap-1.5 text-xs text-[var(--green)]">
             <Sparkles className="h-3.5 w-3.5" />
             <span>Active Parallel Panes: {activeVersionIds.length}/4</span>
           </div>
@@ -338,19 +338,19 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
             {/* Search & Language Filter Bar */}
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-stone-400" />
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--subtle)]" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search Twi, NKJV, KJV, Hebrew, Greek, Yoruba, Hausa, Swahili, French, Arabic..."
-                  className="w-full rounded-xl border border-stone-700 bg-stone-900 pl-9 pr-4 py-2 text-xs sm:text-sm text-white placeholder-stone-500 focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] pl-9 pr-4 py-2 text-xs sm:text-sm text-[var(--ink)] placeholder-[var(--subtle)] focus:border-[var(--green)] focus:outline-none"
                 />
               </div>
               <select
                 value={selectedLangFilter}
                 onChange={(e) => setSelectedLangFilter(e.target.value)}
-                className="rounded-xl border border-stone-700 bg-stone-900 px-3 py-2 text-xs sm:text-sm text-stone-200 focus:border-amber-500 focus:outline-none"
+                className="rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 text-xs sm:text-sm text-[var(--ink)] focus:border-[var(--green)] focus:outline-none"
               >
                 <option value="all">All Languages ({languages.length})</option>
                 {languages.map((lang) => (
@@ -367,8 +367,8 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
                 onClick={() => setSelectedLangFilter('all')}
                 className={`shrink-0 rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
                   selectedLangFilter === 'all'
-                    ? 'bg-amber-500 text-stone-950'
-                    : 'bg-stone-900 text-stone-400 hover:text-white'
+                    ? 'bg-[var(--green)] text-[var(--paper)]'
+                    : 'bg-[var(--surface)] text-[var(--subtle)] border border-[var(--line)] hover:text-[var(--ink)]'
                 }`}
               >
                 All
@@ -379,8 +379,8 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
                   onClick={() => setSelectedLangFilter(lang.code)}
                   className={`shrink-0 inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition ${
                     selectedLangFilter === lang.code
-                      ? 'bg-amber-500 text-stone-950 font-bold'
-                      : 'bg-stone-900 text-stone-300 hover:bg-stone-800'
+                      ? 'bg-[var(--green)] text-[var(--paper)] font-bold'
+                      : 'bg-[var(--surface)] text-[var(--ink)] border border-[var(--line)] hover:bg-[var(--soft)]'
                   }`}
                 >
                   <span>{lang.flag}</span>
@@ -399,17 +399,17 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
                     key={ver.id}
                     className={`flex flex-col justify-between rounded-xl border p-3.5 transition ${
                       isActive
-                        ? 'border-amber-400 bg-amber-500/10 shadow-md'
-                        : 'border-stone-800 bg-stone-900/60 hover:border-stone-700'
+                        ? 'border-[var(--green)] bg-[var(--soft)] shadow-md'
+                        : 'border-[var(--line)] bg-[var(--surface)] hover:border-[var(--green)]'
                     }`}
                   >
                     <div>
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <span className="inline-flex items-center gap-1.5 rounded-md bg-stone-800 px-2 py-0.5 text-[11px] font-mono font-bold text-amber-300">
+                          <span className="inline-flex items-center gap-1.5 rounded-md bg-[var(--paper)] border border-[var(--line)] px-2 py-0.5 text-[11px] font-mono font-bold text-[var(--green)]">
                             {ver.shortName}
                           </span>
-                          <span className="ml-2 text-xs text-stone-400">
+                          <span className="ml-2 text-xs text-[var(--subtle)]">
                             {ver.languageName} ({ver.nativeLanguageName})
                           </span>
                         </div>
@@ -419,19 +419,19 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
                           </span>
                         )}
                       </div>
-                      <h4 className="mt-2 font-bold text-sm text-white">{ver.name}</h4>
-                      <p className="mt-1 text-xs text-stone-400 line-clamp-2">{ver.description}</p>
+                      <h4 className="mt-2 font-bold text-sm text-[var(--ink)]">{ver.name}</h4>
+                      <p className="mt-1 text-xs text-[var(--subtle)] line-clamp-2">{ver.description}</p>
                     </div>
 
-                    <div className="mt-3 pt-2.5 border-t border-stone-800/80 flex items-center justify-between gap-2">
-                      <span className="text-[10px] uppercase tracking-wider text-stone-500">
+                    <div className="mt-3 pt-2.5 border-t border-[var(--line)] flex items-center justify-between gap-2">
+                      <span className="text-[10px] uppercase tracking-wider text-[var(--subtle)]">
                         {ver.dir === 'rtl' ? 'RTL Script' : 'LTR Script'} • {ver.year || 'Canon'}
                       </span>
                       <div className="flex items-center gap-1.5">
                         {isCustom && (
                           <button
                             onClick={() => onDeleteCustomAddon(ver.id)}
-                            className="rounded-lg p-1.5 text-stone-500 hover:bg-rose-950/50 hover:text-rose-400 transition"
+                            className="rounded-lg p-1.5 text-[var(--subtle)] hover:bg-rose-950/50 hover:text-rose-400 transition"
                             title="Delete custom add-on"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -441,8 +441,8 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
                           onClick={() => onToggleVersionInParallel(ver.id)}
                           className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition ${
                             isActive
-                              ? 'bg-amber-500 text-stone-950'
-                              : 'bg-stone-800 text-stone-200 hover:bg-amber-500/20 hover:text-amber-300'
+                              ? 'bg-[var(--green)] text-[var(--paper)]'
+                              : 'bg-[var(--soft)] text-[var(--ink)] hover:opacity-90'
                           }`}
                         >
                           {isActive ? (
@@ -469,31 +469,31 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
           <div className="flex-1 flex flex-col overflow-hidden p-5 space-y-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div>
-                <h3 className="text-sm font-bold text-amber-200">
+                <h3 className="text-sm font-bold text-[var(--ink)]">
                   Open-Source Global Bible Cloud Catalog (Free Use Bible API)
                 </h3>
-                <p className="text-xs text-stone-400">
+                <p className="text-xs text-[var(--subtle)]">
                   Connect any additional world language or regional Bible version directly into your parallel columns with 1 click.
                 </p>
               </div>
               <div className="relative w-full sm:w-80">
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-stone-400" />
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-[var(--subtle)]" />
                 <input
                   type="text"
                   value={remoteQuery}
                   onChange={(e) => setRemoteQuery(e.target.value)}
                   placeholder="Filter 1,000+ translations by language or name..."
-                  className="w-full rounded-xl border border-stone-700 bg-stone-900 pl-9 pr-3 py-2 text-xs text-white placeholder-stone-500 focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] pl-9 pr-3 py-2 text-xs text-[var(--ink)] placeholder-[var(--subtle)] focus:border-[var(--green)] focus:outline-none"
                 />
               </div>
             </div>
 
             {loadingRemote ? (
-              <div className="flex-1 flex items-center justify-center text-sm text-stone-400">
+              <div className="flex-1 flex items-center justify-center text-sm text-[var(--subtle)]">
                 Loading global open-source Bible translations catalog...
               </div>
             ) : remoteTranslations.length === 0 ? (
-              <div className="rounded-2xl border border-stone-800 bg-stone-900/50 p-6 text-center text-xs text-stone-400">
+              <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-6 text-center text-xs text-[var(--subtle)]">
                 You are currently browsing in Offline Vault Mode. Use the <strong>Built-In &amp; Parallel Languages</strong> tab (40+ versions ready offline) or <strong>+ Add New Language / Custom Version</strong> tab!
               </div>
             ) : (
@@ -504,28 +504,28 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
                   return (
                     <div
                       key={item.id}
-                      className="rounded-xl border border-stone-800 bg-stone-900/60 p-3.5 flex flex-col justify-between"
+                      className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-3.5 flex flex-col justify-between"
                     >
                       <div>
                         <div className="flex items-center justify-between gap-2">
-                          <span className="rounded bg-amber-500/20 px-2 py-0.5 text-[11px] font-mono font-bold text-amber-300">
+                          <span className="rounded bg-[var(--soft)] border border-[var(--line)] px-2 py-0.5 text-[11px] font-mono font-bold text-[var(--green)]">
                             {item.shortName || item.id}
                           </span>
-                          <span className="text-xs text-stone-400">
+                          <span className="text-xs text-[var(--subtle)]">
                             {item.languageEnglishName || item.languageName}
                           </span>
                         </div>
-                        <h4 className="mt-2 font-bold text-sm text-white">
+                        <h4 className="mt-2 font-bold text-sm text-[var(--ink)]">
                           {item.englishName || item.name}
                         </h4>
-                        <p className="text-xs text-stone-400 mt-0.5">{item.name}</p>
+                        <p className="text-xs text-[var(--subtle)] mt-0.5">{item.name}</p>
                       </div>
                       <button
                         onClick={() => handleInstallRemoteTranslation(item)}
                         className={`mt-3 w-full inline-flex items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-bold transition ${
                           isConnected
-                            ? 'bg-emerald-500 text-stone-950'
-                            : 'bg-stone-800 text-amber-300 hover:bg-amber-500 hover:text-stone-950'
+                            ? 'bg-[var(--green)] text-[var(--paper)]'
+                            : 'bg-[var(--soft)] text-[var(--ink)] hover:opacity-90'
                         }`}
                       >
                         {isConnected ? (
@@ -551,13 +551,13 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
           <div className="flex-1 overflow-y-auto p-5">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <form onSubmit={handleSaveNewAddon} className="lg:col-span-2 space-y-4">
-                <div className="rounded-2xl border border-stone-800 bg-stone-900/50 p-4 space-y-4">
-                  <h3 className="text-sm font-bold text-amber-200">
+                <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 space-y-4">
+                  <h3 className="text-sm font-bold text-[var(--ink)]">
                     Create or Extend a Custom Language / Bible Version Add-on
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs text-stone-400 mb-1">
+                      <label className="block text-xs text-[var(--subtle)] mb-1">
                         Version Full Name *
                       </label>
                       <input
@@ -565,12 +565,12 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
                         value={addonName}
                         onChange={(e) => setAddonName(e.target.value)}
                         placeholder="e.g. Asante Twi Exegetical Study Bible"
-                        className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs text-white"
+                        className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-xs text-[var(--ink)] focus:border-[var(--green)] focus:outline-none"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-stone-400 mb-1">
+                      <label className="block text-xs text-[var(--subtle)] mb-1">
                         Short Code / Badge *
                       </label>
                       <input
@@ -578,12 +578,12 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
                         value={addonShortName}
                         onChange={(e) => setAddonShortName(e.target.value)}
                         placeholder="e.g. TWI-EXEG"
-                        className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs text-white uppercase"
+                        className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-xs text-[var(--ink)] uppercase focus:border-[var(--green)] focus:outline-none"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-stone-400 mb-1">
+                      <label className="block text-xs text-[var(--subtle)] mb-1">
                         Language Name (English)
                       </label>
                       <input
@@ -591,11 +591,11 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
                         value={addonLangName}
                         onChange={(e) => setAddonLangName(e.target.value)}
                         placeholder="e.g. Twi / Fante / Ga / Dagbani"
-                        className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs text-white"
+                        className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-xs text-[var(--ink)] focus:border-[var(--green)] focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-stone-400 mb-1">
+                      <label className="block text-xs text-[var(--subtle)] mb-1">
                         Native Language Name &amp; ISO Code
                       </label>
                       <div className="flex gap-2">
@@ -604,14 +604,14 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
                           value={addonNativeName}
                           onChange={(e) => setAddonNativeName(e.target.value)}
                           placeholder="e.g. Akan / Mfantse"
-                          className="flex-1 rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs text-white"
+                          className="flex-1 rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-xs text-[var(--ink)] focus:border-[var(--green)] focus:outline-none"
                         />
                         <input
                           type="text"
                           value={addonLangCode}
                           onChange={(e) => setAddonLangCode(e.target.value)}
                           placeholder="tw"
-                          className="w-16 rounded-xl border border-stone-700 bg-stone-950 px-2.5 py-2 text-xs text-white font-mono"
+                          className="w-16 rounded-xl border border-[var(--line)] bg-[var(--paper)] px-2.5 py-2 text-xs text-[var(--ink)] font-mono focus:border-[var(--green)] focus:outline-none"
                         />
                       </div>
                     </div>
@@ -619,11 +619,11 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-xs text-stone-400 mb-1">Target Book</label>
+                      <label className="block text-xs text-[var(--subtle)] mb-1">Target Book</label>
                       <select
                         value={addonBookId}
                         onChange={(e) => setAddonBookId(e.target.value)}
-                        className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs text-white"
+                        className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-xs text-[var(--ink)] focus:border-[var(--green)] focus:outline-none"
                       >
                         {books.map((b) => (
                           <option key={b.id} value={b.id}>
@@ -633,22 +633,22 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs text-stone-400 mb-1">Chapter #</label>
+                      <label className="block text-xs text-[var(--subtle)] mb-1">Chapter #</label>
                       <input
                         type="number"
                         min={1}
                         max={150}
                         value={addonChapter}
                         onChange={(e) => setAddonChapter(Number(e.target.value) || 1)}
-                        className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs text-white"
+                        className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-xs text-[var(--ink)] focus:border-[var(--green)] focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-stone-400 mb-1">Script Direction</label>
+                      <label className="block text-xs text-[var(--subtle)] mb-1">Script Direction</label>
                       <select
                         value={addonDir}
                         onChange={(e) => setAddonDir(e.target.value as 'ltr' | 'rtl')}
-                        className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-xs text-white"
+                        className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2 text-xs text-[var(--ink)] focus:border-[var(--green)] focus:outline-none"
                       >
                         <option value="ltr">Left-to-Right (LTR)</option>
                         <option value="rtl">Right-to-Left (RTL - Arabic/Hebrew)</option>
@@ -657,20 +657,20 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-xs text-stone-400 mb-1">
+                    <label className="block text-xs text-[var(--subtle)] mb-1">
                       Paste Verses (One verse per line, e.g. &ldquo;1 In the beginning...&rdquo;)
                     </label>
                     <textarea
                       rows={6}
                       value={addonRawText}
                       onChange={(e) => setAddonRawText(e.target.value)}
-                      className="w-full rounded-xl border border-stone-700 bg-stone-950 p-3 text-xs font-serif text-stone-100 leading-relaxed focus:border-amber-500 focus:outline-none"
+                      className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] p-3 text-xs font-serif text-[var(--ink)] leading-relaxed focus:border-[var(--green)] focus:outline-none"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full rounded-xl bg-amber-500 py-2.5 text-xs sm:text-sm font-bold text-stone-950 hover:bg-amber-400 transition"
+                    className="w-full rounded-xl bg-[var(--green)] py-2.5 text-xs sm:text-sm font-bold text-[var(--paper)] hover:opacity-90 transition"
                   >
                     Save Language / Version Add-on &amp; Activate in Parallel Reader
                   </button>
@@ -679,14 +679,14 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
 
               {/* Right Column: JSON Pack Upload & Installed Add-ons */}
               <div className="space-y-4">
-                <div className="rounded-2xl border border-amber-500/30 bg-amber-950/15 p-4 space-y-3">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-amber-300">
+                <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--green)]">
                     Bulk JSON Bible Pack Importer
                   </h4>
-                  <p className="text-xs text-stone-300 leading-relaxed">
+                  <p className="text-xs text-[var(--subtle)] leading-relaxed">
                     Have a full JSON Bible translation file for a new language or dialect? Upload it directly to register all books &amp; chapters offline.
                   </p>
-                  <label className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-amber-500/40 bg-stone-900 py-2.5 text-xs font-bold text-amber-300 hover:bg-stone-800 transition">
+                  <label className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-[var(--line)] bg-[var(--paper)] py-2.5 text-xs font-bold text-[var(--green)] hover:bg-[var(--soft)] transition">
                     <Upload className="h-4 w-4" />
                     <span>Upload .JSON Bible Add-on</span>
                     <input
@@ -698,31 +698,31 @@ export const LanguageAddonModal: React.FC<LanguageAddonModalProps> = ({
                   </label>
                 </div>
 
-                <div className="rounded-2xl border border-stone-800 bg-stone-900/50 p-4 space-y-2.5">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400">
+                <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 space-y-2.5">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--subtle)]">
                     Your Installed Custom Add-ons ({customAddons.length})
                   </h4>
                   {customAddons.length === 0 ? (
-                    <p className="text-xs text-stone-500">
+                    <p className="text-xs text-[var(--subtle)]">
                       No custom translation packs added yet.
                     </p>
                   ) : (
                     customAddons.map((ca) => (
                       <div
                         key={ca.id}
-                        className="flex items-center justify-between rounded-xl border border-stone-800 bg-stone-950 p-2.5 text-xs"
+                        className="flex items-center justify-between rounded-xl border border-[var(--line)] bg-[var(--paper)] p-2.5 text-xs"
                       >
                         <div>
-                          <div className="font-bold text-amber-200">
+                          <div className="font-bold text-[var(--ink)]">
                             {ca.shortName} • {ca.name}
                           </div>
-                          <div className="text-[11px] text-stone-400">
+                          <div className="text-[11px] text-[var(--subtle)]">
                             {ca.languageName} ({Object.keys(ca.chapters).length} local chapters)
                           </div>
                         </div>
                         <button
                           onClick={() => onDeleteCustomAddon(ca.id)}
-                          className="rounded-lg p-1.5 text-stone-500 hover:text-rose-400"
+                          className="rounded-lg p-1.5 text-[var(--subtle)] hover:text-rose-400"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
