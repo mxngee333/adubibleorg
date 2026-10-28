@@ -29,6 +29,17 @@ if (fs.existsSync(corpusPath)) {
   }
 }
 
+// Load compiled master legal & institutional corpus
+const legalCorpusPath = path.join(__dirname, 'src', 'data', 'legalPagesCorpus.json');
+let legalPages = {};
+if (fs.existsSync(legalCorpusPath)) {
+  try {
+    legalPages = JSON.parse(fs.readFileSync(legalCorpusPath, 'utf-8'));
+  } catch (err) {
+    console.error('Failed to parse legalPagesCorpus.json:', err);
+  }
+}
+
 const CANONICAL_ROUTES = [
   {
     route: '/',
@@ -51,39 +62,6 @@ const CANONICAL_ROUTES = [
     heading: 'AduBible Scripture & Study Articles — 15 Authoritative Research Pillars',
     excerpt:
       'A library of 15 comprehensive, 3,200+ word research guides covering ad-free Bible study, Bible Gateway and Bible Hub alternatives, Greek/Hebrew Strong concordance exegesis, multilingual parallel reading, and manuscript history.',
-  },
-  {
-    route: '/editorial-policy/',
-    priority: '0.6',
-    changefreq: 'monthly',
-    title: 'Editorial Policy, Translation Ethics & Scholarly Integrity | AduBible (Adubible.org)',
-    description:
-      'AduBible’s rigorous editorial and translation governance: unmonetized scripture access, primary manuscript fidelity (Masoretic, Textus Receptus, NA28), linguistic peer review, and zero advertising intrusion.',
-    heading: 'Editorial Policy & Translation Standards — Sovereign Biblical Integrity',
-    excerpt:
-      'AduBible operates under strict ministerial and academic principles: 100% unmonetized scripture, primary witness fidelity (Masoretic text, Textus Receptus, Nestle-Aland 28th Edition), and verifiable exegesis.',
-  },
-  {
-    route: '/glossary/',
-    priority: '0.6',
-    changefreq: 'monthly',
-    title: 'Biblical Exegesis, Manuscripts & Hermeneutics Glossary | AduBible (Adubible.org)',
-    description:
-      'Comprehensive glossary of biblical exegesis, textual criticism, ancient manuscript codices, translation philosophies, and theological terms from Autographs to Vorlage on AduBible.',
-    heading: 'Biblical Exegesis & Textual Criticism Glossary — Key Terms for Deep Study',
-    excerpt:
-      'Master essential terminology in biblical textual criticism, original language grammar, codicology, and hermeneutics, including Autograph, Textus Receptus, Septuagint, Vorlage, and Dynamic Equivalence.',
-  },
-  {
-    route: '/sources/',
-    priority: '0.6',
-    changefreq: 'monthly',
-    title: 'Ancient Manuscript Sources, Codex Archives & Scholarly Citations | AduBible (Adubible.org)',
-    description:
-      'Primary textual witnesses, academic archives, critical editions (BHS, NA28, LXX Rahlfs), and open-access theological resources powering AduBible.',
-    heading: 'Manuscript Archives, Codex Witnesses & Primary Biblical Sources',
-    excerpt:
-      'Primary textual witnesses and critical editions supporting AduBible: Codex Sinaiticus, Codex Vaticanus, Codex Alexandrinus, Dead Sea Scrolls, Westminster Leningrad Codex, and classic commentaries.',
   },
   {
     route: '/nkjv/ephesians/1/',
@@ -138,7 +116,7 @@ const CANONICAL_ROUTES = [
       "In the beginning God (Elohim H430) created the heavens and the earth. Read Genesis 1 in parallel across NKJV, KJV, BSB, and Westminster Leningrad Codex Hebrew on AduBible.",
     heading: 'Genesis Chapter 1 (NKJV) — Creation Account in Parallel & Hebrew Interlinear',
     excerpt:
-      'In the beginning God created the heavens and the earth. בְּרֵאשִׁית בָּרָא אֱלֹהִים אֵת הַשָּׁמַיִם וְאֵת הָאָרֶץ׃',
+      'In the beginning God created the heavens and the earth. בְּרֵאשִׁית בָּרָא אֱלֹהִيم אֵת הַשָּׁמַיִם וְאֵת הָאָרֶץ׃',
   },
   {
     route: '/nkjv/psalms/23/',
@@ -174,50 +152,6 @@ const CANONICAL_ROUTES = [
       'There is therefore now no condemnation to those who are in Christ Jesus, who do not walk according to the flesh, but according to the Spirit.',
   },
   {
-    route: '/about/',
-    priority: '0.6',
-    changefreq: 'monthly',
-    title: 'About AduBible — Honoring the Legacy of Apostle Kwame Adu | Nsuhia, Ghana | Adubible.org',
-    description:
-      'Learn how AduBible honors the ministry and legacy of Apostle Kwame Adu (Nsuhia, Ghana · https://nsuhia.com/) through a dedicated, 100% ad-free parallel study sanctuary uniting Twi, English, Hebrew, and Greek.',
-    heading: 'About AduBible — The Legacy of Apostle Kwame Adu (Nsuhia, Ghana)',
-    excerpt:
-      'AduBible was founded to honor the gospel life and generational ministry of Apostle Kwame Adu of Nsuhia, Ghana (https://nsuhia.com/). Dedicated to humanity with a permanent 100% ad-free reading covenant, YouVersion-style personal study sync, and deep exegetical tools.',
-  },
-  {
-    route: '/how-to-use/',
-    priority: '0.6',
-    changefreq: 'monthly',
-    title: "How to Use AduBible — Parallel Columns, Strong's Lexicon & Language Add-ons | Adubible.org",
-    description:
-      "Step-by-step guide to reading up to 4 Bible versions in parallel, swapping languages, inspecting Strong's Hebrew & Greek numbers, installing custom packs, and syncing highlights on AduBible.",
-    heading: 'How to Use Parallel Reading, Language Swap, Strong’s Concordance & Add-ons',
-    excerpt:
-      'Open up to 4 parallel Bible translations side-by-side, tap the Swap (⇄) button to exchange languages, inspect Strong’s numbers, and sync your study notes across devices.',
-  },
-  {
-    route: '/privacy/',
-    priority: '0.6',
-    changefreq: 'monthly',
-    title: 'Privacy Policy — Zero Ads & Sovereign Study Vault | AduBible (Adubible.org)',
-    description:
-      'AduBible operates with zero behavioral tracking and zero advertisements. Your bookmarks, pins, highlights, and notes belong 100% to you.',
-    heading: 'Sovereign Privacy Policy — Zero Ads, Zero Tracking',
-    excerpt:
-      'We never display intrusive ads or sell user data. All scripture study notes, highlights, and pins are stored locally in your device vault and optionally synced to your private cloud account.',
-  },
-  {
-    route: '/terms/',
-    priority: '0.6',
-    changefreq: 'monthly',
-    title: 'Terms of Service & Open-Source Scripture Licensing | AduBible (Adubible.org)',
-    description:
-      'Terms of use and open-access licensing for biblical translations, Strong’s Exhaustive Concordance, and classic theological commentaries on AduBible.',
-    heading: 'Terms of Service & Open-Source Biblical Commons',
-    excerpt:
-      'All public-domain and open-access translations, lexicons, and commentaries are freely accessible for personal devotion, sermon preparation, and academic research.',
-  },
-  {
     route: '/deuterocanon/',
     priority: '0.9',
     changefreq: 'weekly',
@@ -250,18 +184,22 @@ const CANONICAL_ROUTES = [
     excerpt:
       'Ancient Jewish and early Christian sacred literature including 1 Enoch (Book of Enoch), Book of Jasher, Book of Jubilees, 2 Esdras (4 Ezra), and Apostolic Fathers with 24kHz neural audio and sovereign offline storage.',
   },
-  {
-    route: '/donate/',
-    priority: '0.8',
-    changefreq: 'monthly',
-    title: 'Support the AduBible Scripture Mission — 100% Ad-Free Scripture for Humanity | Adubible.org',
-    description:
-      'Partner with AduBible in honoring the legacy of Apostle Kwame Adu of Nsuhia, Ghana. Support non-profit parallel Bible translation, Asante Twi digitizing, and zero-ad server operations via Stripe and PayPal.',
-    heading: 'Support the AduBible Planetary Scripture Mission — Giving & Partnership',
-    excerpt:
-      'AduBible operates as a dedicated, 100% ad-free non-profit scripture sanctuary for 4 billion readers worldwide, honoring Apostle Kwame Adu of Nsuhia, Ghana (https://nsuhia.com/). Support our planetary scripture distribution via Stripe (Card, Apple Pay, Google Pay) and PayPal.',
-  },
 ];
+
+// Append all 9 Legal & Institutional Governance Pages from Corpus
+for (const key of Object.keys(legalPages)) {
+  const lp = legalPages[key];
+  CANONICAL_ROUTES.push({
+    route: `/${lp.slug}/`,
+    priority: '0.7',
+    changefreq: 'monthly',
+    title: lp.metaTitle,
+    description: lp.metaDescription,
+    heading: lp.title,
+    excerpt: lp.metaDescription,
+    legalPageData: lp,
+  });
+}
 
 // Append all 15 Pillar Articles to CANONICAL_ROUTES
 for (const art of articles) {
@@ -461,11 +399,125 @@ function buildSSG() {
       html = html.replace('</head>', jsonLdBlock);
 
       // Inject full article body inside #root
-      const articleSsrBlock = `<div id="root"><main style="max-width:960px;margin:0 auto;padding:2rem 1.25rem;font-family:Georgia,serif;color:#f5f5f4;background:#1c1917;line-height:1.75;"><header style="margin-bottom:2rem;border-bottom:1px solid #292524;padding-bottom:1.5rem;"><nav aria-label="Breadcrumb" style="font-size:13px;color:#a8a29e;margin-bottom:1rem;"><a href="/" style="color:#f59e0b;text-decoration:none;">AduBible</a> &rsaquo; <a href="/articles/" style="color:#f59e0b;text-decoration:none;">Articles</a> &rsaquo; <span>${art.category}</span></nav><div style="font-size:12px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">${art.category} &bull; ${art.readTimeMinutes} Min Read</div><h1 style="font-size:2.25rem;line-height:1.2;color:#fafaf9;margin:0 0 1rem 0;">${art.title}</h1><p style="font-size:1.15rem;color:#d6d3d1;font-style:italic;margin:0 0 1rem 0;">${art.subtitle}</p><div style="font-size:13px;color:#a8a29e;">By <strong>${art.author}</strong> &bull; Published ${art.datePublished} &bull; Updated ${art.dateModified} &bull; <span>${art.wordCount.toLocaleString()} Words</span></div><div style="margin-top:1.5rem;"><picture><source srcset="/assets/articles/${art.slug}-16x9.webp" type="image/webp" /><img src="/assets/articles/${art.slug}-16x9.webp" alt="${art.title}" width="1600" height="900" style="width:100%;height:auto;border-radius:12px;border:1px solid #292524;" loading="eager" fetchpriority="high" /></picture></div></header><article class="article-body" style="font-size:1.05rem;line-height:1.8;">${art.contentHtml}</article><footer style="margin-top:3rem;padding-top:2rem;border-top:1px solid #292524;font-size:13px;color:#a8a29e;"><nav style="margin-bottom:1rem;"><a href="/articles/" style="color:#f59e0b;">&larr; Back to All Articles</a> | <a href="/" style="color:#f59e0b;">AduBible Home</a> | <a href="/about/" style="color:#a8a29e;">About</a> | <a href="/editorial-policy/" style="color:#a8a29e;">Editorial Policy</a> | <a href="/privacy/" style="color:#a8a29e;">Privacy</a></nav><p>&copy; 2026 AduBible.org &middot; Dedicated to Humanity in Honor of the Legacy of Apostle Kwame Adu &middot; Nsuhia, Ghana &middot; 100% Ads-Free Reading Experience.</p></footer></main></div>`;
+      const articleSsrBlock = `<div id="root"><main style="max-width:960px;margin:0 auto;padding:2rem 1.25rem;font-family:Georgia,serif;color:#f5f5f4;background:#1c1917;line-height:1.75;"><header style="margin-bottom:2rem;border-bottom:1px solid #292524;padding-bottom:1.5rem;"><nav aria-label="Breadcrumb" style="font-size:13px;color:#a8a29e;margin-bottom:1rem;"><a href="/" style="color:#f59e0b;text-decoration:none;">AduBible</a> &rsaquo; <a href="/articles/" style="color:#f59e0b;text-decoration:none;">Articles</a> &rsaquo; <span>${art.category}</span></nav><div style="font-size:12px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">${art.category} &bull; ${art.readTimeMinutes} Min Read</div><h1 style="font-size:2.25rem;line-height:1.2;color:#fafaf9;margin:0 0 1rem 0;">${art.title}</h1><p style="font-size:1.15rem;color:#d6d3d1;font-style:italic;margin:0 0 1rem 0;">${art.subtitle}</p><div style="font-size:13px;color:#a8a29e;">By <strong>${art.author}</strong> &bull; Published ${art.datePublished} &bull; Updated ${art.dateModified} &bull; <span>${art.wordCount.toLocaleString()} Words</span></div><div style="margin-top:1.5rem;"><picture><source srcset="/assets/articles/${art.slug}-16x9.webp" type="image/webp" /><img src="/assets/articles/${art.slug}-16x9.webp" alt="${art.title}" width="1600" height="900" style="width:100%;height:auto;border-radius:12px;border:1px solid #292524;" loading="eager" fetchpriority="high" /></picture></div></header><article class="article-body" style="font-size:1.05rem;line-height:1.8;">${art.contentHtml}</article><footer style="margin-top:3rem;padding-top:2rem;border-top:1px solid #292524;font-size:13px;color:#a8a29e;"><nav style="margin-bottom:1rem;"><a href="/articles/" style="color:#f59e0b;">&larr; Back to All Articles</a> | <a href="/" style="color:#f59e0b;">AduBible Home</a> | <a href="/about/" style="color:#a8a29e;">About</a> | <a href="/privacy/" style="color:#a8a29e;">Privacy Policy</a> | <a href="/terms/" style="color:#a8a29e;">Terms of Service</a> | <a href="/contact/" style="color:#a8a29e;">Contact Us</a></nav><p>&copy; 2026 AduBible.org &middot; Dedicated to Humanity in Honor of the Legacy of Apostle Kwame Adu &middot; Nsuhia, Ghana &middot; 100% Ads-Free Reading Experience.</p></footer></main></div>`;
       html = html.replace('<div id="root"></div>', articleSsrBlock);
+    } else if (item.legalPageData) {
+      const lp = item.legalPageData;
+      const schemaType = lp.schemaType || 'WebPage';
+
+      const pageSchema = {
+        '@context': 'https://schema.org',
+        '@type': schemaType,
+        'name': lp.title,
+        'description': lp.metaDescription,
+        'url': canonicalUrl,
+        'inLanguage': 'en-US',
+        'isPartOf': {
+          '@type': 'WebSite',
+          'name': 'AduBible.org',
+          'url': BASE_URL,
+        },
+        'publisher': {
+          '@type': 'Organization',
+          'name': 'AduBible.org',
+          'url': BASE_URL,
+          'logo': {
+            '@type': 'ImageObject',
+            'url': `${BASE_URL}/favicon-96x96.png`,
+          },
+        },
+      };
+
+      const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          {
+            '@type': 'ListItem',
+            'position': 1,
+            'name': 'Home',
+            'item': `${BASE_URL}/`,
+          },
+          {
+            '@type': 'ListItem',
+            'position': 2,
+            'name': 'Institutional Governance',
+            'item': `${BASE_URL}/about/`,
+          },
+          {
+            '@type': 'ListItem',
+            'position': 3,
+            'name': lp.title,
+            'item': canonicalUrl,
+          },
+        ],
+      };
+
+      const jsonLdBlock = `\n    <script type="application/ld+json">\n${JSON.stringify([pageSchema, breadcrumbSchema], null, 2)}\n    </script>\n  </head>`;
+      html = html.replace('</head>', jsonLdBlock);
+
+      // Render full sections HTML
+      const sectionsHtml = lp.sections
+        .map(
+          (sec) => `
+        <section id="${sec.id}" style="margin-bottom:2rem;background:#292524;border:1px solid #3d3835;border-radius:12px;padding:1.5rem;">
+          <h2 style="font-size:1.35rem;color:#f59e0b;margin-top:0;margin-bottom:1rem;border-bottom:1px solid #44403c;padding-bottom:0.5rem;">${sec.heading}</h2>
+          <div style="font-size:1rem;line-height:1.75;color:#e7e5e4;white-space:pre-line;">
+            ${sec.content.replace(
+              /([a-zA-Z0-9._-]+\[at\][a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+              (match) => {
+                const realEmail = match.replace('[at]', '@');
+                return `<a href="mailto:${realEmail}" style="color:#fbbf24;text-decoration:underline;">${match}</a>`;
+              }
+            )}
+          </div>
+        </section>
+      `
+        )
+        .join('\n');
+
+      const legalSsrBlock = `<div id="root">
+        <main style="max-width:960px;margin:0 auto;padding:2rem 1.25rem;font-family:Georgia,serif;color:#f5f5f4;background:#1c1917;line-height:1.75;">
+          <header style="margin-bottom:2rem;border-bottom:1px solid #292524;padding-bottom:1.5rem;">
+            <nav aria-label="Breadcrumb" style="font-size:13px;color:#a8a29e;margin-bottom:1rem;">
+              <a href="/" style="color:#f59e0b;text-decoration:none;">AduBible</a> &rsaquo;
+              <a href="/about/" style="color:#f59e0b;text-decoration:none;">Institutional Governance</a> &rsaquo;
+              <span>${lp.title}</span>
+            </nav>
+            <div style="font-size:12px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">
+              ${lp.badge} &bull; Last Updated: ${lp.lastUpdated}
+            </div>
+            <h1 style="font-size:2.25rem;line-height:1.2;color:#fafaf9;margin:0 0 1rem 0;">${lp.title}</h1>
+            <p style="font-size:1.1rem;color:#d6d3d1;font-style:italic;margin:0;">${lp.metaDescription}</p>
+          </header>
+
+          <article class="legal-body">
+            ${sectionsHtml}
+          </article>
+
+          <footer style="margin-top:3rem;padding-top:2rem;border-top:1px solid #292524;font-size:13px;color:#a8a29e;">
+            <nav style="margin-bottom:1rem;display:flex;flex-wrap:wrap;gap:8px 14px;">
+              <a href="/" style="color:#f59e0b;">AduBible Home</a> |
+              <a href="/about/" style="color:#a8a29e;">About</a> |
+              <a href="/privacy/" style="color:#a8a29e;">Privacy Policy</a> |
+              <a href="/terms/" style="color:#a8a29e;">Terms of Service</a> |
+              <a href="/contact/" style="color:#a8a29e;">Contact Us</a> |
+              <a href="/cookie-policy/" style="color:#a8a29e;">Cookie Policy</a> |
+              <a href="/how-to-use/" style="color:#a8a29e;">How to Use</a> |
+              <a href="/editorial-policy/" style="color:#a8a29e;">Editorial Policy</a> |
+              <a href="/glossary/" style="color:#a8a29e;">Glossary</a> |
+              <a href="/sources/" style="color:#a8a29e;">Sources</a> |
+              <a href="/articles/" style="color:#f59e0b;">15 Pillar Articles</a>
+            </nav>
+            <p>&copy; 2026 <a href="https://adubible.org/" style="color:inherit;text-decoration:none;">AduBible.org</a> &middot; Dedicated to Humanity as a Sacred Ministry in Honor of Apostle Kwame Adu &middot; <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" style="color:#f59e0b;">Nsuhia, Ghana ↗</a> &middot; <span style="color:#10b981;">100% Ads-Free Reading Experience</span></p>
+          </footer>
+        </main>
+      </div>`;
+
+      html = html.replace('<div id="root"></div>', legalSsrBlock);
     } else {
-      // Standard crawlable <main> for chapters and legal pages
-      const ssrMainBlock = `<div id="root"><main style="max-width:960px;margin:0 auto;padding:2rem;font-family:Georgia,serif;color:#f5f5f4;"><h1>${item.heading}</h1><p>${item.excerpt}</p><nav><a href="/">AduBible Home</a> | <a href="/articles/">Pillar Articles</a> | <a href="/nkjv/ephesians/1/">Ephesians 1 NKJV</a> | <a href="/twi/ephesians/1/">Efesofoɔ 1 Twi</a> | <a href="/about/">About</a> | <a href="/editorial-policy/">Editorial Policy</a> | <a href="/how-to-use/">How to Use</a> | <a href="/privacy/">Privacy</a> | <a href="/terms/">Terms</a></nav><footer style="margin-top:2rem;font-size:12px;color:#a8a29e;border-top:1px solid #292524;padding-top:1.5rem;"><div style="margin-bottom:1rem;font-style:italic;">&ldquo;Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ.&rdquo; &mdash; Ephesians 1:3 &bull; &ldquo;For the word of God is living and active, sharper than any two-edged sword...&rdquo; &mdash; Hebrews 4:12 &bull; &ldquo;All Scripture is breathed out by God and profitable for teaching...&rdquo; &mdash; 2 Timothy 3:16</div>&copy; 2026 <a href="https://adubible.org/" style="color:inherit;text-decoration:none;">AduBible.org</a> &middot; Dedicated to Humanity by the Ministry of Apostle Kwame Adu &middot; <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" style="color:#f59e0b;">Nsuhia, Ghana ↗</a> &middot; <span style="color:#10b981;">100% Ads-Free Reading Experience</span></footer></main></div>`;
+      // Standard crawlable <main> for chapters and directory
+      const ssrMainBlock = `<div id="root"><main style="max-width:960px;margin:0 auto;padding:2rem;font-family:Georgia,serif;color:#f5f5f4;"><h1>${item.heading}</h1><p>${item.excerpt}</p><nav><a href="/">AduBible Home</a> | <a href="/articles/">Pillar Articles</a> | <a href="/nkjv/ephesians/1/">Ephesians 1 NKJV</a> | <a href="/twi/ephesians/1/">Efesofoɔ 1 Twi</a> | <a href="/about/">About</a> | <a href="/privacy/">Privacy Policy</a> | <a href="/terms/">Terms of Service</a> | <a href="/contact/">Contact Us</a> | <a href="/cookie-policy/">Cookie Policy</a> | <a href="/how-to-use/">How to Use</a></nav><footer style="margin-top:2rem;font-size:12px;color:#a8a29e;border-top:1px solid #292524;padding-top:1.5rem;"><div style="margin-bottom:1rem;font-style:italic;">&ldquo;Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ.&rdquo; &mdash; Ephesians 1:3 &bull; &ldquo;For the word of God is living and active, sharper than any two-edged sword...&rdquo; &mdash; Hebrews 4:12 &bull; &ldquo;All Scripture is breathed out by God and profitable for teaching...&rdquo; &mdash; 2 Timothy 3:16</div>&copy; 2026 <a href="https://adubible.org/" style="color:inherit;text-decoration:none;">AduBible.org</a> &middot; Dedicated to Humanity by the Ministry of Apostle Kwame Adu &middot; <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" style="color:#f59e0b;">Nsuhia, Ghana ↗</a> &middot; <span style="color:#10b981;">100% Ads-Free Reading Experience</span></footer></main></div>`;
       html = html.replace('<div id="root"></div>', ssrMainBlock);
     }
 
@@ -540,13 +592,16 @@ ${imageSitemapEntries}
 ## Authoritative Exegesis & Study Guides (/articles/)
 ${articles.map((a, idx) => `${idx + 1}. ${a.title}: ${BASE_URL}/articles/${a.slug}/`).join('\n')}
 
-## Institutional & Standards
-- Editorial Policy: ${BASE_URL}/editorial-policy/
-- Biblical Glossary: ${BASE_URL}/glossary/
-- Manuscript Sources: ${BASE_URL}/sources/
-- About AduBible: ${BASE_URL}/about/
-- Terms & Open Access: ${BASE_URL}/terms/
-- Privacy: ${BASE_URL}/privacy/
+## Institutional & Legal Governance (/footer)
+- About AduBible & Legacy: ${BASE_URL}/about/
+- Sovereign Privacy Policy: ${BASE_URL}/privacy/
+- Terms of Service: ${BASE_URL}/terms/
+- Contact Us & Ministry Support: ${BASE_URL}/contact/
+- Cookie & Local Storage Policy: ${BASE_URL}/cookie-policy/
+- How to Use AduBible: ${BASE_URL}/how-to-use/
+- Editorial Policy & Translation Standards: ${BASE_URL}/editorial-policy/
+- Biblical Exegesis Glossary: ${BASE_URL}/glossary/
+- Manuscript Sources & Archives: ${BASE_URL}/sources/
 `;
   fs.writeFileSync(path.join(DIST_DIR, 'llms.txt'), llmsTxt, 'utf-8');
 
@@ -574,7 +629,7 @@ Sitemap: ${BASE_URL}/sitemap.xml
   }
 
   console.log(
-    `[ADUBIBLE SSG] Generated ${CANONICAL_ROUTES.length} static routes (including ${articles.length} pillar articles) + sitemap.xml (${CANONICAL_ROUTES.length} URLs) + image-sitemap.xml (${articles.length * 3} images) + llms.txt in dist/ for ${BASE_URL}`
+    `[ADUBIBLE SSG] Generated ${CANONICAL_ROUTES.length} static routes (including ${articles.length} pillar articles + ${Object.keys(legalPages).length} full legal pages) + sitemap.xml + image-sitemap.xml + llms.txt in dist/ for ${BASE_URL}`
   );
 }
 

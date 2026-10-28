@@ -1,0 +1,295 @@
+{
+  "about": {
+    "key": "about",
+    "slug": "about",
+    "title": "About AduBible — Honoring the Legacy of Apostle Kwame Adu",
+    "metaTitle": "About AduBible — The Ministry & Legacy of Apostle Kwame Adu | Nsuhia, Ghana",
+    "metaDescription": "Discover the sacred history of AduBible.org, founded to honor Apostle Kwame Adu of Nsuhia, Ghana. A permanent 100% ad-free parallel study sanctuary uniting Twi, English, Hebrew, and Greek.",
+    "badge": "Sacred Memorial & Gospel Covenant",
+    "lastUpdated": "2026-10-28",
+    "schemaType": "AboutPage",
+    "sections": [
+      {
+        "id": "memorial-heritage",
+        "heading": "1. The Apostolic Memorial & Legacy of Apostle Kwame Adu",
+        "content": "AduBible (https://adubible.org) was established as a perpetual digital sanctuary and global gospel memorial honoring the life, evangelical ministry, and generational legacy of Apostle Kwame Adu of Nsuhia, Ghana (https://nsuhia.com/). \n\nApostle Kwame Adu dedicated his earthly pilgrimage to the tireless proclamation of the uncompromised Gospel of Jesus Christ across the towns, villages, and cities of Ghana and West Africa. His apostolic vision was characterized by an unwavering reverence for the infallible authority of Holy Scripture, deep pastoral compassion for the edification of the saints, and an ardent conviction that the Word of God must be made freely accessible to every human soul in their native mother tongue without financial barriers or commercial hindrance.\n\nIn solemn commemoration of this sacred heritage, AduBible operates under an irrevocable institutional covenant: the platform is permanently dedicated to humanity as a free, unmonetized gift, upholding a strict 100% Ads-Free Covenant across all translations, devices, and interfaces."
+      },
+      {
+        "id": "cornerstone-scriptures",
+        "heading": "2. The Three Cornerstone Scriptures of Our Calling",
+        "content": "The spiritual foundation and daily stewardship of AduBible are anchored upon three foundational scriptural declarations:\n\n• Ephesians 1:3 (Efesofoɔ 1:3): \"Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ.\" — Declaring the sovereign grace and eternal inheritance bestowed upon every believer in Christ Jesus.\n\n• Hebrews 4:12 (Hebrifoɔ 4:12): \"For the word of God is living and active, sharper than any two-edged sword, piercing to the division of soul and of spirit, of joints and of marrow, and discerning the thoughts and intentions of the heart.\" — Confessing the supernatural power, active vitality, and convicting authority of the Holy Scriptures.\n\n• 2 Timothy 3:16 (2 Timoteo 3:16): \"All Scripture is breathed out by God and profitable for teaching, for reproof, for correction, and for training in righteousness.\" — Affirming the plenary verbal inspiration, inerrancy, and divine sufficiency of the biblical canon."
+      },
+      {
+        "id": "exegetical-sanctuary",
+        "heading": "3. An Exegetical Sanctuary Uniting BibleHub & YouVersion",
+        "content": "For decades, students of Scripture have faced an agonizing dilemma: either navigate clunky, ad-saturated portals to access original Hebrew and Greek lexicons, or utilize closed, mobile-only apps that lack deep parallel exegetical tools.\n\nAduBible permanently resolves this divide by harmonizing the deep lexical horsepower of classical study hubs with modern, elegant, distraction-free reading architecture:\n\n1. Parallel Multilingual Columns: Read up to four synchronized translation columns side-by-side (e.g., King James Version + Asante Twi + Greek Textus Receptus + French Louis Segond) with instant verse synchronization.\n2. 1-Click Instant Language Swap (⇄): Invert parallel columns instantly to study how classical English idioms translate into indigenous African vernaculars and ancient biblical roots.\n3. Strong’s Exhaustive Concordance & Lexical Popovers: Tap any Greek or Hebrew code badge (e.g., G2128 eulogētos or H430 Elohim) to inspect root etymology, Thayer/Gesenius definitions, morphological parsing, and vernacular cross-references.\n4. Classical Expository Commentaries: Access Matthew Henry, Jamieson-Fausset-Brown, John Gill, and Geneva commentary notes seamlessly integrated into the verse reader.\n5. Sovereign Personal Study Vault: Create highlights across six royal palette tones, pin priority verses to your active study deck, bookmark key chapters, and author deep exegetical notes with zero behavioral tracking."
+      },
+      {
+        "id": "vernacular-dignity",
+        "heading": "4. Linguistic Dignity for Asante Twi & African Mother Tongues",
+        "content": "A central pillar of Apostle Kwame Adu’s ministry was the profound conviction that God speaks with unmatched intimacy in the heart language of the believer. In West Africa, millions of Christians read the Asante Twi Holy Bible (Twerɛ Kronkron) and Akuapem Twi Holy Bible (Kyerew Kronkron), texts with a rich heritage tracing back to the Basel Evangelical Missionary Society and the pioneering linguistic labors of Johannes Gottlieb Christaller in 1871.\n\nAduBible provides world-class typographical fidelity, phonetic accuracy, and parallel cross-referencing for Asante Twi, Akuapem Twi, Ewe (Eʋegbe), Ga (Ŋmalɛ Krɔŋkrɔŋ Lɛ), Yoruba (Bíbélì Mímọ́), Hausa (Littafi Mai Tsarki), and Swahili (Kiswahili Union Version). Indigenous mother tongues are treated with identical academic dignity, responsive tooling, and 24kHz neural audio streaming as English, Hebrew, and Greek."
+      },
+      {
+        "id": "institutional-independence",
+        "heading": "5. Institutional Independence & Non-Commercial Stewardship",
+        "content": "AduBible is not owned by any commercial media conglomerate, venture capital fund, or ad network. We accept zero banner ads, zero popups, zero affiliate paywalls, and zero monetized data tracking. The platform is maintained by the Apostle Kwame Adu Memorial Gospel Foundation in collaboration with conservative theological scholars and voluntary software engineers committed to advancing the Kingdom of God across all nations."
+      }
+    ]
+  },
+  "privacy": {
+    "key": "privacy",
+    "slug": "privacy",
+    "title": "Sovereign Privacy Policy — Zero Ads & Client-First Data Vault",
+    "metaTitle": "Privacy Policy — Zero Ads, Zero Tracking & Client Vault | AduBible.org",
+    "metaDescription": "AduBible’s Sovereign Privacy Policy: 100% ad-free, zero tracking pixels, client-first IndexedDB storage, GDPR/CCPA consumer rights, and complete data exportability.",
+    "badge": "100% Privacy & Zero-Tracking Covenant",
+    "lastUpdated": "2026-10-28",
+    "schemaType": "WebPage",
+    "sections": [
+      {
+        "id": "privacy-covenant",
+        "heading": "1. The Sovereign Privacy Covenant — Zero Advertising & Zero Tracking",
+        "content": "At AduBible (https://adubible.org), we hold the privacy of your spiritual devotions, prayer notes, and Scripture reading habits to be sacred. We believe that when a believer opens the Word of God, their attention must be focused entirely upon Christ without commercial surveillance or behavioral advertising.\n\nOur foundational privacy commitment is absolute:\n• We do NOT display banner advertisements, pop-ups, video ads, or sponsored placements.\n• We do NOT sell, rent, lease, or monetize your personal information or reading telemetry to data brokers or advertisers.\n• We do NOT deploy third-party behavioral tracking pixels, advertising retargeting tags (such as Meta Pixel, TikTok Pixel, or Google Ads Remarketing), or cross-site tracking cookies.\n• We do NOT build consumer psychographic profiles based upon the chapters you read, the verses you highlight, or the theological notes you author."
+      },
+      {
+        "id": "local-vault-architecture",
+        "heading": "2. Client-First Architecture & Sovereign Local Storage",
+        "content": "AduBible is architected with a privacy-first, client-side data vault design. By default, your interactions with the platform are executed and preserved locally inside your device’s browser sandbox:\n\n1. LocalStorage & IndexedDB: Your reading preferences (selected color theme, font size, verse number visibility, active Bible versions) and your personal study data (verse highlights, bookmarks, pinned verses, and private study notes) are stored directly inside your browser’s IndexedDB and LocalStorage.\n2. Zero Mandatory Registration: You are never forced to create an account, provide an email address, or log in to use AduBible. All 107 Holy Scriptures, parallel translations, Strong’s Lexicon, commentaries, and audio features are 100% accessible anonymously.\n3. Offline Independence: Once downloaded, Scripture chapters and personal study notes are served locally from your browser cache, allowing complete offline devotional study without an active internet connection."
+      },
+      {
+        "id": "optional-cloud-sync",
+        "heading": "3. Optional Cloud Sync & Firebase Authentication",
+        "content": "For users who desire to synchronize their personal study vault across multiple devices (e.g., desktop PC, tablet, and mobile smartphone), AduBible offers an optional Cloud Study Sync feature powered by Google Firebase:\n\n• Registration Data: When you choose to sign in via Google Auth or email login, Firebase Authentication securely processes your email address and display name to establish your unique study vault identifier.\n• End-to-End Vault Isolation: Your synchronized study records (highlights, notes, pins, bookmarks) are stored in an isolated Firestore user document protected by strict security rules. No other user or unauthorized third party has access to your private study records.\n• Revocation & Deletion: You can disconnect Cloud Sync at any time. When you sign out, your local study vault remains intact on your current device."
+      },
+      {
+        "id": "gdpr-ccpa-rights",
+        "heading": "4. International Privacy Rights: GDPR, CCPA & Global Regulations",
+        "content": "In compliance with the European Union General Data Protection Regulation (GDPR), the California Consumer Privacy Act (CCPA / CPRA), and international privacy frameworks, AduBible guarantees you the following sovereign rights:\n\n1. Right of Access (GDPR Article 15): You have the right to request a full disclosure of any personal data stored in your cloud account.\n2. Right to Rectification (GDPR Article 16): You may update or correct any account information at any time.\n3. Right to Erasure / Right to be Forgotten (GDPR Article 17): You may permanently delete your cloud account and all associated study vault records with immediate effect.\n4. Right to Data Portability (GDPR Article 20): You have the right to export your complete study vault—including all bookmarks, highlights, and exegetical notes—in standard JSON or Markdown format directly from the Settings and Study Vault panels.\n5. \"Do Not Sell or Share My Personal Information\" (CCPA): Because AduBible never sells or shares personal data for cross-context behavioral advertising, we are fully compliant with CCPA/CPRA standards by default."
+      },
+      {
+        "id": "data-retention-security",
+        "heading": "5. Data Security & Retention Protocols",
+        "content": "All transmissions between your web browser and AduBible servers are encrypted using modern Transport Layer Security (TLS 1.3 / HTTPS) with strict HTTP Strict Transport Security (HSTS) headers. We enforce Content Security Policy (CSP), X-Frame-Options (SAMEORIGIN), and X-Content-Type-Options (nosniff) to protect against cross-site scripting (XSS) and clickjacking.\n\nData stored locally in your browser remains under your sole physical control until you clear your browser cache or delete it via the in-app Study Vault controls. Cloud data is retained only for as long as your account remains active."
+      },
+      {
+        "id": "privacy-contact",
+        "heading": "6. Data Protection Officer & Privacy Inquiries",
+        "content": "If you have questions regarding this Privacy Policy, wish to exercise your statutory privacy rights, or require assistance with data deletion, please contact our Data Protection Officer at:\n\n• Email: privacy[at]adubible.org (Clickable: mailto:privacy@adubible.org)\n• Postal / Ministerial Office: AduBible Privacy Governance, Apostle Kwame Adu Memorial Center, Nsuhia, Ashanti Region, Ghana\n• Web: https://adubible.org/contact/"
+      }
+    ]
+  },
+  "terms": {
+    "key": "terms",
+    "slug": "terms",
+    "title": "Terms of Service & Open-Source Scripture Commons Licensing",
+    "metaTitle": "Terms of Service & Open Scripture Licensing | AduBible.org",
+    "metaDescription": "AduBible Terms of Service: Open-Access Scripture Commons, Public Domain licensing, user study vault ownership, fair use guidelines, and non-commercial ministerial terms.",
+    "badge": "Open Scripture Commons & Legal Terms",
+    "lastUpdated": "2026-10-28",
+    "schemaType": "WebPage",
+    "sections": [
+      {
+        "id": "agreement-to-terms",
+        "heading": "1. Agreement to Terms & Doctrinal Respect",
+        "content": "Welcome to AduBible (https://adubible.org). By accessing or using our website, progressive web app, APIs, or downloadable study materials, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.\n\nAduBible is a sacred ministerial platform dedicated to the worldwide Body of Christ and all seekers of truth in honor of Apostle Kwame Adu of Nsuhia, Ghana. We ask all visitors and scholars to engage with the sacred texts, commentaries, and fellow community members with Christian charity, scholarly reverence, and integrity."
+      },
+      {
+        "id": "scripture-commons",
+        "heading": "2. Open-Access Biblical Commons & Public Domain Translations",
+        "content": "The vast majority of biblical texts, lexicons, dictionaries, and historical commentaries provided on AduBible reside in the public domain or are licensed under generous open-access creative commons agreements:\n\n1. Public Domain Scriptures: The Authorized King James Version (KJV 1769), American Standard Version (ASV 1901), World English Bible (WEB), Young’s Literal Translation (YLT), Darby Translation, Douay-Rheims Bible (DRA), Greek Textus Receptus (Stephanus 1550 / Scrivener 1894), Westminster Leningrad Codex (WLC Hebrew), Septuagint (LXX), Luther German Bible, Louis Segond 1910 French Bible, and Reina-Valera 1909 Spanish Bible are in the public domain and may be freely quoted, printed, and distributed without royalty payments.\n2. Berean Standard Bible (BSB): The Berean Standard Bible text is dedicated to the public domain through the Open-Access Biblical Commons as of 2023, enabling unrestricted copying and preaching.\n3. Asante & Akuapem Twi Scriptures: Historical Akan Twi biblical texts (Twerɛ Kronkron) are provided for non-commercial devotional study, educational instruction, and sermon preparation under historical religious commons heritage.\n4. Classical Theological Commentaries: Expository commentaries by Matthew Henry (1706), John Gill (1748), Jamieson-Fausset-Brown (1871), and the Geneva Bible Notes (1599) are in the public domain."
+      },
+      {
+        "id": "user-vault-ownership",
+        "heading": "3. Intellectual Property Rights & User Study Vault Ownership",
+        "content": "You retain 100% intellectual property ownership of any personal notes, sermon drafts, theological annotations, or custom translation packs that you create or import into AduBible:\n\n• Private Content: Your highlights, bookmarks, and private study notes belong exclusively to you. AduBible claims no ownership, copyright, or commercial rights over your personal study output.\n• Software Engine: The user interface design, logo, visual branding, custom typography layouts, and proprietary algorithmic code of AduBible are protected by copyright and intellectual property laws of Ghana and international treaties. You may not reverse-engineer, decompile, or scrape the core engine for commercial exploitation without prior written consent."
+      },
+      {
+        "id": "acceptable-use",
+        "heading": "4. Acceptable Use Policy & System Protection",
+        "content": "To ensure uninterrupted, high-speed access for believers around the globe, you agree NOT to:\n1. Conduct automated scraping, mass data harvesting, or continuous headless bot queries that degrade server performance or increase cloud infrastructure costs for the ministry.\n2. Attempt to bypass rate limits, inject malicious code, exploit cross-site scripting vulnerabilities, or compromise user authentication tokens.\n3. Use the platform for any unlawful purpose, defamation, fraudulent claims, or commercial spam.\n4. Misrepresent yourself as an authorized ministerial representative of AduBible or the Apostle Kwame Adu Memorial Gospel Foundation."
+      },
+      {
+        "id": "disclaimer-liability",
+        "heading": "5. Disclaimer of Warranties & Limitation of Liability",
+        "content": "AduBible is provided on an \"AS IS\" and \"AS AVAILABLE\" basis without warranties of any kind, whether express or implied. While we employ rigorous scholarly review to eliminate textual errors and typographical anomalies:\n\n• We do not warrant that the website will be 100% error-free, uninterrupted, or immune from technical disruptions caused by cloud network outages or third-party telecommunications providers.\n• In no event shall AduBible, its founders, trustees, pastors, or technical contributors be liable for any indirect, incidental, special, consequential, or punitive damages arising out of your access to or inability to use the platform.\n• Theological interpretations expressed in classical historical commentaries belong to their respective historical authors and do not necessarily represent the exhaustive stance of the ministry in every minor doctrinal nuance."
+      },
+      {
+        "id": "governing-law",
+        "heading": "6. Governing Law & Dispute Resolution",
+        "content": "These Terms shall be governed by and construed in accordance with the laws of the Republic of Ghana, without regard to conflict of law principles. Any dispute arising under or in connection with these Terms shall be resolved in a spirit of Christian reconciliation (1 Corinthians 6:1–7), or, if necessary, submitted to the competent courts of Kumasi or Accra, Ghana."
+      }
+    ]
+  },
+  "contact": {
+    "key": "contact",
+    "slug": "contact",
+    "title": "Contact Us & Ministry Support — AduBible",
+    "metaTitle": "Contact Us — Ministry Support, Textual Errata & Inquiries | AduBible.org",
+    "metaDescription": "Get in touch with AduBible. Pastoral consultations, ministerial inquiries, translation errata submissions, technical support, and community partnerships.",
+    "badge": "Ministry Support & Global Communication",
+    "lastUpdated": "2026-10-28",
+    "schemaType": "ContactPage",
+    "sections": [
+      {
+        "id": "welcome-contact",
+        "heading": "1. Welcome to the AduBible Ministerial Helpdesk",
+        "content": "Whether you are a pastor preparing a sermon series, a linguistic scholar researching ancient manuscripts, a Bible translator working in an African vernacular, or a believer seeking technical assistance with your personal study vault, the AduBible team is honored to serve you.\n\nOur headquarters are situated in Nsuhia, Ashanti Region, Ghana, honoring the missionary legacy of Apostle Kwame Adu. We respond to ministerial, scholarly, and technical communications with Christian diligence and warmth."
+      },
+      {
+        "id": "direct-communication-channels",
+        "heading": "2. Dedicated Ministry Email Channels (Anti-Scrape Obfuscated)",
+        "content": "To protect our communication servers against automated harvesting bots while maintaining immediate access for human correspondents, our official email channels are published below using the anti-scraping obfuscation standard [at]:\n\n• Pastoral & Apostolic Memorial Inquiries:\n  apostle[at]adubible.org (Click to compose: mailto:apostle@adubible.org)\n  For pastoral consultations, missionary partnerships, memorial inquiries, and historical records of Apostle Kwame Adu.\n\n• General Inquiries & Technical Support:\n  contact[at]adubible.org (Click to compose: mailto:contact@adubible.org)\n  For assistance with Cloud Sync, study vault exports, audio reader performance, and bug reports.\n\n• Textual Errata & Translation Review:\n  errata[at]adubible.org (Click to compose: mailto:errata@adubible.org)\n  For reporting typographical variations, lexical Strong's index alignments, or ancient manuscript discrepancies. Our research faculty verifies errata within 48 hours.\n\n• Privacy & Data Governance:\n  privacy[at]adubible.org (Click to compose: mailto:privacy@adubible.org)\n  For statutory GDPR/CCPA data access, vault deletion requests, and compliance matters."
+      },
+      {
+        "id": "physical-location",
+        "heading": "3. Physical Location & Community Heritage",
+        "content": "AduBible Ministerial & Research Center\nApostle Kwame Adu Memorial Gospel Foundation\nNsuhia Community, Ashanti Region, Republic of Ghana\nOfficial Community Portal: https://nsuhia.com/ (Nsuhia Heritage & Civic Portal)\n\nVisitors and theological delegations traveling to Nsuhia are encouraged to notify our secretariat at least two weeks in advance via apostle[at]adubible.org to ensure hospitality arrangements."
+      },
+      {
+        "id": "response-sla",
+        "heading": "4. Service Level Commitments & Response Timeline",
+        "content": "We operate as a consecrated Christian ministry, not an automated corporate call center. Our response commitments are structured as follows:\n\n• Textual Errata & Scripture Translation Corrections: Acknowledged within 24 hours; reviewed by our linguistic faculty within 48 hours; patched in edge deployments upon verification.\n• Technical & Cloud Sync Support: Typically resolved within 1 to 2 business days.\n• Pastoral & Memorial Inquiries: Answered personally by ministerial elders in the order received."
+      }
+    ]
+  },
+  "cookie-policy": {
+    "key": "cookie-policy",
+    "slug": "cookie-policy",
+    "title": "Cookie & Local Storage Policy — Zero Tracking Cookies",
+    "metaTitle": "Cookie Policy — Zero Advertising Cookies & Local Storage | AduBible.org",
+    "metaDescription": "AduBible Cookie & Local Storage Policy: 100% free of advertising cookies, zero third-party marketing pixels, and transparent technical key disclosures.",
+    "badge": "100% Tracking-Free Cookie Disclosure",
+    "lastUpdated": "2026-10-28",
+    "schemaType": "WebPage",
+    "sections": [
+      {
+        "id": "cookie-covenant",
+        "heading": "1. The Tracking-Free Cookie Commitment",
+        "content": "Unlike conventional commercial web portals that deploy dozens of third-party tracking cookies, marketing pixels, and cross-site identifiers, AduBible (https://adubible.org) enforces a strict Zero Advertising Cookie Policy.\n\nWe do NOT use cookies to track your browsing activity across other websites.\nWe do NOT partner with ad retargeting networks (Google AdSense remarketing, Meta Pixel, TradeDesk, Criteo).\nWe do NOT drop persistent cookies designed to construct marketing personas."
+      },
+      {
+        "id": "technical-storage-keys",
+        "heading": "2. Exhaustive Disclosure of Local Storage & Session Keys",
+        "content": "AduBible uses browser LocalStorage, SessionStorage, and IndexedDB exclusively for essential, user-requested functional purposes. Below is an exhaustive registry of every key utilized by the application:\n\n1. adubible_prefs_v1 (LocalStorage):\n   • Purpose: Preserves your active reading configuration, including selected visual theme (e.g., Wisdom Pine, Royal Velvet, Midnight, Parchment), font family, font size, verse number display toggle, and inline Strong's concordance visibility.\n   • Retention: Persists on your device until manually reset or cleared.\n\n2. adubible_active_versions_v1 (LocalStorage):\n   • Purpose: Remembers the translation IDs selected for your parallel study columns (e.g., [\"nkjv\", \"twi\", \"kjv\"]).\n   • Retention: Persists across browsing sessions.\n\n3. adubible_study_vault_v1 (LocalStorage & IndexedDB):\n   • Purpose: Houses your personal verse highlights, pinned verses, bookmarks, and private exegetical study notes locally in your browser so you never lose study data even when offline.\n   • Retention: Persists indefinitely until cleared by the user.\n\n4. firebase:authUser:[API_KEY]:[APP_NAME] (IndexedDB):\n   • Purpose: Maintained by Google Firebase Authentication only if you explicitly choose to sign in with Cloud Sync to preserve your authenticated session token.\n   • Retention: Session lifecycle managed by Firebase Auth."
+      },
+      {
+        "id": "managing-local-data",
+        "heading": "3. How to Inspect, Clear, or Export Your Local Data",
+        "content": "You have total sovereignty over all data stored on your device:\n\n• Export Your Vault: Open the Study Vault drawer at any time and click \"Export Vault (JSON / Markdown)\" to save a complete, human-readable copy of your notes and highlights to your local computer or phone.\n• Clear In-App Data: Go to Settings → Study Vault → \"Purge Local Vault\" to wipe all stored notes and preferences instantly.\n• Browser Settings: You can inspect and delete all LocalStorage and IndexedDB keys directly through your browser’s Developer Tools (Application / Storage tab) or via Browser Settings → Clear Browsing Data."
+      }
+    ]
+  },
+  "how-to-use": {
+    "key": "how-to-use",
+    "slug": "how-to-use",
+    "title": "How to Use AduBible — Parallel Reader, Strong’s & Audio Guide",
+    "metaTitle": "How to Use AduBible — Parallel Columns, Strong’s Lexicon & Audio Guide",
+    "metaDescription": "Step-by-step masterclass on reading up to 4 parallel Bible columns, 1-click language swap, inspecting Strong’s Greek/Hebrew numbers, and offline study.",
+    "badge": "Comprehensive User Manual & Study Guide",
+    "lastUpdated": "2026-10-28",
+    "schemaType": "WebPage",
+    "sections": [
+      {
+        "id": "parallel-reading-setup",
+        "heading": "1. Mastering Parallel Scripture Reading (1 to 4 Columns)",
+        "content": "AduBible allows you to study up to four distinct Bible translations simultaneously in synchronized vertical columns:\n\n• Adding a Column: Click the \"+ Add Translation\" button in the chapter toolbar or ribbon. A searchable translation picker will open displaying all available editions categorized by language (English, African Vernaculars, European, Asian, and Classical Biblical Languages).\n• Removing or Reordering: Click the version badge in any column header to swap that specific edition or close the column.\n• Responsive Column Adaptation: On desktop monitors, AduBible automatically displays up to 4 columns side-by-side with synchronized verse alignment. On tablets and mobile phones, columns adapt into a fluid horizontal swipe deck or stack cleanly for thumb-friendly reading."
+      },
+      {
+        "id": "instant-language-swap",
+        "heading": "2. 1-Click Instant Language Swap (⇄)",
+        "content": "A groundbreaking feature of AduBible is the instant Language Swap button (⇄):\n• In the chapter reading toolbar or within column headers, tap the \"⇄ Swap\" button.\n• The system immediately exchanges the primary and secondary translations (e.g., instantly flipping Asante Twi to the primary left position and NKJV to the secondary right position).\n• This is invaluable for bilingual readers, diaspora families, and Bible translators evaluating how doctrinal concepts map between English and vernacular languages."
+      },
+      {
+        "id": "strongs-lexicon-guide",
+        "heading": "3. Strong’s Exhaustive Concordance & Morphological Popovers",
+        "content": "To unlock original Hebrew and Greek roots without needing a seminary degree:\n• Toggle Strong’s Numbers: Open Settings (⚙️) and enable \"Show Strong’s Numbers\" (or click the Strong’s button in the top masthead).\n• Code Badges: Blue badges beginning with \"H\" denote Hebrew roots (Old Testament); gold badges beginning with \"G\" denote Greek roots (New Testament).\n• Lexicon Popover: Tap any Strong's badge (e.g., G2128) to open an instant modal with phonetic pronunciation, transliteration, root derivation, Thayer/BDB definitions, and Akan Twi theological parallels."
+      },
+      {
+        "id": "audio-study-vault",
+        "heading": "4. 24kHz Neural Audio Bible & Personal Study Vault",
+        "content": "• Neural Audio Bible: Tap the Headphones icon in the masthead or chapter bar to stream continuous, crystal-clear 24kHz neural audio narration. You can pause, scrub through verses, and let the Word play continuously in the background.\n• Study Vault (Highlights, Pins, Notes): Tap any verse number to reveal the Verse Action Bar:\n  1. Highlight in 6 sacred colors (Gold, Sage, Sky, Rose, Violet, Charcoal).\n  2. Pin to your persistent Study Vault deck for quick reference during sermons.\n  3. Bookmark key passages.\n  4. Author Private Exegetical Notes saved securely to your local vault or synced via Firebase."
+      }
+    ]
+  },
+  "editorial-policy": {
+    "key": "editorial-policy",
+    "slug": "editorial-policy",
+    "title": "Editorial Policy & Translation Standards — Sacred Integrity",
+    "metaTitle": "Editorial Policy & Translation Standards | AduBible (Adubible.org)",
+    "metaDescription": "AduBible’s rigorous editorial and translation governance: unmonetized scripture access, primary manuscript fidelity, linguistic peer review, and zero advertising intrusion.",
+    "badge": "Scholarly Integrity & Textual Standards",
+    "lastUpdated": "2026-10-28",
+    "schemaType": "WebPage",
+    "sections": [
+      {
+        "id": "editorial-creed",
+        "heading": "1. Textual Integrity & Manuscript Consensus",
+        "content": "At AduBible, we hold the Holy Scriptures of the Old and New Testaments to be the inspired, infallible, and fully trustworthy Word of the Living God. Our editorial and technical decisions are governed by strict institutional criteria:\n\nWe strictly present biblical translations that adhere to recognized manuscript traditions—the Hebrew Masoretic Text (Westminster Leningrad Codex), the Greek Textus Receptus, and the Byzantine Majority consensus—while transparently noting manuscript variations without sectarian bias."
+      },
+      {
+        "id": "commercial-independence",
+        "heading": "2. Strict Commercial Non-Affiliation",
+        "content": "No publishing corporation, commercial sponsor, or advertising exchange exercises any influence over our editorial, translation, or commentary offerings. Our platform is completely independent, unmonetized, and dedicated to the global body of Christ."
+      },
+      {
+        "id": "errata-protocol",
+        "heading": "3. Errata & Correction Protocol",
+        "content": "Any typographical error, formatting anomaly, or lexical indexing misalignment reported by scholars or readers is reviewed by our research faculty within 48 hours and corrected transparently across our edge deployment pipeline. Reports can be submitted directly to errata[at]adubible.org."
+      },
+      {
+        "id": "vernacular-parity",
+        "heading": "4. Linguistic Parity for African Vernaculars",
+        "content": "Indigenous African and global non-Western languages are treated with identical typographical care, proofreading rigor, and technical features as English, Greek, and Hebrew."
+      }
+    ]
+  },
+  "glossary": {
+    "key": "glossary",
+    "slug": "glossary",
+    "title": "Biblical Exegesis & Textual Criticism Glossary",
+    "metaTitle": "Biblical Exegesis & Textual Criticism Glossary | AduBible.org",
+    "metaDescription": "Comprehensive glossary of biblical exegesis, textual criticism, ancient manuscript codices, translation philosophies, and theological terms from Autographs to Vorlage.",
+    "badge": "Academic Lexicon & Textual Terminology",
+    "lastUpdated": "2026-10-28",
+    "schemaType": "WebPage",
+    "sections": [
+      {
+        "id": "textual-criticism-terms",
+        "heading": "1. Manuscript Codices & Text Types",
+        "content": "• Autograph: The original physical manuscript penned directly by an inspired biblical author or amanuensis (e.g., the original parchment letters written by the Apostle Paul). None survive today; all modern translations rely on faithful copies.\n• Codex Sinaiticus (א): A 4th-century Greek uncial manuscript discovered at Saint Catherine's Monastery, containing the oldest complete New Testament along with the Septuagint.\n• Codex Vaticanus (B): A 4th-century parchment codex preserved in the Vatican Library, one of the primary historical witnesses for the Alexandrian text-type.\n• Codex Alexandrinus (A): A 5th-century manuscript containing nearly the entire Greek Bible, representing the Byzantine text-type in the Gospels and the Alexandrian elsewhere.\n• Westminster Leningrad Codex (WLC): The oldest complete manuscript of the Hebrew Bible (dated AD 1008), fully vocalized with Masoretic vowel points (niqqud) and cantillation accents.\n• Textus Receptus (TR): The \"Received Text\" — the historic printed Greek New Testament compiled by Renaissance scholars (Erasmus, Stephanus, Beza) underlying the 1611 KJV and NKJV."
+      },
+      {
+        "id": "translation-hermeneutics-terms",
+        "heading": "2. Hermeneutical & Translation Methodologies",
+        "content": "• Formal Equivalence: A word-for-word translation philosophy (exemplified by the NKJV, KJV, and NASB) prioritizing grammatical structure, verbal aspect, and technical doctrinal terms.\n• Dynamic (Functional) Equivalence: A thought-for-thought translation methodology translating meaning rather than grammatical form.\n• Optimal Equivalence: A balanced approach (exemplified by the Berean Standard Bible) combining strict word-for-word manuscript fidelity with flowing contemporary English readability.\n• Strong’s Exhaustive Concordance: The numerical indexing system developed by Dr. James Strong in 1890 assigning unique identification numbers to every Hebrew root (H1 to H8674) and Greek root (G1 to G5624).\n• Septuagint (LXX): The ancient 3rd-century BC Greek translation of the Hebrew Old Testament and historical books, quoted extensively by the New Testament Apostles.\n• Analogia Scripturae: The Reformation hermeneutical axiom that Scripture is its own infallible interpreter, meaning difficult passages must be understood in light of clear passages."
+      }
+    ]
+  },
+  "sources": {
+    "key": "sources",
+    "slug": "sources",
+    "title": "Manuscript Archives, Codex Witnesses & Primary Sources",
+    "metaTitle": "Manuscript Sources, Codex Archives & Scholarly Citations | AduBible.org",
+    "metaDescription": "Primary textual witnesses, academic archives, critical editions (BHS, NA28, LXX Rahlfs), and open-access theological resources powering AduBible.",
+    "badge": "Scholarly Bibliography & Primary Witnesses",
+    "lastUpdated": "2026-10-28",
+    "schemaType": "WebPage",
+    "sections": [
+      {
+        "id": "primary-manuscripts",
+        "heading": "1. Primary Textual Witnesses & Critical Editions",
+        "content": "AduBible’s digital textual engine is built upon recognized primary scholarly archives and public-domain manuscript databases:\n\n• Westminster Leningrad Codex: J. Alan Groves Center for Advanced Biblical Research, Westminster Theological Seminary.\n• Greek Textus Receptus: Robert Estienne (Stephanus 1550) and F.H.A. Scrivener (1894) editions.\n• Berean Standard Bible (BSB): Dedicated to the public domain through the Open-Access Biblical Commons.\n• Septuagint (LXX): Alfred Rahlfs and Robert Hanhart critical edition; British and Foreign Bible Society.\n• Asante Twi (Twerɛ Kronkron): Historical Bible Society of Ghana text, Basel Evangelical Missionary Society archives.\n• Akuapem Twi (Kyerew Kronkron): Historical Basel Mission Akan edition compiled by J.G. Christaller."
+      },
+      {
+        "id": "academic-citations",
+        "heading": "2. Academic Lexicons & Scholarly Citations",
+        "content": "• Metzger, Bruce M. The Text of the New Testament: Its Transmission, Corruption, and Restoration. Oxford University Press, 2005.\n• Thayer, Joseph Henry. A Greek-English Lexicon of the New Testament. Harper & Brothers, 1889.\n• Gesenius, Wilhelm. Hebrew and Chaldee Lexicon to the Old Testament Scriptures. Translated by S.P. Tregelles. Baker Books, 1979.\n• Christaller, Johannes Gottlieb. A Grammar and Dictionary of the Asante and Fante Language. Basel Evangelical Missionary Society, 1875/1881.\n• Bediako, Kwame. Christianity in Africa: The Renewal of a Non-Western Religion. Edinburgh University Press, 1995.\n• Strong, James. The Exhaustive Concordance of the Bible. Hunt & Eaton, 1890."
+      },
+      {
+        "id": "memorial-archive",
+        "heading": "3. Institutional Memorial Archives",
+        "content": "• Apostle Kwame Adu Memorial Gospel Archive, Nsuhia, Ashanti Region, Ghana.\n• Official Community Archive: https://nsuhia.com/ (Nsuhia Heritage & Civic Portal).\n• Dedicated to Humanity · 100% Ads-Free Reading Experience."
+      }
+    ]
+  }
+}

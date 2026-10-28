@@ -7,9 +7,10 @@
   "scripts": {
     "dev": "vite",
     "compile-corpus": "node scripts/compile-articles-corpus.mjs",
+    "compile-legal": "node scripts/compile-legal-corpus.mjs",
     "generate-images": "node scripts/generate-article-images.mjs",
     "verify-content": "node scripts/verify-content.mjs",
-    "build": "node scripts/generate-favicons.cjs && node scripts/compile-articles-corpus.mjs && vite build && node build-ssg.js && node scripts/verify-content.mjs",
+    "build": "node scripts/generate-favicons.cjs && node scripts/compile-articles-corpus.mjs && node scripts/compile-legal-corpus.mjs && vite build && node build-ssg.js && node scripts/verify-content.mjs",
     "generate-favicons": "node scripts/generate-favicons.cjs",
     "start": "vite preview --host 0.0.0.0 --port 3000",
     "preview": "vite preview --host 0.0.0.0 --port 3000"
