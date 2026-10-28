@@ -33,6 +33,7 @@ export interface SendDonationReceiptOptions {
   designation?: string;
   transactionId?: string;
   prayerRequest?: string;
+  subject?: string;
 }
 
 const DEFAULT_FROM = 'AduBible <info@adubible.org>';

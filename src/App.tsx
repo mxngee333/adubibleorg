@@ -21,6 +21,7 @@ import {
   parseBibleHubUrlPath,
   resolveChapterData,
 } from './services/bibleEngineService';
+import { getBookById } from './data/bibleBooks';
 import {
   parsePassageQuery,
   scrollVerseIntoViewIfNeeded,
@@ -1595,7 +1596,7 @@ export function App() {
         activeArticle ? (
           <ArticleReaderPage
             article={activeArticle}
-            onNavigateArticle={(slug) => {
+            onOpenArticleBySlug={(slug: string) => {
               setActiveArticleSlug(slug);
               if (typeof window !== 'undefined') {
                 window.history.pushState({}, '', `/articles/${slug}`);
@@ -1609,17 +1610,17 @@ export function App() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }
             }}
-            onOpenReaderWithVersions={(slug, chapter, versionIds) => {
-              setCurrentBookSlug(slug);
-              setCurrentChapter(chapter);
+            onOpenParallelReader={(versionIds: string[], slug?: string, chapter?: number) => {
+              if (slug) setCurrentBookSlug(slug);
+              if (chapter) setCurrentChapter(chapter);
               setSelectedVerse(1);
-              setActiveVersionIds(versionIds);
+              if (versionIds && versionIds.length > 0) setActiveVersionIds(versionIds);
               setActiveNavTab('canonical');
               if (typeof window !== 'undefined') {
                 window.history.pushState(
                   {},
                   '',
-                  `/${versionIds[0] || 'nkjv'}/${slug}/${chapter}?versions=${versionIds.join(',')}`
+                  `/${(versionIds && versionIds[0]) || 'nkjv'}/${slug || currentBookSlug}/${chapter || currentChapter}?versions=${(versionIds || []).join(',')}`
                 );
               }
               window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1628,24 +1629,24 @@ export function App() {
           />
         ) : (
           <ArticlesDirectoryHubPage
-            onSelectArticle={(slug) => {
+            onSelectArticle={(slug: string) => {
               setActiveArticleSlug(slug);
               if (typeof window !== 'undefined') {
                 window.history.pushState({}, '', `/articles/${slug}`);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }
             }}
-            onOpenReaderWithVersions={(slug, chapter, versionIds) => {
-              setCurrentBookSlug(slug);
-              setCurrentChapter(chapter);
+            onOpenParallelReader={(versionIds: string[], slug?: string, chapter?: number) => {
+              if (slug) setCurrentBookSlug(slug);
+              if (chapter) setCurrentChapter(chapter);
               setSelectedVerse(1);
-              setActiveVersionIds(versionIds);
+              if (versionIds && versionIds.length > 0) setActiveVersionIds(versionIds);
               setActiveNavTab('canonical');
               if (typeof window !== 'undefined') {
                 window.history.pushState(
                   {},
                   '',
-                  `/${versionIds[0] || 'nkjv'}/${slug}/${chapter}?versions=${versionIds.join(',')}`
+                  `/${(versionIds && versionIds[0]) || 'nkjv'}/${slug || currentBookSlug}/${chapter || currentChapter}?versions=${(versionIds || []).join(',')}`
                 );
               }
               window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -3595,26 +3596,6 @@ export function App() {
         langCode={currentBook.slug === 'twi' || primaryVersionId.includes('twi') ? 'ak' : 'en'}
       />
 
-      {/* SCRIPTURE SLIDE DECK PRESENTATION MODE MODAL */}
-      <ScriptureSlideDeckModal
-        isOpen={isSlideDeckOpen}
-        onClose={handleCloseSlideDeck}
-        book={currentBook}
-        chapter={currentChapter}
-        initialVerse={selectedVerse || 1}
-        activeVersionIds={activeVersionIds}
-        chaptersByVersion={chaptersByVersion}
-        allVersions={allBibleVersions}
-        bookDisplayName={getBookDisplayName(currentBook)}
-        isAudioPlaying={isAudioPlaying}
-        onToggleAudio={handleTogglePlayPause}
-        currentAudioVerse={currentVersePlaying}
-        onSelectVerse={(vNum) => setSelectedVerse(vNum)}
-        onNextChapter={handleNextChapter}
-        onPrevChapter={handlePreviousChapter}
-        hasNextChapter={currentChapter < currentBook.chapters}
-        hasPrevChapter={currentChapter > 1}
-      />
 
       {/* LEGAL & INSTITUTIONAL PAGES MODAL */}
       <LegalInstitutionalModal

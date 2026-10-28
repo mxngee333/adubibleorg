@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface AduBibleLogoProps {
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | number;
   variant?: 'full' | 'compact';
   className?: string;
   onClick?: (e: React.MouseEvent) => void;
@@ -14,11 +14,12 @@ export const AduBibleLogo: React.FC<AduBibleLogoProps> = ({
   onClick,
   title = 'AduBible.org — Sovereign Scripture Engine',
 }) => {
-  const dims = size === 'sm' ? 26 : size === 'lg' ? 44 : 34;
+  const dims = typeof size === 'number' ? size : size === 'sm' ? 26 : size === 'lg' ? 44 : 34;
+  const sizeClass = typeof size === 'string' ? `size-${size}` : '';
 
   return (
     <div
-      className={`adubible-logo-mark size-${size} ${className}`}
+      className={`adubible-logo-mark ${sizeClass} ${className}`}
       onClick={onClick}
       title={title}
       role="banner"
