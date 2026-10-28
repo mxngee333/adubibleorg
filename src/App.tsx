@@ -1172,6 +1172,22 @@ export function App() {
         setBookPickerTab(tab);
         setIsBookModalOpen(true);
       }}
+      onOpenVideoStudio={() => {
+        const firstVerseText =
+          chaptersByVersion[primaryVersionId]?.verses[0]?.text ||
+          'For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.';
+        const secondaryVerseText = activeVersionIds[1]
+          ? chaptersByVersion[activeVersionIds[1]]?.verses[0]?.text
+          : undefined;
+        setStatusStudioTarget({
+          reference: `${getBookDisplayName(currentBook)} ${currentChapter}:1`,
+          primaryText: firstVerseText,
+          primaryVersion: primaryVersionId.toUpperCase(),
+          secondaryText: secondaryVerseText,
+          secondaryVersion: activeVersionIds[1]?.toUpperCase(),
+        });
+        setIsStatusStudioOpen(true);
+      }}
       showStrongs={prefs.showStrongsInline}
       showCommentaries={prefs.showCommentaries}
     />
