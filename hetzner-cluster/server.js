@@ -636,12 +636,54 @@ if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
   });
 
   async function dispatchReceiptEmail(mailerooKey, donorEmail, donorName, amount, currency, frequency, designation, transactionId) {
+    const donorClean = donorName || 'Beloved Scripture Partner';
+    const frequencyClean = frequency === 'monthly' ? 'Monthly Sustaining Covenant Partner' : 'One-Time Seed Offering';
+    const currentDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     const payload = new URLSearchParams({
-      from: 'AduBible Scripture Mission <donations@adubible.org>',
+      from: 'Apostle Kwame Adu <pastor@adubible.org>',
+      reply_to: 'pastor@adubible.org',
       to: donorEmail,
-      subject: `Official Offering Receipt — Thank You for Supporting AduBible (${currency} ${amount.toFixed(2)})`,
-      html: `<div style="max-width:600px;margin:0 auto;font-family:Georgia,serif;background:#1c1917;color:#f5f5f4;padding:32px;border-radius:16px;border:1px solid #78350f;"><h1 style="color:#f59e0b;font-size:24px;">AduBible Scripture Mission</h1><p>Dear ${donorName},</p><p>Thank you for your faithful offering of <strong>${currency} ${amount.toFixed(2)}</strong> (${frequency === 'monthly' ? 'Monthly Partner' : 'One-Time Seed'}). Transaction ID: ${transactionId}.</p><p style="font-style:italic;color:#fde68a;">&ldquo;God loves a cheerful giver.&rdquo; &mdash; 2 Corinthians 9:7</p></div>`,
-      plain: `Thank you for your offering of ${currency} ${amount.toFixed(2)} to AduBible! Transaction ID: ${transactionId}`,
+      subject: `Your AduBible Offering Receipt & Blessing (${currency} ${amount.toFixed(2)})`,
+      html: `
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Offering Receipt</title></head>
+<body style="margin:0;padding:0;background-color:#f5f5f4;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1c1917;line-height:1.65;">
+  <div style="display:none;font-size:1px;color:#fff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">
+    Grace and peace to you, ${donorClean}. Thank you for your offering of ${currency} ${amount.toFixed(2)}.
+  </div>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#f5f5f4;padding:24px 12px;">
+    <tr><td align="center">
+      <table role="presentation" width="100%" style="max-width:580px;background-color:#fff;border:1px solid #e7e5e4;border-radius:12px;overflow:hidden;">
+        <tr><td style="padding:24px 24px 16px;border-bottom:1px solid #f5f5f4;">
+          <div style="font-size:13px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:0.08em;">AduBible Scripture Sanctuary</div>
+          <div style="font-size:12px;color:#78716c;">A Global Scripture Mission in Honor of Apostle Kwame Adu · Nsuhia, Ghana</div>
+        </td></tr>
+        <tr><td style="padding:24px;">
+          <p style="font-size:16px;margin:0 0 16px;">Grace and peace to you in Christ Jesus, <strong>${donorClean}</strong>,</p>
+          <p style="font-size:15px;color:#292524;margin:0 0 16px;">
+            Thank you for your generous offering of <strong>${currency} ${amount.toFixed(2)}</strong>. Because of your sacrificial seed, God's Word remains 100% free, unmonetized, and without commercial advertisement across 35+ languages.
+          </p>
+          <table role="presentation" width="100%" style="background-color:#fafaf9;border:1px solid #e7e5e4;border-radius:8px;margin:20px 0;font-size:14px;border-collapse:collapse;">
+            <tr><td style="padding:10px 14px;color:#78716c;border-bottom:1px solid #e7e5e4;">Amount</td><td style="padding:10px 14px;font-weight:700;color:#b45309;text-align:right;border-bottom:1px solid #e7e5e4;">${currency} ${amount.toFixed(2)}</td></tr>
+            <tr><td style="padding:10px 14px;color:#78716c;border-bottom:1px solid #e7e5e4;">Frequency</td><td style="padding:10px 14px;text-align:right;border-bottom:1px solid #e7e5e4;">${frequencyClean}</td></tr>
+            <tr><td style="padding:10px 14px;color:#78716c;border-bottom:1px solid #e7e5e4;">Reference</td><td style="padding:10px 14px;font-family:monospace;text-align:right;border-bottom:1px solid #e7e5e4;">${transactionId}</td></tr>
+            <tr><td style="padding:10px 14px;color:#78716c;">Date</td><td style="padding:10px 14px;text-align:right;">${currentDate}</td></tr>
+          </table>
+          <blockquote style="margin:20px 0;padding:12px 16px;background-color:#fafaf9;border-left:3px solid #b45309;font-size:14px;font-style:italic;">
+            &ldquo;Each of you should give what you have decided in your heart to give... for God loves a cheerful giver.&rdquo; &mdash; 2 Corinthians 9:7
+          </blockquote>
+          <p style="font-size:14px;color:#44403c;margin:16px 0;">If you ever need prayer or biblical counsel, simply hit reply to this email.</p>
+          <div style="margin-top:20px;font-size:14px;color:#1c1917;">
+            Yours in Christ Jesus,<br><strong>Apostle Kwame Adu</strong><br><span style="font-size:12px;color:#78716c;">Nsuhia, Ghana · <a href="https://adubible.org" style="color:#b45309;">adubible.org</a></span>
+          </div>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`,
+      plain: `AduBible Offering Receipt & Blessing\n\nDear ${donorClean},\n\nThank you for your offering of ${currency} ${amount.toFixed(2)} (${frequencyClean}). Reference: ${transactionId}.\n\nGod loves a cheerful giver — 2 Corinthians 9:7\n\nYours in Christ,\nApostle Kwame Adu\nhttps://adubible.org`,
     });
     try {
       await fetch('https://smtp.maileroo.com/send', {

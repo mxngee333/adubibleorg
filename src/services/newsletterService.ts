@@ -77,63 +77,77 @@ export async function subscribeToNewsletter(
     console.warn('[Newsletter] Cloud sync notice:', err);
   }
 
-  // 3. Dispatch reverent welcome email via Maileroo (fire-and-forget)
+  // 3. Dispatch reverent personal welcome email via Maileroo (Primary Inbox Optimized)
   try {
-    sendMailerooEmail({
-      to: cleanEmail,
-      subject: `Welcome to AduBible Daily Scripture, ${cleanName}`,
-      html: `
+    const welcomeSubject = `Grace and peace to you, ${cleanName} — Welcome to AduBible`;
+    const welcomeHtml = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <title>Welcome to AduBible</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #0c0a09; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #f5f5f4;">
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #0c0a09; padding: 40px 15px;">
+<body style="margin: 0; padding: 0; background-color: #f5f5f4; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1c1917; line-height: 1.65;">
+  <div style="display: none; font-size: 1px; color: #ffffff; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
+    Grace and peace to you, ${cleanName}. I am honored to welcome you into our Scripture sanctuary family.
+  </div>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f5f5f4; padding: 24px 12px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="100%" style="max-width: 580px; background-color: #1c1917; border: 1px solid #292524; border-radius: 16px; overflow: hidden;">
+        <table role="presentation" width="100%" style="max-width: 580px; background-color: #ffffff; border: 1px solid #e7e5e4; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);">
+          <!-- Pastoral Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, #1c1917 0%, #292524 100%); padding: 32px 28px; text-align: center; border-bottom: 1px solid #44403c;">
-              <h1 style="margin: 0; font-size: 22px; font-weight: 700; color: #fef08a; letter-spacing: 0.08em; text-transform: uppercase;">✦ AduBible ✦</h1>
-              <p style="margin: 8px 0 0 0; font-size: 13px; color: #a8a29e;">The Living Word · Multilingual Scripture Sanctuary</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding: 32px 28px;">
-              <p style="margin: 0 0 16px 0; font-size: 16px; color: #fafaf9; line-height: 1.6;">
-                Grace and peace to you, <strong>${cleanName}</strong>!
-              </p>
-              <p style="margin: 0 0 20px 0; font-size: 14px; color: #d6d3d1; line-height: 1.6;">
-                Welcome to AduBible Daily Scripture. You will receive a reverent daily passage with parallel language study, Strong's Greek &amp; Hebrew concordance insights, and historical exegesis — 100% free and ads-free.
-              </p>
-              <div style="background-color: #292524; border-left: 3px solid #f59e0b; padding: 18px 20px; border-radius: 8px; margin: 24px 0;">
-                <p style="margin: 0 0 8px 0; font-style: italic; font-size: 15px; color: #fafaf9; line-height: 1.6;">
-                  &ldquo;Your word is a lamp to my feet and a light to my path.&rdquo;
-                </p>
-                <div style="font-size: 12px; font-weight: 700; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.05em;">
-                  Psalm 119:105 · Dwom 119:105
-                </div>
+            <td style="padding: 28px 24px 16px; border-bottom: 1px solid #f5f5f4;">
+              <div style="font-size: 13px; font-weight: 700; color: #b45309; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
+                AduBible Scripture Sanctuary
               </div>
-              <p style="margin: 0 0 24px 0; font-size: 13px; color: #a8a29e; line-height: 1.6;">
-                Read, listen, and compare Scripture in parallel anytime across 35+ languages &amp; Asante Twi at <a href="https://adubible.org/" style="color: #f59e0b; text-decoration: underline;">adubible.org</a>.
-              </p>
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto;">
-                <tr>
-                  <td style="border-radius: 8px; background: #f59e0b;">
-                    <a href="https://adubible.org/" target="_blank" style="font-size: 13px; font-weight: 700; color: #0c0a09; text-decoration: none; padding: 12px 26px; display: inline-block; border-radius: 8px; letter-spacing: 0.04em;">
-                      Open Scripture Sanctuary →
-                    </a>
-                  </td>
-                </tr>
-              </table>
+              <div style="font-size: 12px; color: #78716c;">
+                The Living Word · A Ministry in Honor of Apostle Kwame Adu · Nsuhia, Ghana
+              </div>
             </td>
           </tr>
+
+          <!-- Letter Body -->
           <tr>
-            <td style="padding: 20px 28px; background-color: #141210; border-top: 1px solid #292524; text-align: center; font-size: 11px; color: #78716c;">
-              © ${new Date().getFullYear()} AduBible (<a href="https://adubible.org/" style="color: #f59e0b; text-decoration: underline;">adubible.org</a>) · Dedicated to Humanity; A Global Ministry of Apostle Kwame Adu · <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" style="color: #f59e0b; text-decoration: underline;">Nsuhia, Ghana ↗</a> · 100% Ads-Free Reading Experience.
-              <br>Zero Ads · Zero Commercial Tracking · 100% Free
+            <td style="padding: 24px;">
+              <p style="font-size: 16px; margin: 0 0 16px; color: #1c1917;">
+                Grace and peace to you, <strong>${cleanName}</strong>,
+              </p>
+
+              <p style="font-size: 15px; color: #292524; margin: 0 0 16px;">
+                I am so glad to welcome you into the AduBible family. God&apos;s Word is a living fountain, and our sacred covenant is to provide it <strong>100% free, unmonetized, and without commercial advertisement</strong> to every searching soul across 35+ languages and dialects.
+              </p>
+
+              <p style="font-size: 15px; color: #292524; margin: 0 0 16px;">
+                As part of our fellowship, you will receive reverent scripture passages, parallel language study (including Asante Twi, Akuapem, Ewe, Greek Textus Receptus, and Hebrew Masoretic codices), and historical commentaries to enrich your walk with God.
+              </p>
+
+              <!-- Scripture Anchor -->
+              <blockquote style="margin: 22px 0; padding: 14px 18px; background-color: #fafaf9; border-left: 3px solid #b45309; color: #1c1917; font-size: 14px; font-style: italic; line-height: 1.6;">
+                &ldquo;Your word is a lamp to my feet and a light to my path.&rdquo;
+                <div style="margin-top: 6px; font-size: 12px; font-weight: 700; color: #b45309; font-style: normal;">
+                  &mdash; Psalm 119:105 · Dwom 119:105
+                </div>
+              </blockquote>
+
+              <p style="font-size: 15px; color: #292524; margin: 0 0 16px;">
+                Most importantly: if you ever have a personal prayer request, a spiritual question, or need encouragement in your walk, <strong>simply hit reply directly to this email</strong>. I read and answer every message from our readers personally.
+              </p>
+
+              <!-- Personal Sign-Off -->
+              <div style="margin-top: 24px; font-size: 14px; color: #1c1917; line-height: 1.5;">
+                With pastoral love and blessings in Christ,<br>
+                <strong style="font-size: 15px; color: #1c1917;">Apostle Kwame Adu</strong><br>
+                <span style="font-size: 13px; color: #78716c;">AduBible Scripture Sanctuary · Nsuhia, Ghana</span><br>
+                <a href="https://adubible.org" style="color: #b45309; text-decoration: none; font-size: 13px;">adubible.org</a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Minimal Footer -->
+          <tr>
+            <td style="padding: 16px 24px; background-color: #fafaf9; border-top: 1px solid #f5f5f4; text-align: center; font-size: 11px; color: #a8a29e; line-height: 1.5;">
+              © ${new Date().getFullYear()} AduBible (<a href="https://adubible.org" style="color: #b45309; text-decoration: none;">adubible.org</a>) · Dedicated to Humanity · 100% Ads-Free Covenant.
             </td>
           </tr>
         </table>
@@ -142,10 +156,34 @@ export async function subscribeToNewsletter(
   </table>
 </body>
 </html>
-      `,
-      text: `Grace and peace to you, ${cleanName}!\n\nWelcome to AduBible Daily Scripture. You will receive a reverent daily passage with parallel language study, Strong's Greek & Hebrew insights, and historical exegesis.\n\n"Your word is a lamp to my feet and a light to my path." — Psalm 119:105\n\nStudy anytime at https://adubible.org/`,
-    }).catch(() => {});
-  } catch {}
+    `;
+
+    const welcomeText = `Grace and peace to you, ${cleanName}!
+
+I am so glad to welcome you into the AduBible family.
+
+God's Word is a living fountain, and our sacred covenant is to provide it 100% free, unmonetized, and without commercial advertisement to every searching soul across 35+ languages.
+
+"Your word is a lamp to my feet and a light to my path." — Psalm 119:105 (Dwom 119:105)
+
+Most importantly: if you ever have a personal prayer request, a spiritual burden, or need encouragement in your walk, simply reply directly to this email. I read and hold our readers in prayer personally.
+
+With pastoral love and blessings in Christ,
+Apostle Kwame Adu
+AduBible Scripture Sanctuary · Nsuhia, Ghana
+https://adubible.org`;
+
+    await sendMailerooEmail({
+      to: cleanEmail,
+      subject: welcomeSubject,
+      html: welcomeHtml,
+      text: welcomeText,
+      from: 'Apostle Kwame Adu <pastor@adubible.org>',
+      replyTo: 'pastor@adubible.org',
+    });
+  } catch (mailErr) {
+    console.warn('[Newsletter] Welcome email dispatch notice:', mailErr);
+  }
 
   return { success: true };
 }

@@ -263,6 +263,41 @@ export async function recordManualDonation(
 }
 
 /**
+ * Records an authentic completed online gift (Stripe / PayPal)
+ */
+export async function recordCompletedOnlineDonation(
+  record: Omit<AdminDonationRecord, 'id' | 'createdAt' | 'status'> & { id?: string }
+): Promise<AdminDonationRecord> {
+  const newDonation: AdminDonationRecord = {
+    ...record,
+    id: record.id || `tx_online_${Date.now()}`,
+    status: 'completed',
+    createdAt: new Date().toISOString(),
+  };
+
+  if (typeof window !== 'undefined') {
+    try {
+      const existing = await getAdminDonations();
+      if (!existing.some((d) => d.id === newDonation.id || (d.transactionId && d.transactionId === newDonation.transactionId))) {
+        existing.unshift(newDonation);
+        localStorage.setItem(LS_DONATIONS_LEDGER, JSON.stringify(existing));
+      }
+    } catch {}
+  }
+
+  try {
+    const { db } = initFirebaseIfConfigured();
+    if (db) {
+      await setDoc(doc(db, 'donations', newDonation.id), newDonation, { merge: true });
+    }
+  } catch (err) {
+    console.warn('[Admin] Cloud donation sync notice:', err);
+  }
+
+  return newDonation;
+}
+
+/**
  * Fetches all gospel outreach newsletter subscribers
  */
 export async function getAdminSubscribers(): Promise<AdminSubscriberRecord[]> {
@@ -391,13 +426,17 @@ export async function broadcastOutreachEmail(params: {
       return { success: false, recipientCount: 0, error: 'No recipients available.' };
     }
 
-    // Dispatch via Maileroo
+    // Dispatch via Maileroo (Primary Inbox deliverability with active reply-to)
     let dispatched = 0;
+    const plainText = params.htmlContent.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
     for (const to of recipients.slice(0, 50)) {
       await sendMailerooEmail({
         to,
         subject: params.subject,
         html: params.htmlContent,
+        text: plainText,
+        from: 'Apostle Kwame Adu <pastor@adubible.org>',
+        replyTo: 'pastor@adubible.org',
       });
       dispatched++;
     }

@@ -11,6 +11,8 @@ import {
   getSavedDonorBadge,
   DonorBadge,
 } from '../services/donationService';
+import { sendDonationReceiptEmail } from '../services/mailerooService';
+import { recordCompletedOnlineDonation } from '../services/adminService';
 import { AduBibleLogo } from './AduBibleLogo';
 import {
   Heart,
@@ -72,14 +74,62 @@ export const DonationHubPage: React.FC<DonationHubPageProps> = ({
       const status = params.get('status');
       if (status === 'success') {
         setDonationStatus('success');
+
+        // Retrieve and execute post-checkout receipt dispatch
+        let pending: DonorSubmission | null = null;
+        try {
+          const raw = sessionStorage.getItem('adubible_pending_donation');
+          if (raw) {
+            pending = JSON.parse(raw);
+            sessionStorage.removeItem('adubible_pending_donation');
+          }
+        } catch {}
+
+        const donorNameResolved = pending?.donorName || params.get('donor_name') || 'Beloved Scripture Partner';
+        const donorEmailResolved = pending?.donorEmail || params.get('donor_email') || '';
+        const amountResolved = pending?.amount || parseFloat(params.get('amount') || '25') || 25;
+        const currencyResolved = pending?.currency || params.get('currency') || 'USD';
+        const frequencyResolved = pending?.frequency || (params.get('frequency') as DonationFrequency) || 'once';
+        const designationResolved = pending?.designation || (params.get('designation') as MissionDesignation) || 'general';
+        const gatewayResolved = (params.get('gateway') as 'stripe' | 'paypal') || pending?.gateway || 'stripe';
+        const txId = params.get('session_id') || params.get('order_id') || `ADU-${Date.now().toString(36).toUpperCase()}`;
+
         const badge: DonorBadge = {
-          donorName: params.get('donor_name') || 'Beloved Scripture Partner',
+          donorName: donorNameResolved,
           tierLabel: 'AduBible Covenant Benefactor',
-          frequency: (params.get('frequency') as DonationFrequency) || 'once',
+          frequency: frequencyResolved,
           grantedAt: Date.now(),
         };
         saveDonorBadge(badge);
         setActiveDonorBadge(badge);
+
+        // Dispatch official Primary-Inbox receipt & pastoral blessing email immediately
+        if (donorEmailResolved && donorEmailResolved.includes('@')) {
+          sendDonationReceiptEmail({
+            to: donorEmailResolved,
+            donorName: donorNameResolved,
+            amount: amountResolved,
+            currency: currencyResolved,
+            frequency: frequencyResolved,
+            designation: MISSION_DESIGNATIONS.find((m) => m.id === designationResolved)?.title || 'General Scripture Distribution Mission',
+            transactionId: txId,
+            prayerRequest: pending?.prayerRequest,
+          }).catch((mailErr) => console.warn('[Donation Receipt Dispatch Error]:', mailErr));
+
+          // Record in Firestore and Admin Ledger
+          recordCompletedOnlineDonation({
+            donorName: donorNameResolved,
+            donorEmail: donorEmailResolved,
+            amount: amountResolved,
+            currency: currencyResolved,
+            frequency: frequencyResolved,
+            designation: designationResolved,
+            gateway: gatewayResolved,
+            transactionId: txId,
+            tributeName: pending?.tributeName,
+            prayerRequest: pending?.prayerRequest,
+          }).catch((recErr) => console.warn('[Record Donation Error]:', recErr));
+        }
       } else if (status === 'cancelled') {
         setDonationStatus('cancelled');
       }
@@ -141,6 +191,12 @@ export const DonationHubPage: React.FC<DonationHubPageProps> = ({
     };
 
     const origin = typeof window !== 'undefined' ? window.location.origin : 'https://adubible.org';
+
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.setItem('adubible_pending_donation', JSON.stringify(submission));
+      } catch {}
+    }
 
     try {
       if (gateway === 'stripe') {
