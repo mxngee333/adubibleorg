@@ -154,8 +154,8 @@ export async function initiateStripeDonation(
 ): Promise<{ redirectUrl?: string; clientSecret?: string; error?: string }> {
   const liveEnvs = getLiveEnvConfig();
   const stripeKey =
-    liveEnvs.STRIPE_SECRET_KEY ||
     (import.meta as any).env?.VITE_STRIPE_SECRET_KEY ||
+    liveEnvs.STRIPE_SECRET_KEY ||
     '';
 
   const backendBase =
@@ -269,17 +269,17 @@ export async function initiatePayPalDonation(
 ): Promise<{ approvalUrl?: string; orderId?: string; error?: string }> {
   const liveEnvs = getLiveEnvConfig();
   const clientId =
-    liveEnvs.PAYPAL_CLIENT_ID ||
     (import.meta as any).env?.VITE_PAYPAL_CLIENT_ID ||
+    liveEnvs.PAYPAL_CLIENT_ID ||
     '';
   const clientSecret =
-    liveEnvs.PAYPAL_CLIENT_SECRET ||
     (import.meta as any).env?.VITE_PAYPAL_CLIENT_SECRET ||
+    liveEnvs.PAYPAL_CLIENT_SECRET ||
     '';
   const mode =
-    liveEnvs.PAYPAL_MODE ||
     (import.meta as any).env?.VITE_PAYPAL_MODE ||
-    'live';
+    liveEnvs.PAYPAL_MODE ||
+    'sandbox';
   const baseUrl =
     mode === 'sandbox'
       ? 'https://api-m.sandbox.paypal.com'

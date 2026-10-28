@@ -93,6 +93,9 @@ export const DonationHubPage: React.FC<DonationHubPageProps> = ({
 
   const activeAmount = customAmount ? parseFloat(customAmount) || 0 : selectedAmount;
   const currentSymbol = CURRENCIES.find((c) => c.code === currency)?.symbol || '$';
+  const isTestMode =
+    (import.meta as any).env?.VITE_STRIPE_SECRET_KEY?.startsWith('sk_test_') ||
+    (import.meta as any).env?.VITE_PAYPAL_MODE === 'sandbox';
 
   const handleSelectPreset = (amount: number) => {
     setSelectedAmount(amount);
@@ -189,6 +192,12 @@ export const DonationHubPage: React.FC<DonationHubPageProps> = ({
           </div>
 
           <div className="flex items-center gap-3 text-xs">
+            {isTestMode && (
+              <span className="px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-[11px] font-mono font-medium flex items-center gap-1.5 shadow-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                Test Sandbox Active
+              </span>
+            )}
             <span className="text-[var(--green)] flex items-center gap-1 font-mono font-medium">
               <ShieldCheck className="w-3.5 h-3.5" />
               100% Ads-Free Covenant
