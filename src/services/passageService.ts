@@ -321,13 +321,80 @@ export function parsePassageQuery(query: string, books: BibleBook[]): ParsedPass
 }
 
 /**
- * Smoothly and gently brings a verse into the comfortable golden reading zone
- * ONLY if it is not already visible. Positions the active verse in the upper-middle
- * reading zone (~32% of viewport height) with generous clearance above the fixed bottom
- * audio bar and below the top navigation bar, guaranteeing the audio bar NEVER obscures the text.
+ * Synchronous, real-time master state check for Auto-Scroll Reader Sync.
+ * Guarantees zero latency and immune to asynchronous state delays.
  */
-export function scrollVerseIntoViewIfNeeded(el: HTMLElement | null): void {
+export function isAutoScrollActive(): boolean {
+  if (typeof window === 'undefined') return false;
+  if (typeof (window as any).__adubible_auto_scroll_enabled === 'boolean') {
+    return (window as any).__adubible_auto_scroll_enabled;
+  }
+  try {
+    const saved = localStorage.getItem('adubible_auto_sync_reader');
+    if (saved !== null) {
+      const val = saved === 'true';
+      (window as any).__adubible_auto_scroll_enabled = val;
+      return val;
+    }
+  } catch {}
+  (window as any).__adubible_auto_scroll_enabled = true;
+  return true;
+}
+
+/**
+ * Synchronously sets the master Auto-Scroll state across window, localStorage,
+ * immediately halts any active browser smooth-scroll animation if turned OFF,
+ * and notifies all listeners in real-time (0ms latency).
+ */
+export function setAutoScrollActive(enabled: boolean): void {
+  if (typeof window === 'undefined') return;
+  (window as any).__adubible_auto_scroll_enabled = enabled;
+  try {
+    localStorage.setItem('adubible_auto_sync_reader', String(enabled));
+  } catch {}
+
+  // CRITICAL FIX: If turning Auto-Scroll OFF, IMMEDIATELY halt any in-flight
+  // browser smooth scrolling so the page freezes instantaneously on current position!
+  if (!enabled) {
+    try {
+      const currentScrollY = window.scrollY || window.pageYOffset;
+      window.scrollTo({
+        top: currentScrollY,
+        behavior: 'instant' as ScrollBehavior,
+      });
+    } catch {}
+  }
+
+  // Dispatch real-time global event so all components react synchronously
+  try {
+    window.dispatchEvent(
+      new CustomEvent('adubible_autoscroll_toggle', { detail: { enabled } })
+    );
+  } catch {}
+}
+
+/**
+ * Smoothly and gently brings a verse into the comfortable safe reading zone
+ * ONLY if it is not already visible.
+ *
+ * CRITICAL FIXES:
+ * 1. Hard Kill-Switch: If Auto-Scroll is OFF, NEVER scrolls (0 movement, hard freeze).
+ * 2. Zero-Overshoot Natural Flow: When a verse reaches the bottom audio bar, it scrolls
+ *    ONLY the minimum distance needed to bring the verse comfortably above the audio bar.
+ *    It NEVER throws the verse to the top of the screen and NEVER scrolls past the verse
+ *    being read or heard!
+ */
+export function scrollVerseIntoViewIfNeeded(
+  el: HTMLElement | null,
+  force: boolean = false
+): void {
   if (typeof window === 'undefined' || !el) return;
+
+  // HARD MASTER GATE: If Auto-Scroll is OFF, abort immediately!
+  if (!force && !isAutoScrollActive()) {
+    return;
+  }
+
   const rect = el.getBoundingClientRect();
   const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
 
@@ -336,25 +403,41 @@ export function scrollVerseIntoViewIfNeeded(el: HTMLElement | null): void {
     document.querySelector('.audio-bar-wrapper') ||
     document.querySelector('.audio-bar-container') ||
     document.querySelector('.audio-bar-minimized');
-  const audioBarHeight = audioBarEl ? audioBarEl.getBoundingClientRect().height : 60;
+  const audioBarHeight = audioBarEl ? audioBarEl.getBoundingClientRect().height : 68;
 
   // Safe comfortable reading zone boundaries:
-  // Top nav/toolbar area (~135px)
-  // Bottom fixed audio bar area (audioBarHeight + 40px safety buffer)
-  const safeTop = 135;
-  const safeBottom = viewportHeight - (audioBarHeight + 40);
+  // safeTop: clearance below fixed top navigation (~125px)
+  // safeBottom: clearance above fixed bottom audio bar (audioBarHeight + 35px safety cushion)
+  const safeTop = 125;
+  const safeBottom = Math.max(safeTop + 100, viewportHeight - (audioBarHeight + 35));
 
-  // If the verse is already comfortably visible within this safe zone, DO NOT scroll!
-  const isAlreadyVisible = rect.top >= safeTop && rect.bottom <= safeBottom;
-  if (isAlreadyVisible) {
+  // 1. If verse is already comfortably visible within this safe zone, DO NOT scroll!
+  // This guarantees reader focus is undisturbed while reading an in-view verse.
+  if (rect.top >= safeTop && rect.bottom <= safeBottom) {
     return;
   }
 
-  // Smoothly position verse into the upper-middle golden reading zone (~32% of viewport)
-  // This guarantees ample headroom below top headers and massive clearance above the bottom audio bar
-  const targetOffset = safeTop + (safeBottom - safeTop) * 0.32;
   const currentScrollY = window.scrollY || window.pageYOffset;
-  const targetScrollY = currentScrollY + rect.top - targetOffset;
+  let targetScrollY = currentScrollY;
+
+  // 2. If verse is approaching or extending below safeBottom (being read/heard):
+  // Scroll down gently JUST ENOUGH to place the verse comfortably above the audio bar (~45px clearance).
+  // This guarantees it NEVER scrolls past the current verse!
+  if (rect.bottom > safeBottom) {
+    const overflowBottom = rect.bottom - safeBottom;
+    targetScrollY = currentScrollY + overflowBottom + 45;
+  }
+  // 3. If verse is clipped above safeTop (e.g. user jumped backwards):
+  // Scroll up gently JUST ENOUGH to place the top of the verse comfortably below the top nav (~25px clearance).
+  else if (rect.top < safeTop) {
+    const overflowTop = safeTop - rect.top;
+    targetScrollY = currentScrollY - overflowTop - 25;
+  }
+
+  // Deadzone check: If the scroll difference is under 10px, skip to avoid micro-jitter
+  if (Math.abs(targetScrollY - currentScrollY) < 10) {
+    return;
+  }
 
   window.scrollTo({
     top: Math.max(0, targetScrollY),

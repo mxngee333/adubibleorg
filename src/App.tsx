@@ -21,7 +21,12 @@ import {
   parseBibleHubUrlPath,
   resolveChapterData,
 } from './services/bibleEngineService';
-import { parsePassageQuery, scrollVerseIntoViewIfNeeded } from './services/passageService';
+import {
+  parsePassageQuery,
+  scrollVerseIntoViewIfNeeded,
+  isAutoScrollActive,
+  setAutoScrollActive,
+} from './services/passageService';
 import {
   loadBookmarks,
   loadHighlights,
@@ -292,24 +297,28 @@ export function App() {
   const [showAudioBar, setShowAudioBar] = useState<boolean>(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
   const [audioAutoPlayNonce, setAudioAutoPlayNonce] = useState<number>(0);
-  const autoSyncReaderRef = useRef<boolean>(true);
+  const autoSyncReaderRef = useRef<boolean>(isAutoScrollActive());
   const [autoSyncReader, setAutoSyncReader] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('adubible_auto_sync_reader');
-      const val = saved !== null ? saved === 'true' : true;
-      autoSyncReaderRef.current = val;
-      (window as any).__adubible_auto_scroll_enabled = val;
-      return val;
-    }
-    return true;
+    const active = isAutoScrollActive();
+    autoSyncReaderRef.current = active;
+    return active;
   });
+
+  // Real-time synchronization listener for Auto-Scroll toggle across components (0ms latency)
+  useEffect(() => {
+    const handleSync = (e: any) => {
+      if (typeof e.detail?.enabled === 'boolean') {
+        autoSyncReaderRef.current = e.detail.enabled;
+        setAutoSyncReader(e.detail.enabled);
+      }
+    };
+    window.addEventListener('adubible_autoscroll_toggle', handleSync);
+    return () => window.removeEventListener('adubible_autoscroll_toggle', handleSync);
+  }, []);
 
   const handleSetAutoSyncReader = useCallback((enabled: boolean) => {
     autoSyncReaderRef.current = enabled;
-    if (typeof window !== 'undefined') {
-      (window as any).__adubible_auto_scroll_enabled = enabled;
-      localStorage.setItem('adubible_auto_sync_reader', String(enabled));
-    }
+    setAutoScrollActive(enabled);
     setAutoSyncReader(enabled);
   }, []);
 
@@ -317,24 +326,12 @@ export function App() {
     handleSetAutoSyncReader(!autoSyncReaderRef.current);
   }, [handleSetAutoSyncReader]);
 
-  const lastAudioScrollTimeRef = useRef<number>(0);
-
   const handleAudioVerseChange = useCallback((vNum: number) => {
     setSelectedVerse(vNum);
     // Real-time zero-delay check: if Scroll is turned OFF, NEVER scroll reader!
-    if (
-      !autoSyncReaderRef.current ||
-      (typeof window !== 'undefined' && (window as any).__adubible_auto_scroll_enabled === false)
-    ) {
+    if (!isAutoScrollActive()) {
       return;
     }
-
-    // Rate-limit programmatic smooth scrolling to prevent stacking / overshooting
-    const now = Date.now();
-    if (now - lastAudioScrollTimeRef.current < 900) {
-      return;
-    }
-    lastAudioScrollTimeRef.current = now;
 
     if (typeof window !== 'undefined') {
       const el =
@@ -910,18 +907,14 @@ export function App() {
     if (!showAudioBar) {
       setShowAudioBar(true);
       setAudioAutoPlayNonce((prev) => prev + 1);
-      if (typeof window !== 'undefined') {
+      if (typeof window !== 'undefined' && isAutoScrollActive()) {
         setTimeout(() => {
           const vNum = selectedVerse || 1;
           const el =
             document.getElementById(`verse-${vNum}`) ||
             document.querySelector(`[data-verse="${vNum}"]`);
           if (el) {
-            el.scrollIntoView({
-              behavior: 'smooth',
-              block: 'center',
-              inline: 'nearest',
-            });
+            scrollVerseIntoViewIfNeeded(el as HTMLElement);
           }
         }, 80);
       }

@@ -13,6 +13,7 @@ interface GrandSiteFooterProps {
   onSelectNavTab: (tab: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin') => void;
   onSelectTheme?: (themeId: string) => void;
   onOpenBookPickerWithTab?: (tab: 'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD') => void;
+  onOpenVideoStudio?: () => void;
   showStrongs: boolean;
   showCommentaries: boolean;
 }
@@ -24,6 +25,7 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
   onSelectNavTab,
   onSelectTheme,
   onOpenBookPickerWithTab,
+  onOpenVideoStudio,
   showStrongs,
   showCommentaries,
 }) => {

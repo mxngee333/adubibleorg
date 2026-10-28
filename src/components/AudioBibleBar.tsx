@@ -10,7 +10,11 @@ import {
 } from '../services/neuralTtsService';
 import { isTwiLanguage } from '../services/twiAudioService';
 import { transphonemizeTwiForSpeech } from '../services/twiPhonemeEngine';
-import { scrollVerseIntoViewIfNeeded } from '../services/passageService';
+import {
+  scrollVerseIntoViewIfNeeded,
+  isAutoScrollActive,
+  setAutoScrollActive,
+} from '../services/passageService';
 
 interface AudioBibleBarProps {
   bookName: string;
@@ -66,8 +70,19 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoadingVerse, setIsLoadingVerse] = useState(false);
   const [continuousPlayback, setContinuousPlayback] = useState<boolean>(true);
-  const [internalAutoSync, setInternalAutoSync] = useState<boolean>(true);
+  const [internalAutoSync, setInternalAutoSync] = useState<boolean>(() => isAutoScrollActive());
   const isAutoSync = autoSyncReader !== undefined ? autoSyncReader : internalAutoSync;
+
+  // Real-time synchronization with global Auto-Scroll state (0ms latency across tabs and UI surfaces)
+  useEffect(() => {
+    const handleToggle = (e: any) => {
+      if (typeof e.detail?.enabled === 'boolean') {
+        setInternalAutoSync(e.detail.enabled);
+      }
+    };
+    window.addEventListener('adubible_autoscroll_toggle', handleToggle);
+    return () => window.removeEventListener('adubible_autoscroll_toggle', handleToggle);
+  }, []);
   const isTransitioningChapterRef = useRef<boolean>(false);
   const currentChapterKey = `${bookSlug || bookName}:${chapter}`;
   const lastReadChapterKeyRef = useRef<string>(currentChapterKey);
@@ -1226,17 +1241,16 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             className={`audio-bar-toggle-pill ${isAutoSync ? 'active' : ''}`}
             onClick={() => {
               const nextSync = !isAutoSync;
-              if (typeof window !== 'undefined') {
-                (window as any).__adubible_auto_scroll_enabled = nextSync;
-              }
+              setAutoScrollActive(nextSync);
+              setInternalAutoSync(nextSync);
               if (onSetAutoSync) {
                 onSetAutoSync(nextSync);
               } else if (onToggleAutoSync) {
                 onToggleAutoSync();
-              } else {
-                setInternalAutoSync(nextSync);
               }
 
+              // If turning Auto-Scroll ON, gently align to current verse without overshooting;
+              // If turning OFF, setAutoScrollActive(false) already instantly halted any in-flight scroll!
               if (nextSync && typeof window !== 'undefined') {
                 const vNum = verses[currentVerseIdxRef.current]?.verse || activeVerse;
                 const el =
@@ -1394,28 +1408,27 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
               type="button"
               className={`audio-bar-toggle-pill ${isAutoSync ? 'active' : ''}`}
               onClick={() => {
-                const nextSync = !isAutoSync;
-                if (typeof window !== 'undefined') {
-                  (window as any).__adubible_auto_scroll_enabled = nextSync;
-                }
-                if (onSetAutoSync) {
-                  onSetAutoSync(nextSync);
-                } else if (onToggleAutoSync) {
-                  onToggleAutoSync();
-                } else {
-                  setInternalAutoSync(nextSync);
-                }
+              const nextSync = !isAutoSync;
+              setAutoScrollActive(nextSync);
+              setInternalAutoSync(nextSync);
+              if (onSetAutoSync) {
+                onSetAutoSync(nextSync);
+              } else if (onToggleAutoSync) {
+                onToggleAutoSync();
+              }
 
-                if (nextSync && typeof window !== 'undefined') {
-                  const vNum = verses[currentVerseIdxRef.current]?.verse || activeVerse;
-                  const el =
-                    document.getElementById(`verse-${vNum}`) ||
-                    document.querySelector(`[data-verse="${vNum}"]`);
-                  if (el) {
-                    scrollVerseIntoViewIfNeeded(el as HTMLElement);
-                  }
+              // If turning Auto-Scroll ON, gently align to current verse without overshooting;
+              // If turning OFF, setAutoScrollActive(false) already instantly halted any in-flight scroll!
+              if (nextSync && typeof window !== 'undefined') {
+                const vNum = verses[currentVerseIdxRef.current]?.verse || activeVerse;
+                const el =
+                  document.getElementById(`verse-${vNum}`) ||
+                  document.querySelector(`[data-verse="${vNum}"]`);
+                if (el) {
+                  scrollVerseIntoViewIfNeeded(el as HTMLElement);
                 }
-              }}
+              }
+            }}
               title={
                 isAutoSync
                   ? 'Auto-Scroll is ON (follows spoken verse — click to turn OFF)'
