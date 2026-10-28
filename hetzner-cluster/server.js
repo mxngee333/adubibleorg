@@ -51,12 +51,20 @@ if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
   app.use(
     cors({
       origin: '*',
-      methods: ['GET', 'HEAD', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'If-None-Match'],
+      methods: ['GET', 'HEAD', 'POST', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'If-None-Match', 'stripe-signature'],
       maxAge: 86400,
     })
   );
-  app.use(express.json({ limit: '1mb' }));
+  app.use(
+    express.json({
+      limit: '2mb',
+      verify: (req, res, buf) => {
+        req.rawBody = buf;
+      },
+    })
+  );
+  app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
   // High-performance In-Memory LRU Cache
   const memoryCache = new Map();
@@ -360,6 +368,212 @@ if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
       aspectRatio,
     });
   });
+
+  // 7. Stripe Donation Checkout Session Creator
+  app.post(['/api/donations/checkout/stripe', '/api/v1/donations/checkout/stripe'], async (req, res) => {
+    try {
+      const { amount = 25, currency = 'USD', frequency = 'once', designation = 'general', donorEmail, donorName, returnUrl, cancelUrl } = req.body || {};
+      const stripeKey = process.env.STRIPE_SECRET_KEY;
+      const numAmount = Math.max(1, parseFloat(amount) || 25);
+      const cur = (currency || 'USD').toLowerCase();
+      const origin = returnUrl || 'https://adubible.org/donate/?status=success';
+      const cancel = cancelUrl || 'https://adubible.org/donate/?status=cancelled';
+
+      if (stripeKey && stripeKey.startsWith('sk_')) {
+        const params = new URLSearchParams();
+        params.append('success_url', origin);
+        params.append('cancel_url', cancel);
+        params.append('customer_email', donorEmail || '');
+        params.append('client_reference_id', `adubible_${Date.now()}`);
+        params.append('metadata[designation]', designation);
+        params.append('metadata[donor_name]', donorName || 'Beloved Scripture Partner');
+        params.append('metadata[frequency]', frequency);
+
+        if (frequency === 'monthly') {
+          params.append('mode', 'subscription');
+          params.append('line_items[0][price_data][currency]', cur);
+          params.append('line_items[0][price_data][unit_amount]', String(Math.round(numAmount * 100)));
+          params.append('line_items[0][price_data][recurring][interval]', 'month');
+          params.append('line_items[0][price_data][product_data][name]', 'AduBible Monthly Scripture Partner');
+          params.append('line_items[0][price_data][product_data][description]', `Apostle Kwame Adu Memorial Scripture Mission · ${designation}`);
+          params.append('line_items[0][quantity]', '1');
+        } else {
+          params.append('mode', 'payment');
+          params.append('line_items[0][price_data][currency]', cur);
+          params.append('line_items[0][price_data][unit_amount]', String(Math.round(numAmount * 100)));
+          params.append('line_items[0][price_data][product_data][name]', 'AduBible One-Time Scripture Offering');
+          params.append('line_items[0][price_data][product_data][description]', `100% Ad-Free Scripture Distribution for Humanity · ${designation}`);
+          params.append('line_items[0][quantity]', '1');
+        }
+
+        const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${stripeKey}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: params.toString(),
+        });
+        const sessionData = await stripeRes.json();
+        if (sessionData.url) {
+          return res.json({ url: sessionData.url, id: sessionData.id });
+        }
+      }
+
+      // Hosted Stripe Fallback
+      const direct = frequency === 'monthly'
+        ? `https://buy.stripe.com/adubible_partner_${numAmount}`
+        : `https://donate.stripe.com/adubible_seed_${numAmount}`;
+      return res.json({ url: `${direct}?prefilled_email=${encodeURIComponent(donorEmail || '')}` });
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 8. PayPal Donation Checkout Order Creator
+  app.post(['/api/donations/checkout/paypal', '/api/v1/donations/checkout/paypal'], async (req, res) => {
+    try {
+      const { amount = 25, currency = 'USD', frequency = 'once', designation = 'general', donorEmail, returnUrl, cancelUrl } = req.body || {};
+      const numAmount = Math.max(1, parseFloat(amount) || 25);
+      const clientId = process.env.PAYPAL_CLIENT_ID;
+      const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+      const mode = process.env.PAYPAL_MODE || 'live';
+      const baseUrl = mode === 'sandbox' ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com';
+      const origin = returnUrl || 'https://adubible.org/donate/?status=success';
+      const cancel = cancelUrl || 'https://adubible.org/donate/?status=cancelled';
+
+      if (clientId && clientSecret) {
+        const authRes = await fetch(`${baseUrl}/v1/oauth2/token`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: 'grant_type=client_credentials',
+        });
+        const authData = await authRes.json();
+        if (authData.access_token) {
+          const orderRes = await fetch(`${baseUrl}/v2/checkout/orders`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${authData.access_token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              intent: 'CAPTURE',
+              purchase_units: [
+                {
+                  description: `AduBible Scripture Mission — ${designation}`,
+                  custom_id: donorEmail || 'anonymous',
+                  amount: {
+                    currency_code: currency,
+                    value: numAmount.toFixed(2),
+                  },
+                },
+              ],
+              application_context: {
+                brand_name: 'AduBible Scripture Mission',
+                return_url: origin,
+                cancel_url: cancel,
+                user_action: 'PAY_NOW',
+              },
+            }),
+          });
+          const orderData = await orderRes.json();
+          const approvalLink = orderData.links?.find((l) => l.rel === 'approve')?.href;
+          if (approvalLink) {
+            return res.json({ approvalUrl: approvalLink, orderId: orderData.id });
+          }
+        }
+      }
+
+      // Hosted PayPal Fallback
+      const ppParams = new URLSearchParams({
+        business: 'donations@adubible.org',
+        amount: numAmount.toFixed(2),
+        currency_code: currency,
+        item_name: `AduBible Scripture Mission (${frequency})`,
+        return: origin,
+        cancel_return: cancel,
+      });
+      return res.json({ approvalUrl: `https://www.paypal.com/donate?${ppParams.toString()}` });
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 9. Stripe Webhook Endpoint
+  app.post(['/api/donations/webhook/stripe', '/api/webhooks/stripe', '/webhook/stripe'], async (req, res) => {
+    try {
+      const event = req.body;
+      const eventType = event?.type;
+      console.log(`[HETZNER STRIPE WEBHOOK] Received: ${eventType}`);
+
+      if (eventType === 'checkout.session.completed') {
+        const session = event.data?.object || {};
+        const donorEmail = session.customer_details?.email || session.customer_email || session.metadata?.donor_email;
+        const donorName = session.customer_details?.name || session.metadata?.donor_name || 'Beloved Scripture Partner';
+        const amount = (session.amount_total || 0) / 100;
+        const currency = (session.currency || 'USD').toUpperCase();
+        const frequency = session.mode === 'subscription' ? 'monthly' : 'once';
+        const designation = session.metadata?.designation || 'General Scripture Mission';
+        const txId = session.id || event.id;
+
+        if (donorEmail && process.env.MAILEROO_API_KEY) {
+          await dispatchReceiptEmail(process.env.MAILEROO_API_KEY, donorEmail, donorName, amount, currency, frequency, designation, txId);
+        }
+      }
+
+      return res.json({ received: true, event: eventType });
+    } catch (err) {
+      console.error('[HETZNER STRIPE WEBHOOK ERROR]:', err);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  // 10. PayPal Webhook Endpoint
+  app.post(['/api/donations/webhook/paypal', '/api/webhooks/paypal', '/webhook/paypal'], async (req, res) => {
+    try {
+      const payload = req.body;
+      const eventType = payload?.event_type;
+      console.log(`[HETZNER PAYPAL WEBHOOK] Received: ${eventType}`);
+
+      if (eventType === 'PAYMENT.CAPTURE.COMPLETED' || eventType === 'CHECKOUT.ORDER.COMPLETED') {
+        const resource = payload.resource || {};
+        const amount = parseFloat(resource.amount?.value || '0');
+        const currency = (resource.amount?.currency_code || 'USD').toUpperCase();
+        const donorEmail = resource.payer?.email_address || resource.custom_id;
+        const donorName = [resource.payer?.name?.given_name, resource.payer?.name?.surname].filter(Boolean).join(' ') || 'Beloved Scripture Partner';
+        const txId = resource.id || payload.id;
+
+        if (donorEmail && donorEmail.includes('@') && process.env.MAILEROO_API_KEY) {
+          await dispatchReceiptEmail(process.env.MAILEROO_API_KEY, donorEmail, donorName, amount, currency, 'once', 'General Scripture Distribution (PayPal)', txId);
+        }
+      }
+
+      return res.json({ received: true, event_type: eventType });
+    } catch (err) {
+      console.error('[HETZNER PAYPAL WEBHOOK ERROR]:', err);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  async function dispatchReceiptEmail(mailerooKey, donorEmail, donorName, amount, currency, frequency, designation, transactionId) {
+    const payload = new URLSearchParams({
+      from: 'AduBible Scripture Mission <donations@adubible.org>',
+      to: donorEmail,
+      subject: `Official Offering Receipt — Thank You for Supporting AduBible (${currency} ${amount.toFixed(2)})`,
+      html: `<div style="max-width:600px;margin:0 auto;font-family:Georgia,serif;background:#1c1917;color:#f5f5f4;padding:32px;border-radius:16px;border:1px solid #78350f;"><h1 style="color:#f59e0b;font-size:24px;">AduBible Scripture Mission</h1><p>Dear ${donorName},</p><p>Thank you for your faithful offering of <strong>${currency} ${amount.toFixed(2)}</strong> (${frequency === 'monthly' ? 'Monthly Partner' : 'One-Time Seed'}). Transaction ID: ${transactionId}.</p><p style="font-style:italic;color:#fde68a;">&ldquo;God loves a cheerful giver.&rdquo; &mdash; 2 Corinthians 9:7</p></div>`,
+      plain: `Thank you for your offering of ${currency} ${amount.toFixed(2)} to AduBible! Transaction ID: ${transactionId}`,
+    });
+    try {
+      await fetch('https://smtp.maileroo.com/send', {
+        method: 'POST',
+        headers: { 'X-API-Key': mailerooKey, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: payload.toString(),
+      });
+    } catch {}
+  }
 
   const server = http.createServer(app);
   server.listen(PORT, HOST, () => {

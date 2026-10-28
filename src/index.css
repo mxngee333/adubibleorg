@@ -2,7 +2,7 @@
 
 :root {
   color-scheme: dark;
-  --logo-adu-color: #10B981; /* Sovereign Emerald Green */
+  --logo-adu-color: #1B8754; /* Deep Forest Green */
   --logo-bible-color: #BD913F; /* Canonical Logo Antique Gold */
   --logo-tld-color: #BD913F; /* Canonical Logo Antique Gold */
 }
@@ -3538,6 +3538,38 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   text-decoration: underline;
 }
 
+/* Horizontal Legal Navigation Strip */
+.footer-legal-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px 14px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.footer-legal-pill {
+  color: var(--ink);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-decoration: none;
+  opacity: 0.85;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.footer-legal-pill:hover {
+  opacity: 1;
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.footer-legal-dot {
+  color: var(--line);
+  font-size: 10px;
+  user-select: none;
+}
+
 /* ==========================================================================
    TABLET RESPONSIVE OVERRIDES (769px - 1024px)
    ========================================================================== */
@@ -4962,7 +4994,7 @@ mark.search-highlight {
 
 .logo-word-adu {
   font-weight: 800;
-  color: var(--logo-adu-color, #10B981) !important; /* Sovereign Emerald Green */
+  color: var(--logo-adu-color, #1B8754) !important; /* Deep Forest Green */
   letter-spacing: -0.015em;
   text-shadow: none;
 }

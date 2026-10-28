@@ -80,7 +80,8 @@ import { MobileBottomDock } from './components/MobileBottomDock';
 import { GrandSiteFooter } from './components/GrandSiteFooter';
 import { AduBibleLogo } from './components/AduBibleLogo';
 import { AskAduBibleModal } from './components/AskAduBibleModal';
-import { Search, User, Headphones, Volume2 } from 'lucide-react';
+import { DonationHubPage } from './components/DonationHubPage';
+import { Search, User, Headphones, Volume2, Heart } from 'lucide-react';
 import { AskAduBibleContext } from './services/askAduBibleService';
 
 const COMPARE_PRESETS: Array<{ label: string; versions: string[] }> = [
@@ -170,13 +171,14 @@ export function App() {
     initialRoute.chapter || 1
   );
 
-  // Active Canon Navigation Tab: 'canonical' (Default Scripture Reader) | 'deuterocanon' | 'list-of-sixty' | 'articles'
-  const [activeNavTab, setActiveNavTab] = useState<'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles'>(() => {
+  // Active Canon Navigation Tab: 'canonical' (Default Scripture Reader) | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate'
+  const [activeNavTab, setActiveNavTab] = useState<'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate'>(() => {
     if (initialRoute.targetTab) return initialRoute.targetTab;
     if (typeof window !== 'undefined') {
       const qTab = new URLSearchParams(window.location.search).get('tab');
-      if (qTab === 'deuterocanon' || qTab === 'list-of-sixty' || qTab === 'articles') return qTab;
+      if (qTab === 'deuterocanon' || qTab === 'list-of-sixty' || qTab === 'articles' || qTab === 'donate') return qTab;
       const p = window.location.pathname.toLowerCase();
+      if (p.includes('donate') || p.includes('giving') || p.includes('partner')) return 'donate';
       if (p.includes('articles') || p.includes('blog')) return 'articles';
       if (p.includes('deuterocanon') || p.includes('apocrypha')) return 'deuterocanon';
       if (p.includes('sixty') || p.includes('pseudepigrapha')) return 'list-of-sixty';
@@ -1071,7 +1073,12 @@ export function App() {
 
   const renderSharedFooter = () => (
     <GrandSiteFooter
-      onOpenLegal={(page) => setLegalModalState({ open: true, page })}
+      onOpenLegal={(page) => {
+        setLegalModalState({ open: true, page });
+        if (typeof window !== 'undefined') {
+          window.history.pushState({}, '', `/${page}/`);
+        }
+      }}
       onOpenSettings={() => setIsSettingsOpen((prev) => !prev)}
       onGoHome={handleGoHome}
       onSelectNavTab={(tab) => {
@@ -1203,6 +1210,21 @@ export function App() {
           >
             <span>{user ? user.displayName || 'Synced' : 'Sign in'}</span>
           </button>
+
+          <button
+            type="button"
+            className={`quiet-button ${activeNavTab === 'donate' ? 'active-pill' : ''}`}
+            onClick={() => {
+              setActiveNavTab('donate');
+              if (typeof window !== 'undefined') {
+                window.history.pushState({}, '', '/donate/');
+              }
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            title="Support the 100% Ad-Free Scripture Mission"
+          >
+            <span style={{ color: '#f59e0b', fontWeight: 700 }}>💛 Donate</span>
+          </button>
         </div>
 
         {/* Mobile-only clean top controls: Search Bar Box, Active Edition Pill, Sign In */}
@@ -1288,7 +1310,7 @@ export function App() {
       )}
 
       {/* QUICK TRANSLATION VERSION RIBBON (BIBLEHUB-STYLE 1-TAP SWITCHER) */}
-      {activeNavTab !== 'articles' && (
+      {activeNavTab !== 'articles' && activeNavTab !== 'donate' && (
         <QuickVersionRibbon
           activeVersionIds={activeVersionIds}
           allVersions={allVersions}
@@ -1422,6 +1444,23 @@ export function App() {
             footer={renderSharedFooter()}
           />
         )
+      ) : activeNavTab === 'donate' ? (
+        <DonationHubPage
+          onBackToReader={() => {
+            setActiveNavTab('canonical');
+            if (typeof window !== 'undefined') {
+              window.history.pushState({}, '', '/');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onNavigateToPassage={(bookId, chapter) => {
+            const b = getBookById(bookId);
+            if (b) {
+              handleSelectBookChapter(b.slug, chapter);
+            }
+            setActiveNavTab('canonical');
+          }}
+        />
       ) : (
         <main id="reader" className="workspace">
           <section className="page-heading">
@@ -3275,7 +3314,26 @@ export function App() {
       <LegalInstitutionalModal
         isOpen={legalModalState.open}
         initialPage={legalModalState.page}
-        onClose={() => setLegalModalState((prev) => ({ ...prev, open: false }))}
+        onClose={() => {
+          setLegalModalState((prev) => ({ ...prev, open: false }));
+          if (typeof window !== 'undefined') {
+            if (activeNavTab === 'canonical') {
+              window.history.pushState(
+                {},
+                '',
+                `/${activeVersionIds[0] || 'nkjv'}/${currentBookSlug}/${currentChapter}`
+              );
+            } else if (activeNavTab === 'articles') {
+              window.history.pushState(
+                {},
+                '',
+                activeArticleSlug ? `/articles/${activeArticleSlug}` : '/articles/'
+              );
+            } else {
+              window.history.pushState({}, '', `/${activeNavTab}`);
+            }
+          }
+        }}
       />
 
       {/* ASK ADUBIBLE AI EXEGESIS COMPANION MODAL */}

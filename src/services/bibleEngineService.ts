@@ -740,7 +740,16 @@ export function parseBibleHubUrlPath(pathname: string): {
   bookSlug?: string;
   chapter?: number;
   isParallelRoute?: boolean;
-  legalPage?: 'about' | 'how-to-use' | 'privacy' | 'terms' | 'editorial-policy' | 'glossary' | 'sources';
+  legalPage?:
+    | 'about'
+    | 'how-to-use'
+    | 'privacy'
+    | 'terms'
+    | 'editorial-policy'
+    | 'glossary'
+    | 'sources'
+    | 'contact'
+    | 'cookie-policy';
   targetTab?: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate';
   articleSlug?: string;
 } {
@@ -794,20 +803,51 @@ export function parseBibleHubUrlPath(pathname: string): {
     };
   }
 
+  // Legal & Institutional Governance Pages
   if (
     lower === 'about' ||
+    lower === 'about-us' ||
     lower === 'how-to-use' ||
+    lower === 'guide' ||
     lower === 'privacy' ||
+    lower === 'privacy-policy' ||
     lower === 'terms' ||
+    lower === 'terms-of-service' ||
+    lower === 'terms-and-conditions' ||
+    lower === 'contact' ||
+    lower === 'contact-us' ||
+    lower === 'cookie-policy' ||
+    lower === 'cookies' ||
     lower === 'editorial-policy' ||
     lower === 'glossary' ||
     lower === 'sources'
   ) {
+    let resolvedKey:
+      | 'about'
+      | 'how-to-use'
+      | 'privacy'
+      | 'terms'
+      | 'editorial-policy'
+      | 'glossary'
+      | 'sources'
+      | 'contact'
+      | 'cookie-policy' = 'about';
+
+    if (lower === 'about' || lower === 'about-us') resolvedKey = 'about';
+    else if (lower === 'privacy' || lower === 'privacy-policy') resolvedKey = 'privacy';
+    else if (lower === 'terms' || lower === 'terms-of-service' || lower === 'terms-and-conditions') resolvedKey = 'terms';
+    else if (lower === 'contact' || lower === 'contact-us') resolvedKey = 'contact';
+    else if (lower === 'cookie-policy' || lower === 'cookies') resolvedKey = 'cookie-policy';
+    else if (lower === 'how-to-use' || lower === 'guide') resolvedKey = 'how-to-use';
+    else if (lower === 'editorial-policy') resolvedKey = 'editorial-policy';
+    else if (lower === 'glossary') resolvedKey = 'glossary';
+    else if (lower === 'sources') resolvedKey = 'sources';
+
     return {
       versionId: 'nkjv',
       bookSlug: 'ephesians',
       chapter: 1,
-      legalPage: lower as any,
+      legalPage: resolvedKey,
     };
   }
 

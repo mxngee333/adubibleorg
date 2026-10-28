@@ -10,7 +10,7 @@ interface GrandSiteFooterProps {
   onOpenLegal: (page: LegalPageKey) => void;
   onOpenSettings: () => void;
   onGoHome: (e?: React.MouseEvent) => void;
-  onSelectNavTab: (tab: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles') => void;
+  onSelectNavTab: (tab: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate') => void;
   onSelectTheme?: (themeId: string) => void;
   onOpenBookPickerWithTab?: (tab: 'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD') => void;
   showStrongs: boolean;
@@ -487,12 +487,30 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
           </div>
         </div>
 
-        {/* Column 4: Institutional & Heritage */}
+        {/* Column 4: Institutional & Legal Governance */}
         <div className="footer-col">
           <h3 className="footer-col-title">
-            <span>🏛️ Institutional &amp; Sacred Ministry</span>
+            <span>🏛️ Institutional Trust &amp; Legal Governance</span>
           </h3>
           <ul className="footer-links">
+            <li>
+              <a
+                href="/donate/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onSelectNavTab('donate');
+                  if (typeof window !== 'undefined') {
+                    window.history.pushState({}, '', '/donate/');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
+                className="footer-text-link"
+                style={{ color: '#f59e0b', fontWeight: 700 }}
+              >
+                <span>💛 Support Scripture Mission (Donate)</span>
+                <ChevronRight className="footer-link-chevron" />
+              </a>
+            </li>
             <li>
               <a
                 href="/about/"
@@ -503,19 +521,6 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
                 className="footer-text-link"
               >
                 <span>Apostle Kwame Adu &amp; About AduBible</span>
-                <ChevronRight className="footer-link-chevron" />
-              </a>
-            </li>
-            <li>
-              <a
-                href="/how-to-use/"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onOpenLegal('how-to-use');
-                }}
-                className="footer-text-link"
-              >
-                <span>How to Use Parallel Reading &amp; Strong’s</span>
                 <ChevronRight className="footer-link-chevron" />
               </a>
             </li>
@@ -541,7 +546,99 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
                 }}
                 className="footer-text-link"
               >
-                <span>Terms of Service &amp; Open Scripture Commons</span>
+                <span>Terms of Service &amp; Scripture Commons</span>
+                <ChevronRight className="footer-link-chevron" />
+              </a>
+            </li>
+            <li>
+              <a
+                href="/contact/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onOpenLegal('contact');
+                }}
+                className="footer-text-link"
+              >
+                <span>Contact Us &amp; Ministry Support</span>
+                <ChevronRight className="footer-link-chevron" />
+              </a>
+            </li>
+            <li>
+              <a
+                href="/cookie-policy/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onOpenLegal('cookie-policy');
+                }}
+                className="footer-text-link"
+              >
+                <span>Cookie &amp; Local Storage Policy</span>
+                <ChevronRight className="footer-link-chevron" />
+              </a>
+            </li>
+            <li>
+              <a
+                href="/how-to-use/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onOpenLegal('how-to-use');
+                }}
+                className="footer-text-link"
+              >
+                <span>How to Use Parallel Reading &amp; Strong’s</span>
+                <ChevronRight className="footer-link-chevron" />
+              </a>
+            </li>
+            <li>
+              <a
+                href="/editorial-policy/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onOpenLegal('editorial-policy');
+                }}
+                className="footer-text-link"
+              >
+                <span>Editorial Policy &amp; Translation Standards</span>
+                <ChevronRight className="footer-link-chevron" />
+              </a>
+            </li>
+            <li>
+              <a
+                href="/glossary/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onOpenLegal('glossary');
+                }}
+                className="footer-text-link"
+              >
+                <span>Biblical Exegesis &amp; Textual Glossary</span>
+                <ChevronRight className="footer-link-chevron" />
+              </a>
+            </li>
+            <li>
+              <a
+                href="/sources/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onOpenLegal('sources');
+                }}
+                className="footer-text-link"
+              >
+                <span>Manuscript Archives &amp; Primary Sources</span>
+                <ChevronRight className="footer-link-chevron" />
+              </a>
+            </li>
+            <li>
+              <a
+                href="/articles/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onSelectNavTab('articles');
+                }}
+                className="footer-text-link"
+                style={{ color: '#f59e0b', fontWeight: 700 }}
+              >
+                <span>📖 15 Pillar Scripture &amp; Study Guides</span>
                 <ChevronRight className="footer-link-chevron" />
               </a>
             </li>
@@ -561,8 +658,121 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
       </div>
 
       <div className="footer-bottom-bar">
+        {/* Horizontal Legal & Governance Strip */}
+        <nav className="footer-legal-nav" aria-label="Legal & Institutional Policies">
+          <a
+            href="/about/"
+            onClick={(e) => {
+              e.preventDefault();
+              onOpenLegal('about');
+            }}
+            className="footer-legal-pill"
+          >
+            About AduBible
+          </a>
+          <span className="footer-legal-dot" aria-hidden="true">·</span>
+          <a
+            href="/privacy/"
+            onClick={(e) => {
+              e.preventDefault();
+              onOpenLegal('privacy');
+            }}
+            className="footer-legal-pill"
+          >
+            Privacy Policy
+          </a>
+          <span className="footer-legal-dot" aria-hidden="true">·</span>
+          <a
+            href="/terms/"
+            onClick={(e) => {
+              e.preventDefault();
+              onOpenLegal('terms');
+            }}
+            className="footer-legal-pill"
+          >
+            Terms of Service
+          </a>
+          <span className="footer-legal-dot" aria-hidden="true">·</span>
+          <a
+            href="/contact/"
+            onClick={(e) => {
+              e.preventDefault();
+              onOpenLegal('contact');
+            }}
+            className="footer-legal-pill"
+          >
+            Contact Us
+          </a>
+          <span className="footer-legal-dot" aria-hidden="true">·</span>
+          <a
+            href="/cookie-policy/"
+            onClick={(e) => {
+              e.preventDefault();
+              onOpenLegal('cookie-policy');
+            }}
+            className="footer-legal-pill"
+          >
+            Cookie Policy
+          </a>
+          <span className="footer-legal-dot" aria-hidden="true">·</span>
+          <a
+            href="/how-to-use/"
+            onClick={(e) => {
+              e.preventDefault();
+              onOpenLegal('how-to-use');
+            }}
+            className="footer-legal-pill"
+          >
+            How to Use
+          </a>
+          <span className="footer-legal-dot" aria-hidden="true">·</span>
+          <a
+            href="/editorial-policy/"
+            onClick={(e) => {
+              e.preventDefault();
+              onOpenLegal('editorial-policy');
+            }}
+            className="footer-legal-pill"
+          >
+            Editorial Policy
+          </a>
+          <span className="footer-legal-dot" aria-hidden="true">·</span>
+          <a
+            href="/glossary/"
+            onClick={(e) => {
+              e.preventDefault();
+              onOpenLegal('glossary');
+            }}
+            className="footer-legal-pill"
+          >
+            Glossary
+          </a>
+          <span className="footer-legal-dot" aria-hidden="true">·</span>
+          <a
+            href="/sources/"
+            onClick={(e) => {
+              e.preventDefault();
+              onOpenLegal('sources');
+            }}
+            className="footer-legal-pill"
+          >
+            Sources
+          </a>
+          <span className="footer-legal-dot" aria-hidden="true">·</span>
+          <a
+            href="/articles/"
+            onClick={(e) => {
+              e.preventDefault();
+              onSelectNavTab('articles');
+            }}
+            className="footer-legal-pill text-amber-500 font-bold"
+          >
+            15 Pillar Guides
+          </a>
+        </nav>
+
         <div className="footer-copy">
-          © {new Date().getFullYear()} <strong>AduBible</strong> (<a href="https://adubible.org/">adubible.org</a>) · Dedicated to Humanity as a Sacred Ministry in Honor of Apostle Kwame Adu · Nsuhia, Ghana.
+          © {new Date().getFullYear()} <strong>AduBible</strong> (<a href="https://adubible.org/">adubible.org</a>) · Dedicated to Humanity as a Sacred Ministry in Honor of Apostle Kwame Adu · <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer">Nsuhia, Ghana ↗</a> · <span style={{ color: '#10b981', fontWeight: 600 }}>100% Ads-Free Reading Experience</span>.
         </div>
       </div>
     </footer>

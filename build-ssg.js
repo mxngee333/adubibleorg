@@ -250,6 +250,17 @@ const CANONICAL_ROUTES = [
     excerpt:
       'Ancient Jewish and early Christian sacred literature including 1 Enoch (Book of Enoch), Book of Jasher, Book of Jubilees, 2 Esdras (4 Ezra), and Apostolic Fathers with 24kHz neural audio and sovereign offline storage.',
   },
+  {
+    route: '/donate/',
+    priority: '0.8',
+    changefreq: 'monthly',
+    title: 'Support the AduBible Scripture Mission — 100% Ad-Free Scripture for Humanity | Adubible.org',
+    description:
+      'Partner with AduBible in honoring the legacy of Apostle Kwame Adu of Nsuhia, Ghana. Support non-profit parallel Bible translation, Asante Twi digitizing, and zero-ad server operations via Stripe and PayPal.',
+    heading: 'Support the AduBible Planetary Scripture Mission — Giving & Partnership',
+    excerpt:
+      'AduBible operates as a dedicated, 100% ad-free non-profit scripture sanctuary for 4 billion readers worldwide, honoring Apostle Kwame Adu of Nsuhia, Ghana (https://nsuhia.com/). Support our planetary scripture distribution via Stripe (Card, Apple Pay, Google Pay) and PayPal.',
+  },
 ];
 
 // Append all 15 Pillar Articles to CANONICAL_ROUTES
