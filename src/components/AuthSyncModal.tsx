@@ -273,9 +273,9 @@ export const AuthSyncModal: React.FC<AuthSyncModalProps> = ({
                   <img src="/brand/Symbol_Transparent.png" alt="AduBible" className="h-9 w-9 object-contain" />
                 </div>
                 <div className="flex items-center justify-center gap-1 font-serif text-base font-bold mb-1">
-                  <span style={{ color: '#38bdf8' }}>Adu</span>
-                  <span style={{ color: '#f59e0b' }}>Bible</span>
-                  <span style={{ color: '#10b981' }}>.org</span>
+                  <span style={{ color: 'var(--logo-adu-color, #B83853)' }}>Adu</span>
+                  <span style={{ color: 'var(--logo-bible-color, #C9A662)' }}>Bible</span>
+                  <span style={{ color: 'var(--logo-tld-color, #6E947A)' }}>.org</span>
                 </div>
                 <h3 className="text-sm font-bold text-white tracking-wide">
                   {activeTab === 'signin' ? 'Welcome Back to AduBible' : 'Create Your Sovereign Study Vault'}
