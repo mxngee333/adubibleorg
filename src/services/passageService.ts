@@ -374,15 +374,16 @@ export function setAutoScrollActive(enabled: boolean): void {
 }
 
 /**
- * Smoothly and gently brings a verse into the comfortable safe reading zone
- * ONLY if it is not already visible.
+ * Smoothly brings the active scripture verse into the golden reading / screen projection zone.
  *
- * CRITICAL FIXES:
- * 1. Hard Kill-Switch: If Auto-Scroll is OFF, NEVER scrolls (0 movement, hard freeze).
- * 2. Zero-Overshoot Natural Flow: When a verse reaches the bottom audio bar, it scrolls
- *    ONLY the minimum distance needed to bring the verse comfortably above the audio bar.
- *    It NEVER throws the verse to the top of the screen and NEVER scrolls past the verse
- *    being read or heard!
+ * CRITICAL FIXES FOR CHURCH / SANCTUARY SCREEN PROJECTION:
+ * 1. Hard Master Kill-Switch: If Auto-Scroll is OFF, aborts in 0ms (absolute hard freeze).
+ * 2. Golden Center Focus: When a verse moves near or past the bottom audio bar,
+ *    it smoothly brings the verse into the UPPER-MIDDLE / CENTER of the screen (~35% from top).
+ *    This ensures that on church projectors or small screens, the verse is NEVER hidden,
+ *    NEVER stuck at the bottom edge, and NEVER covered by the floating audio player bar!
+ * 3. In-View Stability: If the verse is already comfortably visible in the upper-middle zone,
+ *    it does not scroll at all to prevent distracting jitter.
  */
 export function scrollVerseIntoViewIfNeeded(
   el: HTMLElement | null,
@@ -398,44 +399,35 @@ export function scrollVerseIntoViewIfNeeded(
   const rect = el.getBoundingClientRect();
   const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
 
-  // Measure dynamic audio bar height if active
+  // Measure dynamic audio bar height
   const audioBarEl =
     document.querySelector('.audio-bar-wrapper') ||
     document.querySelector('.audio-bar-container') ||
     document.querySelector('.audio-bar-minimized');
   const audioBarHeight = audioBarEl ? audioBarEl.getBoundingClientRect().height : 68;
 
-  // Safe comfortable reading zone boundaries:
-  // safeTop: clearance below fixed top navigation (~125px)
-  // safeBottom: clearance above fixed bottom audio bar (audioBarHeight + 35px safety cushion)
-  const safeTop = 125;
-  const safeBottom = Math.max(safeTop + 100, viewportHeight - (audioBarHeight + 35));
+  // Safe reading zone boundaries:
+  // safeTop: clearance below top headers (~120px)
+  // safeBottom: generous clearance above the bottom audio bar (audioBarHeight + 110px).
+  // This guarantees that ANY verse entering the bottom 110px area above the audio bar
+  // is immediately smoothly elevated into the prime projection zone!
+  const safeTop = 120;
+  const safeBottom = Math.max(safeTop + 120, viewportHeight - (audioBarHeight + 110));
 
   // 1. If verse is already comfortably visible within this safe zone, DO NOT scroll!
-  // This guarantees reader focus is undisturbed while reading an in-view verse.
   if (rect.top >= safeTop && rect.bottom <= safeBottom) {
     return;
   }
 
   const currentScrollY = window.scrollY || window.pageYOffset;
-  let targetScrollY = currentScrollY;
 
-  // 2. If verse is approaching or extending below safeBottom (being read/heard):
-  // Scroll down gently JUST ENOUGH to place the verse comfortably above the audio bar (~45px clearance).
-  // This guarantees it NEVER scrolls past the current verse!
-  if (rect.bottom > safeBottom) {
-    const overflowBottom = rect.bottom - safeBottom;
-    targetScrollY = currentScrollY + overflowBottom + 45;
-  }
-  // 3. If verse is clipped above safeTop (e.g. user jumped backwards):
-  // Scroll up gently JUST ENOUGH to place the top of the verse comfortably below the top nav (~25px clearance).
-  else if (rect.top < safeTop) {
-    const overflowTop = safeTop - rect.top;
-    targetScrollY = currentScrollY - overflowTop - 25;
-  }
+  // 2. Projection Focal Target: Align the verse comfortably in the upper-middle (~35% of viewport height).
+  // This gives massive clearance above the bottom audio bar and perfect readability on screen projectors!
+  const targetOffset = safeTop + (safeBottom - safeTop) * 0.35;
+  const targetScrollY = currentScrollY + rect.top - targetOffset;
 
-  // Deadzone check: If the scroll difference is under 10px, skip to avoid micro-jitter
-  if (Math.abs(targetScrollY - currentScrollY) < 10) {
+  // Deadzone check: If the scroll difference is under 12px, skip to avoid micro-jitter
+  if (Math.abs(targetScrollY - currentScrollY) < 12) {
     return;
   }
 

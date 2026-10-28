@@ -329,7 +329,7 @@ export function App() {
   const handleAudioVerseChange = useCallback((vNum: number) => {
     setSelectedVerse(vNum);
     // Real-time zero-delay check: if Scroll is turned OFF, NEVER scroll reader!
-    if (!isAutoScrollActive()) {
+    if (!autoSyncReaderRef.current || !isAutoScrollActive()) {
       return;
     }
 
@@ -795,7 +795,7 @@ export function App() {
           document.getElementById(`verse-${vNum}`) ||
           document.querySelector(`[data-verse="${vNum}"]`);
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          scrollVerseIntoViewIfNeeded(el as HTMLElement, true);
         }
       }, 70);
     }
@@ -844,7 +844,7 @@ export function App() {
           document.getElementById(`verse-${targetVerse}`) ||
           document.querySelector(`[data-verse="${targetVerse}"]`);
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          scrollVerseIntoViewIfNeeded(el as HTMLElement, true);
         }
       }, 100);
     } else {

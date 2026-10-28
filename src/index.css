@@ -5544,16 +5544,20 @@ mark.search-highlight {
   }
 }
 
-/* SCRIPTURE READING VIEW CLEARANCE — PREVENTS AUDIO BAR FROM EVER OBSCURING VERSES */
+/* SCRIPTURE READING VIEW CLEARANCE — PREVENTS AUDIO BAR FROM EVER OBSCURING VERSES & OPTIMIZED FOR SCREEN PROJECTION */
 .verse-row,
 .verse-cell,
 [data-verse] {
-  scroll-margin-top: 140px !important;
-  scroll-margin-bottom: 160px !important;
+  scroll-margin-top: 160px !important;
+  scroll-margin-bottom: 260px !important;
 }
 
 .comparison {
-  padding-bottom: 84px !important;
+  padding-bottom: max(75vh, 600px) !important;
+}
+
+.verse-rows {
+  padding-bottom: max(60vh, 500px) !important;
 }
 
 /* Minimized Floating Pill Mode */

@@ -70,14 +70,22 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoadingVerse, setIsLoadingVerse] = useState(false);
   const [continuousPlayback, setContinuousPlayback] = useState<boolean>(true);
-  const [internalAutoSync, setInternalAutoSync] = useState<boolean>(() => isAutoScrollActive());
-  const isAutoSync = autoSyncReader !== undefined ? autoSyncReader : internalAutoSync;
+  const [isAutoSync, setIsAutoSync] = useState<boolean>(() => {
+    return typeof autoSyncReader === 'boolean' ? autoSyncReader : isAutoScrollActive();
+  });
+
+  // Synchronize when parent prop updates
+  useEffect(() => {
+    if (typeof autoSyncReader === 'boolean') {
+      setIsAutoSync(autoSyncReader);
+    }
+  }, [autoSyncReader]);
 
   // Real-time synchronization with global Auto-Scroll state (0ms latency across tabs and UI surfaces)
   useEffect(() => {
     const handleToggle = (e: any) => {
       if (typeof e.detail?.enabled === 'boolean') {
-        setInternalAutoSync(e.detail.enabled);
+        setIsAutoSync(e.detail.enabled);
       }
     };
     window.addEventListener('adubible_autoscroll_toggle', handleToggle);
@@ -1241,15 +1249,18 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             className={`audio-bar-toggle-pill ${isAutoSync ? 'active' : ''}`}
             onClick={() => {
               const nextSync = !isAutoSync;
+              // 1. Instantaneous 0ms local state update for zero-latency UI reaction
+              setIsAutoSync(nextSync);
+              // 2. Master synchronous kill-switch update & browser scroll-halt
               setAutoScrollActive(nextSync);
-              setInternalAutoSync(nextSync);
+              // 3. Propagate to parent App
               if (onSetAutoSync) {
                 onSetAutoSync(nextSync);
               } else if (onToggleAutoSync) {
                 onToggleAutoSync();
               }
 
-              // If turning Auto-Scroll ON, gently align to current verse without overshooting;
+              // If turning Auto-Scroll ON, immediately smoothly elevate active verse into center projection zone!
               // If turning OFF, setAutoScrollActive(false) already instantly halted any in-flight scroll!
               if (nextSync && typeof window !== 'undefined') {
                 const vNum = verses[currentVerseIdxRef.current]?.verse || activeVerse;
@@ -1257,7 +1268,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
                   document.getElementById(`verse-${vNum}`) ||
                   document.querySelector(`[data-verse="${vNum}"]`);
                 if (el) {
-                  scrollVerseIntoViewIfNeeded(el as HTMLElement);
+                  scrollVerseIntoViewIfNeeded(el as HTMLElement, true);
                 }
               }
             }}
@@ -1409,15 +1420,18 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
               className={`audio-bar-toggle-pill ${isAutoSync ? 'active' : ''}`}
               onClick={() => {
               const nextSync = !isAutoSync;
+              // 1. Instantaneous 0ms local state update for zero-latency UI reaction
+              setIsAutoSync(nextSync);
+              // 2. Master synchronous kill-switch update & browser scroll-halt
               setAutoScrollActive(nextSync);
-              setInternalAutoSync(nextSync);
+              // 3. Propagate to parent App
               if (onSetAutoSync) {
                 onSetAutoSync(nextSync);
               } else if (onToggleAutoSync) {
                 onToggleAutoSync();
               }
 
-              // If turning Auto-Scroll ON, gently align to current verse without overshooting;
+              // If turning Auto-Scroll ON, immediately smoothly elevate active verse into center projection zone!
               // If turning OFF, setAutoScrollActive(false) already instantly halted any in-flight scroll!
               if (nextSync && typeof window !== 'undefined') {
                 const vNum = verses[currentVerseIdxRef.current]?.verse || activeVerse;
@@ -1425,7 +1439,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
                   document.getElementById(`verse-${vNum}`) ||
                   document.querySelector(`[data-verse="${vNum}"]`);
                 if (el) {
-                  scrollVerseIntoViewIfNeeded(el as HTMLElement);
+                  scrollVerseIntoViewIfNeeded(el as HTMLElement, true);
                 }
               }
             }}
