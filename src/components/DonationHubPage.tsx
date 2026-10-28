@@ -236,7 +236,7 @@ export const DonationHubPage: React.FC<DonationHubPageProps> = ({
             Support the Mission of <span className="text-amber-400 font-serif">AduBible</span>
           </h1>
           <p className="text-base sm:text-lg text-stone-300 leading-relaxed font-light">
-            Dedicated to humanity in memory of <strong className="text-amber-200 font-semibold">Apostle Kwame Adu of Nsuhia, Ghana</strong>.
+            Dedicated to humanity in support of <strong className="text-amber-200 font-semibold">Apostle Kwame Adu of Nsuhia, Ghana</strong>.
             We provide a 100% free, unmonetized parallel study hub with Strong&apos;s Greek and Hebrew Lexicons, Twi translations, and ancient codices.
           </p>
         </div>
@@ -481,13 +481,13 @@ export const DonationHubPage: React.FC<DonationHubPageProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5">
-                  Dedication / In Honor Of (Optional)
+                  Dedication / In Support Of (Optional)
                 </label>
                 <input
                   type="text"
                   value={tributeName}
                   onChange={(e) => setTributeName(e.target.value)}
-                  placeholder="e.g., In memory of Apostle Kwame Adu"
+                  placeholder="e.g., In support of Apostle Kwame Adu"
                   className="w-full bg-stone-950 border border-stone-800 rounded-xl px-3.5 py-2.5 text-stone-100 text-sm focus:outline-none focus:border-amber-400"
                 />
               </div>
@@ -558,9 +558,9 @@ export const DonationHubPage: React.FC<DonationHubPageProps> = ({
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-3">
               <Church className="w-5 h-5" />
             </div>
-            <h3 className="font-serif font-bold text-stone-100 text-base mb-2">Honoring Apostle Kwame Adu</h3>
+            <h3 className="font-serif font-bold text-stone-100 text-base mb-2">In Support of Apostle Kwame Adu</h3>
             <p className="text-xs text-stone-400 leading-relaxed">
-              Founded in honor of the generational gospel work of Apostle Kwame Adu of Nsuhia, Ghana (
+              Founded in honor and support of the ongoing gospel work of Apostle Kwame Adu of Nsuhia, Ghana (
               <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" className="text-amber-400 underline">
                 nsuhia.com
               </a>

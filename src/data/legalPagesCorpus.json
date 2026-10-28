@@ -2,17 +2,17 @@
   "about": {
     "key": "about",
     "slug": "about",
-    "title": "About AduBible — Honoring the Legacy of Apostle Kwame Adu",
-    "metaTitle": "About AduBible — The Ministry & Legacy of Apostle Kwame Adu | Nsuhia, Ghana",
-    "metaDescription": "Discover the sacred history of AduBible.org, founded to honor Apostle Kwame Adu of Nsuhia, Ghana. A permanent 100% ad-free parallel study sanctuary uniting Twi, English, Hebrew, and Greek.",
-    "badge": "Sacred Memorial & Gospel Covenant",
+    "title": "About AduBible — In Support of the Ministry of Apostle Kwame Adu",
+    "metaTitle": "About AduBible — The Ministry & Mission of Apostle Kwame Adu | Nsuhia, Ghana",
+    "metaDescription": "Discover the sacred mission of AduBible.org, founded in support of Apostle Kwame Adu of Nsuhia, Ghana. A permanent 100% ad-free parallel study sanctuary uniting Twi, English, Hebrew, and Greek.",
+    "badge": "Sacred Mission & Gospel Covenant",
     "lastUpdated": "2026-10-28",
     "schemaType": "AboutPage",
     "sections": [
       {
-        "id": "memorial-heritage",
-        "heading": "1. The Apostolic Memorial & Legacy of Apostle Kwame Adu",
-        "content": "AduBible (https://adubible.org) was established as a perpetual digital sanctuary and global gospel memorial honoring the life, evangelical ministry, and generational legacy of Apostle Kwame Adu of Nsuhia, Ghana (https://nsuhia.com/). \n\nApostle Kwame Adu dedicated his earthly pilgrimage to the tireless proclamation of the uncompromised Gospel of Jesus Christ across the towns, villages, and cities of Ghana and West Africa. His apostolic vision was characterized by an unwavering reverence for the infallible authority of Holy Scripture, deep pastoral compassion for the edification of the saints, and an ardent conviction that the Word of God must be made freely accessible to every human soul in their native mother tongue without financial barriers or commercial hindrance.\n\nIn solemn commemoration of this sacred heritage, AduBible operates under an irrevocable institutional covenant: the platform is permanently dedicated to humanity as a free, unmonetized gift, upholding a strict 100% Ads-Free Covenant across all translations, devices, and interfaces."
+        "id": "ministry-heritage",
+        "heading": "1. The Apostolic Mission & Ministry of Apostle Kwame Adu",
+        "content": "AduBible (https://adubible.org) was established as a perpetual digital sanctuary and global gospel mission in support of the life, evangelical ministry, and work of Apostle Kwame Adu of Nsuhia, Ghana (https://nsuhia.com/). \n\nApostle Kwame Adu dedicates his ministry to the tireless proclamation of the uncompromised Gospel of Jesus Christ across the towns, villages, and cities of Ghana, West Africa, and the global diaspora. His apostolic vision is characterized by an unwavering reverence for the infallible authority of Holy Scripture, deep pastoral compassion for the edification of the saints, and an ardent conviction that the Word of God must be made freely accessible to every human soul in their native mother tongue without financial barriers or commercial hindrance.\n\nIn support of this sacred mission, AduBible operates under an irrevocable institutional covenant: the platform is permanently dedicated to humanity as a free, unmonetized gift, upholding a strict 100% Ads-Free Covenant across all translations, devices, and interfaces."
       },
       {
         "id": "cornerstone-scriptures",
@@ -74,7 +74,7 @@
       {
         "id": "privacy-contact",
         "heading": "6. Data Protection Officer & Privacy Inquiries",
-        "content": "If you have questions regarding this Privacy Policy, wish to exercise your statutory privacy rights, or require assistance with data deletion, please contact our Data Protection Officer at:\n\n• Email: privacy[at]adubible.org (Clickable: mailto:privacy@adubible.org)\n• Postal / Ministerial Office: AduBible Privacy Governance, Apostle Kwame Adu Memorial Center, Nsuhia, Ashanti Region, Ghana\n• Web: https://adubible.org/contact/"
+        "content": "If you have questions regarding this Privacy Policy, wish to exercise your statutory privacy rights, or require assistance with data deletion, please contact our Data Protection Officer at:\n\n• Email: info[at]adubible.org (Clickable: mailto:info@adubible.org)\n• Postal / Ministerial Office: AduBible Privacy Governance, Apostle Kwame Adu Memorial Center, Nsuhia, Bono Region, Ghana\n• Web: https://adubible.org/contact/"
       }
     ]
   },
@@ -133,17 +133,17 @@
       {
         "id": "welcome-contact",
         "heading": "1. Welcome to the AduBible Ministerial Helpdesk",
-        "content": "Whether you are a pastor preparing a sermon series, a linguistic scholar researching ancient manuscripts, a Bible translator working in an African vernacular, or a believer seeking technical assistance with your personal study vault, the AduBible team is honored to serve you.\n\nOur headquarters are situated in Nsuhia, Ashanti Region, Ghana, honoring the missionary legacy of Apostle Kwame Adu. We respond to ministerial, scholarly, and technical communications with Christian diligence and warmth."
+        "content": "Whether you are a pastor preparing a sermon series, a linguistic scholar researching ancient manuscripts, a Bible translator working in an African vernacular, or a believer seeking technical assistance with your personal study vault, the AduBible team is honored to serve you.\n\nOur headquarters are situated in Nsuhia, Bono Region, Ghana, honoring the missionary legacy of Apostle Kwame Adu. We respond to ministerial, scholarly, and technical communications with Christian diligence and warmth."
       },
       {
         "id": "direct-communication-channels",
         "heading": "2. Dedicated Ministry Email Channels (Anti-Scrape Obfuscated)",
-        "content": "To protect our communication servers against automated harvesting bots while maintaining immediate access for human correspondents, our official email channels are published below using the anti-scraping obfuscation standard [at]:\n\n• Pastoral & Apostolic Memorial Inquiries:\n  apostle[at]adubible.org (Click to compose: mailto:apostle@adubible.org)\n  For pastoral consultations, missionary partnerships, memorial inquiries, and historical records of Apostle Kwame Adu.\n\n• General Inquiries & Technical Support:\n  contact[at]adubible.org (Click to compose: mailto:contact@adubible.org)\n  For assistance with Cloud Sync, study vault exports, audio reader performance, and bug reports.\n\n• Textual Errata & Translation Review:\n  errata[at]adubible.org (Click to compose: mailto:errata@adubible.org)\n  For reporting typographical variations, lexical Strong's index alignments, or ancient manuscript discrepancies. Our research faculty verifies errata within 48 hours.\n\n• Privacy & Data Governance:\n  privacy[at]adubible.org (Click to compose: mailto:privacy@adubible.org)\n  For statutory GDPR/CCPA data access, vault deletion requests, and compliance matters."
+        "content": "To protect our communication servers against automated harvesting bots while maintaining immediate access for human correspondents, all official communications are routed through our unified, anti-scrape obfuscated email address below:\n\n• Official Ministry & Support Email:\n  info[at]adubible.org (Click to compose: mailto:info@adubible.org)\n\nUnified channel for:\n• Pastoral consultations, missionary partnerships, memorial inquiries, and historical records of Apostle Kwame Adu.\n• General inquiries, technical support, Cloud Sync assistance, study vault exports, and bug reports.\n• Textual errata, typographical variations, and lexical Strong's index alignments (reviewed by our research faculty within 48 hours).\n• Privacy governance, statutory GDPR/CCPA data access, vault deletion requests, and legal compliance."
       },
       {
         "id": "physical-location",
         "heading": "3. Physical Location & Community Heritage",
-        "content": "AduBible Ministerial & Research Center\nApostle Kwame Adu Memorial Gospel Foundation\nNsuhia Community, Ashanti Region, Republic of Ghana\nOfficial Community Portal: https://nsuhia.com/ (Nsuhia Heritage & Civic Portal)\n\nVisitors and theological delegations traveling to Nsuhia are encouraged to notify our secretariat at least two weeks in advance via apostle[at]adubible.org to ensure hospitality arrangements."
+        "content": "AduBible Ministerial & Research Center\nApostle Kwame Adu Memorial Gospel Foundation\nNsuhia Community, Bono Region, Republic of Ghana\nOfficial Community Portal: https://nsuhia.com/ (Nsuhia Heritage & Civic Portal)\n\nVisitors and theological delegations traveling to Nsuhia are encouraged to notify our secretariat at least two weeks in advance via info[at]adubible.org to ensure hospitality arrangements."
       },
       {
         "id": "response-sla",
@@ -234,7 +234,7 @@
       {
         "id": "errata-protocol",
         "heading": "3. Errata & Correction Protocol",
-        "content": "Any typographical error, formatting anomaly, or lexical indexing misalignment reported by scholars or readers is reviewed by our research faculty within 48 hours and corrected transparently across our edge deployment pipeline. Reports can be submitted directly to errata[at]adubible.org."
+        "content": "Any typographical error, formatting anomaly, or lexical indexing misalignment reported by scholars or readers is reviewed by our research faculty within 48 hours and corrected transparently across our edge deployment pipeline. Reports can be submitted directly to info[at]adubible.org."
       },
       {
         "id": "vernacular-parity",
@@ -288,7 +288,7 @@
       {
         "id": "memorial-archive",
         "heading": "3. Institutional Memorial Archives",
-        "content": "• Apostle Kwame Adu Memorial Gospel Archive, Nsuhia, Ashanti Region, Ghana.\n• Official Community Archive: https://nsuhia.com/ (Nsuhia Heritage & Civic Portal).\n• Dedicated to Humanity · 100% Ads-Free Reading Experience."
+        "content": "• Apostle Kwame Adu Memorial Gospel Archive, Nsuhia, Bono Region, Ghana.\n• Official Community Archive: https://nsuhia.com/ (Nsuhia Heritage & Civic Portal).\n• Dedicated to Humanity · 100% Ads-Free Reading Experience."
       }
     ]
   }

@@ -113,7 +113,7 @@ export const LegalInstitutionalModal: React.FC<LegalInstitutionalModalProps> = (
                 AduBible (Adubible.org) — Institutional Trust, Heritage &amp; Standards
               </h2>
               <div className="text-[11px] text-stone-400 truncate">
-                Dedicated to Humanity · Memorial of Apostle Kwame Adu · Nsuhia, Ghana
+                Dedicated to Humanity · In Support of Apostle Kwame Adu · Nsuhia, Ghana
               </div>
             </div>
           </div>

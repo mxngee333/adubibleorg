@@ -89,8 +89,8 @@ export const MISSION_DESIGNATIONS: Array<{
   },
   {
     id: 'apostle_kwame_adu_legacy',
-    title: 'Apostle Kwame Adu Memorial Translation Fund',
-    description: 'Support evangelistic scripture translation, rural distribution, and legacy outreach in Nsuhia, Ghana.',
+    title: 'Apostle Kwame Adu Gospel Translation Fund',
+    description: 'Support evangelistic scripture translation, rural distribution, and gospel outreach in Nsuhia, Ghana.',
     scriptureRef: 'Hebrews 13:7 · "Remember those who led you, who spoke the word of God to you..."',
   },
   {

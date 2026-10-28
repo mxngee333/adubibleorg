@@ -541,7 +541,7 @@ function buildSSG() {
         'url': canonicalUrl,
         'recipient': {
           '@type': 'NGO',
-          'name': 'AduBible Scripture Mission (Apostle Kwame Adu Memorial)',
+          'name': 'AduBible Scripture Mission (In Support of Apostle Kwame Adu)',
           'url': BASE_URL,
         },
       };

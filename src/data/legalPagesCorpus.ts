@@ -24,21 +24,21 @@ export const LEGAL_PAGES_CORPUS: Record<string, LegalPageData> = {
   about: {
     key: 'about',
     slug: 'about',
-    title: 'About AduBible — Honoring the Legacy of Apostle Kwame Adu',
-    metaTitle: 'About AduBible — The Ministry & Legacy of Apostle Kwame Adu | Nsuhia, Ghana',
-    metaDescription: 'Discover the sacred history of AduBible.org, founded to honor Apostle Kwame Adu of Nsuhia, Ghana. A permanent 100% ad-free parallel study sanctuary uniting Twi, English, Hebrew, and Greek.',
-    badge: 'Sacred Memorial & Gospel Covenant',
+    title: 'About AduBible — In Support of the Ministry of Apostle Kwame Adu',
+    metaTitle: 'About AduBible — The Ministry & Mission of Apostle Kwame Adu | Nsuhia, Ghana',
+    metaDescription: 'Discover the sacred mission of AduBible.org, founded in support of Apostle Kwame Adu of Nsuhia, Ghana. A permanent 100% ad-free parallel study sanctuary uniting Twi, English, Hebrew, and Greek.',
+    badge: 'Sacred Mission & Gospel Covenant',
     lastUpdated: '2026-10-28',
     schemaType: 'AboutPage',
     sections: [
       {
-        id: 'memorial-heritage',
-        heading: '1. The Apostolic Memorial & Legacy of Apostle Kwame Adu',
-        content: `AduBible (https://adubible.org) was established as a perpetual digital sanctuary and global gospel memorial honoring the life, evangelical ministry, and generational legacy of Apostle Kwame Adu of Nsuhia, Ghana (https://nsuhia.com/). 
+        id: 'ministry-heritage',
+        heading: '1. The Apostolic Mission & Ministry of Apostle Kwame Adu',
+        content: `AduBible (https://adubible.org) was established as a perpetual digital sanctuary and global gospel mission in support of the life, evangelical ministry, and work of Apostle Kwame Adu of Nsuhia, Ghana (https://nsuhia.com/). 
 
-Apostle Kwame Adu dedicated his earthly pilgrimage to the tireless proclamation of the uncompromised Gospel of Jesus Christ across the towns, villages, and cities of Ghana and West Africa. His apostolic vision was characterized by an unwavering reverence for the infallible authority of Holy Scripture, deep pastoral compassion for the edification of the saints, and an ardent conviction that the Word of God must be made freely accessible to every human soul in their native mother tongue without financial barriers or commercial hindrance.
+Apostle Kwame Adu dedicates his ministry to the tireless proclamation of the uncompromised Gospel of Jesus Christ across the towns, villages, and cities of Ghana, West Africa, and the global diaspora. His apostolic vision is characterized by an unwavering reverence for the infallible authority of Holy Scripture, deep pastoral compassion for the edification of the saints, and an ardent conviction that the Word of God must be made freely accessible to every human soul in their native mother tongue without financial barriers or commercial hindrance.
 
-In solemn commemoration of this sacred heritage, AduBible operates under an irrevocable institutional covenant: the platform is permanently dedicated to humanity as a free, unmonetized gift, upholding a strict 100% Ads-Free Covenant across all translations, devices, and interfaces.`
+In support of this sacred mission, AduBible operates under an irrevocable institutional covenant: the platform is permanently dedicated to humanity as a free, unmonetized gift, upholding a strict 100% Ads-Free Covenant across all translations, devices, and interfaces.`
       },
       {
         id: 'cornerstone-scriptures',
@@ -67,14 +67,14 @@ AduBible permanently resolves this divide by harmonizing the deep lexical horsep
       {
         id: 'vernacular-dignity',
         heading: '4. Linguistic Dignity for Asante Twi & African Mother Tongues',
-        content: `A central pillar of Apostle Kwame Adu’s ministry was the profound conviction that God speaks with unmatched intimacy in the heart language of the believer. In West Africa, millions of Christians read the Asante Twi Holy Bible (Twerɛ Kronkron) and Akuapem Twi Holy Bible (Kyerew Kronkron), texts with a rich heritage tracing back to the Basel Evangelical Missionary Society and the pioneering linguistic labors of Johannes Gottlieb Christaller in 1871.
+        content: `A central pillar of Apostle Kwame Adu’s ministry is the profound conviction that God speaks with unmatched intimacy in the heart language of the believer. In West Africa, millions of Christians read the Asante Twi Holy Bible (Twerɛ Kronkron) and Akuapem Twi Holy Bible (Kyerew Kronkron), texts with a rich heritage tracing back to the Basel Evangelical Missionary Society and the pioneering linguistic labors of Johannes Gottlieb Christaller in 1871.
 
 AduBible provides world-class typographical fidelity, phonetic accuracy, and parallel cross-referencing for Asante Twi, Akuapem Twi, Ewe (Eʋegbe), Ga (Ŋmalɛ Krɔŋkrɔŋ Lɛ), Yoruba (Bíbélì Mímọ́), Hausa (Littafi Mai Tsarki), and Swahili (Kiswahili Union Version). Indigenous mother tongues are treated with identical academic dignity, responsive tooling, and 24kHz neural audio streaming as English, Hebrew, and Greek.`
       },
       {
         id: 'institutional-independence',
         heading: '5. Institutional Independence & Non-Commercial Stewardship',
-        content: `AduBible is not owned by any commercial media conglomerate, venture capital fund, or ad network. We accept zero banner ads, zero popups, zero affiliate paywalls, and zero monetized data tracking. The platform is maintained by the Apostle Kwame Adu Memorial Gospel Foundation in collaboration with conservative theological scholars and voluntary software engineers committed to advancing the Kingdom of God across all nations.`
+        content: `AduBible is not owned by any commercial media conglomerate, venture capital fund, or ad network. We accept zero banner ads, zero popups, zero affiliate paywalls, and zero monetized data tracking. The platform is maintained by the Apostle Kwame Adu Gospel Mission in collaboration with conservative theological scholars and voluntary software engineers committed to advancing the Kingdom of God across all nations.`
       }
     ]
   },
@@ -141,8 +141,8 @@ Data stored locally in your browser remains under your sole physical control unt
         heading: '6. Data Protection Officer & Privacy Inquiries',
         content: `If you have questions regarding this Privacy Policy, wish to exercise your statutory privacy rights, or require assistance with data deletion, please contact our Data Protection Officer at:
 
-• Email: privacy[at]adubible.org (Clickable: mailto:privacy@adubible.org)
-• Postal / Ministerial Office: AduBible Privacy Governance, Apostle Kwame Adu Memorial Center, Nsuhia, Ashanti Region, Ghana
+• Email: info[at]adubible.org (Clickable: mailto:info@adubible.org)
+• Postal / Ministerial Office: AduBible Privacy Governance, Apostle Kwame Adu Gospel Center, Nsuhia, Bono Region, Ghana
 • Web: https://adubible.org/contact/`
       }
     ]
@@ -190,7 +190,7 @@ AduBible is a sacred ministerial platform dedicated to the worldwide Body of Chr
 1. Conduct automated scraping, mass data harvesting, or continuous headless bot queries that degrade server performance or increase cloud infrastructure costs for the ministry.
 2. Attempt to bypass rate limits, inject malicious code, exploit cross-site scripting vulnerabilities, or compromise user authentication tokens.
 3. Use the platform for any unlawful purpose, defamation, fraudulent claims, or commercial spam.
-4. Misrepresent yourself as an authorized ministerial representative of AduBible or the Apostle Kwame Adu Memorial Gospel Foundation.`
+4. Misrepresent yourself as an authorized ministerial representative of AduBible or the Apostle Kwame Adu Gospel Mission.`
       },
       {
         id: 'disclaimer-liability',
@@ -224,38 +224,31 @@ AduBible is a sacred ministerial platform dedicated to the worldwide Body of Chr
         heading: '1. Welcome to the AduBible Ministerial Helpdesk',
         content: `Whether you are a pastor preparing a sermon series, a linguistic scholar researching ancient manuscripts, a Bible translator working in an African vernacular, or a believer seeking technical assistance with your personal study vault, the AduBible team is honored to serve you.
 
-Our headquarters are situated in Nsuhia, Ashanti Region, Ghana, honoring the missionary legacy of Apostle Kwame Adu. We respond to ministerial, scholarly, and technical communications with Christian diligence and warmth.`
+Our headquarters are situated in Nsuhia, Bono Region, Ghana, in support of the missionary gospel work of Apostle Kwame Adu. We respond to ministerial, scholarly, and technical communications with Christian diligence and warmth.`
       },
       {
         id: 'direct-communication-channels',
         heading: '2. Dedicated Ministry Email Channels (Anti-Scrape Obfuscated)',
-        content: `To protect our communication servers against automated harvesting bots while maintaining immediate access for human correspondents, our official email channels are published below using the anti-scraping obfuscation standard [at]:
+        content: `To protect our communication servers against automated harvesting bots while maintaining immediate access for human correspondents, all official communications are routed through our unified, anti-scrape obfuscated email address below:
 
-• Pastoral & Apostolic Memorial Inquiries:
-  apostle[at]adubible.org (Click to compose: mailto:apostle@adubible.org)
-  For pastoral consultations, missionary partnerships, memorial inquiries, and historical records of Apostle Kwame Adu.
+• Official Ministry & Support Email:
+  info[at]adubible.org (Click to compose: mailto:info@adubible.org)
 
-• General Inquiries & Technical Support:
-  contact[at]adubible.org (Click to compose: mailto:contact@adubible.org)
-  For assistance with Cloud Sync, study vault exports, audio reader performance, and bug reports.
-
-• Textual Errata & Translation Review:
-  errata[at]adubible.org (Click to compose: mailto:errata@adubible.org)
-  For reporting typographical variations, lexical Strong's index alignments, or ancient manuscript discrepancies. Our research faculty verifies errata within 48 hours.
-
-• Privacy & Data Governance:
-  privacy[at]adubible.org (Click to compose: mailto:privacy@adubible.org)
-  For statutory GDPR/CCPA data access, vault deletion requests, and compliance matters.`
+Unified channel for:
+• Pastoral consultations, missionary partnerships, ministry inquiries, and the gospel work of Apostle Kwame Adu.
+• General inquiries, technical support, Cloud Sync assistance, study vault exports, and bug reports.
+• Textual errata, typographical variations, and lexical Strong's index alignments (reviewed by our research faculty within 48 hours).
+• Privacy governance, statutory GDPR/CCPA data access, vault deletion requests, and legal compliance.`
       },
       {
         id: 'physical-location',
         heading: '3. Physical Location & Community Heritage',
         content: `AduBible Ministerial & Research Center
-Apostle Kwame Adu Memorial Gospel Foundation
-Nsuhia Community, Ashanti Region, Republic of Ghana
+Apostle Kwame Adu Gospel Mission
+Nsuhia Community, Bono Region, Republic of Ghana
 Official Community Portal: https://nsuhia.com/ (Nsuhia Heritage & Civic Portal)
 
-Visitors and theological delegations traveling to Nsuhia are encouraged to notify our secretariat at least two weeks in advance via apostle[at]adubible.org to ensure hospitality arrangements.`
+Visitors and theological delegations traveling to Nsuhia are encouraged to notify our secretariat at least two weeks in advance via info[at]adubible.org to ensure hospitality arrangements.`
       },
       {
         id: 'response-sla',
@@ -264,7 +257,7 @@ Visitors and theological delegations traveling to Nsuhia are encouraged to notif
 
 • Textual Errata & Scripture Translation Corrections: Acknowledged within 24 hours; reviewed by our linguistic faculty within 48 hours; patched in edge deployments upon verification.
 • Technical & Cloud Sync Support: Typically resolved within 1 to 2 business days.
-• Pastoral & Memorial Inquiries: Answered personally by ministerial elders in the order received.`
+• Pastoral & Ministry Inquiries: Answered personally by ministerial elders in the order received.`
       }
     ]
   },
@@ -394,7 +387,7 @@ We strictly present biblical translations that adhere to recognized manuscript t
       {
         id: 'errata-protocol',
         heading: '3. Errata & Correction Protocol',
-        content: `Any typographical error, formatting anomaly, or lexical indexing misalignment reported by scholars or readers is reviewed by our research faculty within 48 hours and corrected transparently across our edge deployment pipeline. Reports can be submitted directly to errata[at]adubible.org.`
+        content: `Any typographical error, formatting anomaly, or lexical indexing misalignment reported by scholars or readers is reviewed by our research faculty within 48 hours and corrected transparently across our edge deployment pipeline. Reports can be submitted directly to info[at]adubible.org.`
       },
       {
         id: 'vernacular-parity',
@@ -470,9 +463,9 @@ We strictly present biblical translations that adhere to recognized manuscript t
 • Strong, James. The Exhaustive Concordance of the Bible. Hunt & Eaton, 1890.`
       },
       {
-        id: 'memorial-archive',
-        heading: '3. Institutional Memorial Archives',
-        content: `• Apostle Kwame Adu Memorial Gospel Archive, Nsuhia, Ashanti Region, Ghana.
+        id: 'ministry-archive',
+        heading: '3. Institutional Gospel Mission Archives',
+        content: `• Apostle Kwame Adu Gospel Mission Archive, Nsuhia, Bono Region, Ghana.
 • Official Community Archive: https://nsuhia.com/ (Nsuhia Heritage & Civic Portal).
 • Dedicated to Humanity · 100% Ads-Free Reading Experience.`
       }

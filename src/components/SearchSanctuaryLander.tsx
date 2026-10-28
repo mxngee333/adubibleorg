@@ -830,7 +830,7 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
         </button>
       </div>
 
-      {/* 6. MEMORIAL & VALUE PROPOSITION BANNER */}
+      {/* 6. MISSION & VALUE PROPOSITION BANNER */}
       <div
         style={{
           display: 'flex',
@@ -848,7 +848,7 @@ export const SearchSanctuaryLander: React.FC<SearchSanctuaryLanderProps> = ({
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', fontSize: '13px' }}>
           <Shield style={{ width: '15px', height: '15px', color: 'var(--green)' }} />
-          <span>Honoring the Legacy of Apostle Kwame Adu ·</span>
+          <span>In Support of the Gospel Mission of Apostle Kwame Adu ·</span>
           <a
             href="https://nsuhia.com/"
             target="_blank"

@@ -50,7 +50,7 @@ const ARTICLES_META = [
     readTimeMinutes: 19,
     datePublished: '2026-02-01',
     dateModified: '2026-10-27',
-    author: 'Apostle Kwame Adu Memorial Gospel Foundation',
+    author: 'Apostle Kwame Adu Gospel Mission',
     icon: '🌍',
     tags: ['Send the Word Out', 'Global Missions', 'Free Scripture Access', 'Apostle Kwame Adu', 'Digital Evangelism', 'Great Commission'],
     excerpt: 'The global manifesto for sovereign, ad-free scripture broadcasting in 2026. Learn how unmonetized edge technology, open-access scholarship, and parallel multilingual translation fulfill the Great Commission without corporate paywalls.'
