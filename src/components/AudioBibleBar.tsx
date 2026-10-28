@@ -109,6 +109,16 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   const activeGainNodeRef = useRef<GainNode | null>(null);
   const studioAudioElRef = useRef<HTMLAudioElement | null>(null);
   const cancelDispatchTimerRef = useRef<any>(null);
+  const onVerseChangeRef = useRef(onVerseChange);
+  useEffect(() => {
+    onVerseChangeRef.current = onVerseChange;
+  }, [onVerseChange]);
+
+  const notifyVerseChange = useCallback((verseNum: number) => {
+    if (onVerseChangeRef.current) {
+      onVerseChangeRef.current(verseNum);
+    }
+  }, []);
 
   // Initialize and track available Web Speech voices across browser lifecycle
   useEffect(() => {
@@ -172,7 +182,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       setStatusMessage('');
 
       if (verses[0]) {
-        onVerseChange(verses[0].verse);
+        notifyVerseChange(verses[0].verse);
       }
 
       // Unconditionally wake up and flush SpeechSynthesis queue in Chromium
@@ -229,10 +239,10 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     if (activeIdx !== currentVerseIdxRef.current) {
       currentVerseIdxRef.current = activeIdx;
       if (verses[activeIdx]) {
-        onVerseChange(verses[activeIdx].verse);
+        notifyVerseChange(verses[activeIdx].verse);
       }
     }
-  }, [verses, onVerseChange]);
+  }, [verses, notifyVerseChange]);
 
   const getOrCreateAudioContext = useCallback((): AudioContext => {
     if (!audioContextRef.current) {
@@ -545,7 +555,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
     const verseObj = verses[index];
     currentVerseIdxRef.current = index;
-    onVerseChange(verseObj.verse);
+    notifyVerseChange(verseObj.verse);
 
     // 1. Studio MP3 Narration branch
     if (useStudioMp3 && audioUrl && studioAudioElRef.current && !bilingualMode) {
@@ -851,7 +861,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     );
     currentVerseIdxRef.current = nextIdx;
     if (verses[nextIdx]) {
-      onVerseChange(verses[nextIdx].verse);
+      notifyVerseChange(verses[nextIdx].verse);
     }
     setIsPlaying(true);
     isPlayingRef.current = true;
@@ -1225,17 +1235,24 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
               type="button"
               className={`audio-bar-toggle-pill ${isAutoSync ? 'active' : ''}`}
               onClick={() => {
-                if (onToggleAutoSync) onToggleAutoSync();
-                else setInternalAutoSync((prev) => !prev);
-                if (typeof window !== 'undefined') {
-                  setTimeout(() => {
-                    const vNum = verses[currentVerseIdxRef.current]?.verse || activeVerse;
-                    const el = document.getElementById(`verse-${vNum}`) || document.querySelector(`[data-verse="${vNum}"]`);
-                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
-                  }, 40);
+                const nextSync = !isAutoSync;
+                if (onToggleAutoSync) {
+                  onToggleAutoSync();
+                } else {
+                  setInternalAutoSync(nextSync);
+                }
+                // Only scroll if turning Auto-Scroll ON; when turning OFF, freeze position immediately
+                if (nextSync && typeof window !== 'undefined') {
+                  const vNum = verses[currentVerseIdxRef.current]?.verse || activeVerse;
+                  const el =
+                    document.getElementById(`verse-${vNum}`) ||
+                    document.querySelector(`[data-verse="${vNum}"]`);
+                  if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+                  }
                 }
               }}
-              title={isAutoSync ? 'Auto-Scroll is ON (follows spoken verse)' : 'Auto-Scroll is OFF'}
+              title={isAutoSync ? 'Auto-Scroll is ON (follows spoken verse)' : 'Auto-Scroll is OFF (free manual scrolling)'}
             >
               <span>📜</span>
               <span>{isAutoSync ? 'Scroll ON' : 'Scroll OFF'}</span>

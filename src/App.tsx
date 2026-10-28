@@ -286,10 +286,13 @@ export function App() {
   const [showAudioBar, setShowAudioBar] = useState<boolean>(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
   const [audioAutoPlayNonce, setAudioAutoPlayNonce] = useState<number>(0);
+  const autoSyncReaderRef = useRef<boolean>(true);
   const [autoSyncReader, setAutoSyncReader] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('adubible_auto_sync_reader');
-      return saved !== null ? saved === 'true' : true;
+      const val = saved !== null ? saved === 'true' : true;
+      autoSyncReaderRef.current = val;
+      return val;
     }
     return true;
   });
@@ -297,6 +300,7 @@ export function App() {
   const handleToggleAutoSyncReader = useCallback(() => {
     setAutoSyncReader((prev) => {
       const next = !prev;
+      autoSyncReaderRef.current = next;
       if (typeof window !== 'undefined') {
         localStorage.setItem('adubible_auto_sync_reader', String(next));
       }
@@ -304,26 +308,23 @@ export function App() {
     });
   }, []);
 
-  const handleAudioVerseChange = useCallback(
-    (vNum: number) => {
-      setSelectedVerse(vNum);
-      if (autoSyncReader && typeof window !== 'undefined') {
-        setTimeout(() => {
-          const el =
-            document.getElementById(`verse-${vNum}`) ||
-            document.querySelector(`[data-verse="${vNum}"]`);
-          if (el) {
-            el.scrollIntoView({
-              behavior: 'smooth',
-              block: 'center',
-              inline: 'nearest',
-            });
-          }
-        }, 50);
+  const handleAudioVerseChange = useCallback((vNum: number) => {
+    setSelectedVerse(vNum);
+    // Real-time zero-delay check: if Scroll is turned OFF, never scroll reader
+    if (!autoSyncReaderRef.current) return;
+    if (typeof window !== 'undefined') {
+      const el =
+        document.getElementById(`verse-${vNum}`) ||
+        document.querySelector(`[data-verse="${vNum}"]`);
+      if (el) {
+        el.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'nearest',
+        });
       }
-    },
-    [autoSyncReader]
-  );
+    }
+  }, []);
   const [copiedNotice, setCopiedNotice] = useState<boolean>(false);
   const [themeSyncNotice, setThemeSyncNotice] = useState<string>('');
   const scrollBoxRef = useRef<HTMLDivElement | null>(null);
