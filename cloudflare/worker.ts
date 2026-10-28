@@ -9,6 +9,12 @@ export interface Env {
   DB: D1Database;
   HETZNER_ORIGIN_URL?: string;
   MAILEROO_API_KEY?: string;
+  STRIPE_SECRET_KEY?: string;
+  STRIPE_WEBHOOK_SECRET?: string;
+  PAYPAL_CLIENT_ID?: string;
+  PAYPAL_CLIENT_SECRET?: string;
+  PAYPAL_WEBHOOK_ID?: string;
+  PAYPAL_MODE?: string;
   ENVIRONMENT?: string;
   ALLOWED_ORIGINS?: string;
 }
