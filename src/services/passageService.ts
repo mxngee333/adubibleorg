@@ -75,6 +75,10 @@ const BOOK_ALIASES: Record<string, string> = {
   'psa': 'psalms',
   'psm': 'psalms',
   'pss': 'psalms',
+  'psam': 'psalms',
+  'psams': 'psalms',
+  'psal': 'psalms',
+  'psals': 'psalms',
   'psalm': 'psalms',
   'psalms': 'psalms',
   'prov': 'proverbs',
@@ -290,24 +294,44 @@ export function findBookByQuery(bookQuery: string, books: BibleBook[]): BibleBoo
  * Universal Scripture Passage Reference Parser
  * Accepts inputs like:
  *   "Psalm 2:2", "ps 2;2", "ps2:2", "ps2;2", "psalm 125",
- *   "1 cor 13:4", "2 cor 5;17", "Jn 3:16", "jn 3;16", "Gen 1:1"
- * Supports delimiters: colon (:), semicolon (;), comma (,), dot (.), or space
+ *   "1 cor 13:4", "2 cor 5;17", "Jn 3:16", "jn 3;16", "Gen 1:1",
+ *   "psalm 3 3", "psalm 3:3", "psam 3;3", "Song of Solomon 2:1", "1 cor 13 4"
+ * Supports delimiters: colon (:), semicolon (;), comma (,), dot (.), dash (-), space,
+ * or "v" / "verse" keywords (e.g. "psalm 3 v 3", "psalm 3v3").
  */
 export function parsePassageQuery(query: string, books: BibleBook[]): ParsedPassage | null {
   const raw = query.trim();
   if (!raw) return null;
 
-  // Regex matches: [Book part] [optional space] [Chapter digits] [optional delimiter] [optional Verse digits] [optional range - EndVerse]
-  // Examples matched:
-  // "Psalm 2:2", "ps 2;2", "ps2:2", "ps 2 2", "psalm 125", "Psalm 23:1-3", "1 cor 13:4-8", "2 Cor 5;17", "Jn 3:16"
-  const pattern = /^([1-4]?\s*[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+)\s*(\d+)?(?:[:;,\.\s](\d+)(?:[-–](\d+))?)?$/i;
-  const match = raw.match(pattern);
-  if (!match) return null;
+  // Normalize "v", "v.", "verse", "verses" between chapter and verse numbers into colon (e.g. "psalm 3 v 3" -> "psalm 3:3")
+  const normalized = raw.replace(/(\d+)\s*(?:verses?|v\.?)\s*(\d+)/i, '$1:$2');
 
-  const bookPart = match[1].trim();
-  const rawCh = match[2] ? parseInt(match[2], 10) : undefined;
-  const rawVerse = match[3] ? parseInt(match[3], 10) : undefined;
-  const rawEndVerse = match[4] ? parseInt(match[4], 10) : undefined;
+  // Pattern A: Multi-word or single-word book followed by chapter and optional delimiter + verse
+  // e.g. "Song of Solomon 2:1", "1 Cor 13 4", "psalm 3 3", "psalm 3:3", "psalm 3", "psalm 3;3"
+  const patA = /^([1-4]?\s*[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+(?:\s+[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+)*)\s+(\d+)(?:\s*[:;,\.\s\-]\s*(\d+)(?:\s*[-–]\s*(\d+))?)?$/i;
+
+  // Pattern B: Compact no-space e.g. "ps2:2", "jn3:16", "psalm3"
+  const patB = /^([1-4]?\s*[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+)(\d+)(?:\s*[:;,\.\s\-]\s*(\d+)(?:\s*[-–]\s*(\d+))?)?$/i;
+
+  // Pattern C: Book only e.g. "psalm", "song of solomon", "1 cor"
+  const patC = /^([1-4]?\s*[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+(?:\s+[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+)*)$/i;
+
+  let match = normalized.match(patA) || normalized.match(patB);
+  let bookPart = '';
+  let rawCh: number | undefined;
+  let rawVerse: number | undefined;
+  let rawEndVerse: number | undefined;
+
+  if (match) {
+    bookPart = match[1].trim();
+    rawCh = match[2] ? parseInt(match[2], 10) : undefined;
+    rawVerse = match[3] ? parseInt(match[3], 10) : undefined;
+    rawEndVerse = match[4] ? parseInt(match[4], 10) : undefined;
+  } else {
+    const matchC = normalized.match(patC);
+    if (!matchC) return null;
+    bookPart = matchC[1].trim();
+  }
 
   const matchedBook = findBookByQuery(bookPart, books);
   if (!matchedBook) return null;

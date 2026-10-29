@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { X, Search, BookOpen, Sparkles, ChevronRight } from 'lucide-react';
+import { X, Search, BookOpen, Sparkles, ChevronRight, Compass } from 'lucide-react';
 import { BibleBook } from '../types/bible';
+import { parsePassageQuery, findBookByQuery, ParsedPassage } from '../services/passageService';
 
 interface BookChapterSelectorModalProps {
   isOpen: boolean;
@@ -10,7 +11,7 @@ interface BookChapterSelectorModalProps {
   currentChapter: number;
   uiLanguageCode: string;
   initialTestamentFilter?: 'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD';
-  onSelectBookChapter: (bookSlug: string, chapter: number) => void;
+  onSelectBookChapter: (bookSlug: string, chapter: number, targetVerse?: number) => void;
 }
 
 export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> = ({
@@ -29,6 +30,19 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
     () => books.find((b) => b.id === currentBookId) || books[0] || null
   );
   const [step, setStep] = useState<'books' | 'chapters'>('books');
+
+  // 1. Universal Scripture Reference Parser (handles "Psalm 3:3", "psalm 3 3", "psam 3;3", "1 cor 13 4", "psalm 3", etc.)
+  const parsedPassage: ParsedPassage | null = useMemo(() => {
+    if (!searchQuery.trim()) return null;
+    return parsePassageQuery(searchQuery, books);
+  }, [searchQuery, books]);
+
+  // Keep selectedBook synced when user types a valid passage query
+  useEffect(() => {
+    if (parsedPassage?.book) {
+      setSelectedBook(parsedPassage.book);
+    }
+  }, [parsedPassage]);
 
   useEffect(() => {
     if (isOpen) {
@@ -53,28 +67,77 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
   }, [isOpen, currentBookId, books, initialTestamentFilter]);
 
   const filteredBooks = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    return books.filter((b) => {
-      if (testamentFilter === 'ALL') {
-        // Show all 107 books
-      } else if (testamentFilter === 'CANONICAL') {
-        if (b.testament !== 'OT' && b.testament !== 'NT') return false;
-      } else if (b.testament !== testamentFilter) {
-        return false;
-      }
-      if (!q) return true;
-      const enName = (b.names.en || '').toLowerCase();
-      const twName = (b.names.tw || '').toLowerCase();
-      const localName = (b.names[uiLanguageCode] || '').toLowerCase();
-      return (
-        enName.includes(q) ||
-        twName.includes(q) ||
-        localName.includes(q) ||
-        b.slug.toLowerCase().includes(q) ||
-        b.id.toLowerCase().includes(q)
-      );
-    });
-  }, [books, testamentFilter, searchQuery, uiLanguageCode]);
+    const rawQ = searchQuery.trim().toLowerCase();
+    if (!rawQ) {
+      return books.filter((b) => {
+        if (testamentFilter === 'ALL') return true;
+        if (testamentFilter === 'CANONICAL') return b.testament === 'OT' || b.testament === 'NT';
+        return b.testament === testamentFilter;
+      });
+    }
+
+    const matchedBook = parsedPassage?.book || findBookByQuery(rawQ, books);
+
+    // Clean query text for fuzzy book name matching: strip chapter/verse numbers and punctuation
+    // e.g. "psalm 3:3" -> "psalm", "1 cor 13 4" -> "1 cor"
+    const bookNameQuery = rawQ
+      .replace(/[:;,\.\s\-]\s*\d+.*$/, '')
+      .replace(/\s+\d+.*$/, '')
+      .trim();
+
+    return books
+      .filter((b) => {
+        // If a specific passage was parsed, ALWAYS include that book!
+        if (matchedBook && b.id === matchedBook.id) {
+          return true;
+        }
+
+        const enName = (b.names.en || '').toLowerCase();
+        const twName = (b.names.tw || '').toLowerCase();
+        const localName = (b.names[uiLanguageCode] || '').toLowerCase();
+        const slug = b.slug.toLowerCase();
+        const id = b.id.toLowerCase();
+        const abbrev = (b.abbreviation || '').toLowerCase();
+
+        const matchesText =
+          enName.includes(rawQ) ||
+          twName.includes(rawQ) ||
+          localName.includes(rawQ) ||
+          slug.includes(rawQ) ||
+          id.includes(rawQ) ||
+          abbrev.includes(rawQ) ||
+          (bookNameQuery.length >= 2 &&
+            (enName.includes(bookNameQuery) ||
+              twName.includes(bookNameQuery) ||
+              localName.includes(bookNameQuery) ||
+              slug.includes(bookNameQuery) ||
+              id.includes(bookNameQuery) ||
+              abbrev.includes(bookNameQuery)));
+
+        if (!matchesText) return false;
+
+        // When user explicitly searches, don't hide books behind testament tabs,
+        // unless they are on CANONICAL and the book is Apocrypha/Deuterocanon
+        if (testamentFilter === 'CANONICAL') {
+          if (b.testament !== 'OT' && b.testament !== 'NT') {
+            return matchedBook?.id === b.id;
+          }
+          return true;
+        }
+        if (testamentFilter !== 'ALL' && b.testament !== testamentFilter) {
+          return matchedBook?.id === b.id;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        // Exact matched book stays at the top of results
+        if (matchedBook) {
+          if (a.id === matchedBook.id) return -1;
+          if (b.id === matchedBook.id) return 1;
+        }
+        return 0;
+      });
+  }, [books, testamentFilter, searchQuery, uiLanguageCode, parsedPassage]);
 
   if (!isOpen) return null;
 
@@ -236,14 +299,87 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
               type="text"
               value={searchQuery}
               onChange={(e) => {
-                setSearchQuery(e.target.value);
+                const val = e.target.value;
+                setSearchQuery(val);
                 setStep('books');
+                const p = parsePassageQuery(val, books);
+                if (p?.book) {
+                  setSelectedBook(p.book);
+                }
               }}
-              placeholder="Search scripture, book, chapter..."
-              className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] pl-9 pr-3 py-2 text-sm sm:text-xs text-[var(--ink)] placeholder-[var(--subtle)] focus:border-[var(--green)] focus:outline-none min-h-[38px]"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  if (parsedPassage) {
+                    onSelectBookChapter(
+                      parsedPassage.book.slug,
+                      parsedPassage.chapter,
+                      parsedPassage.verse
+                    );
+                    onClose();
+                  } else if (filteredBooks.length === 1) {
+                    setSelectedBook(filteredBooks[0]);
+                    setStep('chapters');
+                  }
+                }
+              }}
+              placeholder="Search book or passage (e.g. Psalm 3:3, John 3 16)..."
+              className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] pl-9 pr-8 py-2 text-sm sm:text-xs text-[var(--ink)] placeholder-[var(--subtle)] focus:border-[var(--green)] focus:outline-none min-h-[38px]"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('');
+                  setStep('books');
+                }}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[var(--subtle)] hover:text-[var(--ink)] transition"
+                title="Clear search"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
           </div>
         </div>
+
+        {/* Smart Direct Scripture Jump Card (for queries like Psalm 3:3, psalm 3 3, psam 3;3, John 3 16, etc.) */}
+        {parsedPassage && (
+          <div className="border-b border-[var(--line)] bg-gradient-to-r from-[var(--soft)] via-[var(--surface)] to-[var(--soft)] px-5 py-2.5 flex items-center justify-between gap-3 transition">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[var(--green)] text-[var(--paper)] font-bold text-xs shadow-sm">
+                📖
+              </span>
+              <div className="min-w-0">
+                <div className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-[var(--green)]">
+                  {parsedPassage.verse ? 'Direct Scripture Jump' : 'Direct Chapter Jump'}
+                </div>
+                <div className="text-sm font-bold text-[var(--ink)] truncate">
+                  {uiLanguageCode !== 'en' && parsedPassage.book.names[uiLanguageCode]
+                    ? parsedPassage.book.names[uiLanguageCode]
+                    : parsedPassage.book.names.en}{' '}
+                  {parsedPassage.chapter}
+                  {parsedPassage.verse ? `:${parsedPassage.verse}` : ''}
+                  {parsedPassage.endVerse ? `–${parsedPassage.endVerse}` : ''}
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                onSelectBookChapter(
+                  parsedPassage.book.slug,
+                  parsedPassage.chapter,
+                  parsedPassage.verse
+                );
+                onClose();
+              }}
+              className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--green)] text-[var(--paper)] font-bold text-xs shadow hover:opacity-90 transition cursor-pointer"
+            >
+              <span>Go to Passage</span>
+              <span>→</span>
+            </button>
+          </div>
+        )}
 
         {/* Mobile Step Toggle */}
         <div className="flex md:hidden border-b border-[var(--line)] bg-[var(--surface)] px-4 py-2 text-xs">
@@ -308,6 +444,28 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                 </button>
               );
             })}
+
+            {filteredBooks.length === 0 && (
+              <div className="col-span-full py-12 px-4 text-center">
+                <div className="w-12 h-12 mx-auto rounded-full bg-[var(--soft)] flex items-center justify-center text-xl mb-3 text-[var(--subtle)]">
+                  🔍
+                </div>
+                <div className="text-sm font-bold text-[var(--ink)]">No scripture books found</div>
+                <div className="text-xs text-[var(--subtle)] mt-1 max-w-xs mx-auto">
+                  Try searching for book names, chapters, or verses like <span className="text-[var(--green)] font-semibold">Psalm 3:3</span>, <span className="text-[var(--green)] font-semibold">psalm 3 3</span>, or <span className="text-[var(--green)] font-semibold">John 3:16</span>.
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setTestamentFilter('ALL');
+                  }}
+                  className="mt-3 px-3 py-1.5 rounded-lg bg-[var(--soft)] border border-[var(--line)] text-xs font-semibold text-[var(--ink)] hover:border-[var(--green)] transition cursor-pointer"
+                >
+                  Clear Search &amp; Show All (107) Books
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Chapters Grid */}
@@ -349,20 +507,35 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                   {Array.from({ length: activeBook.chapters }, (_, i) => i + 1).map((chNum) => {
                     const isCurrent =
                       activeBook.id === currentBookId && chNum === currentChapter;
+                    const isTargetChapter =
+                      parsedPassage?.book.id === activeBook.id && parsedPassage.chapter === chNum;
+
                     return (
                       <button
                         key={chNum}
                         onClick={() => {
-                          onSelectBookChapter(activeBook.slug, chNum);
+                          const targetVerse =
+                            activeBook.id === parsedPassage?.book.id && chNum === parsedPassage?.chapter
+                              ? parsedPassage.verse
+                              : undefined;
+                          onSelectBookChapter(activeBook.slug, chNum, targetVerse);
                           onClose();
                         }}
-                        className={`h-10 rounded-xl font-mono text-xs font-bold transition flex items-center justify-center ${
-                          isCurrent
+                        className={`h-10 rounded-xl font-mono text-xs font-bold transition flex items-center justify-center relative ${
+                          isTargetChapter
+                            ? 'bg-[var(--green)] text-[var(--paper)] shadow-lg ring-2 ring-[var(--green)] ring-offset-2 ring-offset-[var(--paper)] font-extrabold scale-105'
+                            : isCurrent
                             ? 'bg-[var(--green)] text-[var(--paper)] shadow-lg ring-2 ring-[var(--green)]'
                             : 'border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] hover:border-[var(--green)] hover:bg-[var(--soft)]'
                         }`}
+                        title={isTargetChapter && parsedPassage?.verse ? `Chapter ${chNum} (Verse ${parsedPassage.verse})` : `Chapter ${chNum}`}
                       >
                         {chNum}
+                        {isTargetChapter && parsedPassage?.verse && (
+                          <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-400 text-black text-[9px] font-black shadow">
+                            v
+                          </span>
+                        )}
                       </button>
                     );
                   })}

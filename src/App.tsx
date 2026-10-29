@@ -964,14 +964,16 @@ export function App() {
     }
 
     if (targetVerse && typeof window !== 'undefined') {
-      setTimeout(() => {
-        const el =
-          document.getElementById(`verse-${targetVerse}`) ||
-          document.querySelector(`[data-verse="${targetVerse}"]`);
-        if (el) {
-          scrollVerseIntoViewIfNeeded(el as HTMLElement, true);
-        }
-      }, 100);
+      [80, 220, 450].forEach((delay) => {
+        setTimeout(() => {
+          const el =
+            document.getElementById(`verse-${targetVerse}`) ||
+            document.querySelector(`[data-verse="${targetVerse}"]`);
+          if (el) {
+            scrollVerseIntoViewIfNeeded(el as HTMLElement, true);
+          }
+        }, delay);
+      });
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
