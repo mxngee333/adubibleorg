@@ -1403,6 +1403,20 @@ export function App() {
 
           <button
             type="button"
+            className={`quiet-button ${isSlideDeckOpen ? 'active-pill' : ''}`}
+            onClick={() => handleOpenSlideDeck(selectedVerse || 1)}
+            title="Scripture Slide Mode — Sanctuary & Screen Projection (S)"
+            aria-label="Scripture Slide Mode"
+            style={{
+              color: isSlideDeckOpen ? '#10b981' : undefined,
+              borderColor: isSlideDeckOpen ? '#10b981' : undefined,
+            }}
+          >
+            <span>📽️ Slide</span>
+          </button>
+
+          <button
+            type="button"
             className={`quiet-button ${studyLayersActiveCount > 0 || isSettingsOpen ? 'active-pill' : ''}`}
             onClick={() => setIsSettingsOpen((prev) => !prev)}
             title={isSettingsOpen ? 'Close Settings' : "Reading Settings — Toggle Strong's Concordance & Commentaries"}
@@ -1437,7 +1451,7 @@ export function App() {
           </button>
         </div>
 
-        {/* Mobile-only clean top controls: Search Bar Box, Active Edition Pill, Sign In */}
+        {/* Mobile-only clean top controls: Search Bar Box, Slide Mode, Active Edition Pill, Sign In */}
         <div className="mobile-mast-actions">
           <button
             type="button"
@@ -1448,6 +1462,22 @@ export function App() {
           >
             <Search className="h-4 w-4 shrink-0 text-amber-400" />
             <span className="search-placeholder-text">Search...</span>
+          </button>
+
+          <button
+            type="button"
+            className="mobile-mast-pill-btn"
+            onClick={() => handleOpenSlideDeck(selectedVerse || 1)}
+            aria-label="Scripture Slide Mode"
+            title="Scripture Slide Mode"
+            style={{
+              padding: '0 8px',
+              color: '#10b981',
+              borderColor: 'rgba(16, 185, 129, 0.4)',
+              fontWeight: 700,
+            }}
+          >
+            <span>📽️ Slide</span>
           </button>
 
           <button
@@ -1755,6 +1785,16 @@ export function App() {
                 ) : (
                   <Headphones className="h-3.5 w-3.5" aria-hidden="true" />
                 )}
+              </button>
+              <button
+                type="button"
+                className={`mobile-quick-btn ${isSlideDeckOpen ? 'active' : ''}`}
+                onClick={() => handleOpenSlideDeck(selectedVerse || 1)}
+                title="Scripture Slide Mode"
+                aria-label="Scripture Slide Mode"
+                style={{ fontSize: '13px' }}
+              >
+                📽️
               </button>
               <button
                 type="button"
@@ -3033,6 +3073,22 @@ export function App() {
                             type="button"
                             className="verse-quick-btn"
                             style={{
+                              color: '#10b981',
+                              borderColor: 'rgba(16, 185, 129, 0.45)',
+                              fontWeight: 700,
+                            }}
+                            onClick={() => {
+                              handleOpenSlideDeck(verseNumber);
+                            }}
+                            title={`Present verse ${verseNumber} in Scripture Slide Mode`}
+                          >
+                            📽️ Slide
+                          </button>
+
+                          <button
+                            type="button"
+                            className="verse-quick-btn"
+                            style={{
                               color: '#f59e0b',
                               borderColor: 'rgba(245, 158, 11, 0.45)',
                               fontWeight: 700,
@@ -3711,6 +3767,7 @@ export function App() {
         vaultCount={totalVaultCount}
         currentBookName={getBookDisplayName(currentBook)}
         currentChapter={currentChapter}
+        onOpenSlideMode={() => handleOpenSlideDeck(selectedVerse || 1)}
       />
 
       {/* MOBILE SEARCH OVERLAY MODAL */}

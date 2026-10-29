@@ -14,6 +14,7 @@ interface MobileBottomDockProps {
   vaultCount: number;
   currentBookName: string;
   currentChapter: number;
+  onOpenSlideMode?: () => void;
 }
 
 export const MobileBottomDock: React.FC<MobileBottomDockProps> = ({
@@ -29,6 +30,7 @@ export const MobileBottomDock: React.FC<MobileBottomDockProps> = ({
   vaultCount,
   currentBookName,
   currentChapter,
+  onOpenSlideMode,
 }) => {
   return (
     <nav className="mobile-bottom-dock" aria-label="Mobile Navigation Dock">
@@ -75,8 +77,19 @@ export const MobileBottomDock: React.FC<MobileBottomDockProps> = ({
           <span className="dock-label">Audio</span>
         </button>
 
-        {/* 4. Instant Parallel Language Swap / Study Vault */}
-        {canSwap ? (
+        {/* 4. Scripture Slide Presentation Mode / Swap / Vault */}
+        {onOpenSlideMode ? (
+          <button
+            type="button"
+            className="dock-item"
+            onClick={onOpenSlideMode}
+            aria-label="Open Scripture Slide Mode"
+            title="Open Scripture Slide Mode"
+          >
+            <span style={{ fontSize: '18px', lineHeight: 1 }}>📽️</span>
+            <span className="dock-label" style={{ color: '#10b981', fontWeight: 700 }}>Slide</span>
+          </button>
+        ) : canSwap ? (
           <button
             type="button"
             className="dock-item"
