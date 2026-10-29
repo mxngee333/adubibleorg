@@ -234,6 +234,7 @@ const BOOK_ALIASES: Record<string, string> = {
   'rev': 'revelation',
   're': 'revelation',
   'revelation': 'revelation',
+  'revelations': 'revelation',
   'apocalypse': 'revelation',
 };
 
@@ -303,15 +304,17 @@ export function parsePassageQuery(query: string, books: BibleBook[]): ParsedPass
   const raw = query.trim();
   if (!raw) return null;
 
-  // Normalize "v", "v.", "verse", "verses" between chapter and verse numbers into colon (e.g. "psalm 3 v 3" -> "psalm 3:3")
-  const normalized = raw.replace(/(\d+)\s*(?:verses?|v\.?)\s*(\d+)/i, '$1:$2');
+  // Normalize "chapter", "ch", and "v", "v.", "verse", "verses" between chapter and verse numbers
+  const normalized = raw
+    .replace(/(\w+)\s+(?:chapters?|ch\.?)\s+(\d+)/i, '$1 $2')
+    .replace(/(\d+)\s*(?:verses?|v\.?)\s*(\d+)/i, '$1:$2');
 
   // Pattern A: Multi-word or single-word book followed by chapter and optional delimiter + verse
   // e.g. "Song of Solomon 2:1", "1 Cor 13 4", "psalm 3 3", "psalm 3:3", "psalm 3", "psalm 3;3"
-  const patA = /^([1-4]?\s*[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+(?:\s+[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+)*)\s+(\d+)(?:\s*[:;,\.\s\-]\s*(\d+)(?:\s*[-–]\s*(\d+))?)?$/i;
+  const patA = /^([1-4]?\s*[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+(?:\s+[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+)*)\s+(\d+)(?:\s*[:;,\.\s\-]\s*(\d+)(?:\s*[-–]\s*(\d+))?)?(?:\s+.*)?$/i;
 
   // Pattern B: Compact no-space e.g. "ps2:2", "jn3:16", "psalm3"
-  const patB = /^([1-4]?\s*[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+)(\d+)(?:\s*[:;,\.\s\-]\s*(\d+)(?:\s*[-–]\s*(\d+))?)?$/i;
+  const patB = /^([1-4]?\s*[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+)(\d+)(?:\s*[:;,\.\s\-]\s*(\d+)(?:\s*[-–]\s*(\d+))?)?(?:\s+.*)?$/i;
 
   // Pattern C: Book only e.g. "psalm", "song of solomon", "1 cor"
   const patC = /^([1-4]?\s*[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+(?:\s+[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+)*)$/i;

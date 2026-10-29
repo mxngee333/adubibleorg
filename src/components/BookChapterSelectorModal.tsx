@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { X, Search, BookOpen, Sparkles, ChevronRight, Compass } from 'lucide-react';
+import { X, Search, BookOpen, Sparkles, ChevronRight, Compass, Loader2, Quote, ArrowRight } from 'lucide-react';
 import { BibleBook } from '../types/bible';
 import { parsePassageQuery, findBookByQuery, ParsedPassage } from '../services/passageService';
+import { searchScripture, BibleSearchResult } from '../services/scriptureSearchService';
 
 interface BookChapterSelectorModalProps {
   isOpen: boolean;
@@ -11,6 +12,7 @@ interface BookChapterSelectorModalProps {
   currentChapter: number;
   uiLanguageCode: string;
   initialTestamentFilter?: 'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD';
+  activeVersionId?: string;
   onSelectBookChapter: (bookSlug: string, chapter: number, targetVerse?: number) => void;
 }
 
@@ -22,6 +24,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
   currentChapter,
   uiLanguageCode,
   initialTestamentFilter,
+  activeVersionId = 'nkjv',
   onSelectBookChapter,
 }) => {
   const [testamentFilter, setTestamentFilter] = useState<'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD'>('CANONICAL');
@@ -30,6 +33,8 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
     () => books.find((b) => b.id === currentBookId) || books[0] || null
   );
   const [step, setStep] = useState<'books' | 'chapters'>('books');
+  const [liveVerses, setLiveVerses] = useState<BibleSearchResult[]>([]);
+  const [isSearchingScripture, setIsSearchingScripture] = useState(false);
 
   // 1. Universal Scripture Reference Parser (handles "Psalm 3:3", "psalm 3 3", "psam 3;3", "1 cor 13 4", "psalm 3", etc.)
   const parsedPassage: ParsedPassage | null = useMemo(() => {
@@ -44,6 +49,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
     }
   }, [parsedPassage]);
 
+  // Reset state on modal open
   useEffect(() => {
     if (isOpen) {
       const cur = books.find((b) => b.id === currentBookId);
@@ -63,8 +69,37 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
       if (cur) setSelectedBook(cur);
       setStep('books');
       setSearchQuery('');
+      setLiveVerses([]);
+      setIsSearchingScripture(false);
     }
   }, [isOpen, currentBookId, books, initialTestamentFilter]);
+
+  // 2. Full-Text Scripture & Verse Search for longer or multi-word queries ("more text")
+  useEffect(() => {
+    const trimmed = searchQuery.trim();
+    if (trimmed.length < 2 || /^\d+$/.test(trimmed)) {
+      setLiveVerses([]);
+      setIsSearchingScripture(false);
+      return;
+    }
+
+    setIsSearchingScripture(true);
+    const timer = setTimeout(async () => {
+      try {
+        const results = await searchScripture(trimmed, {
+          versionId: activeVersionId || 'nkjv',
+          limit: 10,
+        });
+        setLiveVerses(results);
+      } catch {
+        setLiveVerses([]);
+      } finally {
+        setIsSearchingScripture(false);
+      }
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, activeVersionId]);
 
   const filteredBooks = useMemo(() => {
     const rawQ = searchQuery.trim().toLowerCase();
@@ -181,33 +216,34 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
   const headerMeta = getHeaderMeta();
 
   return (
-    <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/75 backdrop-blur-sm p-3 sm:p-6">
-      <div className="relative flex flex-col w-full max-w-4xl max-h-[88vh] rounded-2xl border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/75 backdrop-blur-sm p-2 sm:p-6">
+      <div className="relative flex flex-col w-full max-w-4xl h-[88dvh] max-h-[88dvh] sm:h-[84vh] rounded-2xl border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[var(--line)] bg-[var(--surface)] px-5 py-3.5">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--soft)] border border-[var(--line)] text-[var(--green)]">
+        <div className="flex items-center justify-between border-b border-[var(--line)] bg-[var(--surface)] px-4 sm:px-5 py-3 sm:py-3.5 shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--soft)] border border-[var(--line)] text-[var(--green)]">
               <BookOpen className="h-5 w-5" />
             </div>
-            <div>
-              <h2 className="text-base font-bold text-[var(--ink)]">
+            <div className="min-w-0">
+              <h2 className="text-sm sm:text-base font-bold text-[var(--ink)] truncate">
                 {headerMeta.title}
               </h2>
-              <p className="text-xs text-[var(--subtle)]">
+              <p className="text-[11px] sm:text-xs text-[var(--subtle)] truncate">
                 {headerMeta.desc}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)] transition"
+            className="rounded-lg p-1.5 text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)] transition shrink-0 ml-2"
+            aria-label="Close Navigator"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Filter Bar */}
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 border-b border-[var(--line)] bg-[var(--surface)] px-5 py-3">
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 border-b border-[var(--line)] bg-[var(--surface)] px-4 sm:px-5 py-2.5 sm:py-3 shrink-0">
           <div className="flex flex-wrap items-center gap-1.5">
             <button
               onClick={() => {
@@ -293,7 +329,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
             </button>
           </div>
 
-          <div className="relative flex-1 min-w-[130px] max-w-sm">
+          <div className="relative w-full lg:max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--subtle)] pointer-events-none" />
             <input
               type="text"
@@ -317,13 +353,17 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                       parsedPassage.verse
                     );
                     onClose();
+                  } else if (liveVerses.length > 0) {
+                    const first = liveVerses[0];
+                    onSelectBookChapter(first.bookSlug, first.chapter, first.verse);
+                    onClose();
                   } else if (filteredBooks.length === 1) {
                     setSelectedBook(filteredBooks[0]);
                     setStep('chapters');
                   }
                 }
               }}
-              placeholder="Search book or passage (e.g. Psalm 3:3, John 3 16)..."
+              placeholder="Search book, passage, or verse text (e.g. Psalm 3:3, peace)..."
               className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] pl-9 pr-8 py-2 text-sm sm:text-xs text-[var(--ink)] placeholder-[var(--subtle)] focus:border-[var(--green)] focus:outline-none min-h-[38px]"
             />
             {searchQuery && (
@@ -332,6 +372,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                 onClick={() => {
                   setSearchQuery('');
                   setStep('books');
+                  setLiveVerses([]);
                 }}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[var(--subtle)] hover:text-[var(--ink)] transition"
                 title="Clear search"
@@ -344,7 +385,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
 
         {/* Smart Direct Scripture Jump Card (for queries like Psalm 3:3, psalm 3 3, psam 3;3, John 3 16, etc.) */}
         {parsedPassage && (
-          <div className="border-b border-[var(--line)] bg-gradient-to-r from-[var(--soft)] via-[var(--surface)] to-[var(--soft)] px-5 py-2.5 flex items-center justify-between gap-3 transition">
+          <div className="border-b border-[var(--line)] bg-gradient-to-r from-[var(--soft)] via-[var(--surface)] to-[var(--soft)] px-4 sm:px-5 py-2.5 flex items-center justify-between gap-3 transition shrink-0">
             <div className="flex items-center gap-2.5 min-w-0">
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[var(--green)] text-[var(--paper)] font-bold text-xs shadow-sm">
                 📖
@@ -382,113 +423,212 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
         )}
 
         {/* Mobile Step Toggle */}
-        <div className="flex md:hidden border-b border-[var(--line)] bg-[var(--surface)] px-4 py-2 text-xs">
-          <button
-            onClick={() => setStep('books')}
-            className={`font-bold ${step === 'books' ? 'text-[var(--green)]' : 'text-[var(--subtle)]'}`}
-          >
-            1. Select Book ({uiLanguageCode !== 'en' && activeBook?.names[uiLanguageCode] ? activeBook.names[uiLanguageCode] : activeBook?.names.en})
-          </button>
-          <ChevronRight className="h-4 w-4 mx-1 text-[var(--subtle)]" />
-          <button
-            onClick={() => setStep('chapters')}
-            className={`font-bold ${step === 'chapters' ? 'text-[var(--green)]' : 'text-[var(--subtle)]'}`}
-          >
-            2. Select Chapter ({activeBook?.chapters} Chapters)
-          </button>
+        <div className="flex md:hidden border-b border-[var(--line)] bg-[var(--surface)] px-4 py-2 text-xs shrink-0 items-center justify-between">
+          <div className="flex items-center">
+            <button
+              onClick={() => setStep('books')}
+              className={`font-bold transition ${step === 'books' ? 'text-[var(--green)] underline underline-offset-4' : 'text-[var(--subtle)]'}`}
+            >
+              1. {searchQuery ? 'Results' : 'Select Book'} ({uiLanguageCode !== 'en' && activeBook?.names[uiLanguageCode] ? activeBook.names[uiLanguageCode] : activeBook?.names.en})
+            </button>
+            <ChevronRight className="h-4 w-4 mx-1.5 text-[var(--subtle)]" />
+            <button
+              onClick={() => setStep('chapters')}
+              className={`font-bold transition ${step === 'chapters' ? 'text-[var(--green)] underline underline-offset-4' : 'text-[var(--subtle)]'}`}
+            >
+              2. Select Chapter ({activeBook?.chapters || 0} Ch)
+            </button>
+          </div>
+          {searchQuery && (
+            <span className="text-[10px] font-mono text-[var(--subtle)]">
+              {filteredBooks.length + liveVerses.length} found
+            </span>
+          )}
         </div>
 
-        {/* Split Content */}
-        <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-          {/* Books List */}
+        {/* Split Content with resilient min-h-0 flex-1 scrolling */}
+        <div className="flex-1 min-h-0 flex flex-col md:flex-row overflow-hidden">
+          {/* Books & Scripture Verses Column */}
           <div
-            className={`w-full md:w-3/5 border-r border-[var(--line)] overflow-y-auto p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 ${
-              step === 'chapters' ? 'hidden md:grid' : 'grid'
+            className={`w-full md:w-3/5 border-r border-[var(--line)] overflow-y-auto p-3 sm:p-4 flex flex-col gap-3.5 ${
+              step === 'chapters' ? 'hidden md:flex' : 'flex'
             }`}
           >
-            {filteredBooks.map((book) => {
-              const isSelected = activeBook?.id === book.id;
-              return (
-                <button
-                  key={book.id}
-                  onClick={() => {
-                    setSelectedBook(book);
-                    setStep('chapters');
-                  }}
-                  className={`flex items-center justify-between rounded-xl border p-3 text-left transition ${
-                    isSelected
-                      ? 'border-[var(--green)] bg-[var(--soft)] text-[var(--ink)] shadow'
-                      : 'border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] hover:border-[var(--green)] hover:bg-[var(--soft)]'
-                  }`}
-                >
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-mono font-bold rounded bg-[var(--soft)] px-1.5 py-0.5 text-[var(--green)] border border-[var(--line)]">
-                        {book.number}
-                      </span>
-                      <span className="font-bold text-sm truncate">
-                        {uiLanguageCode !== 'en' && book.names[uiLanguageCode]
-                          ? book.names[uiLanguageCode]
-                          : book.names.en}
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-[var(--subtle)] truncate mt-0.5">
-                      {uiLanguageCode !== 'en' && book.names[uiLanguageCode]
-                        ? `${book.names.en} • ${book.chapters} ch`
-                        : `${book.category} • ${book.chapters} ch`}
-                    </div>
-                  </div>
-                  <span className="shrink-0 rounded-lg bg-[var(--soft)] px-2 py-1 text-[11px] font-mono text-[var(--subtle)] border border-[var(--line)]">
-                    {book.chapters} ch
+            {/* Live Scripture Verses Matching Text Query */}
+            {liveVerses.length > 0 && (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between text-xs font-bold text-[var(--green)] uppercase tracking-wider px-1">
+                  <span className="flex items-center gap-1.5">
+                    <Quote className="h-3.5 w-3.5" />
+                    Scripture Verses ({liveVerses.length})
                   </span>
-                </button>
-              );
-            })}
+                  <span className="text-[10px] text-[var(--subtle)] font-mono">1-tap to jump</span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  {liveVerses.map((v) => (
+                    <button
+                      key={v.id}
+                      type="button"
+                      onClick={() => {
+                        onSelectBookChapter(v.bookSlug, v.chapter, v.verse);
+                        onClose();
+                      }}
+                      className="flex flex-col text-left rounded-xl border border-[var(--line)] bg-[var(--surface)] p-3 hover:border-[var(--green)] hover:bg-[var(--soft)] transition group cursor-pointer shadow-sm"
+                    >
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <span className="font-bold text-sm text-[var(--ink)] group-hover:text-[var(--green)] transition flex items-center gap-1.5 truncate">
+                          <BookOpen className="h-3.5 w-3.5 text-[var(--green)] shrink-0" />
+                          <span className="truncate">{v.reference}</span>
+                        </span>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[var(--soft)] text-[var(--subtle)] border border-[var(--line)]">
+                            {v.category}
+                          </span>
+                          <span className="text-xs font-bold text-[var(--green)] flex items-center gap-0.5">
+                            Jump <ArrowRight className="h-3 w-3" />
+                          </span>
+                        </div>
+                      </div>
+                      {v.snippetHtml ? (
+                        <div
+                          className="text-xs text-[var(--subtle)] leading-relaxed"
+                          dangerouslySetInnerHTML={{ __html: v.snippetHtml }}
+                        />
+                      ) : (
+                        <div className="text-xs text-[var(--subtle)] line-clamp-2 leading-relaxed">
+                          {v.text}
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
-            {filteredBooks.length === 0 && (
-              <div className="col-span-full py-12 px-4 text-center">
+            {/* Searching indicator */}
+            {isSearchingScripture && (
+              <div className="py-2.5 px-3 rounded-xl bg-[var(--soft)] border border-[var(--line)] text-xs text-[var(--subtle)] flex items-center justify-center gap-2">
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-[var(--green)]" />
+                <span>Searching Scripture full-text for "{searchQuery}"...</span>
+              </div>
+            )}
+
+            {/* Books Matching Filter */}
+            {filteredBooks.length > 0 && (
+              <div className="flex flex-col gap-2">
+                {searchQuery && (
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--green)] uppercase tracking-wider px-1">
+                    <BookOpen className="h-3.5 w-3.5" />
+                    Scripture Books ({filteredBooks.length})
+                  </div>
+                )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {filteredBooks.map((book) => {
+                    const isSelected = activeBook?.id === book.id;
+                    const isTargetBook = parsedPassage?.book.id === book.id;
+                    return (
+                      <button
+                        key={book.id}
+                        onClick={() => {
+                          setSelectedBook(book);
+                          setStep('chapters');
+                        }}
+                        className={`flex items-center justify-between rounded-xl border p-3 text-left transition ${
+                          isTargetBook
+                            ? 'border-[var(--green)] bg-[var(--soft)] text-[var(--ink)] shadow-md ring-1 ring-[var(--green)]'
+                            : isSelected
+                            ? 'border-[var(--green)] bg-[var(--soft)] text-[var(--ink)] shadow'
+                            : 'border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] hover:border-[var(--green)] hover:bg-[var(--soft)]'
+                        }`}
+                      >
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-mono font-bold rounded bg-[var(--soft)] px-1.5 py-0.5 text-[var(--green)] border border-[var(--line)]">
+                              {book.number}
+                            </span>
+                            <span className="font-bold text-sm truncate">
+                              {uiLanguageCode !== 'en' && book.names[uiLanguageCode]
+                                ? book.names[uiLanguageCode]
+                                : book.names.en}
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-[var(--subtle)] truncate mt-0.5">
+                            {uiLanguageCode !== 'en' && book.names[uiLanguageCode]
+                              ? `${book.names.en} • ${book.chapters} ch`
+                              : `${book.category} • ${book.chapters} ch`}
+                          </div>
+                        </div>
+                        <span className="shrink-0 rounded-lg bg-[var(--soft)] px-2 py-1 text-[11px] font-mono text-[var(--subtle)] border border-[var(--line)]">
+                          {book.chapters} ch
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Empty State */}
+            {filteredBooks.length === 0 && liveVerses.length === 0 && !isSearchingScripture && (
+              <div className="col-span-full py-10 px-4 text-center my-auto">
                 <div className="w-12 h-12 mx-auto rounded-full bg-[var(--soft)] flex items-center justify-center text-xl mb-3 text-[var(--subtle)]">
                   🔍
                 </div>
-                <div className="text-sm font-bold text-[var(--ink)]">No scripture books found</div>
-                <div className="text-xs text-[var(--subtle)] mt-1 max-w-xs mx-auto">
-                  Try searching for book names, chapters, or verses like <span className="text-[var(--green)] font-semibold">Psalm 3:3</span>, <span className="text-[var(--green)] font-semibold">psalm 3 3</span>, or <span className="text-[var(--green)] font-semibold">John 3:16</span>.
+                <div className="text-sm font-bold text-[var(--ink)]">No scripture books or verses found</div>
+                <div className="text-xs text-[var(--subtle)] mt-1.5 max-w-xs mx-auto leading-relaxed">
+                  Try searching for book names, chapters, verses, or keywords like{' '}
+                  <span className="text-[var(--green)] font-semibold">Psalm 3:3</span>,{' '}
+                  <span className="text-[var(--green)] font-semibold">John 3:16</span>,{' '}
+                  <span className="text-[var(--green)] font-semibold">peace</span>, or{' '}
+                  <span className="text-[var(--green)] font-semibold">faith</span>.
                 </div>
                 <button
                   type="button"
                   onClick={() => {
                     setSearchQuery('');
-                    setTestamentFilter('ALL');
+                    setTestamentFilter('CANONICAL');
+                    setLiveVerses([]);
                   }}
-                  className="mt-3 px-3 py-1.5 rounded-lg bg-[var(--soft)] border border-[var(--line)] text-xs font-semibold text-[var(--ink)] hover:border-[var(--green)] transition cursor-pointer"
+                  className="mt-3.5 px-3.5 py-1.5 rounded-lg bg-[var(--soft)] border border-[var(--line)] text-xs font-semibold text-[var(--ink)] hover:border-[var(--green)] transition cursor-pointer"
                 >
-                  Clear Search &amp; Show All (107) Books
+                  Clear Search &amp; Show Canonical Books (66)
                 </button>
               </div>
             )}
           </div>
 
-          {/* Chapters Grid */}
+          {/* Chapters Grid Column */}
           <div
-            className={`w-full md:w-2/5 overflow-y-auto p-5 bg-[var(--surface)] ${
+            className={`w-full md:w-2/5 overflow-y-auto p-4 sm:p-5 bg-[var(--surface)] ${
               step === 'books' ? 'hidden md:block' : 'block'
             }`}
           >
             {activeBook && (
               <div>
+                {/* Mobile Back Button */}
+                <button
+                  type="button"
+                  onClick={() => setStep('books')}
+                  className="md:hidden flex items-center gap-1 text-xs font-bold text-[var(--green)] mb-3 py-1 px-2 rounded-lg bg-[var(--soft)] border border-[var(--line)] transition"
+                >
+                  <span>← Back to Books</span>
+                </button>
+
                 <div className="mb-4 pb-3 border-b border-[var(--line)]">
                   <div className="flex items-center gap-2 text-xs text-[var(--green)] font-bold uppercase tracking-wider">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    {activeBook.category} •{' '}
-                    {activeBook.testament === 'OT'
-                      ? 'Old Testament'
-                      : activeBook.testament === 'NT'
-                      ? 'New Testament'
-                      : activeBook.testament === 'DC'
-                      ? 'Deuterocanonical'
-                      : 'List of Sixty & Apocrypha'}
+                    <Sparkles className="h-3.5 w-3.5 shrink-0" />
+                    <span className="truncate">
+                      {activeBook.category} •{' '}
+                      {activeBook.testament === 'OT'
+                        ? 'Old Testament'
+                        : activeBook.testament === 'NT'
+                        ? 'New Testament'
+                        : activeBook.testament === 'DC'
+                        ? 'Deuterocanonical'
+                        : 'List of Sixty & Apocrypha'}
+                    </span>
                   </div>
-                  <h3 className="text-lg font-bold text-[var(--ink)] mt-0.5">
+                  <h3 className="text-lg font-bold text-[var(--ink)] mt-0.5 truncate">
                     {uiLanguageCode !== 'en' && activeBook.names[uiLanguageCode]
                       ? `${activeBook.names[uiLanguageCode]} (${activeBook.names.en})`
                       : activeBook.names.en}

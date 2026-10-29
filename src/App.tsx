@@ -3509,6 +3509,7 @@ export function App() {
         currentChapter={currentChapter}
         uiLanguageCode={primaryVersionLangCode}
         initialTestamentFilter={bookPickerTab}
+        activeVersionId={primaryVersionId}
         onSelectBookChapter={handleSelectBookChapter}
       />
 
