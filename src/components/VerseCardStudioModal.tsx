@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Download, Copy, Check, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { X, Download, Copy, Check, Image as ImageIcon, Sparkles, BookOpen } from 'lucide-react';
 
 interface VerseCardStudioModalProps {
   isOpen: boolean;
@@ -65,6 +65,18 @@ export const VerseCardStudioModal: React.FC<VerseCardStudioModalProps> = ({
   const [includeParallel, setIncludeParallel] = useState(Boolean(secondaryText));
   const [copied, setCopied] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Close on Escape key press
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   useEffect(() => {
     if (!isOpen || !canvasRef.current) return;
@@ -214,110 +226,145 @@ export const VerseCardStudioModal: React.FC<VerseCardStudioModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
-      <div className="relative flex flex-col w-full max-w-2xl rounded-2xl border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] shadow-2xl overflow-hidden">
-        <div className="flex items-center justify-between border-b border-[var(--line)] bg-[var(--surface)] px-5 py-3.5">
-          <div className="flex items-center gap-2">
-            <ImageIcon className="h-5 w-5 text-[var(--green)]" />
-            <h3 className="text-sm sm:text-base font-bold text-[var(--ink)]">
-              Parallel Verse Art &amp; Citation Studio — {reference}
+    <div
+      className="fixed inset-0 z-[2500] flex items-center justify-center bg-black/85 backdrop-blur-md p-2 sm:p-4 overflow-y-auto"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="verse-card-title"
+      onClick={(e) => {
+        // Dismiss when clicking outer dark backdrop
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        className="relative flex flex-col w-full max-w-2xl max-h-[92dvh] sm:max-h-[90vh] rounded-2xl border border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] shadow-2xl overflow-hidden my-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Sticky Top Header with Labeled High-Contrast Close Button */}
+        <div className="flex items-center justify-between border-b border-[var(--line)] bg-[var(--surface)] px-4 sm:px-5 py-3 shrink-0 sticky top-0 z-30">
+          <div className="flex items-center gap-2 min-w-0">
+            <ImageIcon className="h-5 w-5 text-[var(--green)] shrink-0" />
+            <h3 id="verse-card-title" className="text-sm sm:text-base font-bold text-[var(--ink)] truncate">
+              Verse Card Studio — {reference}
             </h3>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-[var(--subtle)] hover:bg-[var(--soft)] hover:text-[var(--ink)]"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--soft)] hover:bg-[var(--line)] text-[var(--ink)] border border-[var(--line)] font-bold text-xs transition shrink-0 ml-2 shadow-sm cursor-pointer"
+            aria-label="Close Verse Card"
+            title="Close Verse Card (Esc)"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4 text-[var(--green)]" />
+            <span>Close</span>
           </button>
         </div>
 
-        <div className="p-5 grid grid-cols-1 md:grid-cols-5 gap-5 items-center">
-          <div className="md:col-span-3 flex justify-center">
-            <canvas
-              ref={canvasRef}
-              className="w-full max-w-[340px] aspect-square rounded-xl border border-[var(--line)] shadow-xl"
-            />
-          </div>
-
-          <div className="md:col-span-2 space-y-4">
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--subtle)] mb-2">
-                Sanctuary Art Theme
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                {STUDIO_THEMES.map((t) => (
-                  <button
-                    key={t.id}
-                    onClick={() => setSelectedTheme(t)}
-                    className={`rounded-xl border px-3 py-2 text-xs font-semibold text-left transition ${
-                      selectedTheme.id === t.id
-                        ? 'border-[var(--green)] bg-[var(--soft)] text-[var(--ink)]'
-                        : 'border-[var(--line)] bg-[var(--surface)] text-[var(--subtle)] hover:border-[var(--green)]'
-                    }`}
-                  >
-                    {t.name}
-                  </button>
-                ))}
-              </div>
+        {/* Scrollable Studio Body */}
+        <div className="p-4 sm:p-5 overflow-y-auto flex-1 min-h-0 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-5 items-center">
+            {/* Visual Canvas Display */}
+            <div className="md:col-span-3 flex justify-center">
+              <canvas
+                ref={canvasRef}
+                className="w-full max-w-[320px] sm:max-w-[340px] aspect-square rounded-xl border border-[var(--line)] shadow-xl"
+              />
             </div>
 
-            {secondaryText && (
-              <label className="flex items-center gap-2 text-xs text-[var(--ink)] cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={includeParallel}
-                  onChange={(e) => setIncludeParallel(e.target.checked)}
-                  className="rounded accent-[var(--green)]"
-                />
-                <span>Include Parallel ({secondaryVersionName}) on Card</span>
-              </label>
-            )}
+            {/* Controls Suite */}
+            <div className="md:col-span-2 space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-[var(--subtle)] mb-2">
+                  Sanctuary Art Theme
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {STUDIO_THEMES.map((t) => (
+                    <button
+                      key={t.id}
+                      onClick={() => setSelectedTheme(t)}
+                      className={`rounded-xl border px-3 py-2 text-xs font-semibold text-left transition cursor-pointer ${
+                        selectedTheme.id === t.id
+                          ? 'border-[var(--green)] bg-[var(--soft)] text-[var(--ink)] shadow-sm'
+                          : 'border-[var(--line)] bg-[var(--surface)] text-[var(--subtle)] hover:border-[var(--green)]'
+                      }`}
+                    >
+                      {t.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-            <div className="space-y-2.5 pt-2">
-              {onOpenVideoStudio && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    onOpenVideoStudio();
-                  }}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--line)] bg-[var(--soft)] py-2.5 text-xs font-bold text-[var(--green)] hover:opacity-90 shadow-lg transition"
-                >
-                  <Sparkles className="h-4 w-4 text-[var(--green)]" />
-                  🎬 Switch to 10s Animated Video Studio (WhatsApp/Reels)
-                </button>
+              {secondaryText && (
+                <label className="flex items-center gap-2 text-xs text-[var(--ink)] cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={includeParallel}
+                    onChange={(e) => setIncludeParallel(e.target.checked)}
+                    className="rounded accent-[var(--green)]"
+                  />
+                  <span>Include Parallel ({secondaryVersionName}) on Card</span>
+                </label>
               )}
 
-              <button
-                onClick={handleDownloadImage}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--green)] py-2.5 text-xs font-bold text-[var(--paper)] hover:opacity-90 transition"
-              >
-                <Download className="h-4 w-4" />
-                Download 1080p Verse Card (PNG)
-              </button>
-              <button
-                onClick={handleCopyCitation}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface)] py-2.5 text-xs font-semibold text-[var(--ink)] hover:bg-[var(--soft)] transition"
-              >
-                {copied ? (
-                  <>
-                    <Check className="h-4 w-4 text-emerald-400" />
-                    Copied Parallel Citation!
-                  </>
-                ) : (
-                  <>
-                    <Copy className="h-4 w-4 text-[var(--green)]" />
-                    Copy Parallel Text Citation
-                  </>
+              <div className="space-y-2.5 pt-1">
+                {onOpenVideoStudio && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      onOpenVideoStudio();
+                    }}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--line)] bg-[var(--soft)] py-2.5 text-xs font-bold text-[var(--green)] hover:opacity-90 shadow-md transition cursor-pointer"
+                  >
+                    <Sparkles className="h-4 w-4 text-[var(--green)]" />
+                    <span>🎬 Switch to 10s Video Studio</span>
+                  </button>
                 )}
-              </button>
-            </div>
 
-            <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-3 text-[11px] text-[var(--subtle)] flex items-start gap-2">
-              <Sparkles className="h-4 w-4 text-[var(--green)] shrink-0 mt-0.5" />
-              <span>
-                Zero watermarks or third-party ads. Ready to share on WhatsApp, Telegram, X, or sermon slides.
-              </span>
+                <button
+                  type="button"
+                  onClick={handleDownloadImage}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--green)] py-2.5 text-xs font-bold text-[var(--paper)] hover:opacity-90 transition shadow-md cursor-pointer"
+                >
+                  <Download className="h-4 w-4" />
+                  <span>Download 1080p Verse Card (PNG)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleCopyCitation}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface)] py-2.5 text-xs font-semibold text-[var(--ink)] hover:bg-[var(--soft)] transition cursor-pointer"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="h-4 w-4 text-emerald-400" />
+                      <span>Copied Parallel Citation!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-4 w-4 text-[var(--green)]" />
+                      <span>Copy Parallel Text Citation</span>
+                    </>
+                  )}
+                </button>
+
+                {/* Explicit Bottom Close Button */}
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--line)] bg-[var(--soft)] py-2.5 text-xs font-bold text-[var(--subtle)] hover:text-[var(--ink)] hover:bg-[var(--surface)] transition cursor-pointer"
+                >
+                  <X className="h-4 w-4" />
+                  <span>Close Card &amp; Return to Reading</span>
+                </button>
+              </div>
+
+              <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-3 text-[11px] text-[var(--subtle)] flex items-start gap-2">
+                <Sparkles className="h-4 w-4 text-[var(--green)] shrink-0 mt-0.5" />
+                <span>
+                  Zero watermarks or third-party ads. Ready to share on WhatsApp, Telegram, X, or sermon slides.
+                </span>
+              </div>
             </div>
           </div>
         </div>

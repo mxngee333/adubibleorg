@@ -14,6 +14,7 @@ interface MobileBottomDockProps {
   vaultCount: number;
   currentBookName: string;
   currentChapter: number;
+  currentBookAbbrev?: string;
   onOpenSlideMode?: () => void;
 }
 
@@ -30,26 +31,37 @@ export const MobileBottomDock: React.FC<MobileBottomDockProps> = ({
   vaultCount,
   currentBookName,
   currentChapter,
+  currentBookAbbrev,
   onOpenSlideMode,
 }) => {
   return (
     <nav className="mobile-bottom-dock" aria-label="Mobile Navigation Dock">
       <div className="dock-container">
-        {/* 1. Books & Chapter Selector */}
+        {/* 1. Scripture Reading Page / Books Navigator */}
         <button
           type="button"
           className="dock-item"
           onClick={onOpenBooks}
-          aria-label={`Open Scripture Navigator (${currentBookName} ${currentChapter})`}
+          aria-label={`Return to Bible Reading Page or Open Scripture Navigator (${currentBookName} ${currentChapter})`}
+          title={`Bible Reading: ${currentBookName} ${currentChapter}`}
         >
           <BookOpen className="dock-icon" />
           <span className="dock-label truncate max-w-[76px]">
             {(() => {
+              if (currentBookAbbrev) {
+                return `${currentBookAbbrev} ${currentChapter}`;
+              }
               const words = currentBookName.trim().split(' ');
               if (words.length > 1 && /^[1-4]$/.test(words[0])) {
                 return `${words[0]} ${words[1].slice(0, 3)} ${currentChapter}`;
               }
-              return `${words[0].slice(0, 4)} ${currentChapter}`;
+              const first = words[0].toLowerCase();
+              if (first === 'genesis') return `Gen ${currentChapter}`;
+              if (first === 'exodus') return `Ex ${currentChapter}`;
+              if (first === 'psalms' || first === 'psalm') return `Ps ${currentChapter}`;
+              if (first === 'matthew') return `Mt ${currentChapter}`;
+              if (first === 'revelation') return `Rev ${currentChapter}`;
+              return `${words[0].slice(0, 3)} ${currentChapter}`;
             })()}
           </span>
         </button>

@@ -550,30 +550,48 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
     );
   });
 
+  // Close on Escape key press
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-stone-950/85 backdrop-blur-md overflow-y-auto"
+      className="fixed inset-0 z-[2500] flex items-center justify-center p-2 sm:p-4 bg-stone-950/85 backdrop-blur-md overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-labelledby="status-studio-title"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
-      <div className="relative w-full max-w-5xl bg-[var(--paper)] border border-[var(--line)] rounded-2xl shadow-2xl text-[var(--ink)] overflow-hidden flex flex-col max-h-[96vh]">
+      <div
+        className="relative w-full max-w-5xl bg-[var(--paper)] border border-[var(--line)] rounded-2xl shadow-2xl text-[var(--ink)] overflow-hidden flex flex-col max-h-[96vh] my-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Top Header */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-[var(--line)] bg-[var(--surface)]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[var(--soft)] border border-[var(--line)] flex items-center justify-center text-[var(--green)]">
+        <div className="sticky top-0 z-30 shrink-0 flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-[var(--line)] bg-[var(--surface)]">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-[var(--soft)] border border-[var(--line)] flex items-center justify-center text-[var(--green)] shrink-0">
               <Film className="w-4 h-4" />
             </div>
-            <div>
-              <h2 id="status-studio-title" className="text-base sm:text-lg font-serif font-bold text-[var(--ink)] flex items-center gap-2">
+            <div className="min-w-0">
+              <h2 id="status-studio-title" className="text-base sm:text-lg font-serif font-bold text-[var(--ink)] flex items-center gap-2 truncate">
                 10s Animated Scripture Status Studio
-                <span className="text-[10px] font-sans uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[var(--soft)] text-[var(--green)] border border-[var(--line)]">
+                <span className="text-[10px] font-sans uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[var(--soft)] text-[var(--green)] border border-[var(--line)] shrink-0">
                   Viral Reels
                 </span>
               </h2>
-              <p className="text-xs text-[var(--subtle)]">
+              <p className="text-xs text-[var(--subtle)] truncate">
                 Generate 10s kinetic text videos with 24kHz Google neural voice &amp; permanent <span className="text-[var(--green)] font-semibold">Adubible.org</span> watermark
               </p>
             </div>
@@ -582,10 +600,12 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-[var(--subtle)] hover:text-[var(--ink)] hover:bg-[var(--soft)] transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--soft)] hover:bg-[var(--line)] text-[var(--ink)] border border-[var(--line)] font-bold text-xs transition-colors shrink-0 ml-2 shadow-sm cursor-pointer"
             aria-label="Close Studio"
+            title="Close Studio (Esc)"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 text-[var(--green)]" />
+            <span>Close</span>
           </button>
         </div>
 

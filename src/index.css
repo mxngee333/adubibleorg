@@ -2984,12 +2984,21 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   .masthead {
     height: 52px;
     min-height: 52px;
-    padding: 0 14px;
+    padding: 0 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: nowrap;
-    gap: 10px;
+    gap: 6px;
+    overflow: hidden;
+  }
+
+  .masthead .brand {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    max-width: 44%;
+    overflow: hidden;
   }
 
   /* Completely hide the bulky top button row and inline search input on mobile */
@@ -3005,29 +3014,31 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   .mobile-mast-actions {
     display: flex !important;
     align-items: center;
-    gap: 7px;
-    flex: 1;
+    gap: 6px;
+    flex: 1 1 auto;
     justify-content: flex-end;
     min-width: 0;
+    overflow: hidden;
   }
 
   .mobile-mast-search-box-btn {
-    height: 36px;
-    padding: 0 12px;
+    height: 34px;
+    padding: 0 10px;
     border-radius: 999px;
     border: 1px solid var(--line);
     background: var(--paper);
     color: var(--subtle);
-    font-size: 13px;
+    font-size: 12.5px;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     cursor: pointer;
     transition: all 0.15s ease;
-    flex: 1;
-    max-width: 190px;
-    min-width: 75px;
+    flex: 1 1 auto;
+    max-width: 150px;
+    min-width: 34px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
   }
 
   .mobile-mast-search-box-btn:hover,
@@ -3045,8 +3056,8 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   }
 
   .mobile-mast-icon-btn {
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
     border-radius: 8px;
     border: 1px solid var(--line);
     background: var(--paper);
@@ -3068,7 +3079,7 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
 
   .mobile-mast-pill-btn {
     height: 30px;
-    padding: 0 10px;
+    padding: 0 8px;
     border-radius: 999px;
     border: 1px solid var(--line);
     background: var(--paper);
@@ -3080,12 +3091,25 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
     gap: 4px;
     cursor: pointer;
     white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .mobile-mast-pill-btn:hover,
   .mobile-mast-pill-btn:active {
     border-color: var(--green);
     color: var(--green);
+  }
+
+  /* Extra tight screens (<= 390px, like iPhone in screenshots) */
+  @media (max-width: 390px) {
+    .mobile-mast-search-box-btn {
+      padding: 0 7px;
+      max-width: 105px;
+    }
+    .mobile-mast-pill-btn {
+      padding: 0 6px;
+      font-size: 10.5px;
+    }
   }
 
   /* Slim down Canon Navigation on mobile */
@@ -5489,6 +5513,72 @@ mark.search-highlight {
 }
 .adubible-logo-mark.size-lg .logo-wordmark {
   font-size: 24px;
+}
+
+/* ==========================================================================
+   SMART ADAPTIVE LOGO ENGINE (ZERO-CLASH INVARIANT)
+   Adapts cleanly across single-version and multi-version / added-books modes
+   ========================================================================== */
+
+/* 1. Mobile Global (< 768px): Hide .org TLD and optimize typography */
+@media (max-width: 768px) {
+  .logo-word-tld {
+    display: none !important; /* Never let .org crowd mobile top masthead */
+  }
+
+  .adubible-logo-mark {
+    gap: 6px !important;
+  }
+
+  .adubible-logo-mark .logo-symbol-wave {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .adubible-logo-mark .logo-wordmark {
+    font-size: 18px !important;
+    letter-spacing: -0.015em !important;
+  }
+}
+
+/* 2. Added Books / Multi-Version Mode on Compact Screens (<= 540px) */
+/* When 2+ versions are loaded, the versions pill expands to "4 Versions",
+   so the logo adapts to [Symbol] Adu to guarantee zero clash with the search box */
+@media (max-width: 540px) {
+  .masthead.has-multiple-versions .logo-word-bible,
+  .adubible-logo-mark.has-added-versions .logo-word-bible {
+    display: none !important;
+  }
+}
+
+/* 3. Ultra-compact screens (<= 360px) or when explicitly requesting symbol variant */
+@media (max-width: 360px) {
+  .adubible-logo-mark .logo-wordmark {
+    display: none !important; /* Symbol-only on ultra-compact devices */
+  }
+}
+
+.adubible-logo-mark.variant-symbol .logo-wordmark {
+  display: none !important;
+}
+
+/* ==========================================================================
+   SLIDE MODE SMART PARALLEL ADAPTATION
+   ========================================================================== */
+.slide-parallel-grid {
+  display: grid;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .slide-parallel-grid {
+    grid-template-columns: 1fr !important; /* Stacked comparison cards on mobile portrait */
+    gap: 12px !important;
+  }
+  .slide-version-card {
+    padding: 14px 14px !important;
+  }
 }
 
 .mobile-mast-actions {

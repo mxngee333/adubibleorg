@@ -887,6 +887,10 @@ export function App() {
     setIsStudyVaultOpen(false);
     setIsAuthModalOpen(false);
     setIsAskAduBibleOpen(false);
+    setIsSlideDeckOpen(false);
+    setIsMobileSearchOpen(false);
+    setStatusStudioTarget(null);
+    setIsStatusStudioOpen(false);
     setPickerSlot(null);
     setVerseCardTarget(null);
     setActiveVerseActionBar(null);
@@ -910,6 +914,81 @@ export function App() {
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  /**
+   * Universal 1-Tap Footer Reader Navigation
+   * From ANY page of navigation (Articles, Deuterocanon, Apocrypha, Legal, Settings, Donate, Admin)
+   * or when any card/studio/modal is open: immediately dismisses overlays and routes directly
+   * back to the Scripture reading page. If already on the reading page with no modals open,
+   * toggles the Scripture Book & Chapter Navigator.
+   */
+  const handleFooterReaderClick = useCallback(() => {
+    // Check if any overlay, modal, studio, or non-reading view is currently active
+    const isAnyModalOpen =
+      Boolean(verseCardTarget) ||
+      Boolean(statusStudioTarget) ||
+      isStatusStudioOpen ||
+      isSlideDeckOpen ||
+      isMobileSearchOpen ||
+      isSettingsOpen ||
+      isStudyVaultOpen ||
+      legalModalState.open ||
+      isAskAduBibleOpen ||
+      isAuthModalOpen ||
+      isBookModalOpen ||
+      isLangAddonModalOpen ||
+      isStrongsModalOpen;
+
+    // Dismiss all open modals & studios
+    setVerseCardTarget(null);
+    setStatusStudioTarget(null);
+    setIsStatusStudioOpen(false);
+    setIsSlideDeckOpen(false);
+    setIsMobileSearchOpen(false);
+    setIsSettingsOpen(false);
+    setIsStudyVaultOpen(false);
+    setLegalModalState((prev) => ({ ...prev, open: false }));
+    setIsAskAduBibleOpen(false);
+    setIsAuthModalOpen(false);
+    setIsLangAddonModalOpen(false);
+    setIsStrongsModalOpen(false);
+    setPickerSlot(null);
+    setActiveVerseActionBar(null);
+
+    // If on ANY non-canonical navigation view (deuterocanon, list-of-sixty, articles, donate, admin) OR if a modal was open:
+    if (activeNavTab !== 'canonical' || isAnyModalOpen) {
+      setIsBookModalOpen(false);
+      setActiveNavTab('canonical');
+      setActiveArticleSlug(null);
+      if (typeof window !== 'undefined') {
+        const canonicalPath = `/${activeVersionIds[0] || 'nkjv'}/${currentBookSlug}/${currentChapter}`;
+        window.history.pushState({}, '', canonicalPath);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // If already on the reading page with no modals open, open the Book/Chapter selector modal
+    setIsBookModalOpen(true);
+  }, [
+    verseCardTarget,
+    statusStudioTarget,
+    isStatusStudioOpen,
+    isSlideDeckOpen,
+    isMobileSearchOpen,
+    isSettingsOpen,
+    isStudyVaultOpen,
+    legalModalState.open,
+    isAskAduBibleOpen,
+    isAuthModalOpen,
+    isBookModalOpen,
+    isLangAddonModalOpen,
+    isStrongsModalOpen,
+    activeNavTab,
+    activeVersionIds,
+    currentBookSlug,
+    currentChapter,
+  ]);
 
   const scrollToVerse = useCallback((vNum: number) => {
     setSelectedVerse(vNum);
@@ -1347,14 +1426,14 @@ export function App() {
       }
     >
       {/* 1. TOP MASTHEAD (AduBible) */}
-      <header className="masthead">
+      <header className={`masthead ${activeVersionIds.length > 1 ? 'has-multiple-versions' : 'single-version-mode'}`}>
         <a
           href="/"
           className="brand"
           onClick={handleGoHome}
           title="AduBible.org — Sovereign Scripture Engine"
         >
-          <AduBibleLogo size="md" />
+          <AduBibleLogo size="md" isParallelActive={activeVersionIds.length > 1} />
         </a>
 
         <div className="mast-search">
@@ -1463,7 +1542,9 @@ export function App() {
             title="Search scripture, passage, or topic"
           >
             <Search className="h-4 w-4 shrink-0 text-amber-400" />
-            <span className="search-placeholder-text">Search...</span>
+            <span className="search-placeholder-text">
+              {activeVersionIds.length > 1 ? 'Search' : 'Search...'}
+            </span>
           </button>
 
           <button
@@ -3745,10 +3826,7 @@ export function App() {
 
       {/* MOBILE BOTTOM THUMB NAVIGATION DOCK */}
       <MobileBottomDock
-        onOpenBooks={() => {
-          setIsSettingsOpen(false);
-          setIsBookModalOpen(true);
-        }}
+        onOpenBooks={handleFooterReaderClick}
         onOpenSearch={() => {
           setIsSettingsOpen(false);
           setIsMobileSearchOpen(true);
@@ -3770,6 +3848,7 @@ export function App() {
         vaultCount={totalVaultCount}
         currentBookName={getBookDisplayName(currentBook)}
         currentChapter={currentChapter}
+        currentBookAbbrev={currentBook.abbreviation}
         onOpenSlideMode={() => handleOpenSlideDeck(selectedVerse || 1)}
       />
 

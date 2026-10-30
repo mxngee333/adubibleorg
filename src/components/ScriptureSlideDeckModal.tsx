@@ -585,13 +585,34 @@ export const ScriptureSlideDeckModal: React.FC<ScriptureSlideDeckModalProps> = (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, minWidth: 0 }}>
           <div
             style={{
-              padding: '6px 12px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '28px',
+              height: '28px',
+              borderRadius: '7px',
+              background: 'rgba(255, 255, 255, 0.08)',
+              border: `1px solid ${currentTheme.accent}40`,
+              flexShrink: 0,
+            }}
+            title="AduBible.org — Sanctuary Presentation"
+          >
+            <img
+              src="/brand/icon-128.png"
+              alt="AduBible"
+              style={{ width: '20px', height: '20px', objectFit: 'contain' }}
+            />
+          </div>
+
+          <div
+            style={{
+              padding: '5px 11px',
               borderRadius: '999px',
               background: currentTheme.badgeBg,
               color: currentTheme.badgeText,
               border: `1px solid ${currentTheme.accent}`,
               fontWeight: 700,
-              fontSize: '12px',
+              fontSize: '11.5px',
               letterSpacing: '0.04em',
               textTransform: 'uppercase',
               display: 'flex',
@@ -599,10 +620,11 @@ export const ScriptureSlideDeckModal: React.FC<ScriptureSlideDeckModalProps> = (
               gap: '6px',
               boxShadow: `0 0 14px ${currentTheme.accentGlow}`,
               whiteSpace: 'nowrap',
+              minWidth: 0,
             }}
           >
-            <span>📽️</span>
-            <span style={{ maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <span style={{ fontSize: '11px' }}>📽️</span>
+            <span style={{ maxWidth: 'clamp(95px, 28vw, 180px)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {bookDisplayName} {chapter}:{currentVerseNum}
             </span>
           </div>
@@ -814,6 +836,7 @@ export const ScriptureSlideDeckModal: React.FC<ScriptureSlideDeckModalProps> = (
               A-
             </button>
             <span
+              className="hide-mobile-sm"
               style={{
                 padding: '0 4px',
                 fontSize: '10px',
@@ -1096,12 +1119,16 @@ export const ScriptureSlideDeckModal: React.FC<ScriptureSlideDeckModalProps> = (
               </p>
             </div>
           ) : (
-            /* Parallel Translations Grid (2 to 4 columns) */
+            /* Parallel Translations Adaptive Grid & Deck Cards */
             <div
+              className={`slide-parallel-grid versions-count-${activeVersionIds.length}`}
               style={{
                 display: 'grid',
-                gridTemplateColumns: `repeat(${Math.min(activeVersionIds.length, 3)}, minmax(260px, 1fr))`,
-                gap: '16px',
+                gridTemplateColumns:
+                  activeVersionIds.length === 2
+                    ? 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))'
+                    : 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+                gap: 'clamp(12px, 2vw, 18px)',
                 width: '100%',
                 boxSizing: 'border-box',
               }}
@@ -1112,20 +1139,31 @@ export const ScriptureSlideDeckModal: React.FC<ScriptureSlideDeckModalProps> = (
                 const verseObj = chData?.verses.find((v) => v.verse === currentVerseNum);
                 const isPrimary = idx === 0;
 
+                // Smartly compute font size for parallel reading in slide mode
+                // Mobile & multi-columns dynamically scale font to prevent awkward overflow
+                const parallelPrimaryFontSize =
+                  activeVersionIds.length > 2
+                    ? Math.max(16, Math.round(activeFontSize.subPx * 0.92))
+                    : activeFontSize.subPx;
+
                 return (
                   <div
                     key={vId}
+                    className={`slide-version-card ${isPrimary ? 'primary-edition' : 'parallel-edition'}`}
                     style={{
-                      padding: '16px 18px',
+                      padding: 'clamp(14px, 2vw, 20px)',
                       borderRadius: '14px',
                       background: isPrimary
                         ? 'rgba(255, 255, 255, 0.05)'
                         : 'rgba(0, 0, 0, 0.25)',
-                      border: `1px solid ${isPrimary ? currentTheme.accent : 'rgba(255, 255, 255, 0.1)'}`,
+                      border: `1px solid ${isPrimary ? currentTheme.accent : 'rgba(255, 255, 255, 0.12)'}`,
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '10px',
                       boxSizing: 'border-box',
+                      boxShadow: isPrimary
+                        ? `0 4px 20px ${currentTheme.accentGlow}`
+                        : '0 2px 10px rgba(0, 0, 0, 0.2)',
                     }}
                   >
                     <div
@@ -1133,13 +1171,13 @@ export const ScriptureSlideDeckModal: React.FC<ScriptureSlideDeckModalProps> = (
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        paddingBottom: '6px',
+                        paddingBottom: '8px',
                         borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
                       }}
                     >
                       <span
                         style={{
-                          fontSize: '11px',
+                          fontSize: '11.5px',
                           fontWeight: 700,
                           color: isPrimary ? currentTheme.accent : currentTheme.textSecondary,
                           letterSpacing: '0.04em',
@@ -1151,10 +1189,12 @@ export const ScriptureSlideDeckModal: React.FC<ScriptureSlideDeckModalProps> = (
                       <span
                         style={{
                           fontSize: '10px',
-                          padding: '2px 6px',
+                          padding: '2px 7px',
                           borderRadius: '4px',
-                          background: 'rgba(255, 255, 255, 0.1)',
-                          color: currentTheme.textSecondary,
+                          background: isPrimary ? currentTheme.badgeBg : 'rgba(255, 255, 255, 0.1)',
+                          color: isPrimary ? currentTheme.badgeText : currentTheme.textSecondary,
+                          border: isPrimary ? `1px solid ${currentTheme.accent}` : 'none',
+                          fontWeight: 700,
                         }}
                       >
                         {verMeta?.shortName || vId.toUpperCase()}
@@ -1164,7 +1204,7 @@ export const ScriptureSlideDeckModal: React.FC<ScriptureSlideDeckModalProps> = (
                     <p
                       style={{
                         margin: 0,
-                        fontSize: `${isPrimary ? activeFontSize.primaryPx : activeFontSize.subPx}px`,
+                        fontSize: `${parallelPrimaryFontSize}px`,
                         lineHeight: activeFontSize.lineH,
                         color: currentTheme.textPrimary,
                         fontWeight: 400,
