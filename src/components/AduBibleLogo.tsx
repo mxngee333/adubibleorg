@@ -7,6 +7,7 @@ export interface AduBibleLogoProps {
   onClick?: (e: React.MouseEvent) => void;
   title?: string;
   isParallelActive?: boolean; // When multiple parallel translations / added books are active
+  showRegistered?: boolean;
 }
 
 export const AduBibleLogo: React.FC<AduBibleLogoProps> = ({
@@ -16,6 +17,7 @@ export const AduBibleLogo: React.FC<AduBibleLogoProps> = ({
   onClick,
   title = 'AduBible.org — Sovereign Scripture Engine',
   isParallelActive = false,
+  showRegistered = true,
 }) => {
   const dims = typeof size === 'number' ? size : size === 'sm' ? 26 : size === 'lg' ? 44 : 34;
   const sizeClass = typeof size === 'string' ? `size-${size}` : '';
@@ -51,6 +53,15 @@ export const AduBibleLogo: React.FC<AduBibleLogoProps> = ({
           <span className="logo-word-tld" style={{ color: 'var(--logo-tld-color, #8E968D)' }}>
             .org
           </span>
+          {showRegistered && (
+            <span
+              className="logo-registered-mark"
+              aria-label="Registered Trademark"
+              title="AduBible® Registered Trademark"
+            >
+              ®
+            </span>
+          )}
         </div>
       )}
     </div>

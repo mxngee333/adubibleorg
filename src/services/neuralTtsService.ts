@@ -9,7 +9,19 @@ import { transphonemizeTwiForSpeech } from './twiPhonemeEngine';
 import { recordRealAudioStream } from './adminService';
 
 const EDGE_TTS_GATEWAY = 'https://api.modelissa.com/api/gemini-tts';
-export const DEFAULT_GEMINI_KEY = 'AIzaSyCTPSVORjlDWymqirRkL2c1OSPUHP4Pf6w';
+export const DEFAULT_GEMINI_KEY =
+  (import.meta as any)?.env?.VITE_GEMINI_API_KEY?.trim() || '';
+export const DEFAULT_GROQ_KEY =
+  (import.meta as any)?.env?.VITE_GROQ_API_KEY?.trim() || '';
+export const GROQ_ORPHEUS_MODEL = 'canopylabs/orpheus-v1-english';
+
+export const GROQ_VOICE_MAP: Record<GoogleNeuralVoiceName, string> = {
+  Kore: 'autumn',   // Warm, elegant, soothing feminine (Modelissa signature)
+  Charon: 'daniel', // Deep, resonant, sacred biblical narrator
+  Puck: 'hannah',   // Clear, natural, engaging flow
+  Aoede: 'diana',   // Lyrical, dignified, poetic majesty
+  Fenrir: 'troy',   // Strong, authoritative broadcast presence
+};
 
 export const GEMINI_TTS_MODELS = [
   'gemini-2.5-flash-preview-tts',
@@ -265,6 +277,64 @@ export async function fetchGoogleTtsStreamBase64(
 }
 
 /**
+ * High-Presence Studio Voice Engine (Groq Orpheus 24kHz / Modelissa Standard)
+ * Generates broadcast-grade human voice narration directly in the browser with CORS support.
+ */
+export async function synthesizeGroqOrpheusTts(
+  pureVerseText: string,
+  voiceName: GoogleNeuralVoiceName = 'Kore'
+): Promise<string | null> {
+  const apiKey =
+    (import.meta as any)?.env?.VITE_GROQ_API_KEY?.trim() ||
+    DEFAULT_GROQ_KEY;
+
+  if (!apiKey) return null;
+
+  const targetVoice = GROQ_VOICE_MAP[voiceName] || 'autumn';
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+    const res = await fetch('https://api.groq.com/openai/v1/audio/speech', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      signal: controller.signal,
+      body: JSON.stringify({
+        model: GROQ_ORPHEUS_MODEL,
+        input: pureVerseText,
+        voice: targetVoice,
+        response_format: 'wav',
+      }),
+    });
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const arrayBuf = await res.arrayBuffer();
+      if (arrayBuf && arrayBuf.byteLength > 1000) {
+        let binary = '';
+        const bytes = new Uint8Array(arrayBuf);
+        const chunkSize = 8192;
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+          binary += String.fromCharCode.apply(null, Array.from(bytes.subarray(i, i + chunkSize)));
+        }
+        return btoa(binary);
+      }
+    } else {
+      const errText = await res.text().catch(() => '');
+      console.warn('[neuralTtsService] Groq Orpheus TTS returned HTTP', res.status, errText);
+    }
+  } catch (err) {
+    console.warn('[neuralTtsService] Groq Orpheus TTS fetch exception:', err);
+  }
+
+  return null;
+}
+
+/**
  * Synthesizes 24kHz Google Neural Audio with automatic multi-tier retry.
  * Prioritizes high-presence Gemini 3.1 Flash TTS preview (Modelissa standard),
  * falls back across all available Gemini audio models, and cascades to natural
@@ -297,7 +367,14 @@ export async function synthesizeNeuralAudio(
     // Non-fatal cache read error
   }
 
-  // 2. Direct Google Gemini 24kHz Audio API (If user provided valid key)
+  // 2. High-Presence Studio Voice Engine (Groq Orpheus 24kHz / Modelissa Standard)
+  const groqAudio = await synthesizeGroqOrpheusTts(pureVerseText, voiceName);
+  if (groqAudio) {
+    await setCachedTtsAudio(cacheKey, groqAudio);
+    return groqAudio;
+  }
+
+  // 3. Direct Google Gemini 24kHz Audio API (If user provided valid key)
   const candidateKeys = getActiveGeminiApiKeys();
 
   if (candidateKeys.length > 0) {

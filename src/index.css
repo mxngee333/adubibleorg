@@ -5466,6 +5466,21 @@ mark.search-highlight {
   text-shadow: none;
 }
 
+.logo-registered-mark {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.44em;
+  font-weight: 700;
+  line-height: 1;
+  margin-left: 2px;
+  align-self: flex-start;
+  margin-top: 1px;
+  color: var(--logo-tld-color, #8E968D) !important;
+  opacity: 0.85;
+  user-select: none;
+  letter-spacing: normal;
+  text-shadow: none;
+}
+
 .bible-app.theme-daylight,
 .bible-app.theme-parchment,
 .bible-app.theme-lilac-light {
@@ -5482,7 +5497,11 @@ mark.search-highlight {
 .bible-app.theme-lilac-light .logo-word-bible,
 .bible-app.theme-daylight .logo-word-tld,
 .bible-app.theme-parchment .logo-word-tld,
-.bible-app.theme-lilac-light .logo-word-tld {
+.bible-app.theme-lilac-light .logo-word-tld,
+.bible-app.theme-daylight .logo-registered-mark,
+.bible-app.theme-parchment .logo-registered-mark,
+.bible-app.theme-lilac-light .logo-registered-mark {
+  color: var(--logo-tld-color, #6B655B) !important;
   text-shadow: none;
 }
 
@@ -5546,6 +5565,12 @@ mark.search-highlight {
   .adubible-logo-mark .logo-word-adu,
   .adubible-logo-mark .logo-word-bible {
     display: inline !important; /* Both "Adu" and "Bible" ALWAYS seen */
+  }
+
+  .adubible-logo-mark .logo-registered-mark {
+    display: inline-block !important;
+    font-size: 0.42em !important;
+    margin-left: 1.5px !important;
   }
 }
 

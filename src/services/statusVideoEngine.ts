@@ -258,6 +258,17 @@ export class StatusVideoRenderer {
     return this.speechBuffer;
   }
 
+  public ensureAudioUnlocked(): void {
+    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContextClass) return;
+    if (!this.audioCtx || this.audioCtx.state === 'closed') {
+      this.audioCtx = new AudioContextClass();
+    }
+    if (this.audioCtx.state === 'suspended') {
+      this.audioCtx.resume().catch(() => {});
+    }
+  }
+
   public updateOptions(newOptions: Partial<StatusVideoOptions>): void {
     const textChanged = newOptions.verseText !== undefined && newOptions.verseText !== this.options.verseText;
     const voiceChanged = newOptions.voiceName !== undefined && newOptions.voiceName !== this.options.voiceName;
@@ -827,7 +838,9 @@ export class StatusVideoRenderer {
   }
 
   /**
-   * Volumetric Celestial God Rays projecting downwards from the heavens
+   * Cinematic Volumetric Heavenly Godrays & Ethereal Atmospheric Corona
+   * Replaces harsh polygon triangles with soft, feathery additive light shafts,
+   * an anamorphic celestial lens streak, and organic luminous breathing.
    */
   private drawVolumetricGodRays(
     W: number,
@@ -836,36 +849,97 @@ export class StatusVideoRenderer {
     theme: StatusVideoTheme
   ): void {
     const ctx = this.ctx;
-    const rayCount = 8;
-    const originX = W / 2;
-    const originY = -60;
-
     ctx.save();
-    for (let i = 0; i < rayCount; i++) {
-      const angleOffset = ((i - (rayCount - 1) / 2) / rayCount) * 0.85;
-      const sway = Math.sin(elapsed * 1.5 + i * 0.8) * 0.04;
-      const angle = Math.PI / 2 + angleOffset + sway;
 
-      const rayLength = H * 0.95;
-      const rayEndX = originX + Math.cos(angle) * rayLength;
-      const rayEndY = originY + Math.sin(angle) * rayLength;
-      const rayWidth = 140 + Math.sin(elapsed * 2 + i) * 30;
+    // 1. Additive / Screen blending for realistic optical illumination
+    ctx.globalCompositeOperation = 'screen';
 
-      const rayGrad = ctx.createLinearGradient(originX, originY, rayEndX, rayEndY);
-      const alpha = 0.12 + Math.sin(elapsed * 2.2 + i * 1.2) * 0.06;
-      rayGrad.addColorStop(0, theme.accentGlow);
-      rayGrad.addColorStop(0.5, `rgba(255, 255, 255, ${alpha * 0.5})`);
-      rayGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    const originX = W / 2;
+    const originY = -35;
 
-      ctx.fillStyle = rayGrad;
+    // 2. Celestial Apex Ambient Corona (Broad Heavenly Source Bloom)
+    const coronaRadius = Math.max(W * 0.75, H * 0.52);
+    const coronaGrad = ctx.createRadialGradient(originX, originY, 0, originX, originY, coronaRadius);
+    const coronaPulse = 0.28 + Math.sin(elapsed * 1.6) * 0.05;
+    coronaGrad.addColorStop(0, `rgba(255, 255, 245, ${coronaPulse})`);
+    coronaGrad.addColorStop(0.22, theme.accentGlow);
+    coronaGrad.addColorStop(0.65, 'rgba(0, 0, 0, 0)');
+    coronaGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = coronaGrad;
+    ctx.fillRect(0, 0, W, H * 0.7);
+
+    // 3. Anamorphic Ethereal Lens Flare Ribbon (Horizontal Cinematic Streak)
+    const anamorphicGrad = ctx.createRadialGradient(originX, 48, 0, originX, 48, W * 0.42);
+    anamorphicGrad.addColorStop(0, 'rgba(255, 255, 255, 0.42)');
+    anamorphicGrad.addColorStop(0.25, theme.accentGlow);
+    anamorphicGrad.addColorStop(0.85, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = anamorphicGrad;
+    ctx.beginPath();
+    ctx.ellipse(originX, 48, W * 0.44, 11, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 4. Soft Feathery Volumetric Light Shafts (7 Organic Rays)
+    const rayAngles = [-0.38, -0.24, -0.11, 0.0, 0.12, 0.25, 0.39];
+    const reach = H * 0.88;
+
+    for (let i = 0; i < rayAngles.length; i++) {
+      const baseAngle = Math.PI / 2 + rayAngles[i];
+      const gentleSway = Math.sin(elapsed * 1.1 + i * 0.9) * 0.035;
+      const angle = baseAngle + gentleSway;
+
+      // Shaft target vector
+      const endX = originX + Math.cos(angle) * reach;
+      const endY = originY + Math.sin(angle) * reach;
+
+      // Atmospheric density pulsation
+      const rayAlpha = 0.14 + Math.sin(elapsed * 1.8 + i * 1.4) * 0.06;
+
+      // Draw multi-pass feathered beam (broad haze + focused core)
+      // Pass A: Wide soft haze with smooth curvature
+      const hazeWidth = 160 + Math.sin(elapsed * 1.4 + i) * 20;
+      const hazeGrad = ctx.createLinearGradient(originX, originY, endX, endY);
+      hazeGrad.addColorStop(0, theme.accentGlow);
+      hazeGrad.addColorStop(0.35, `rgba(255, 250, 235, ${rayAlpha * 0.45})`);
+      hazeGrad.addColorStop(0.8, 'rgba(0, 0, 0, 0)');
+      hazeGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+      ctx.fillStyle = hazeGrad;
       ctx.beginPath();
-      ctx.moveTo(originX - 10, originY);
-      ctx.lineTo(originX + 10, originY);
-      ctx.lineTo(rayEndX + rayWidth / 2, rayEndY);
-      ctx.lineTo(rayEndX - rayWidth / 2, rayEndY);
+      ctx.moveTo(originX - 15, originY);
+      ctx.lineTo(originX + 15, originY);
+      ctx.quadraticCurveTo(
+        originX + (endX - originX) * 0.5 + hazeWidth * 0.2,
+        originY + (endY - originY) * 0.5,
+        endX + hazeWidth * 0.5,
+        endY
+      );
+      ctx.lineTo(endX - hazeWidth * 0.5, endY);
+      ctx.quadraticCurveTo(
+        originX + (endX - originX) * 0.5 - hazeWidth * 0.2,
+        originY + (endY - originY) * 0.5,
+        originX - 15,
+        originY
+      );
+      ctx.closePath();
+      ctx.fill();
+
+      // Pass B: Inner radiant spine
+      const coreWidth = 55 + Math.sin(elapsed * 2.2 + i * 1.5) * 12;
+      const coreGrad = ctx.createLinearGradient(originX, originY, endX, endY);
+      coreGrad.addColorStop(0, `rgba(255, 255, 255, ${rayAlpha * 0.75})`);
+      coreGrad.addColorStop(0.4, `rgba(255, 245, 220, ${rayAlpha * 0.55})`);
+      coreGrad.addColorStop(0.85, 'rgba(0, 0, 0, 0)');
+
+      ctx.fillStyle = coreGrad;
+      ctx.beginPath();
+      ctx.moveTo(originX - 5, originY);
+      ctx.lineTo(originX + 5, originY);
+      ctx.lineTo(endX + coreWidth * 0.5, endY);
+      ctx.lineTo(endX - coreWidth * 0.5, endY);
       ctx.closePath();
       ctx.fill();
     }
+
     ctx.restore();
   }
 

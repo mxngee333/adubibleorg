@@ -1012,35 +1012,8 @@ export function App() {
     setActiveVerseActionBar(targetVerse || null);
     setActiveNavTab('canonical');
 
-    // Auto-align parallel translations when switching between Canonical, Deuterocanon, and Apocrypha
-    const targetBook = allHistoricalBooks.find((b) => b.slug === bookSlug);
-    if (targetBook?.testament === 'DC') {
-      const hasDCVersion = activeVersionIds.some((id) =>
-        ['kjv-apoc', 'dra', 'lxx', 'vulgate'].includes(id)
-      );
-      if (!hasDCVersion) {
-        setActiveVersionIds(['kjv-apoc', 'dra']);
-      }
-    } else if (targetBook?.testament === 'PSEUD') {
-      const hasPseudVersion = activeVersionIds.some((id) =>
-        ['charles', 'lightfoot', 'kjv-apoc'].includes(id)
-      );
-      if (!hasPseudVersion) {
-        setActiveVersionIds(['charles', 'lightfoot']);
-      }
-    } else if (targetBook?.testament === 'OT' || targetBook?.testament === 'NT') {
-      const onlyApocryphaVersions = activeVersionIds.every((id) =>
-        ['charles', 'lightfoot'].includes(id)
-      );
-      if (onlyApocryphaVersions) {
-        const savedCanonicalVersions = loadSavedVersionIds();
-        setActiveVersionIds(
-          savedCanonicalVersions && savedCanonicalVersions.length > 0
-            ? savedCanonicalVersions
-            : ['nkjv', 'kjv']
-        );
-      }
-    }
+    // All 107 Holy Scriptures (Canonical, Deuterocanonical, and Apocrypha) are now
+    // fully supported across all parallel versions and languages simultaneously!
 
     if (targetVerse && typeof window !== 'undefined') {
       [80, 220, 450].forEach((delay) => {

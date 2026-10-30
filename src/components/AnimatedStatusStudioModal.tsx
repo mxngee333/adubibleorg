@@ -235,25 +235,48 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
     return () => clearTimeout(timer);
   }, [isOpen, reference, versionName]);
 
-  const handleTestVoice = async (vId: GoogleNeuralVoiceName) => {
-    setTestingVoiceId(vId);
+  const [generatingVoiceId, setGeneratingVoiceId] = useState<GoogleNeuralVoiceName | null>(null);
+  const [speakingVoiceId, setSpeakingVoiceId] = useState<GoogleNeuralVoiceName | null>(null);
+
+  const handleGenerateVoice = async (vId: GoogleNeuralVoiceName) => {
+    setVoiceName(vId);
+    setGeneratingVoiceId(vId);
+    setAudioLoading(true);
+
     try {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-      if (!AudioContextClass) return;
-      const ctx = new AudioContextClass();
-      const testPhrase = verseText ? verseText.slice(0, 90) : 'The Lord is my shepherd, I shall not want.';
-      const buffer = await getOrPreloadAudioBuffer(ctx, testPhrase, langCode, vId);
-      if (buffer) {
-        const src = ctx.createBufferSource();
-        src.buffer = buffer;
-        src.connect(ctx.destination);
-        src.onended = () => setTestingVoiceId(null);
-        src.start();
-      } else {
-        setTestingVoiceId(null);
+      if (rendererRef.current) {
+        rendererRef.current.ensureAudioUnlocked();
+        rendererRef.current.updateOptions({ voiceName: vId });
+        const ok = await rendererRef.current.preloadAudio();
+        setAudioLoaded(ok);
+        const newDur = rendererRef.current.getDuration();
+        setCurrentDuration(newDur);
+
+        // Instantly audition the freshly generated voice narration
+        const speechBuf = rendererRef.current.getSpeechBuffer();
+        if (speechBuf) {
+          setGeneratingVoiceId(null);
+          setSpeakingVoiceId(vId);
+
+          const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+          if (AudioContextClass) {
+            const ctx = new AudioContextClass();
+            const src = ctx.createBufferSource();
+            src.buffer = speechBuf;
+            src.connect(ctx.destination);
+            src.onended = () => {
+              setSpeakingVoiceId(null);
+              ctx.close().catch(() => {});
+            };
+            src.start();
+          }
+        }
       }
-    } catch {
-      setTestingVoiceId(null);
+    } catch (err) {
+      console.warn('[AnimatedStatusStudio] Generate voice error:', err);
+    } finally {
+      setGeneratingVoiceId(null);
+      setAudioLoading(false);
     }
   };
 

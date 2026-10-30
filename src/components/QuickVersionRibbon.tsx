@@ -53,6 +53,15 @@ export const BIBLEHUB_RIBBON_VERSIONS: Array<{ id: string; short: string; name: 
   { id: 'tr-gk', short: 'GRK', name: 'Textus Receptus Greek' },
   { id: 'wlc', short: 'HEB', name: 'Westminster Leningrad Codex Hebrew' },
   { id: 'vul', short: 'VUL', name: 'Biblia Sacra Vulgata' },
+
+  // ── Deuterocanonical, Apocrypha & Ancient Manuscript Editions ──
+  { id: 'kjv-apoc', short: 'KJV-APOC', name: 'King James 1611 (with Apocrypha)', tag: 'DC' },
+  { id: 'lxx', short: 'LXX', name: 'Brenton Septuagint (Greek/English LXX)', tag: 'DC' },
+  { id: 'dra', short: 'DRA', name: 'Douay-Rheims (Catholic Canon 73 Books)', tag: 'DC' },
+  { id: 'twi-apoc', short: 'TWI-APOC', name: 'Twerɛ Kronkron Apokrifa (Asante Twi)', tag: 'GH' },
+  { id: 'charles', short: 'ENOCH', name: 'R.H. Charles Oxford (1 Enoch & Pseudepigrapha)', tag: '60' },
+  { id: 'lightfoot', short: 'FATHERS', name: 'Lightfoot Apostolic Fathers (Didache · Clement · Hermas)', tag: 'AF' },
+  { id: 'ru-synod', short: 'SYNOD', name: 'Russian Synodal (77 Books Orthodox Canon)', tag: 'ORTH' },
 ];
 
 export const QuickVersionRibbon: React.FC<QuickVersionRibbonProps> = ({
