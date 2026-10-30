@@ -581,10 +581,10 @@ export class StatusVideoRenderer {
       plaquePaddingBottom;
 
     const topSafeZone = 48;
-    const bottomSafeZone = 110;
+    const bottomSafeZone = 145; // Generous safe margin protecting 48-bar visualizer, progress rail & locked AduBible.org watermark
     const availableMidHeight = H - topSafeZone - bottomSafeZone;
     const plaqueX = plaqueMargin;
-    const plaqueY = Math.max(topSafeZone + 8, topSafeZone + (availableMidHeight - plaqueH) / 2);
+    const plaqueY = Math.max(topSafeZone + 10, topSafeZone + (availableMidHeight - plaqueH) / 2);
 
     // 9. Central Illuminated Glassmorphic Scripture Plaque
     ctx.save();
@@ -1185,34 +1185,34 @@ export class StatusVideoRenderer {
     ctx.save();
     ctx.textAlign = 'center';
 
-    const pillWidth = 230;
+    const pillWidth = 246;
     const pillHeight = 36;
     const pillX = (W - pillWidth) / 2;
     const pillY = watermarkY - 18;
 
     // Dark glass pill backdrop
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.72)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.78)';
     drawRoundedRect(ctx, pillX, pillY, pillWidth, pillHeight, 18);
     ctx.fill();
 
     // Golden halo rim
     ctx.strokeStyle = theme.accent;
     ctx.lineWidth = 1.35;
-    ctx.globalAlpha = 0.75;
+    ctx.globalAlpha = 0.85;
     ctx.shadowColor = theme.accent;
-    ctx.shadowBlur = 8;
+    ctx.shadowBlur = 10;
     drawRoundedRect(ctx, pillX, pillY, pillWidth, pillHeight, 18);
     ctx.stroke();
     ctx.shadowBlur = 0;
 
-    // Adu Bible at footer : AduBible.org
+    // Permanent Locked Watermark: AduBible.org
     ctx.globalAlpha = watermarkPulse;
     ctx.fillStyle = theme.accent;
-    ctx.font = '800 16px "Cinzel", Georgia, serif';
-    ctx.letterSpacing = '2.5px';
+    ctx.font = '800 15px "Cinzel", Georgia, serif';
+    ctx.letterSpacing = '3px';
     ctx.shadowColor = theme.accent;
-    ctx.shadowBlur = 10;
-    ctx.fillText('AduBible.org', W / 2, watermarkY + 6);
+    ctx.shadowBlur = 12;
+    ctx.fillText('✦ AduBible.org ✦', W / 2, watermarkY + 5.5);
 
     ctx.restore();
   }

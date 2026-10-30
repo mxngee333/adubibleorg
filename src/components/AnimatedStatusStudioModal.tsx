@@ -138,7 +138,6 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
   const [includeAmbientMusic, setIncludeAmbientMusic] = useState<boolean>(true);
   const [boldTypography, setBoldTypography] = useState<boolean>(true);
   const [voiceBoost, setVoiceBoost] = useState<boolean>(true);
-  const [testingVoiceId, setTestingVoiceId] = useState<string | null>(null);
   const [geminiKey, setGeminiKey] = useState<string>(getStoredGeminiKey());
   const [geminiKeyInput, setGeminiKeyInput] = useState<string>(getStoredGeminiKey());
   const [showKeyInput, setShowKeyInput] = useState<boolean>(false);
@@ -358,6 +357,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
   // Preload 24kHz Neural Audio when verse or voice changes
   const handlePreloadAudio = useCallback(async () => {
     if (!rendererRef.current) return;
+    rendererRef.current.ensureAudioUnlocked();
     setAudioLoading(true);
     try {
       const ok = await rendererRef.current.preloadAudio();
@@ -384,6 +384,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
   // Toggle Play / Pause preview
   const handleTogglePlay = () => {
     if (!rendererRef.current) return;
+    rendererRef.current.ensureAudioUnlocked();
 
     if (isPlaying) {
       if (stopPreviewRef.current) {
@@ -419,6 +420,8 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
   // Video Export pipeline (Smart Tailored Canvas Capture + Audio)
   const handleExportVideo = async () => {
     if (!rendererRef.current) return;
+    rendererRef.current.ensureAudioUnlocked();
+
     if (isPlaying && stopPreviewRef.current) {
       stopPreviewRef.current();
       stopPreviewRef.current = null;
@@ -824,11 +827,10 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {GOOGLE_NEURAL_VOICES.map((v) => {
                   const isSelected = voiceName === v.id;
-                  const isTesting = testingVoiceId === v.id;
                   return (
                     <div
                       key={v.id}
-                      onClick={() => setVoiceName(v.id)}
+                      onClick={() => handleGenerateVoice(v.id)}
                       className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                         isSelected
                           ? 'bg-amber-500/20 border-amber-500 text-amber-200 ring-2 ring-amber-500/20'
@@ -847,17 +849,26 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleTestVoice(v.id);
+                          handleGenerateVoice(v.id);
                         }}
+                        disabled={generatingVoiceId === v.id || speakingVoiceId === v.id}
                         className={`mt-2 py-1 px-2 rounded-lg text-[10px] font-semibold flex items-center justify-center gap-1 transition-all ${
-                          isTesting
+                          generatingVoiceId === v.id
                             ? 'bg-amber-500 text-stone-950 font-bold animate-pulse'
+                            : speakingVoiceId === v.id
+                            ? 'bg-emerald-500 text-stone-950 font-bold'
+                            : isSelected
+                            ? 'bg-amber-500 text-stone-950 font-bold'
                             : 'bg-stone-800 hover:bg-stone-700 text-amber-300'
                         }`}
-                        title="Listen to sample voice narration"
+                        title="Generate studio voice narration for current verse"
                       >
                         <Volume2 className="w-3 h-3" />
-                        {isTesting ? 'Speaking...' : 'Test Voice'}
+                        {generatingVoiceId === v.id
+                          ? 'Generating...'
+                          : speakingVoiceId === v.id
+                          ? 'Playing Voice...'
+                          : '⚡ Generate Voice'}
                       </button>
                     </div>
                   );
@@ -1128,8 +1139,9 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
                     return `${formatMmSs(playbackSeconds)} / ${formatMmSs(currentDuration)}`;
                   })()}
                 </span>
-                <span className="block text-[10px] text-stone-500 font-sans">
-                  Adubible.org Watermark Locked
+                <span className="block text-[10px] text-amber-400 font-mono font-semibold tracking-wide flex items-center justify-end gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  🔒 AduBible.org Watermark Locked
                 </span>
               </div>
             </div>
