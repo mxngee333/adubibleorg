@@ -20,6 +20,7 @@ import {
   ChapterData,
   VerseData,
 } from '../types/bible';
+import { stripPsalmSuperscription } from '../services/neuralTtsService';
 
 export interface SlideTheme {
   id: string;
@@ -1138,7 +1139,7 @@ export const ScriptureSlideDeckModal: React.FC<ScriptureSlideDeckModalProps> = (
                     : '0 2px 14px rgba(0,0,0,0.6)',
                 }}
               >
-                {currentVerseObj?.text || '—'}
+                {stripPsalmSuperscription(currentVerseObj?.text || '') || '—'}
               </p>
             </div>
           ) : (
@@ -1233,7 +1234,7 @@ export const ScriptureSlideDeckModal: React.FC<ScriptureSlideDeckModalProps> = (
                         fontWeight: 400,
                       }}
                     >
-                      {verseObj?.text || (isPrimary ? currentVerseObj?.text : '—')}
+                      {stripPsalmSuperscription(verseObj?.text || (isPrimary ? currentVerseObj?.text : '') || '') || '—'}
                     </p>
                   </div>
                 );

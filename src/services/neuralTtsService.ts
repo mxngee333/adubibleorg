@@ -74,8 +74,8 @@ export const GOOGLE_NEURAL_VOICES: NeuralVoiceOption[] = [
   },
 ];
 
-// v3: Upgraded to Byte-Accurate 32-bit RIFF WAV Headers + Direct PCM Linear Extractor (Safari & Chrome bulletproof)
-const DB_NAME = 'elohim_tts_audio_cache_v3';
+// v4: Upgraded with Psalm Superscription & Choirmaster Directive Purge for Zero-Lag Studio Voice Recitation
+const DB_NAME = 'elohim_tts_audio_cache_v4';
 const STORE_NAME = 'audio_tracks';
 const memoryAudioBufferCache = new Map<string, AudioBuffer>();
 
@@ -188,13 +188,107 @@ export async function clearTtsAudioCache(): Promise<void> {
 }
 
 /**
+ * Helper to identify whether a sentence or clause is an ancient Hebrew musical direction,
+ * choirmaster note, psalm inscription, or liturgical superscription that should not be recited aloud.
+ */
+function isSuperscriptionChunk(clause: string): boolean {
+  const c = clause.replace(/["“”«»']/g, '').trim().toLowerCase();
+  if (!c || c.length < 3) return false;
+  return (
+    c.startsWith('for the choir') ||
+    c.startsWith('to the choir') ||
+    c.startsWith('to the chief musician') ||
+    c.startsWith('for the director') ||
+    c.startsWith('to the leader') ||
+    c.startsWith('with stringed') ||
+    c.startsWith('on stringed') ||
+    c.startsWith('upon neginoth') ||
+    c.startsWith('upon sheminith') ||
+    c.startsWith('upon alamoth') ||
+    c.startsWith('upon gittith') ||
+    c.startsWith('upon muthlabben') ||
+    c.startsWith('upon mahalath') ||
+    c.startsWith('upon shoshannim') ||
+    c.startsWith('set to') ||
+    c.startsWith('according to') ||
+    c.startsWith('to the tune of') ||
+    c.startsWith('a psalm') ||
+    c.startsWith('a song') ||
+    c.startsWith('a miktam') ||
+    c.startsWith('a maskil') ||
+    c.startsWith('a shiggaion') ||
+    c.startsWith('a prayer of') ||
+    c.startsWith('a praise of') ||
+    c.startsWith('a testimony') ||
+    c.startsWith('a contemplation') ||
+    c.startsWith('when he fled') ||
+    c.startsWith('when nathan') ||
+    c.startsWith('when saul') ||
+    c.startsWith('when doeg') ||
+    c.startsWith('when the ziphites') ||
+    c.startsWith('of david') ||
+    c.startsWith('of asaph') ||
+    c.startsWith('of the sons of korah') ||
+    c.startsWith('of solomon') ||
+    c.startsWith('twenebofo') ||
+    c.startsWith('dawid dwom') ||
+    c.startsWith('asaf dwom') ||
+    c.startsWith('dwom a wɔto kɔ')
+  );
+}
+
+/**
+ * Surgically purges psalm superscriptions, liturgical choirmaster directives,
+ * and section heading prefixes from scripture text so studio voice narration begins
+ * straight from the very first sacred word of the verse, eliminating slide lag.
+ */
+export function stripPsalmSuperscription(text: string): string {
+  let s = (text || '').trim();
+  if (!s) return '';
+
+  // 1. Strip leading HTML tags (e.g. <i>To the Chief Musician...</i> or <b>...</b>)
+  s = s.replace(/^<([a-z]+)>[\s\S]*?<\/\1>/i, ' ');
+  s = s.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+
+  // 2. Strip section heading prefixes if prepended with dash (e.g. 'Answer Me When I Call! — ')
+  s = s.replace(/^[^—–-]+[—–-]\s*/, '');
+
+  // 3. Iteratively remove leading superscription sentences/clauses
+  let iterations = 0;
+  while (iterations < 10) {
+    iterations++;
+    s = s.replace(/^["“”«»']+/, '').trim();
+    // Check delimiter [.?!;:]
+    const match = s.match(/^([^.?!;:]+)([.?!;:])\s*(.*)$/);
+    if (match) {
+      const clause = match[1].trim();
+      const rest = match[3];
+      if (isSuperscriptionChunk(clause)) {
+        s = rest.trim();
+        continue;
+      }
+    }
+    // Check comma delimiter
+    const commaMatch = s.match(/^([^,]+),\s*(.*)$/);
+    if (commaMatch && isSuperscriptionChunk(commaMatch[1])) {
+      s = commaMatch[2].trim();
+      continue;
+    }
+    break;
+  }
+  return s.replace(/^["“”«»']+/, '').trim();
+}
+
+/**
  * Clean verse text strictly for speech synthesis.
- * Strips footnote markers [1], [2], parentheses, and special punctuation,
- * returning ONLY the pure scripture text so speech starts IMMEDIATELY
- * from the very first word with ZERO preamble or instruction reading!
+ * Strips footnote markers [1], [2], parentheses, and liturgical psalm
+ * headers/choirmaster directives so speech starts IMMEDIATELY from the very first
+ * sacred word of scripture with ZERO preamble, eliminating slide lag!
  */
 export function cleanVerseForSpeech(text: string): string {
-  return text
+  const stripped = stripPsalmSuperscription(text);
+
+  return stripped
     .replace(/^\s*\d+[:.]?\s*/, '') // remove leading verse number if present
     .replace(/\[\d+\]/g, '') // remove footnote tags [1], [2]
     .replace(/\(\d+:\d+\)/g, '')

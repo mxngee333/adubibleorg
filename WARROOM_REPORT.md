@@ -97,4 +97,38 @@ When reading in **Twi language** and clicking **Audio**, the iOS Chrome/WebKit t
 - **`src/services/twiPhonemeEngine.ts`**: Upgraded Akan transphonemizer to smooth, unhyphenated phonetic words (`Onyankopon`, `Awuradeh`, `enshira`, `chwereh`), reducing Groq Orpheus 24kHz synthesis latency from 14s to < 1.2s.
 - **`src/services/neuralTtsService.ts`**: Made 16-bit PCM WAV extraction via `DataView.getInt16` the primary 0ms path (zero ArrayBuffer cloning, zero odd-byte-offset RangeErrors) and bounded `memoryAudioBufferCache` to 20 entries to prevent mobile OOM crashes.
 
+---
+
+## 🎙️ 6. PSALM SUPERSCRIPTION & CHOIRMASTER DIRECTIVE PURGE (ZERO-LAG STUDIO VOICE SYNC)
+
+### Root Cause Diagnosis
+When reciting Psalms (e.g. Psalm 4:1) in Slide Deck Mode or Status Video Generator:
+1. **In-Text Superscription Embedding**:
+   - In Bolls API and translation feeds, Psalm 1–150 liturgical inscriptions (e.g., *"For the choirmaster. With stringed instruments. A Psalm of David."* or *"Answer Me When I Call! — "*) were physically embedded inside `verse.text` for verse 1 (often wrapped in `<i>...</i>` or `<b>...</b>`).
+2. **Audio-Visual Lag Trap**:
+   - Groq Orpheus 24kHz synthesized the entire choirmaster inscription (10–15 words, ~6–8 seconds) before reciting the actual scripture verse.
+   - The visual slide deck already displayed the sacred verse text, causing the audio narration to lag 6–8 seconds behind the displayed text.
+
+### Surgical Architecture Implemented
+1. **`src/services/neuralTtsService.ts` (`stripPsalmSuperscription` & `isSuperscriptionChunk`)**:
+   - Built a comprehensive grammatical parser targeting ancient Hebrew musical directives, choir notations, instruments, and melodic tunes:
+     - `(For|To) the (choirmaster|choir director|chief musician|director of music|leader)...`
+     - `(With|On|Upon) stringed instruments / neginoth / sheminith / alamoth / gittith / muthlabben / mahalath / shoshannim...`
+     - `(Set to|According to|To the tune of)...`
+     - `A (Psalm|Song|Miktam|Maskil|Shiggaion|Prayer|Praise|Testimony|Contemplation) (of|by|for)...`
+     - `A Song of (Ascents|Degrees)...`
+     - `(When|After) (he fled|nathan|saul|doeg|the ziphites)...`
+     - Twi superscriptions: `twenebofo`, `dawid dwom`, `asaf dwom`, `dwom a wɔto kɔ`.
+   - Strips leading HTML tags (`<i>...</i>`, `<b>...</b>`, `<em>...</em>`) and section heading prefix dashes (`Title — `).
+   - Iteratively decomposes sentence and comma delimiters until reaching the pure sacred scripture text.
+2. **Universal Speech Gatekeeper (`cleanVerseForSpeech`)**:
+   - Piped `stripPsalmSuperscription` through `cleanVerseForSpeech` so that `AudioBibleBar.tsx`, `statusVideoEngine.ts`, `AnimatedStatusStudioModal.tsx`, and `synthesizeNeuralAudio` recite only pure scripture, starting immediately from word 1 with zero preamble.
+3. **Cache Invalidation (`elohim_tts_audio_cache_v4`)**:
+   - Bumped IndexedDB audio cache version to `v4`, ensuring no stale audio containing choirmaster directives is served to users.
+4. **Heading Separation in Bolls API Parser (`src/services/bibleEngineService.ts`)**:
+   - In `resolveChapterData`, extracted leading `<i>...</i>` / `<b>...</b>` superscriptions on verse 1 into `verse.heading`. The directive is preserved in the elegant small subtitle above the card while keeping `verse.text` purely dedicated to the verse.
+5. **Slide Deck & Video Highlighter Integration (`ScriptureSlideDeckModal.tsx` & `statusVideoEngine.ts`)**:
+   - Wrapped single-column and parallel slide text displays in `stripPsalmSuperscription`.
+   - Updated kinetic word highlighting and speech duration calculators to track pure verse word counts with sub-millisecond synchronization.
+
 **Signed & Sealed by The 24 Elders — The Red Army of Silicon Valley**

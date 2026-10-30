@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-    <title>AduBible.org® — Free Multilingual Parallel Bible Hub, Strong's Concordance & Global Study Sync</title>
+    <title>AduBible.org® — Free Online Bible, Parallel Bible Hub, Strong's Concordance, Audio Bible &amp; Commentary</title>
     <meta
       name="description"
-      content="Read and study the Holy Bible in parallel across 35+ languages including KJV, NKJV, BSB, Hebrew, Greek, French, Spanish, German, and Twi on AduBible (Adubible.org). Dedicated to Humanity in honor of the Legacy of Apostle Kwame Adu · Nsuhia, Ghana (https://nsuhia.com/). 100% Ads-Free Reading Experience with Strong's Exhaustive Concordance, Open-Source Commentaries, and Cloud Study Sync."
+      content="Read the Holy Bible online free in 4 parallel columns across NKJV, KJV, BSB, Hebrew, Greek, French, Spanish, German, and Twi (35+ languages) on AduBible.org®. Features Genesis 1, Psalm 91, Psalm 23, Psalm 1, Psalm 35, Strong's Concordance, Bible Hub Commentary, 24kHz Audio Bible, Offline Bible App for Android &amp; iOS, 3D Bible Games, and Bible Verses on Thanksgiving &amp; Strength. 100% Ads-Free."
     />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <link rel="canonical" href="https://adubible.org/" />
@@ -26,13 +26,13 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2026" />
     <!-- Manifest: ALWAYS relative (absolute URL breaks offline PWA) -->
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content="#0c0a09" />
+    <meta name="theme-color" content="#0f1712" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="AduBible.org®" />
-    <meta property="og:title" content="AduBible.org® — Free Multilingual Parallel Bible & Exegetical Sanctuary" />
-    <meta property="og:description" content="Read Scripture in parallel across KJV, NKJV, BSB, Hebrew, Greek, Spanish, French, and 35+ global languages. Dedicated to Humanity · 100% Ads-Free · Adubible.org" />
+    <meta property="og:title" content="AduBible.org® — Free Online Bible, Parallel Bible Hub, Strong's Concordance &amp; Audio Bible" />
+    <meta property="og:description" content="Read Scripture online in parallel across NKJV, KJV, BSB, Hebrew, Greek, Spanish, French, and Asante Twi (35+ languages). Includes Strong's Concordance, Bible Commentary, 24kHz Audio Bible, Offline Bible App, and 3D Bible Games. 100% Ads-Free · Adubible.org" />
     <meta property="og:url" content="https://adubible.org/" />
     <meta property="og:image" content="https://adubible.org/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
@@ -40,16 +40,16 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="AduBible.org® — Multilingual Parallel Bible & Strong's Lexicon" />
-    <meta name="twitter:description" content="Zero-ad generational Bible sanctuary dedicated to humanity. 35+ global languages, Strong's Concordance, and side-by-side study. 100% Free · Adubible.org" />
+    <meta name="twitter:title" content="AduBible.org® — Online Parallel Bible Hub, Strong's Lexicon &amp; Audio Bible" />
+    <meta name="twitter:description" content="100% ad-free online parallel Bible sanctuary dedicated to humanity. 35+ languages, Strong's Concordance, Matthew Henry Commentary, Offline PWA App, and 3D Bible Games · Adubible.org" />
     <meta name="twitter:image" content="https://adubible.org/og-image.jpg" />
 
     <!-- Hreflang Multilingual Discovery -->
     <link rel="alternate" hreflang="en" href="https://adubible.org/" />
     <link rel="alternate" hreflang="tw" href="https://adubible.org/twi/ephesians/1/" />
-    <link rel="alternate" hreflang="fr" href="https://adubible.org/fr-lsg/ephesians/1/" />
-    <link rel="alternate" hreflang="es" href="https://adubible.org/es-rvr/ephesians/1/" />
-    <link rel="alternate" hreflang="de" href="https://adubible.org/de-luther/ephesians/1/" />
+    <link rel="alternate" hreflang="fr" href="https://adubible.org/fr/" />
+    <link rel="alternate" hreflang="es" href="https://adubible.org/es/" />
+    <link rel="alternate" hreflang="de" href="https://adubible.org/de/" />
     <link rel="alternate" hreflang="x-default" href="https://adubible.org/" />
 
     <!-- Fonts for AduBible Cinematic Status Studio & Exegesis -->
@@ -60,21 +60,62 @@
       rel="stylesheet"
     />
 
-    <!-- Structured Data JSON-LD -->
+    <!-- Structured Data JSON-LD (@graph: WebSite, WebApplication, Organization) -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "AduBible.org®",
-        "applicationCategory": "ReferenceApplication",
-        "operatingSystem": "Web, iOS, Android, Windows, macOS",
-        "url": "https://adubible.org/",
-        "description": "Generational 100% ad-free multilingual parallel Bible study web application dedicated to humanity. Features KJV, NKJV, Berean Standard Bible (BSB), Original Hebrew & Greek Interlinear, Strong's Exhaustive Concordance, Open-Source Commentaries, Cloud Study Sync, and 35+ global language editions including Spanish, French, German, and Twi. Established in honor of the Legacy of Apostle Kwame Adu of Nsuhia, Ghana (https://nsuhia.com/).",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        }
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://adubible.org/#website",
+            "name": "AduBible.org®",
+            "alternateName": ["AduBible", "AduBible Online Parallel Bible Hub", "AduBible.org"],
+            "url": "https://adubible.org/",
+            "inLanguage": "en-US",
+            "publisher": {
+              "@id": "https://adubible.org/#organization"
+            }
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://adubible.org/#app",
+            "name": "AduBible.org® — Free Online Parallel Bible Hub, Strong's Concordance & Audio Bible",
+            "applicationCategory": "ReferenceApplication",
+            "operatingSystem": "Web, Android, iOS, Windows, macOS, Linux",
+            "url": "https://adubible.org/",
+            "description": "Generational 100% ad-free online parallel Bible study platform and offline Progressive Web App (PWA) dedicated to humanity. Features NKJV, KJV, Berean Standard Bible (BSB), Original Hebrew & Greek Interlinear, Strong's Exhaustive Concordance, Matthew Henry & John Gill Commentaries, 24kHz Neural Audio Bible, 3D Bible & Psalm Quiz Games, Cloud Study Sync, and 35+ global language editions including Spanish, French, German, and Asante Twi. Established in honor of the Legacy of Apostle Kwame Adu of Nsuhia, Ghana (https://nsuhia.com/).",
+            "featureList": [
+              "4-Column Synchronized Parallel Bible Reader (NKJV, KJV, BSB, ESV, NIV, NLT, Hebrew, Greek, Twi, 35+ Languages)",
+              "Exhaustive Strong's Hebrew & Greek Concordance with 1-Tap Morphological Lexicon",
+              "Complete Verse-by-Verse Bible Commentary Suite (Matthew Henry, John Gill, Jamieson-Fausset-Brown)",
+              "24kHz Neural Audio Bible Streaming with Synchronized Verse Auto-Scroll",
+              "100% Offline Bible App (PWA for Android, iOS, Windows & Mac via IndexedDB Vault)",
+              "Interactive 3D WebGL Bible & Psalm Games Arcade (Scripture Quiz, Verse Scramble, Armor of God Runner)",
+              "16 Deuterocanonical Books & 25 Ancient Apocrypha from the 7th-Century List of Sixty",
+              "100% Ads-Free Forever with Zero Behavioral Tracking"
+            ],
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://adubible.org/#organization",
+            "name": "AduBible.org® Scripture Mission",
+            "url": "https://adubible.org/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://adubible.org/favicon-96x96.png",
+              "width": 96,
+              "height": 96
+            },
+            "sameAs": [
+              "https://nsuhia.com/"
+            ]
+          }
+        ]
       }
     </script>
 
@@ -97,8 +138,8 @@
       const analytics = getAnalytics(app);
     </script>
   </head>
-  <body class="bg-stone-950 text-stone-100 antialiased selection:bg-amber-500/30 selection:text-amber-200">
-    <div id="root"></div>
+  <body class="bg-stone-950 text-stone-100 antialiased selection:bg-amber-500/30 selection:text-amber-200" style="margin:0;background-color:#0f1712;color:#e3e6d8;">
+    <div id="root"><!--SEO_PRERENDER_SLOT--></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

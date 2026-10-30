@@ -1024,12 +1024,24 @@ export async function resolveChapterData(
           if (!isPoisonedNotice) {
             const verses: VerseData[] = arr.map(
               (item: { verse?: number; text?: string }, i: number) => {
+                const raw = String(item.text || '');
+                let heading: string | undefined;
+
+                // Extract leading HTML superscription tags (e.g. <i>To the Chief Musician...</i>) into verse heading
+                const tagMatch = raw.match(/^<(i|b|em)>([\s\S]*?)<\/\1>\s*(?:<\/[ib]>|<\/em>)?\s*(.*)$/i);
+                let textToClean = raw;
+                if (tagMatch && (Number(item.verse) || i + 1) === 1) {
+                  heading = tagMatch[2].replace(/<[^>]+>/g, '').trim();
+                  textToClean = tagMatch[3];
+                }
+
                 const { cleanText, strongsCodes } = stripHtmlAndExtractStrongs(
-                  String(item.text || '')
+                  textToClean
                 );
                 return {
                   verse: Number(item.verse) || i + 1,
                   text: cleanText,
+                  heading,
                   crossRefs: strongsCodes.map(
                     (num) => `${book.testament === 'OT' ? 'H' : 'G'}${num}`
                   ),

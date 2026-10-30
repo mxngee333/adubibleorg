@@ -10,6 +10,7 @@ import {
   decodeUniversalAudioToBuffer,
   getOrPreloadAudioBuffer,
   GoogleNeuralVoiceName,
+  stripPsalmSuperscription,
 } from './neuralTtsService';
 
 export type VideoAspectRatio = '3:4' | '9:16' | '1:1' | '16:9';
@@ -169,7 +170,8 @@ export function calculateTailoredDuration(
     // 0.5s intro pad + actual audio duration + 1.8s holding outro
     return Math.max(7.0, Math.min(60.0, Math.ceil(0.5 + audioBuffer.duration + 1.8)));
   }
-  const words = verseText.trim().split(/\s+/).filter(Boolean).length;
+  const clean = stripPsalmSuperscription(verseText);
+  const words = clean.trim().split(/\s+/).filter(Boolean).length;
   // Average reverent biblical narration cadence is ~2.3 words per second
   const estimatedSpeechSec = Math.max(4.0, words / 2.3);
   return Math.max(7.0, Math.min(60.0, Math.ceil(0.5 + estimatedSpeechSec + 1.8)));
@@ -388,7 +390,7 @@ export class StatusVideoRenderer {
   }
 
   private prepareWords(): void {
-    const raw = this.options.verseText.trim();
+    const raw = stripPsalmSuperscription(this.options.verseText).trim();
     this.words = raw.split(/\s+/).filter(Boolean);
   }
 

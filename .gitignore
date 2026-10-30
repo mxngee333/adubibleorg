@@ -6,3 +6,4 @@ dist-r2
 .env
 .firebase
 firebase-debug.log
+*.zip
