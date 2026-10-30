@@ -251,24 +251,15 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
         const newDur = rendererRef.current.getDuration();
         setCurrentDuration(newDur);
 
-        // Instantly audition the freshly generated voice narration
-        const speechBuf = rendererRef.current.getSpeechBuffer();
-        if (speechBuf) {
+        if (ok) {
           setGeneratingVoiceId(null);
           setSpeakingVoiceId(vId);
-
-          const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-          if (AudioContextClass) {
-            const ctx = new AudioContextClass();
-            const src = ctx.createBufferSource();
-            src.buffer = speechBuf;
-            src.connect(ctx.destination);
-            src.onended = () => {
-              setSpeakingVoiceId(null);
-              ctx.close().catch(() => {});
-            };
-            src.start();
-          }
+          rendererRef.current.playVoiceSolo(() => {
+            setSpeakingVoiceId(null);
+          });
+        } else {
+          setShareNotice('⚠️ Voice generation notice: Please tap again or check network.');
+          setTimeout(() => setShareNotice(''), 4000);
         }
       }
     } catch (err) {

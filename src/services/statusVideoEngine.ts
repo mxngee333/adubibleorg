@@ -269,6 +269,65 @@ export class StatusVideoRenderer {
     }
   }
 
+  /**
+   * Plays the generated scripture voice narration solo using the renderer's own AudioContext,
+   * guaranteeing zero cross-context NotSupportedError exceptions and crystal-clear loudness.
+   */
+  public playVoiceSolo(onEnded?: () => void): () => void {
+    this.stopAudio();
+    this.ensureAudioUnlocked();
+
+    if (!this.audioCtx || !this.speechBuffer) {
+      if (onEnded) onEnded();
+      return () => {};
+    }
+
+    try {
+      this.speechSource = this.audioCtx.createBufferSource();
+      try {
+        this.speechSource.buffer = this.speechBuffer;
+      } catch (bufErr) {
+        console.warn('[StatusVideoRenderer] Cross-context buffer mismatch, refreshing:', bufErr);
+        // Refresh buffer for current AudioContext
+        this.preloadAudio().then((ok) => {
+          if (ok && this.speechBuffer && this.audioCtx) {
+            this.playVoiceSolo(onEnded);
+          } else if (onEnded) {
+            onEnded();
+          }
+        });
+        return () => {};
+      }
+
+      this.speechGain = this.audioCtx.createGain();
+      const boost = this.options.voiceBoost !== false ? 1.6 : 1.25;
+      this.speechGain.gain.setValueAtTime(boost, this.audioCtx.currentTime);
+
+      this.speechSource.connect(this.speechGain);
+      this.speechGain.connect(this.audioCtx.destination);
+
+      this.speechSource.onended = () => {
+        if (onEnded) onEnded();
+      };
+
+      this.speechSource.start();
+
+      return () => {
+        try {
+          if (this.speechSource) {
+            this.speechSource.stop();
+            this.speechSource.disconnect();
+            this.speechSource = null;
+          }
+        } catch {}
+      };
+    } catch (err) {
+      console.warn('[StatusVideoRenderer] playVoiceSolo error:', err);
+      if (onEnded) onEnded();
+      return () => {};
+    }
+  }
+
   public updateOptions(newOptions: Partial<StatusVideoOptions>): void {
     const textChanged = newOptions.verseText !== undefined && newOptions.verseText !== this.options.verseText;
     const voiceChanged = newOptions.voiceName !== undefined && newOptions.voiceName !== this.options.voiceName;
@@ -354,6 +413,8 @@ export class StatusVideoRenderer {
    */
   public async preloadAudio(): Promise<boolean> {
     try {
+      this.ensureAudioUnlocked();
+
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
       if (!AudioContextClass) return false;
 
@@ -375,18 +436,9 @@ export class StatusVideoRenderer {
         return true;
       }
 
-      // Dignified sacred acoustic chime fallback (zero buzz, zero keyboard drone)
-      this.speechBuffer = createSacredChimeBuffer(
-        this.audioCtx,
-        Math.min(8.5, this.duration - 1.2)
-      );
-      return true;
+      return false;
     } catch (err) {
       console.warn('[StatusVideoEngine] Speech preload warning:', err);
-      if (this.audioCtx) {
-        this.speechBuffer = createSacredChimeBuffer(this.audioCtx, 8.0);
-        return true;
-      }
       return false;
     }
   }
@@ -401,8 +453,8 @@ export class StatusVideoRenderer {
       const now = this.audioCtx.currentTime;
       this.ambientGain = this.audioCtx.createGain();
       this.ambientGain.gain.setValueAtTime(0.001, now);
-      // Gentle swell to warm, quiet underneath voice
-      this.ambientGain.gain.exponentialRampToValueAtTime(0.14, now + 1.2);
+      // Gentle swell to a soft, reverent bed underneath the powerful studio voice
+      this.ambientGain.gain.exponentialRampToValueAtTime(0.04, now + 1.2);
       this.ambientGain.connect(destNode);
 
       // Sacred C major 432Hz tuned chord: C3 (129.6Hz), G3 (194.4Hz), C4 (259.2Hz), E4 (324.0Hz)
@@ -1239,7 +1291,7 @@ export class StatusVideoRenderer {
       }
 
       if (this.audioCtx) {
-        // Master Dynamics Compressor for Studio Broadcast Loudness
+        // Master Dynamics Compressor for Ambient Soundscape
         this.masterCompressor = this.audioCtx.createDynamicsCompressor();
         this.masterCompressor.threshold.setValueAtTime(-18, this.audioCtx.currentTime);
         this.masterCompressor.knee.setValueAtTime(24, this.audioCtx.currentTime);
@@ -1248,27 +1300,54 @@ export class StatusVideoRenderer {
         this.masterCompressor.release.setValueAtTime(0.25, this.audioCtx.currentTime);
         this.masterCompressor.connect(this.audioCtx.destination);
 
-        // Ambient pad
+        // Ambient pad (soft, quiet bed at 0.04 volume)
         this.startAmbientPad(this.masterCompressor);
 
-        // Speech Narration with Studio Presence Boost
-        if (!this.speechBuffer) {
-          this.speechBuffer = createSacredChimeBuffer(
-            this.audioCtx,
-            8.0
-          );
-        }
+        // Speech Narration with Studio Presence Boost directly to destination
         if (this.speechBuffer) {
           this.speechSource = this.audioCtx.createBufferSource();
-          this.speechSource.buffer = this.speechBuffer;
+          try {
+            this.speechSource.buffer = this.speechBuffer;
+          } catch {
+            this.preloadAudio().then(() => {
+              if (this.speechBuffer && this.audioCtx && this.isRendering) {
+                const s = this.audioCtx.createBufferSource();
+                s.buffer = this.speechBuffer;
+                const g = this.audioCtx.createGain();
+                g.gain.setValueAtTime(this.options.voiceBoost !== false ? 1.6 : 1.25, this.audioCtx.currentTime);
+                s.connect(g);
+                g.connect(this.audioCtx.destination);
+                s.start(this.audioCtx.currentTime);
+                this.speechSource = s;
+                this.speechGain = g;
+              }
+            });
+          }
 
           this.speechGain = this.audioCtx.createGain();
-          const boost = this.options.voiceBoost !== false ? 1.4 : 1.15;
+          const boost = this.options.voiceBoost !== false ? 1.6 : 1.25;
           this.speechGain.gain.setValueAtTime(boost, this.audioCtx.currentTime);
 
           this.speechSource.connect(this.speechGain);
-          this.speechGain.connect(this.masterCompressor);
+          this.speechGain.connect(this.audioCtx.destination);
           this.speechSource.start(this.audioCtx.currentTime + 0.5);
+        } else {
+          // If speech is still fetching from Groq, start it immediately when buffer arrives!
+          this.preloadAudio().then((ok) => {
+            if (ok && this.isRendering && this.speechBuffer && this.audioCtx && !this.speechSource) {
+              const now = this.audioCtx.currentTime;
+              this.speechSource = this.audioCtx.createBufferSource();
+              this.speechSource.buffer = this.speechBuffer;
+
+              this.speechGain = this.audioCtx.createGain();
+              const boost = this.options.voiceBoost !== false ? 1.6 : 1.25;
+              this.speechGain.gain.setValueAtTime(boost, now);
+
+              this.speechSource.connect(this.speechGain);
+              this.speechGain.connect(this.audioCtx.destination);
+              this.speechSource.start(now);
+            }
+          });
         }
       }
     }
@@ -1348,14 +1427,22 @@ export class StatusVideoRenderer {
 
     if (this.speechBuffer) {
       this.speechSource = this.audioCtx.createBufferSource();
-      this.speechSource.buffer = this.speechBuffer;
+      try {
+        this.speechSource.buffer = this.speechBuffer;
+      } catch (err) {
+        console.warn('[StatusVideoRenderer] exportVideo buffer refresh for current AudioContext:', err);
+        await this.preloadAudio();
+        if (this.speechBuffer) {
+          this.speechSource.buffer = this.speechBuffer;
+        }
+      }
 
       this.speechGain = this.audioCtx.createGain();
-      const boost = this.options.voiceBoost !== false ? 1.45 : 1.15;
+      const boost = this.options.voiceBoost !== false ? 1.65 : 1.3;
       this.speechGain.gain.setValueAtTime(boost, this.audioCtx.currentTime);
 
       this.speechSource.connect(this.speechGain);
-      this.speechGain.connect(this.masterCompressor);
+      this.speechGain.connect(this.audioDest);
       this.speechSource.start(this.audioCtx.currentTime + 0.5);
     }
 
