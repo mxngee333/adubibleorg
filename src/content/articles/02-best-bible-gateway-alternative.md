@@ -181,7 +181,7 @@ Our engineering laboratory executed synthetic automated performance audits acros
 
 ### 2. Time to First Byte (TTFB) and Full Paint
 - **Bible Gateway:** Average TTFB of **480ms**, with First Contentful Paint (FCP) at **2.4s** and Largest Contentful Paint (LCP) at **4.8s** on mobile connections.
-- **AduBible:** Average TTFB of **42ms**, with FCP at **180ms** and LCP at **310ms**, powered by Cloudflare edge caching, pre-rendered static site generation (SSG), and zero external tracking bloat.
+- **AduBible:** Average TTFB of **42ms**, with FCP at **180ms** and LCP at **310ms**, powered by AduBible Global Edge Acceleration, pre-rendered static site generation (SSG), and zero external tracking bloat.
 
 ### 3. Data Transfer and Battery Consumption
 - **Bible Gateway:** Each chapter navigation transfers an average of **6.2 megabytes** of data, consisting primarily of tracking libraries, ad creative images, JavaScript bundles, and video players. On mobile devices, this excessive compute overhead generates device heat and rapidly drains battery reserves.

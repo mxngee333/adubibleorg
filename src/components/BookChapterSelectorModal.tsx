@@ -292,7 +292,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
       case 'HISTORY':
         return {
           title: '🕒 Scripture Search & Reading History',
-          desc: 'Recent scripture searches & visited passages (Newest first) · Synced to LocalStorage & R2 Cloud Vault',
+          desc: 'Recent scripture searches & visited passages (Newest first) · Synced to Sanctuary Study Vault & Cloud Profile',
         };
       default:
         return {
@@ -427,7 +427,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                   ? 'bg-amber-500 text-stone-950 font-black shadow-md ring-2 ring-amber-400/40'
                   : 'bg-[var(--soft)] text-amber-300 hover:opacity-85 border border-amber-500/30'
               }`}
-              title="Recent Scripture Search & Reading History (LocalStorage & R2 Synced)"
+              title="Recent Scripture Search & Reading History (Sanctuary Vault Synced)"
             >
               <Clock className="h-3.5 w-3.5" />
               <span>History</span>
@@ -618,12 +618,12 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                   {searchQuery && ` (filtered from ${historyList.length})`}
                 </span>
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  LocalStorage (0ms)
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                  Sanctuary Vault
                 </span>
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/25">
                   <Cloud className="h-3 w-3" />
-                  R2 Cloud Vault Synced
+                  Sanctuary Synced
                 </span>
               </div>
 
@@ -795,7 +795,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                 <p className="text-xs text-[var(--subtle)] mt-1.5 max-w-md leading-relaxed">
                   {searchQuery
                     ? `No recent searches or passages match "${searchQuery}". Try clearing the search box above.`
-                    : 'Your scripture searches, passage visits, and book navigations are instantly saved locally (0ms offline) and backed up to your R2 Cloud Vault.'}
+                    : 'Your scripture searches, passage visits, and book navigations are instantly saved to your Sanctuary Study Vault (available 100% offline) and backed up securely to your Cloud Profile.'}
                 </p>
 
                 <div className="mt-6 w-full max-w-lg">

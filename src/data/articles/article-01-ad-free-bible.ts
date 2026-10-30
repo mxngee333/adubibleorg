@@ -31,7 +31,7 @@ export const article01 = {
     },
     {
       question: 'How does an ad-free Bible platform like AduBible fund server and development costs?',
-      answer: 'AduBible operates as a sacred gospel mission in support of Apostle Kwame Adu of Nsuhia, Ghana, built upon philanthropic foundation funding, high-efficiency edge compute (Cloudflare Workers, R2 zero-egress storage, and self-hosted open-source infrastructure), and public-domain / Creative Commons scripture databases. This enables infinite global delivery with zero commercial advertisements, zero subscriptions, and zero donor paywalls.'
+      answer: 'AduBible operates as a sacred gospel mission in support of Apostle Kwame Adu of Nsuhia, Ghana, built upon philanthropic foundation funding, high-efficiency sanctuary compute (global distributed edge networks, dedicated zero-delay scripture vaults, and sovereign open-source infrastructure), and public-domain / Creative Commons scripture databases. This enables infinite global delivery with zero commercial advertisements, zero subscriptions, and zero donor paywalls.'
     },
     {
       question: 'Do ad blockers completely solve the problem of commercial Bible websites?',

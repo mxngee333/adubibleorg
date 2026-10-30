@@ -778,7 +778,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
                           : 'border-stone-800 hover:border-stone-700'
                       }`}
                       style={{
-                        background: `linear-gradient(135deg, ${theme.bgStart}, ${theme.bgEnd})`,
+                        background: `radial-gradient(ellipse at 50% 20%, ${theme.bgCenter || theme.bgEnd} 0%, ${theme.bgStart} 100%)`,
                       }}
                     >
                       <div>

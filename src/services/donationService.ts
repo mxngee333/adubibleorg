@@ -46,7 +46,7 @@ export const DONATION_TIERS: DonationTier[] = [
     id: 'tier-25',
     amount: 25,
     label: 'Gospel Ambassador',
-    impactDescription: 'Sponsors 1 month of zero-egress Cloudflare edge hosting for 5,000 mobile learners.',
+    impactDescription: 'Sponsors 1 month of high-speed global scripture sanctuary access for 5,000 mobile learners.',
     isPopular: true,
   },
   {

@@ -159,4 +159,27 @@ When reciting Psalms (e.g. Psalm 4:1) in Slide Deck Mode or Status Video Generat
 3. **[`src/data/featuredChaptersCorpus.ts`](file:///c:/Users/kwame/Downloads/bible/src/data/featuredChaptersCorpus.ts) — Zero-Latency Pre-Bundled Psalms Corpus**:
    - Added full pre-bundled chapter corpora (`PSALM_1_RAW`, `PSALM_34_RAW`, `PSALM_35_RAW`, `PSALM_91_RAW`), pericope headings (`CHAPTER_SECTION_HEADINGS`), and Strong's concordance tags (`VERSE_STRONGS_TAGS`) for instant 0ms offline & SSR rendering.
 
+---
+
+## 🎥 8. REELS CREATOR SLIDE DECK VIVIDNESS & NATURAL SERIF TYPOGRAPHY (WAR ROOM #666)
+
+### Problem Diagnosis
+- **Previous Reels Output**: Forced all-caps Roman inscriptional `Cinzel` font that crushed lower-case characters into small capitals, making long verses look dense, crammed, and difficult to read.
+- **Disjointed Layout**: Giant `“` quotation mark at top with Scripture reference relegated to the bottom cartouche, diverging from the clean, modern aesthetic of the Scripture Slide Deck.
+- **Dampened Color Depth**: Flat linear gradients with a heavy 72% black vignette and opaque brownish card plaque (`rgba(12, 9, 6, 0.82)`) that dampened visual richness across themes.
+
+### Surgical Upgrades Deployed
+1. **[`src/services/statusVideoEngine.ts`](file:///c:/Users/kwame/Downloads/bible/src/services/statusVideoEngine.ts)**:
+   - **8 Full Vivid Themes (`STATUS_THEMES`)**: Aligned 100% with the Scripture Slide Deck (`SLIDE_THEMES`): Midnight Sanctuary, Celestial Dawn, Royal Tyrian Velvet, Emerald Grove, Sacred Flame, Mount Sinai Stone, Ancient Parchment, and Pure OLED Obsidian.
+   - **Vivid Radial Gradients & Ethereal Bloom**: Replaced flat linear background with multi-stop radial gradient centered at upper-mid screen (`bgCenter` -> `bgEnd` -> `bgStart`), paired with subtle breathing celestial light bloom and soft 38% vignette.
+   - **Top Reference Pill Badge (`[ BOOK • CH:VS ]`)**: Placed the signature rounded pill badge at the top of the card with theme `badgeBg`, `accent` 1.6px border, and `badgeText` in bold sans-serif with 1.8px letter spacing.
+   - **Natural Mixed-Case Editorial Serif Typography**: Removed the forced all-caps `Cinzel` font stack; replaced with `"Playfair Display", "Cormorant Garamond", "Georgia", "Merriweather", serif` in natural mixed case.
+   - **Dynamic Typography Scaling & Auto-Fit Gate**: Font size dynamically scales from 66px down to 32px based on character length with 1.55x line height and an automated iterative safety loop ensuring long verses fit perfectly without overflow.
+   - **Glassmorphic Illuminated Plaque**: Translucent card fill (`theme.cardBg`) with glowing outer border (`theme.cardBorder` + `accentGlow`), 48px soft shadow blur, and subtle inner highlight rim.
+   - **Refined Word Highlighter**: Radiant `theme.accentGlow` pill with `theme.accent` outline, `theme.textHighlight` color, and glowing underline beam.
+   - **Subtle Regal Outer Frame**: Refined corner accents and hairline frame to 0.22/0.55 opacity so the scripture card remains the radiant focal point.
+   - **Branded Watermark Cleaned**: Modern `AduBible.org` at bottom in crisp typography.
+2. **[`src/components/AnimatedStatusStudioModal.tsx`](file:///c:/Users/kwame/Downloads/bible/src/components/AnimatedStatusStudioModal.tsx)**:
+   - Updated theme selection buttons to render radial gradients with `bgCenter`, `bgEnd`, and `bgStart`.
+
 **Signed & Sealed by The 24 Elders — The Red Army of Silicon Valley**

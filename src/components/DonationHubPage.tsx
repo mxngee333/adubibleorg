@@ -657,8 +657,7 @@ export const DonationHubPage: React.FC<DonationHubPageProps> = ({
             </div>
             <h3 className="font-serif font-bold text-[var(--ink)] text-base mb-2">Global Scripture Delivery</h3>
             <p className="text-xs text-[var(--subtle)] leading-relaxed">
-              Your donations directly cover zero-egress Cloudflare R2 audio & text storage, distributed D1 Edge databases, and Hetzner
-              dedicated origin servers capable of serving billions of readers without financial gatekeeping.
+              Your donations directly cover our global high-speed scripture audio & text vaults, distributed Bible search networks, and dedicated mission servers capable of serving billions of readers worldwide without financial gatekeeping.
             </p>
           </div>
         </section>

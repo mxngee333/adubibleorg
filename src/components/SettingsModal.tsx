@@ -967,7 +967,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ.
                     </p>
                     <div style={{ marginTop: '8px', fontSize: '11px', color: currentCustomTheme.subtle }}>
-                      ✓ Automatically synced to localStorage and your cloud profile.
+                      ✓ Automatically saved to your Sanctuary Study Vault and cloud profile.
                     </div>
                   </div>
                 </div>

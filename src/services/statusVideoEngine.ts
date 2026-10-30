@@ -19,87 +19,176 @@ export interface StatusVideoTheme {
   id: string;
   name: string;
   description: string;
+  bgCenter?: string;
   bgStart: string;
   bgEnd: string;
   accent: string;
   accentGlow: string;
+  badgeBg: string;
+  badgeText: string;
+  cardBg: string;
+  cardBorder: string;
   textMain: string;
   textHighlight: string;
   textSub: string;
   particleColor: string;
   waveColor: string;
+  isLight?: boolean;
 }
 
 export const STATUS_THEMES: StatusVideoTheme[] = [
   {
+    id: 'midnight-sanctuary',
+    name: 'Midnight Sanctuary',
+    description: 'Deep obsidian sapphire with emerald sanctuary light',
+    bgCenter: '#162b48',
+    bgStart: '#03060a',
+    bgEnd: '#080d17',
+    accent: '#10b981',
+    accentGlow: 'rgba(16, 185, 129, 0.45)',
+    badgeBg: 'rgba(16, 185, 129, 0.18)',
+    badgeText: '#34d399',
+    cardBg: 'rgba(15, 23, 42, 0.72)',
+    cardBorder: 'rgba(16, 185, 129, 0.35)',
+    textMain: '#ffffff',
+    textHighlight: '#6ee7b7',
+    textSub: '#94a3b8',
+    particleColor: 'rgba(52, 211, 153, 0.75)',
+    waveColor: '#10b981',
+  },
+  {
     id: 'celestial',
     name: 'Celestial Dawn',
     description: 'Radiant golden sunbeams & divine morning glow',
-    bgStart: '#0c0804',
-    bgEnd: '#291606',
+    bgCenter: '#4a2b0a',
+    bgStart: '#080401',
+    bgEnd: '#1a0d02',
     accent: '#f59e0b',
     accentGlow: 'rgba(245, 158, 11, 0.45)',
-    textMain: '#ffffff',
+    badgeBg: 'rgba(245, 158, 11, 0.22)',
+    badgeText: '#fbbf24',
+    cardBg: 'rgba(30, 18, 5, 0.72)',
+    cardBorder: 'rgba(245, 158, 11, 0.35)',
+    textMain: '#fffbeb',
     textHighlight: '#fef08a',
     textSub: '#fde68a',
     particleColor: 'rgba(253, 230, 138, 0.75)',
     waveColor: '#f59e0b',
   },
   {
-    id: 'candlelight',
-    name: 'Sacred Flame & Parchment',
-    description: 'Deep amber warmth and flickering holy sanctuary glow',
-    bgStart: '#120a05',
-    bgEnd: '#30180a',
-    accent: '#fb923c',
-    accentGlow: 'rgba(251, 146, 60, 0.45)',
-    textMain: '#ffffff',
-    textHighlight: '#fed7aa',
-    textSub: '#fdba74',
-    particleColor: 'rgba(254, 215, 170, 0.7)',
-    waveColor: '#fb923c',
-  },
-  {
-    id: 'clouds',
-    name: 'Clouds of Glory',
-    description: 'Ethereal rolling mist, heavenly azure & majestic peaks',
-    bgStart: '#061020',
-    bgEnd: '#132842',
-    accent: '#38bdf8',
-    accentGlow: 'rgba(56, 189, 248, 0.45)',
-    textMain: '#ffffff',
-    textHighlight: '#bae6fd',
-    textSub: '#7dd3fc',
-    particleColor: 'rgba(186, 230, 253, 0.7)',
-    waveColor: '#38bdf8',
-  },
-  {
-    id: 'obsidian',
-    name: 'Royal Obsidian & Gold Dust',
-    description: 'Deep velvet night with shimmering celestial gold stars',
-    bgStart: '#08060c',
-    bgEnd: '#1a1026',
+    id: 'royal-tyrian',
+    name: 'Royal Tyrian Velvet',
+    description: 'Imperial purple & warm gold for majestic kingly scriptures',
+    bgCenter: '#421263',
+    bgStart: '#09020e',
+    bgEnd: '#180628',
     accent: '#c084fc',
     accentGlow: 'rgba(192, 132, 252, 0.45)',
-    textMain: '#ffffff',
+    badgeBg: 'rgba(192, 132, 252, 0.22)',
+    badgeText: '#e9d5ff',
+    cardBg: 'rgba(27, 8, 41, 0.72)',
+    cardBorder: 'rgba(192, 132, 252, 0.35)',
+    textMain: '#fbf7ff',
     textHighlight: '#fde047',
-    textSub: '#e9d5ff',
-    particleColor: 'rgba(253, 224, 71, 0.75)',
+    textSub: '#d8b4fe',
+    particleColor: 'rgba(233, 213, 255, 0.75)',
     waveColor: '#c084fc',
   },
   {
     id: 'covenant',
-    name: 'Covenant Living Waters',
-    description: 'Emerald sanctuary with gentle aquatic ripples of grace',
-    bgStart: '#03120e',
-    bgEnd: '#082b20',
-    accent: '#34d399',
-    accentGlow: 'rgba(52, 211, 153, 0.45)',
+    name: 'Emerald Grove',
+    description: 'Tranquil sacred forest with life-giving living water glow',
+    bgCenter: '#0e3d29',
+    bgStart: '#010805',
+    bgEnd: '#041c12',
+    accent: '#10b981',
+    accentGlow: 'rgba(16, 185, 129, 0.5)',
+    badgeBg: 'rgba(16, 185, 129, 0.22)',
+    badgeText: '#4ade80',
+    cardBg: 'rgba(4, 25, 16, 0.72)',
+    cardBorder: 'rgba(16, 185, 129, 0.35)',
+    textMain: '#f0fdf4',
+    textHighlight: '#bbf7d0',
+    textSub: '#86efac',
+    particleColor: 'rgba(134, 239, 172, 0.75)',
+    waveColor: '#10b981',
+  },
+  {
+    id: 'candlelight',
+    name: 'Sacred Flame',
+    description: 'Deep amber warmth resembling candlelight sanctuary',
+    bgCenter: '#451c08',
+    bgStart: '#080301',
+    bgEnd: '#1f0d04',
+    accent: '#fb923c',
+    accentGlow: 'rgba(251, 146, 60, 0.45)',
+    badgeBg: 'rgba(251, 146, 60, 0.22)',
+    badgeText: '#fdba74',
+    cardBg: 'rgba(32, 14, 5, 0.72)',
+    cardBorder: 'rgba(251, 146, 60, 0.35)',
+    textMain: '#fff7ed',
+    textHighlight: '#fed7aa',
+    textSub: '#fdba74',
+    particleColor: 'rgba(254, 215, 170, 0.75)',
+    waveColor: '#fb923c',
+  },
+  {
+    id: 'clouds',
+    name: 'Mount Sinai Stone',
+    description: 'Clean slate granite with ultra-sharp projector contrast',
+    bgCenter: '#2c3547',
+    bgStart: '#08090d',
+    bgEnd: '#131822',
+    accent: '#38bdf8',
+    accentGlow: 'rgba(56, 189, 248, 0.45)',
+    badgeBg: 'rgba(56, 189, 248, 0.2)',
+    badgeText: '#7dd3fc',
+    cardBg: 'rgba(18, 22, 30, 0.72)',
+    cardBorder: 'rgba(56, 189, 248, 0.3)',
+    textMain: '#f8fafc',
+    textHighlight: '#bae6fd',
+    textSub: '#cbd5e1',
+    particleColor: 'rgba(186, 230, 253, 0.75)',
+    waveColor: '#38bdf8',
+  },
+  {
+    id: 'parchment',
+    name: 'Ancient Parchment',
+    description: 'Warm historic parchment paper with dark sepia ink',
+    bgCenter: '#f9f5eb',
+    bgStart: '#d8caad',
+    bgEnd: '#eaddc4',
+    accent: '#854d0e',
+    accentGlow: 'rgba(133, 77, 14, 0.3)',
+    badgeBg: 'rgba(133, 77, 14, 0.16)',
+    badgeText: '#713f12',
+    cardBg: 'rgba(255, 255, 255, 0.85)',
+    cardBorder: 'rgba(133, 77, 14, 0.32)',
+    textMain: '#291809',
+    textHighlight: '#a16207',
+    textSub: '#5a3d1c',
+    particleColor: 'rgba(133, 77, 14, 0.45)',
+    waveColor: '#854d0e',
+    isLight: true,
+  },
+  {
+    id: 'obsidian',
+    name: 'Pure OLED Obsidian',
+    description: 'True pitch black with brilliant celestial stars & white light',
+    bgCenter: '#121217',
+    bgStart: '#000000',
+    bgEnd: '#060608',
+    accent: '#e4e4e7',
+    accentGlow: 'rgba(255, 255, 255, 0.35)',
+    badgeBg: 'rgba(255, 255, 255, 0.16)',
+    badgeText: '#ffffff',
+    cardBg: 'rgba(18, 18, 22, 0.88)',
+    cardBorder: 'rgba(255, 255, 255, 0.28)',
     textMain: '#ffffff',
-    textHighlight: '#a7f3d0',
-    textSub: '#6ee7b7',
-    particleColor: 'rgba(167, 243, 208, 0.75)',
-    waveColor: '#34d399',
+    textHighlight: '#fde047',
+    textSub: '#a1a1aa',
+    particleColor: 'rgba(253, 224, 71, 0.75)',
+    waveColor: '#fde047',
   },
 ];
 
@@ -129,6 +218,16 @@ interface Particle {
   maxAlpha: number;
   phase: number;
   isSpark: boolean;
+}
+
+function formatPillRef(ref: string): string {
+  const trimmed = ref.trim().toUpperCase();
+  if (trimmed.includes('•') || trimmed.includes('·')) return trimmed;
+  const match = trimmed.match(/^(.+?)\s+(\d+.*)$/);
+  if (match) {
+    return `${match[1].trim()} • ${match[2].trim()}`;
+  }
+  return trimmed;
 }
 
 function drawRoundedRect(
@@ -530,182 +629,209 @@ export class StatusVideoRenderer {
     const theme = this.options.theme;
     const progress = Math.min(1.0, elapsed / this.duration);
 
-    // 1. Cinematic Multi-Stop Background Gradient
-    const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-    bgGrad.addColorStop(0, theme.bgStart);
-    bgGrad.addColorStop(0.3, theme.bgEnd);
-    bgGrad.addColorStop(0.7, theme.bgEnd);
+    // 1. Cinematic Multi-Stop Radial Background Gradient (Slide Deck Vividness)
+    const bgGrad = ctx.createRadialGradient(
+      W / 2,
+      H * 0.18,
+      0,
+      W / 2,
+      H * 0.22,
+      Math.max(W, H) * 0.95
+    );
+    bgGrad.addColorStop(0, theme.bgCenter || theme.bgEnd);
+    bgGrad.addColorStop(0.45, theme.bgEnd);
     bgGrad.addColorStop(1, theme.bgStart);
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, W, H);
 
-    // 2. Cinematic Vignette Overlay
+    // 2. Celestial Core Light Bloom (Subtle luminous breathing)
+    if (!theme.isLight) {
+      const bloomRadius = Math.max(W * 0.65, H * 0.45);
+      const bloomGrad = ctx.createRadialGradient(
+        W / 2,
+        H * 0.18,
+        0,
+        W / 2,
+        H * 0.18,
+        bloomRadius
+      );
+      const pulse = 0.32 + Math.sin(elapsed * 1.5) * 0.08;
+      bloomGrad.addColorStop(0, theme.accentGlow);
+      bloomGrad.addColorStop(0.55, 'rgba(0, 0, 0, 0)');
+      bloomGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      ctx.fillStyle = bloomGrad;
+      ctx.globalAlpha = pulse;
+      ctx.fillRect(0, 0, W, H);
+      ctx.restore();
+    }
+
+    // 3. Subtle Cinematic Edge Falloff (35% Vignette preserving color richness)
     const vignette = ctx.createRadialGradient(
       W / 2,
       H / 2,
-      Math.min(W, H) * 0.35,
+      Math.min(W, H) * 0.38,
       W / 2,
       H / 2,
-      Math.max(W, H) * 0.78
+      Math.max(W, H) * 0.82
     );
     vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
-    vignette.addColorStop(1, 'rgba(0, 0, 0, 0.72)');
+    vignette.addColorStop(1, 'rgba(0, 0, 0, 0.38)');
     ctx.fillStyle = vignette;
     ctx.fillRect(0, 0, W, H);
 
-    // 3. Volumetric Heavenly God Rays
+    // 4. Volumetric Heavenly God Rays
     this.drawVolumetricGodRays(W, H, elapsed, theme);
 
-    // 4. Celestial Sacred Astrolabe & Geometric Halo (Background Graphvis)
+    // 5. Celestial Sacred Astrolabe & Geometric Halo (Background Graphvis)
     this.drawSacredGeometricHalo(W, H, elapsed, theme);
 
-    // 5. Dual-Depth Shimmering Floating Stardust Embers
+    // 6. Dual-Depth Shimmering Floating Stardust Embers
     this.drawStardustParticles(W, H, elapsed, theme);
 
-    // 6. Regal Outer Frame & Corner Brackets
+    // 7. Regal Outer Frame & Corner Accents
     this.drawRegalOuterFrame(W, H, theme);
 
-    // 7. Calculate Bold Typography & Kinetic Plaque Dimensions
-    const plaqueMargin = Math.max(46, Math.floor(W * 0.055));
+    // 8. Calculate Bold Typography & Kinetic Plaque Dimensions
+    const plaqueMargin = Math.max(42, Math.floor(W * 0.05));
     const plaqueW = W - plaqueMargin * 2;
     const maxTextWidth = plaqueW - 96;
 
-    // Dynamic High-Impact Font Sizing (Tuned for maximum readability on mobile screens)
+    const pillLabel = formatPillRef(this.options.reference);
+
+    // Natural mixed-case serif stack (Playfair Display / Cormorant Garamond / Georgia)
+    const serifStack = '"Playfair Display", "Cormorant Garamond", "Georgia", "Merriweather", serif';
+    const fontWeight = this.options.boldTypography !== false ? '600' : '400';
+
+    // Dynamic High-Impact Font Sizing (Tuned for slide-grade grandeur and legibility)
     const textLen = this.options.verseText.length;
-    let fontSize = 48;
-    if (textLen < 60) fontSize = 58;
-    else if (textLen < 120) fontSize = 48;
-    else if (textLen < 200) fontSize = 42;
-    else if (textLen < 320) fontSize = 36;
-    else fontSize = 30;
+    let fontSize = 52;
+    if (textLen < 60) fontSize = 66;
+    else if (textLen < 120) fontSize = 56;
+    else if (textLen < 200) fontSize = 48;
+    else if (textLen < 320) fontSize = 42;
+    else if (textLen < 450) fontSize = 36;
+    else fontSize = 32;
 
     if (H <= 1080) {
-      fontSize = Math.floor(fontSize * 0.88);
+      fontSize = Math.floor(fontSize * 0.85);
     }
-    const lineHeight = Math.round(fontSize * 1.52);
+    let lineHeight = Math.round(fontSize * 1.55);
 
-    const serifStack = '"Cinzel", "Cormorant Garamond", "Playfair Display", Georgia, serif';
-    const fontWeight = this.options.boldTypography !== false ? '800' : '700';
-    ctx.font = `${fontWeight} ${fontSize}px ${serifStack}`;
+    // Helper to compute wrapped lines
+    const computeLines = (fSize: number) => {
+      ctx.font = `${fontWeight} ${fSize}px ${serifStack}`;
+      const res: { text: string; wordsInLine: { word: string; index: number }[] }[] = [];
+      let curLineWords: { word: string; index: number }[] = [];
+      let curLineText = '';
+      const total = this.words.length;
 
-    // Break text into balanced lines
-    const lines: { text: string; wordsInLine: { word: string; index: number }[] }[] = [];
-    let currentLineWords: { word: string; index: number }[] = [];
-    let currentLineText = '';
-    const totalWords = this.words.length;
+      for (let i = 0; i < total; i++) {
+        const word = this.words[i];
+        const testLine = curLineText ? `${curLineText} ${word}` : word;
+        const metrics = ctx.measureText(testLine);
 
-    for (let i = 0; i < totalWords; i++) {
-      const word = this.words[i];
-      const testLine = currentLineText ? `${currentLineText} ${word}` : word;
-      const metrics = ctx.measureText(testLine);
-
-      if (metrics.width > maxTextWidth && currentLineWords.length > 0) {
-        lines.push({ text: currentLineText, wordsInLine: currentLineWords });
-        currentLineWords = [{ word, index: i }];
-        currentLineText = word;
-      } else {
-        currentLineWords.push({ word, index: i });
-        currentLineText = testLine;
+        if (metrics.width > maxTextWidth && curLineWords.length > 0) {
+          res.push({ text: curLineText, wordsInLine: curLineWords });
+          curLineWords = [{ word, index: i }];
+          curLineText = word;
+        } else {
+          curLineWords.push({ word, index: i });
+          curLineText = testLine;
+        }
       }
-    }
-    if (currentLineWords.length > 0) {
-      lines.push({ text: currentLineText, wordsInLine: currentLineWords });
-    }
+      if (curLineWords.length > 0) {
+        res.push({ text: curLineText, wordsInLine: curLineWords });
+      }
+      return res;
+    };
 
-    const totalTextHeight = lines.length * lineHeight;
     const hasSecondary = Boolean(this.options.secondaryText && this.options.secondaryVersionName);
-
-    // Compute Plaque Height & Centering (Symmetrically balanced with prehead removed)
-    const topQuoteH = 48;
-    const spacingUnderQuote = 20;
-    const spacingUnderText = 24;
-    const dividerH = 24;
-    const refH = 38;
-    const versionH = 22;
-    const secondaryH = hasSecondary ? 46 : 0;
-    const plaquePaddingTop = 42;
-    const plaquePaddingBottom = 40;
-
-    const plaqueH =
-      plaquePaddingTop +
-      topQuoteH +
-      spacingUnderQuote +
-      totalTextHeight +
-      spacingUnderText +
-      dividerH +
-      refH +
-      versionH +
-      secondaryH +
-      plaquePaddingBottom;
-
-    const topSafeZone = 48;
-    const bottomSafeZone = 145; // Generous safe margin protecting 48-bar visualizer, progress rail & locked AduBible.org watermark
+    const topSafeZone = 54;
+    const bottomSafeZone = 150; // Protects 48-bar visualizer, progress rail & AduBible.org watermark
     const availableMidHeight = H - topSafeZone - bottomSafeZone;
+
+    // Fixed internal plaque spacing:
+    // Top padding (34) + Pill (44) + Space below pill (32) + Space below text (24) + Version badge (28) + Secondary (hasSecondary ? 44 : 0) + Bottom padding (34)
+    const fixedPlaqueContentH = 34 + 44 + 32 + 24 + 28 + (hasSecondary ? 44 : 0) + 34;
+
+    let lines = computeLines(fontSize);
+    let totalTextHeight = lines.length * lineHeight;
+
+    // Dynamic auto-fit: scale down font smoothly if long verse exceeds available vertical space
+    while (totalTextHeight + fixedPlaqueContentH > availableMidHeight && fontSize > 24) {
+      fontSize -= 2;
+      lineHeight = Math.round(fontSize * 1.55);
+      lines = computeLines(fontSize);
+      totalTextHeight = lines.length * lineHeight;
+    }
+
+    const plaqueH = totalTextHeight + fixedPlaqueContentH;
     const plaqueX = plaqueMargin;
-    const plaqueY = Math.max(topSafeZone + 10, topSafeZone + (availableMidHeight - plaqueH) / 2);
+    const plaqueY = Math.max(topSafeZone + 8, topSafeZone + Math.floor((availableMidHeight - plaqueH) / 2));
 
-    // 9. Central Illuminated Glassmorphic Scripture Plaque
+    // 9. Central Illuminated Glassmorphic Scripture Plaque (Slide Deck Style)
     ctx.save();
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.82)';
-    ctx.shadowBlur = 40;
-    ctx.shadowOffsetY = 14;
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.75)';
+    ctx.shadowBlur = 48;
+    ctx.shadowOffsetY = 16;
 
-    const plaqueGrad = ctx.createLinearGradient(0, plaqueY, 0, plaqueY + plaqueH);
-    plaqueGrad.addColorStop(0, 'rgba(12, 9, 6, 0.82)');
-    plaqueGrad.addColorStop(0.5, 'rgba(24, 18, 12, 0.88)');
-    plaqueGrad.addColorStop(1, 'rgba(12, 9, 6, 0.82)');
-    ctx.fillStyle = plaqueGrad;
-    drawRoundedRect(ctx, plaqueX, plaqueY, plaqueW, plaqueH, 28);
+    // Glassmorphic Plaque Fill
+    ctx.fillStyle = theme.cardBg;
+    drawRoundedRect(ctx, plaqueX, plaqueY, plaqueW, plaqueH, 26);
     ctx.fill();
-    ctx.shadowBlur = 0;
+
+    // Illuminated Outer Glow Border
+    ctx.shadowColor = theme.accentGlow;
+    ctx.shadowBlur = 24;
     ctx.shadowOffsetY = 0;
-
-    // Glowing Golden Filigree Plaque Border
-    ctx.strokeStyle = theme.accent;
-    ctx.lineWidth = 2.2;
-    ctx.globalAlpha = 0.65;
-    ctx.shadowColor = theme.accent;
-    ctx.shadowBlur = 12;
-    drawRoundedRect(ctx, plaqueX, plaqueY, plaqueW, plaqueH, 28);
+    ctx.strokeStyle = theme.cardBorder || theme.accent;
+    ctx.lineWidth = 1.8;
+    ctx.globalAlpha = 0.95;
+    drawRoundedRect(ctx, plaqueX, plaqueY, plaqueW, plaqueH, 26);
     ctx.stroke();
-    ctx.shadowBlur = 0;
 
-    // Inner Filigree Line
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.14)';
+    // Subtle Inner Highlight Rim
+    ctx.strokeStyle = theme.isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.12)';
     ctx.lineWidth = 1;
     ctx.globalAlpha = 0.45;
-    drawRoundedRect(ctx, plaqueX + 8, plaqueY + 8, plaqueW - 16, plaqueH - 16, 22);
+    drawRoundedRect(ctx, plaqueX + 6, plaqueY + 6, plaqueW - 12, plaqueH - 12, 20);
+    ctx.stroke();
+    ctx.restore();
+
+    // 10. Top Reference Pill Badge: [ BOOK • CH:VS ] (Slide Deck Signature)
+    ctx.save();
+    const pillH = 44;
+    const pillFontSize = 19;
+    ctx.font = `800 ${pillFontSize}px system-ui, -apple-system, sans-serif`;
+    const pillTextMetrics = ctx.measureText(pillLabel);
+    const pillW = pillTextMetrics.width + 56;
+    const pillX = (W - pillW) / 2;
+    const pillY = plaqueY + 34;
+
+    // Pill Background & Border
+    ctx.fillStyle = theme.badgeBg;
+    drawRoundedRect(ctx, pillX, pillY, pillW, pillH, pillH / 2);
+    ctx.fill();
+
+    ctx.strokeStyle = theme.accent;
+    ctx.lineWidth = 1.6;
+    ctx.globalAlpha = 0.9;
+    drawRoundedRect(ctx, pillX, pillY, pillW, pillH, pillH / 2);
     ctx.stroke();
 
-    // 4 Corner Gold Studs
-    const studR = 4;
-    const studOffset = 18;
-    ctx.fillStyle = theme.accent;
-    ctx.globalAlpha = 0.85;
-    [
-      [plaqueX + studOffset, plaqueY + studOffset],
-      [plaqueX + plaqueW - studOffset, plaqueY + studOffset],
-      [plaqueX + studOffset, plaqueY + plaqueH - studOffset],
-      [plaqueX + plaqueW - studOffset, plaqueY + plaqueH - studOffset],
-    ].forEach(([sx, sy]) => {
-      ctx.beginPath();
-      ctx.arc(sx, sy, studR, 0, Math.PI * 2);
-      ctx.fill();
-    });
-    ctx.restore();
-
-    // 10. Decorative Top Quote Mark Inside Plaque
-    ctx.save();
+    // Pill Text
     ctx.textAlign = 'center';
-    ctx.fillStyle = theme.accent;
-    ctx.font = '800 56px Georgia, serif';
-    ctx.globalAlpha = 0.85;
-    ctx.shadowColor = theme.accent;
-    ctx.shadowBlur = 16;
-    ctx.fillText('“', W / 2, plaqueY + plaquePaddingTop + 32);
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = theme.badgeText;
+    ctx.letterSpacing = '1.8px';
+    ctx.shadowColor = theme.accentGlow;
+    ctx.shadowBlur = 10;
+    ctx.fillText(pillLabel, W / 2, pillY + pillH / 2 + 1);
     ctx.restore();
 
-    // 10. Kinetic Typography Rendering (Ultra-Bold & Dynamic Spoken Highlighter)
+    // 11. Kinetic Typography Rendering (Natural Mixed-Case Serifs & Dynamic Highlighter)
     const textStartTime = 0.5;
     const speechDuration =
       this.speechBuffer && this.speechBuffer.duration > 1.0
@@ -723,7 +849,7 @@ export class StatusVideoRenderer {
       revealedWordCount = Math.min(totalWords, Math.max(1, revealedWordCount));
     }
 
-    const textStartY = plaqueY + plaquePaddingTop + topQuoteH + spacingUnderQuote + fontSize * 0.95;
+    const textStartY = pillY + pillH + 32 + fontSize * 0.88;
     const isHoldPhase = elapsed >= textEndTime;
 
     lines.forEach((lineObj, lineIdx) => {
@@ -750,14 +876,14 @@ export class StatusVideoRenderer {
         ctx.textAlign = 'left';
 
         if (isHoldPhase) {
-          // Final holding climax: synchronized pure luminous light
+          // Final holding climax: luminous light
           const holdPulse = Math.sin((elapsed - textEndTime) * 3.5) * 0.05;
           ctx.globalAlpha = 0.98 + holdPulse;
-          ctx.fillStyle = '#ffffff';
-          ctx.shadowColor = theme.accent;
+          ctx.fillStyle = theme.textMain;
+          ctx.shadowColor = theme.accentGlow;
           ctx.shadowBlur = 18;
         } else if (isCurrentActive) {
-          // Radiant Spoken Word: Golden Highlighter Pill & Intense Beam
+          // Radiant Spoken Word: Highlighter Pill & Luminous Glow
           const pillPad = 8;
           ctx.fillStyle = theme.accentGlow;
           drawRoundedRect(
@@ -787,17 +913,16 @@ export class StatusVideoRenderer {
           ctx.lineTo(curX + item.width + 2, lineY + 6);
           ctx.stroke();
         } else if (isRevealed) {
-          // Spoken/Read Word: Brilliant Solid White with dark edge outline for maximum punch
+          // Spoken/Read Word: Brilliant Solid textMain with crisp shadow
           ctx.globalAlpha = 1.0;
-          ctx.fillStyle = '#ffffff';
-          ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
+          ctx.fillStyle = theme.textMain;
+          ctx.shadowColor = theme.isLight ? 'rgba(0,0,0,0.15)' : 'rgba(0, 0, 0, 0.85)';
           ctx.shadowBlur = 14;
         } else {
           // Upcoming Word: 100% VISIBLE, CRISP, AND LEGIBLE FROM FRAME 0!
-          // High contrast bright ivory with strong drop shadow so verse text never vanishes
           ctx.globalAlpha = 0.88;
-          ctx.fillStyle = '#f8fafc';
-          ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+          ctx.fillStyle = theme.textMain;
+          ctx.shadowColor = theme.isLight ? 'rgba(0,0,0,0.1)' : 'rgba(0, 0, 0, 0.75)';
           ctx.shadowBlur = 10;
         }
 
@@ -808,46 +933,26 @@ export class StatusVideoRenderer {
       });
     });
 
-    // 12. Ornate Golden Divider
-    const dividerY = textStartY + totalTextHeight + spacingUnderText - 4;
+    // 12. Translation Badge (Inside Plaque Footer)
+    const versionY = textStartY + totalTextHeight + 24;
     ctx.save();
     ctx.textAlign = 'center';
+    ctx.font = '800 14px system-ui, -apple-system, sans-serif';
     ctx.fillStyle = theme.accent;
-    ctx.font = '700 16px sans-serif';
-    ctx.letterSpacing = '5px';
-    ctx.globalAlpha = 0.75;
-    ctx.fillText('━━━━ ✦ ━━━━', W / 2, dividerY);
-    ctx.restore();
-
-    // 13. Scripture Reference Cartouche (Bold & Authoritative)
-    const refY = dividerY + refH;
-    ctx.save();
-    ctx.textAlign = 'center';
-    ctx.fillStyle = theme.accent;
-    ctx.font = '800 32px "Cinzel", Georgia, serif';
-    ctx.letterSpacing = '4.5px';
-    ctx.shadowColor = theme.accent;
-    ctx.shadowBlur = 14;
-    ctx.fillText(`✦ ${this.options.reference.toUpperCase()} ✦`, W / 2, refY);
-    ctx.shadowBlur = 0;
-
-    // Translation name badge
-    ctx.font = '800 13.5px sans-serif';
-    ctx.fillStyle = theme.textSub;
     ctx.letterSpacing = '3px';
     ctx.globalAlpha = 0.9;
-    const versionLabel = `${this.options.versionName.toUpperCase()} • PARALLEL REEL`;
-    ctx.fillText(versionLabel, W / 2, refY + versionH);
+    const versionLabel = `${this.options.versionName.toUpperCase()} • SCRIPTURE REEL`;
+    ctx.fillText(versionLabel, W / 2, versionY);
     ctx.restore();
 
-    // 14. Secondary Translation Excerpt (if parallel study selected)
+    // 13. Secondary Translation Excerpt (if parallel study selected)
     if (hasSecondary && this.options.secondaryText) {
-      const secY = refY + versionH + 34;
+      const secY = versionY + 28;
       ctx.save();
       ctx.textAlign = 'center';
       ctx.fillStyle = theme.textSub;
       ctx.globalAlpha = Math.min(0.9, Math.max(0, (elapsed - 1.8) / 1.5));
-      ctx.font = 'italic 18px Georgia, serif';
+      ctx.font = 'italic 18px "Georgia", serif';
       const cleanSec = this.options.secondaryText.slice(0, 85).trim();
       const secExcerpt = `"${cleanSec}..." — ${this.options.secondaryVersionName}`;
       ctx.fillText(secExcerpt, W / 2, secY);
@@ -1084,33 +1189,33 @@ export class StatusVideoRenderer {
   }
 
   /**
-   * Regal Outer Hairline Frame & Corner Fleurons
+   * Regal Outer Hairline Frame & Corner Fleurons (Subtle & Non-Intrusive)
    */
   private drawRegalOuterFrame(W: number, H: number, theme: StatusVideoTheme): void {
     const ctx = this.ctx;
-    const frameInset = 34;
+    const frameInset = 28;
 
     ctx.save();
     ctx.strokeStyle = theme.accent;
-    ctx.lineWidth = 1.5;
-    ctx.globalAlpha = 0.4;
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.22;
     ctx.strokeRect(frameInset, frameInset, W - frameInset * 2, H - frameInset * 2);
 
     // Inner hairline
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
     ctx.lineWidth = 1;
     ctx.strokeRect(
-      frameInset + 8,
-      frameInset + 8,
-      W - (frameInset + 8) * 2,
-      H - (frameInset + 8) * 2
+      frameInset + 6,
+      frameInset + 6,
+      W - (frameInset + 6) * 2,
+      H - (frameInset + 6) * 2
     );
 
-    // 4 Corner Brackets
-    const cornerSize = 34;
+    // 4 Corner Accents
+    const cornerSize = 24;
     ctx.strokeStyle = theme.accent;
-    ctx.lineWidth = 3.5;
-    ctx.globalAlpha = 0.88;
+    ctx.lineWidth = 2;
+    ctx.globalAlpha = 0.55;
 
     // Top-Left
     ctx.beginPath();
@@ -1266,11 +1371,11 @@ export class StatusVideoRenderer {
     // Permanent Locked Watermark: AduBible.org
     ctx.globalAlpha = watermarkPulse;
     ctx.fillStyle = theme.accent;
-    ctx.font = '800 15px "Cinzel", Georgia, serif';
-    ctx.letterSpacing = '3px';
+    ctx.font = '800 15px system-ui, -apple-system, sans-serif';
+    ctx.letterSpacing = '2.5px';
     ctx.shadowColor = theme.accent;
-    ctx.shadowBlur = 12;
-    ctx.fillText('✦ AduBible.org® ✦', W / 2, watermarkY + 5.5);
+    ctx.shadowBlur = 10;
+    ctx.fillText('AduBible.org', W / 2, watermarkY + 5.5);
 
     ctx.restore();
   }
