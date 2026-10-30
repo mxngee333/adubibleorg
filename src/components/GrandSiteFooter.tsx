@@ -807,7 +807,7 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
 
         <div className="footer-copy">
           <span className="footer-copy-seg">
-            © {new Date().getFullYear()} <strong>AduBible</strong> (<a href="https://adubible.org/">adubible.org</a>)
+            © {new Date().getFullYear()}&nbsp;<a href="https://adubible.org/"><strong>AduBible.org</strong></a>
           </span>
           <span className="footer-copy-sep">·</span>
           <span className="footer-copy-seg">

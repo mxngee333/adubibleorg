@@ -151,7 +151,7 @@ export async function subscribeToNewsletter(
           <!-- Minimal Footer with Brand Colors -->
           <tr>
             <td style="padding: 16px 28px; background-color: #f6f8f5; border-top: 1px solid #edf2eb; text-align: center; font-size: 11px; color: #8E968D; line-height: 1.5;">
-              © ${new Date().getFullYear()} AduBible (<a href="https://adubible.org" style="color: #8EA486; text-decoration: none;">adubible.org</a>) · Dedicated to Humanity · 100% Ads-Free Covenant.
+              © ${new Date().getFullYear()} <a href="https://adubible.org" style="color: #8EA486; text-decoration: none; font-weight: 700;">AduBible.org</a> · Dedicated to Humanity · 100% Ads-Free Covenant.
             </td>
           </tr>
         </table>
