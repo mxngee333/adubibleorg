@@ -452,32 +452,12 @@ export class StatusVideoRenderer {
     // 6. Regal Outer Frame & Corner Brackets
     this.drawRegalOuterFrame(W, H, theme);
 
-    // 7. Top Sanctuary Masthead
-    const headerFade = Math.min(1.0, elapsed / 0.5);
-    ctx.save();
-    ctx.globalAlpha = headerFade;
-    ctx.textAlign = 'center';
-    ctx.fillStyle = theme.accent;
-    ctx.font = '800 16px "Cinzel", Georgia, serif';
-    ctx.letterSpacing = '5px';
-    ctx.shadowColor = theme.accent;
-    ctx.shadowBlur = 10;
-    ctx.fillText('✦ ADUBIBLE • SCRIPTURE SANCTUARY ✦', W / 2, 74);
-    ctx.shadowBlur = 0;
-
-    ctx.font = '700 11.5px sans-serif';
-    ctx.fillStyle = theme.textSub;
-    ctx.letterSpacing = '3px';
-    ctx.globalAlpha = headerFade * 0.85;
-    ctx.fillText('THE LIVING WORD • 10S VIDEO REEL', W / 2, 98);
-    ctx.restore();
-
-    // 8. Calculate Bold Typography & Kinetic Plaque Dimensions
+    // 7. Calculate Bold Typography & Kinetic Plaque Dimensions
     const plaqueMargin = Math.max(46, Math.floor(W * 0.055));
     const plaqueW = W - plaqueMargin * 2;
     const maxTextWidth = plaqueW - 96;
 
-    // Dynamic High-Impact Font Sizing (Tuned for maximum readability on small mobile screens)
+    // Dynamic High-Impact Font Sizing (Tuned for maximum readability on mobile screens)
     const textLen = this.options.verseText.length;
     let fontSize = 48;
     if (textLen < 60) fontSize = 58;
@@ -522,7 +502,7 @@ export class StatusVideoRenderer {
     const totalTextHeight = lines.length * lineHeight;
     const hasSecondary = Boolean(this.options.secondaryText && this.options.secondaryVersionName);
 
-    // Compute Plaque Height & Centering
+    // Compute Plaque Height & Centering (Symmetrically balanced with prehead removed)
     const topQuoteH = 48;
     const spacingUnderQuote = 20;
     const spacingUnderText = 24;
@@ -545,8 +525,8 @@ export class StatusVideoRenderer {
       secondaryH +
       plaquePaddingBottom;
 
-    const topSafeZone = 124;
-    const bottomSafeZone = 200;
+    const topSafeZone = 48;
+    const bottomSafeZone = 110;
     const availableMidHeight = H - topSafeZone - bottomSafeZone;
     const plaqueX = plaqueMargin;
     const plaqueY = Math.max(topSafeZone + 8, topSafeZone + (availableMidHeight - plaqueH) / 2);
@@ -612,9 +592,13 @@ export class StatusVideoRenderer {
     ctx.fillText('“', W / 2, plaqueY + plaquePaddingTop + 32);
     ctx.restore();
 
-    // 11. Kinetic Typography Rendering (Ultra-Bold & Dynamic Spoken Highlighter)
+    // 10. Kinetic Typography Rendering (Ultra-Bold & Dynamic Spoken Highlighter)
     const textStartTime = 0.6;
-    const textEndTime = 8.5;
+    const speechDuration =
+      this.speechBuffer && this.speechBuffer.duration > 1.5
+        ? Math.min(this.duration - 1.2, this.speechBuffer.duration)
+        : Math.min(this.duration - 1.5, Math.max(4.0, totalWords * 0.38));
+    const textEndTime = Math.min(this.duration - 0.8, textStartTime + speechDuration);
     const activeTextDuration = textEndTime - textStartTime;
 
     let revealedWordCount = totalWords;
@@ -653,12 +637,12 @@ export class StatusVideoRenderer {
         ctx.textAlign = 'left';
 
         if (isHoldPhase) {
-          // Final holding climax: synchronized pure light
-          const holdPulse = Math.sin((elapsed - textEndTime) * 3.5) * 0.06;
+          // Final holding climax: synchronized pure luminous light
+          const holdPulse = Math.sin((elapsed - textEndTime) * 3.5) * 0.05;
           ctx.globalAlpha = 0.98 + holdPulse;
           ctx.fillStyle = '#ffffff';
           ctx.shadowColor = theme.accent;
-          ctx.shadowBlur = 16;
+          ctx.shadowBlur = 18;
         } else if (isCurrentActive) {
           // Radiant Spoken Word: Golden Highlighter Pill & Intense Beam
           const pillPad = 8;
@@ -674,7 +658,7 @@ export class StatusVideoRenderer {
           ctx.fill();
 
           ctx.strokeStyle = theme.accent;
-          ctx.lineWidth = 1.5;
+          ctx.lineWidth = 1.8;
           ctx.stroke();
 
           ctx.globalAlpha = 1.0;
@@ -694,11 +678,14 @@ export class StatusVideoRenderer {
           ctx.globalAlpha = 1.0;
           ctx.fillStyle = '#ffffff';
           ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
-          ctx.shadowBlur = 12;
+          ctx.shadowBlur = 14;
         } else {
-          // Upcoming Word: Legible muted parchment
-          ctx.globalAlpha = 0.38;
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+          // Upcoming Word: 100% VISIBLE, CRISP, AND LEGIBLE FROM FRAME 0!
+          // High contrast bright ivory with strong drop shadow so verse text never vanishes
+          ctx.globalAlpha = 0.88;
+          ctx.fillStyle = '#f8fafc';
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+          ctx.shadowBlur = 10;
         }
 
         ctx.fillText(item.word, curX, lineY);
@@ -1060,7 +1047,7 @@ export class StatusVideoRenderer {
 
   /**
    * Official Luxury Permanent Watermark of AduBible.org
-   * Guarantees that when shared to WhatsApp Status, Facebook, X, or TikTok, viewers immediately see Adubible.org!
+   * Centered, crystal-clear, unbloated branding for WhatsApp, TikTok, Instagram & Shorts
    */
   private drawLuxuryWatermark(
     W: number,
@@ -1069,16 +1056,16 @@ export class StatusVideoRenderer {
     elapsed: number
   ): void {
     const ctx = this.ctx;
-    const watermarkY = H - 42;
-    const watermarkPulse = 0.94 + Math.sin(elapsed * 2) * 0.06;
+    const watermarkY = H - 38;
+    const watermarkPulse = 0.94 + Math.sin(elapsed * 2.5) * 0.06;
 
     ctx.save();
     ctx.textAlign = 'center';
 
-    const pillWidth = 380;
+    const pillWidth = 230;
     const pillHeight = 36;
     const pillX = (W - pillWidth) / 2;
-    const pillY = watermarkY - 24;
+    const pillY = watermarkY - 18;
 
     // Dark glass pill backdrop
     ctx.fillStyle = 'rgba(0, 0, 0, 0.72)';
@@ -1095,22 +1082,14 @@ export class StatusVideoRenderer {
     ctx.stroke();
     ctx.shadowBlur = 0;
 
-    // Main Brand: ADUBIBLE.ORG
+    // Adu Bible at footer : AduBible.org
     ctx.globalAlpha = watermarkPulse;
     ctx.fillStyle = theme.accent;
-    ctx.font = '800 13px "Cinzel", Georgia, serif';
-    ctx.letterSpacing = '3px';
+    ctx.font = '800 16px "Cinzel", Georgia, serif';
+    ctx.letterSpacing = '2.5px';
     ctx.shadowColor = theme.accent;
     ctx.shadowBlur = 10;
-    ctx.fillText('✦ ADUBIBLE.ORG • FREE SCRIPTURE SANCTUARY ✦', W / 2, watermarkY - 5);
-    ctx.shadowBlur = 0;
-
-    // Subtitle tagline
-    ctx.font = '700 9.5px sans-serif';
-    ctx.fillStyle = theme.textSub;
-    ctx.letterSpacing = '1.2px';
-    ctx.globalAlpha = 0.9;
-    ctx.fillText('Read & Listen in 35+ Global Languages • 100% Free Forever', W / 2, watermarkY + 9);
+    ctx.fillText('AduBible.org', W / 2, watermarkY + 6);
 
     ctx.restore();
   }

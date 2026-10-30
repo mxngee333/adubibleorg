@@ -341,7 +341,10 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
 
   useEffect(() => {
     if (isOpen) {
-      handlePreloadAudio();
+      const timer = setTimeout(() => {
+        handlePreloadAudio();
+      }, 450);
+      return () => clearTimeout(timer);
     }
   }, [isOpen, verseText, voiceName, handlePreloadAudio]);
 

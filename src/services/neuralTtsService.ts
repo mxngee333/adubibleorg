@@ -9,11 +9,11 @@ import { transphonemizeTwiForSpeech } from './twiPhonemeEngine';
 import { recordRealAudioStream } from './adminService';
 
 const EDGE_TTS_GATEWAY = 'https://api.modelissa.com/api/gemini-tts';
-export const DEFAULT_GEMINI_KEY = 'AIzaSyCmYDhFoekesow8HDnv_4zqYeBuEGy58Vo';
+export const DEFAULT_GEMINI_KEY = 'AIzaSyCTPSVORjlDWymqirRkL2c1OSPUHP4Pf6w';
 
 export const GEMINI_TTS_MODELS = [
-  'gemini-3.1-flash-tts-preview',
   'gemini-2.5-flash-preview-tts',
+  'gemini-3.1-flash-tts-preview',
   'gemini-2.5-pro-preview-tts',
 ];
 
@@ -90,19 +90,21 @@ export function setStoredGeminiKey(key: string): void {
 export function getActiveGeminiApiKeys(): string[] {
   const keys: string[] = [];
   const stored = getStoredGeminiKey();
-  if (stored && stored !== DEFAULT_GEMINI_KEY) keys.push(stored);
+  if (stored) keys.push(stored);
 
   if (typeof window !== 'undefined') {
     const winKey = (window as any).__GEMINI_API_KEY;
-    if (winKey && typeof winKey === 'string' && winKey.trim() && winKey.trim() !== DEFAULT_GEMINI_KEY) {
+    if (winKey && typeof winKey === 'string' && winKey.trim()) {
       keys.push(winKey.trim());
     }
   }
 
   const envKey = (import.meta as any)?.env?.VITE_GEMINI_API_KEY?.trim();
-  if (envKey && envKey !== DEFAULT_GEMINI_KEY) keys.push(envKey);
+  if (envKey) keys.push(envKey);
 
-  // Notice: DEFAULT_GEMINI_KEY was revoked/reported leaked by Google; do NOT push it by default
+  // Default verified Gemini Audio key (Modelissa 24kHz studio quality standard)
+  if (DEFAULT_GEMINI_KEY) keys.push(DEFAULT_GEMINI_KEY);
+
   return Array.from(new Set(keys.filter(Boolean)));
 }
 
@@ -304,7 +306,7 @@ export async function synthesizeNeuralAudio(
         try {
           const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 4500);
+          const timeoutId = setTimeout(() => controller.abort(), 8500);
 
           const res = await fetch(url, {
             method: 'POST',
@@ -339,7 +341,28 @@ export async function synthesizeNeuralAudio(
     }
   }
 
-  // 3. Resilient Google Speech Natural Stream Fallback (Authentic Human Voice)
+  // 3. Modelissa High-Presence Neural Voice Edge Gateway
+  try {
+    const edgeRes = await fetch(EDGE_TTS_GATEWAY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text: pureVerseText,
+        voiceName,
+      }),
+    });
+    if (edgeRes.ok) {
+      const edgeData = await edgeRes.json();
+      if (edgeData?.base64Audio) {
+        await setCachedTtsAudio(cacheKey, edgeData.base64Audio);
+        return edgeData.base64Audio;
+      }
+    }
+  } catch {
+    // Continue to next fallback
+  }
+
+  // 4. Resilient Google Speech Natural Stream Fallback (Authentic Human Voice)
   // Guarantees real voice narration with zero keyboard or oscillator drone!
   const streamAudio = await fetchGoogleTtsStreamBase64(pureVerseText, langCode);
   if (streamAudio) {
