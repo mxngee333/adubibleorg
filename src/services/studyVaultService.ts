@@ -397,25 +397,163 @@ export function savePreferences(prefs: ReadingPreferences): void {
 }
 
 export interface ReadingHistoryEntry {
+  id?: string;
   bookId: string;
   bookSlug: string;
+  bookName?: string;
   chapter: number;
+  verse?: number;
+  verseText?: string;
   versionId: string;
+  version?: string;
+  query?: string;
   timestamp: number;
+  testament?: 'OT' | 'NT' | 'DC' | 'PSEUD';
+  category?: string;
+  source?: 'search' | 'read' | 'navigator';
 }
 
-export function recordReadingHistory(entry: ReadingHistoryEntry): ReadingHistoryEntry[] {
-  const existing = readJsonList<ReadingHistoryEntry>(LS_HISTORY, []);
-  const filtered = existing.filter(
-    (item) => !(item.bookId === entry.bookId && item.chapter === entry.chapter)
-  );
-  const next = [entry, ...filtered].slice(0, 30);
+export function recordReadingHistory(
+  entry: Partial<ReadingHistoryEntry> & { bookSlug: string; chapter: number }
+): ReadingHistoryEntry[] {
+  const existing = getReadingHistory();
+  const entryId =
+    entry.id || `${entry.bookSlug}_${entry.chapter}_${entry.verse || 0}_${Date.now()}`;
+  const fullEntry: ReadingHistoryEntry = {
+    id: entryId,
+    bookId: entry.bookId || entry.bookSlug,
+    bookSlug: entry.bookSlug,
+    bookName: entry.bookName || '',
+    chapter: entry.chapter,
+    verse: entry.verse,
+    verseText: entry.verseText,
+    versionId: entry.versionId || (entry.version ? entry.version.toLowerCase() : 'nkjv'),
+    version: entry.version || (entry.versionId ? entry.versionId.toUpperCase() : 'NKJV'),
+    query: entry.query,
+    timestamp: entry.timestamp || Date.now(),
+    testament: entry.testament,
+    category: entry.category,
+    source: entry.source || 'read',
+  };
+
+  // Deduplicate: remove older duplicate for the same book and chapter/query
+  const filtered = existing.filter((item) => {
+    if (
+      entry.query &&
+      item.query &&
+      item.query.trim().toLowerCase() === entry.query.trim().toLowerCase()
+    ) {
+      return false;
+    }
+    return !(
+      item.bookSlug === entry.bookSlug &&
+      item.chapter === entry.chapter &&
+      (item.verse === entry.verse || !entry.verse)
+    );
+  });
+
+  // Strict Rule: RECENT COMES FIRST (newest item unshifted to index 0)
+  const next = [fullEntry, ...filtered].slice(0, 100);
+
+  // 1. Dual LocalStorage persistence (instant 0ms offline)
   writeJsonList(LS_HISTORY, next);
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem('adubible_history_searches_v2', JSON.stringify(next));
+    } catch {
+      // ignore
+    }
+    window.dispatchEvent(new CustomEvent('adubible_history_updated', { detail: next }));
+  }
+
+  // 2. R2 & Cloud Vault Sync
+  syncHistoryToCloudVault(next).catch(() => {});
+
   return next;
 }
 
 export function getReadingHistory(): ReadingHistoryEntry[] {
-  return readJsonList<ReadingHistoryEntry>(LS_HISTORY, []);
+  if (typeof window === 'undefined') return [];
+  try {
+    const rawV2 = localStorage.getItem('adubible_history_searches_v2');
+    if (rawV2) {
+      const parsed = JSON.parse(rawV2);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.sort((a, b) => b.timestamp - a.timestamp);
+      }
+    }
+  } catch {
+    // fallback
+  }
+  const legacy = readJsonList<ReadingHistoryEntry>(LS_HISTORY, []);
+  return legacy.sort((a, b) => b.timestamp - a.timestamp);
+}
+
+export function clearReadingHistory(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem(LS_HISTORY);
+    localStorage.removeItem('adubible_history_searches_v2');
+    window.dispatchEvent(new CustomEvent('adubible_history_updated', { detail: [] }));
+  } catch {
+    // ignore
+  }
+  syncHistoryToCloudVault([]).catch(() => {});
+}
+
+export function deleteReadingHistoryItem(idOrKey: string): ReadingHistoryEntry[] {
+  const current = getReadingHistory();
+  const next = current.filter((item) => {
+    if (item.id && item.id === idOrKey) return false;
+    const key = `${item.bookSlug}_${item.chapter}`;
+    return key !== idOrKey;
+  });
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem('adubible_history_searches_v2', JSON.stringify(next));
+      localStorage.setItem(LS_HISTORY, JSON.stringify(next));
+      window.dispatchEvent(new CustomEvent('adubible_history_updated', { detail: next }));
+    } catch {
+      // ignore
+    }
+  }
+  syncHistoryToCloudVault(next).catch(() => {});
+  return next;
+}
+
+export async function syncHistoryToCloudVault(history: ReadingHistoryEntry[]): Promise<boolean> {
+  if (typeof window === 'undefined') return false;
+  try {
+    // A. Backup to IndexedDB Vault
+    const db = await openVaultDB();
+    const tx = db.transaction(STORE_CHAPTERS, 'readwrite');
+    const store = tx.objectStore(STORE_CHAPTERS);
+    store.put({
+      cacheKey: '__cloud_history_backup__',
+      data: history,
+      updatedAt: Date.now(),
+    });
+
+    // B. Cloudflare R2 / Serverless Cloud Sync (if configured)
+    const cloudSyncEndpoint =
+      (typeof import.meta !== 'undefined' && import.meta.env?.VITE_R2_SCRIPTURE_URL)
+        ? `${import.meta.env.VITE_R2_SCRIPTURE_URL}/sync/history`
+        : null;
+
+    if (cloudSyncEndpoint && navigator.onLine) {
+      fetch(cloudSyncEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ history, timestamp: Date.now() }),
+      }).catch(() => {
+        // Safe offline fallback
+      });
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**

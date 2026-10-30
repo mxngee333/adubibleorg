@@ -1,8 +1,50 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { X, Search, BookOpen, Sparkles, ChevronRight, Compass, Loader2, Quote, ArrowRight } from 'lucide-react';
+import {
+  X,
+  Search,
+  BookOpen,
+  Sparkles,
+  ChevronRight,
+  Compass,
+  Loader2,
+  Quote,
+  ArrowRight,
+  Clock,
+  Trash2,
+  Cloud,
+} from 'lucide-react';
 import { BibleBook } from '../types/bible';
 import { parsePassageQuery, findBookByQuery, ParsedPassage } from '../services/passageService';
 import { searchScripture, BibleSearchResult } from '../services/scriptureSearchService';
+import {
+  ReadingHistoryEntry,
+  getReadingHistory,
+  recordReadingHistory,
+  clearReadingHistory,
+  deleteReadingHistoryItem,
+} from '../services/studyVaultService';
+
+function formatRelativeTime(timestamp: number): string {
+  if (!timestamp) return 'Recently';
+  const elapsedSeconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
+  if (elapsedSeconds < 45) return 'Just now';
+  if (elapsedSeconds < 3600) {
+    const mins = Math.floor(elapsedSeconds / 60);
+    return `${mins}m ago`;
+  }
+  if (elapsedSeconds < 86400) {
+    const hours = Math.floor(elapsedSeconds / 3600);
+    return `${hours}h ago`;
+  }
+  if (elapsedSeconds < 604800) {
+    const days = Math.floor(elapsedSeconds / 86400);
+    return `${days}d ago`;
+  }
+  return new Date(timestamp).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+  });
+}
 
 interface BookChapterSelectorModalProps {
   isOpen: boolean;
@@ -11,7 +53,7 @@ interface BookChapterSelectorModalProps {
   currentBookId: string;
   currentChapter: number;
   uiLanguageCode: string;
-  initialTestamentFilter?: 'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD';
+  initialTestamentFilter?: 'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD' | 'HISTORY';
   activeVersionId?: string;
   onSelectBookChapter: (bookSlug: string, chapter: number, targetVerse?: number) => void;
 }
@@ -27,7 +69,9 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
   activeVersionId = 'nkjv',
   onSelectBookChapter,
 }) => {
-  const [testamentFilter, setTestamentFilter] = useState<'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD'>('CANONICAL');
+  const [testamentFilter, setTestamentFilter] = useState<
+    'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD' | 'HISTORY'
+  >('CANONICAL');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBook, setSelectedBook] = useState<BibleBook | null>(
     () => books.find((b) => b.id === currentBookId) || books[0] || null
@@ -35,12 +79,49 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
   const [step, setStep] = useState<'books' | 'chapters'>('books');
   const [liveVerses, setLiveVerses] = useState<BibleSearchResult[]>([]);
   const [isSearchingScripture, setIsSearchingScripture] = useState(false);
+  const [historyList, setHistoryList] = useState<ReadingHistoryEntry[]>(() => getReadingHistory());
+  const [clearingHistory, setClearingHistory] = useState<boolean>(false);
+
+  // Real-time listener for reading and search history updates
+  useEffect(() => {
+    const handleHistoryUpdate = () => {
+      setHistoryList(getReadingHistory());
+    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('adubible_history_updated', handleHistoryUpdate);
+      return () => {
+        window.removeEventListener('adubible_history_updated', handleHistoryUpdate);
+      };
+    }
+  }, []);
 
   // 1. Universal Scripture Reference Parser (handles "Psalm 3:3", "psalm 3 3", "psam 3;3", "1 cor 13 4", "psalm 3", etc.)
   const parsedPassage: ParsedPassage | null = useMemo(() => {
     if (!searchQuery.trim()) return null;
     return parsePassageQuery(searchQuery, books);
   }, [searchQuery, books]);
+
+  // 1b. Real-time Filtered History (Recent comes first)
+  const filteredHistory = useMemo(() => {
+    if (!searchQuery.trim()) return historyList;
+    const q = searchQuery.toLowerCase().trim();
+    return historyList.filter((item) => {
+      const bName = (item.bookName || '').toLowerCase();
+      const bSlug = (item.bookSlug || '').toLowerCase();
+      const vText = (item.verseText || '').toLowerCase();
+      const query = (item.query || '').toLowerCase();
+      const vTag = (item.version || '').toLowerCase();
+      const ref = `${item.bookName || ''} ${item.chapter || ''}${item.verse ? `:${item.verse}` : ''}`.toLowerCase();
+      return (
+        bName.includes(q) ||
+        bSlug.includes(q) ||
+        vText.includes(q) ||
+        query.includes(q) ||
+        vTag.includes(q) ||
+        ref.includes(q)
+      );
+    });
+  }, [historyList, searchQuery]);
 
   // Keep selectedBook synced when user types a valid passage query
   useEffect(() => {
@@ -52,8 +133,11 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
   // Reset state on modal open
   useEffect(() => {
     if (isOpen) {
+      setHistoryList(getReadingHistory());
       const cur = books.find((b) => b.id === currentBookId);
-      if (cur?.testament === 'DC') {
+      if (initialTestamentFilter === 'HISTORY') {
+        setTestamentFilter('HISTORY');
+      } else if (cur?.testament === 'DC') {
         setTestamentFilter('DC');
       } else if (cur?.testament === 'PSEUD') {
         setTestamentFilter('PSEUD');
@@ -205,6 +289,11 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
           title: '👑 Complete 107 Holy Scriptures Library',
           desc: 'Accepted Canon (66) + Deuterocanon (16) + Ancient Apocrypha (25)',
         };
+      case 'HISTORY':
+        return {
+          title: '🕒 Scripture Search & Reading History',
+          desc: 'Recent scripture searches & visited passages (Newest first) · Synced to LocalStorage & R2 Cloud Vault',
+        };
       default:
         return {
           title: 'Holy Bible · 66 Canonical Books Navigator',
@@ -327,6 +416,33 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
             >
               All (107)
             </button>
+            <button
+              type="button"
+              onClick={() => {
+                setTestamentFilter('HISTORY');
+                setStep('books');
+              }}
+              className={`rounded-xl px-2.5 py-1 text-xs font-bold transition flex items-center gap-1.5 ${
+                testamentFilter === 'HISTORY'
+                  ? 'bg-amber-500 text-stone-950 font-black shadow-md ring-2 ring-amber-400/40'
+                  : 'bg-[var(--soft)] text-amber-300 hover:opacity-85 border border-amber-500/30'
+              }`}
+              title="Recent Scripture Search & Reading History (LocalStorage & R2 Synced)"
+            >
+              <Clock className="h-3.5 w-3.5" />
+              <span>History</span>
+              {historyList.length > 0 && (
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                    testamentFilter === 'HISTORY'
+                      ? 'bg-stone-950 text-amber-300'
+                      : 'bg-amber-500/20 text-amber-300'
+                  }`}
+                >
+                  {historyList.length}
+                </span>
+              )}
+            </button>
           </div>
 
           <div className="relative w-full lg:max-w-sm">
@@ -347,6 +463,20 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                 if (e.key === 'Enter') {
                   e.preventDefault();
                   if (parsedPassage) {
+                    recordReadingHistory({
+                      bookSlug: parsedPassage.book.slug,
+                      bookName:
+                        uiLanguageCode !== 'en' && parsedPassage.book.names[uiLanguageCode]
+                          ? parsedPassage.book.names[uiLanguageCode]
+                          : parsedPassage.book.names.en,
+                      chapter: parsedPassage.chapter,
+                      verse: parsedPassage.verse,
+                      testament: parsedPassage.book.testament,
+                      category: parsedPassage.book.category,
+                      version: (activeVersionId || 'nkjv').toUpperCase(),
+                      source: 'search',
+                      query: searchQuery.trim() || undefined,
+                    });
                     onSelectBookChapter(
                       parsedPassage.book.slug,
                       parsedPassage.chapter,
@@ -355,6 +485,17 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                     onClose();
                   } else if (liveVerses.length > 0) {
                     const first = liveVerses[0];
+                    recordReadingHistory({
+                      bookSlug: first.bookSlug,
+                      bookName: first.reference.replace(/\s+\d+.*$/, '') || first.bookSlug,
+                      chapter: first.chapter,
+                      verse: first.verse,
+                      verseText: first.text,
+                      category: first.category,
+                      version: (activeVersionId || 'nkjv').toUpperCase(),
+                      source: 'search',
+                      query: searchQuery.trim() || undefined,
+                    });
                     onSelectBookChapter(first.bookSlug, first.chapter, first.verse);
                     onClose();
                   } else if (filteredBooks.length === 1) {
@@ -363,7 +504,11 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                   }
                 }
               }}
-              placeholder="Search book, passage, or verse text (e.g. Psalm 3:3, peace)..."
+              placeholder={
+                testamentFilter === 'HISTORY'
+                  ? 'Filter scripture search & reading history...'
+                  : 'Search book, passage, or verse text (e.g. Psalm 3:3, peace)...'
+              }
               className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] pl-9 pr-8 py-2 text-sm sm:text-xs text-[var(--ink)] placeholder-[var(--subtle)] focus:border-[var(--green)] focus:outline-none min-h-[38px]"
             />
             {searchQuery && (
@@ -407,6 +552,20 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
             <button
               type="button"
               onClick={() => {
+                recordReadingHistory({
+                  bookSlug: parsedPassage.book.slug,
+                  bookName:
+                    uiLanguageCode !== 'en' && parsedPassage.book.names[uiLanguageCode]
+                      ? parsedPassage.book.names[uiLanguageCode]
+                      : parsedPassage.book.names.en,
+                  chapter: parsedPassage.chapter,
+                  verse: parsedPassage.verse,
+                  testament: parsedPassage.book.testament,
+                  category: parsedPassage.book.category,
+                  version: (activeVersionId || 'nkjv').toUpperCase(),
+                  source: 'search',
+                  query: searchQuery.trim() || undefined,
+                });
                 onSelectBookChapter(
                   parsedPassage.book.slug,
                   parsedPassage.chapter,
@@ -423,31 +582,266 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
         )}
 
         {/* Mobile Step Toggle */}
-        <div className="flex md:hidden border-b border-[var(--line)] bg-[var(--surface)] px-4 py-2 text-xs shrink-0 items-center justify-between">
-          <div className="flex items-center">
-            <button
-              onClick={() => setStep('books')}
-              className={`font-bold transition ${step === 'books' ? 'text-[var(--green)] underline underline-offset-4' : 'text-[var(--subtle)]'}`}
-            >
-              1. {searchQuery ? 'Results' : 'Select Book'} ({uiLanguageCode !== 'en' && activeBook?.names[uiLanguageCode] ? activeBook.names[uiLanguageCode] : activeBook?.names.en})
-            </button>
-            <ChevronRight className="h-4 w-4 mx-1.5 text-[var(--subtle)]" />
-            <button
-              onClick={() => setStep('chapters')}
-              className={`font-bold transition ${step === 'chapters' ? 'text-[var(--green)] underline underline-offset-4' : 'text-[var(--subtle)]'}`}
-            >
-              2. Select Chapter ({activeBook?.chapters || 0} Ch)
-            </button>
+        {testamentFilter !== 'HISTORY' && (
+          <div className="flex md:hidden border-b border-[var(--line)] bg-[var(--surface)] px-4 py-2 text-xs shrink-0 items-center justify-between">
+            <div className="flex items-center">
+              <button
+                onClick={() => setStep('books')}
+                className={`font-bold transition ${step === 'books' ? 'text-[var(--green)] underline underline-offset-4' : 'text-[var(--subtle)]'}`}
+              >
+                1. {searchQuery ? 'Results' : 'Select Book'} ({uiLanguageCode !== 'en' && activeBook?.names[uiLanguageCode] ? activeBook.names[uiLanguageCode] : activeBook?.names.en})
+              </button>
+              <ChevronRight className="h-4 w-4 mx-1.5 text-[var(--subtle)]" />
+              <button
+                onClick={() => setStep('chapters')}
+                className={`font-bold transition ${step === 'chapters' ? 'text-[var(--green)] underline underline-offset-4' : 'text-[var(--subtle)]'}`}
+              >
+                2. Select Chapter ({activeBook?.chapters || 0} Ch)
+              </button>
+            </div>
+            {searchQuery && (
+              <span className="text-[10px] font-mono text-[var(--subtle)]">
+                {filteredBooks.length + liveVerses.length} found
+              </span>
+            )}
           </div>
-          {searchQuery && (
-            <span className="text-[10px] font-mono text-[var(--subtle)]">
-              {filteredBooks.length + liveVerses.length} found
-            </span>
-          )}
-        </div>
+        )}
 
-        {/* Split Content with resilient min-h-0 flex-1 scrolling */}
-        <div className="flex-1 min-h-0 flex flex-col md:flex-row overflow-hidden">
+        {/* Content Deck: History Deck OR Regular Books & Chapters Split View */}
+        {testamentFilter === 'HISTORY' ? (
+          <div className="flex-1 min-h-0 flex flex-col overflow-y-auto p-3 sm:p-5">
+            {/* History Control & Status Strip */}
+            <div className="flex flex-wrap items-center justify-between gap-2.5 pb-3 mb-3 border-b border-[var(--line)] shrink-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-bold text-[var(--ink)]">
+                  {filteredHistory.length} {filteredHistory.length === 1 ? 'record' : 'records'}
+                  {searchQuery && ` (filtered from ${historyList.length})`}
+                </span>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  LocalStorage (0ms)
+                </span>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/25">
+                  <Cloud className="h-3 w-3" />
+                  R2 Cloud Vault Synced
+                </span>
+              </div>
+
+              {historyList.length > 0 && (
+                <div className="flex items-center gap-2">
+                  {clearingHistory ? (
+                    <div className="flex items-center gap-2 bg-red-950/40 border border-red-500/40 rounded-xl px-2.5 py-1 text-xs">
+                      <span className="text-red-300 font-semibold text-[11px]">Clear all?</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          clearReadingHistory();
+                          setHistoryList([]);
+                          setClearingHistory(false);
+                        }}
+                        className="px-2 py-0.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-[11px] transition cursor-pointer"
+                      >
+                        Yes, Clear
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setClearingHistory(false)}
+                        className="px-2 py-0.5 rounded-lg bg-[var(--soft)] text-[var(--subtle)] hover:text-[var(--ink)] text-[11px] transition cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setClearingHistory(true)}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs text-[var(--subtle)] hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition cursor-pointer"
+                      title="Clear all scripture search & reading history"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                      <span>Clear All History</span>
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* History Cards List - RECENT FIRST */}
+            {filteredHistory.length > 0 ? (
+              <div className="flex flex-col gap-2.5">
+                {filteredHistory.map((item) => {
+                  const itemKey =
+                    item.id ||
+                    `${item.bookSlug}_${item.chapter}_${item.verse || 0}_${item.timestamp}`;
+                  return (
+                    <div
+                      key={itemKey}
+                      className="group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-3.5 rounded-xl border border-[var(--line)] bg-[var(--surface)] hover:border-amber-400/50 hover:bg-[var(--soft)] transition shadow-sm"
+                    >
+                      <div className="flex items-start gap-2.5 min-w-0 flex-1">
+                        <div
+                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg mt-0.5 ${
+                            item.source === 'search'
+                              ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                              : 'bg-[var(--green)]/15 text-[var(--green)] border border-[var(--green)]/30'
+                          }`}
+                        >
+                          {item.source === 'search' ? (
+                            <Search className="h-4 w-4" />
+                          ) : (
+                            <BookOpen className="h-4 w-4" />
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <span className="font-bold text-sm sm:text-base text-[var(--ink)]">
+                              {item.bookName} {item.chapter}
+                              {item.verse ? `:${item.verse}` : ''}
+                            </span>
+                            <span
+                              className={`text-[10px] font-mono px-1.5 py-0.2 rounded font-bold uppercase ${
+                                item.source === 'search'
+                                  ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30'
+                                  : 'bg-[var(--green)]/20 text-[var(--green)] border border-[var(--green)]/30'
+                              }`}
+                            >
+                              {item.source === 'search' ? 'Search' : 'Visited'}
+                            </span>
+                            {item.version && (
+                              <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-[var(--soft)] text-[var(--subtle)] border border-[var(--line)]">
+                                {item.version}
+                              </span>
+                            )}
+                            {item.testament === 'DC' && (
+                              <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-950/40 text-amber-300 border border-amber-500/30">
+                                📜 Deuterocanon
+                              </span>
+                            )}
+                            {item.testament === 'PSEUD' && (
+                              <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-purple-950/40 text-purple-300 border border-purple-500/30">
+                                🏺 Apocrypha
+                              </span>
+                            )}
+                            {item.testament === 'OT' && (
+                              <span className="text-[10px] px-1.5 py-0.2 rounded bg-[var(--soft)] text-[var(--subtle)]">
+                                OT
+                              </span>
+                            )}
+                            {item.testament === 'NT' && (
+                              <span className="text-[10px] px-1.5 py-0.2 rounded bg-[var(--soft)] text-[var(--subtle)]">
+                                NT
+                              </span>
+                            )}
+                          </div>
+
+                          {item.query && (
+                            <div className="text-xs text-amber-300/90 mt-1 font-mono flex items-center gap-1">
+                              <span className="text-[10px] uppercase font-bold text-amber-400/70">
+                                Searched:
+                              </span>
+                              <span>"{item.query}"</span>
+                            </div>
+                          )}
+
+                          {item.verseText && (
+                            <div className="text-xs text-[var(--subtle)] italic line-clamp-2 mt-1 leading-relaxed">
+                              "{item.verseText}"
+                            </div>
+                          )}
+
+                          <div className="flex items-center gap-2 mt-1 text-[11px] text-[var(--subtle)]">
+                            <Clock className="h-3 w-3 shrink-0" />
+                            <span>{formatRelativeTime(item.timestamp)}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onSelectBookChapter(item.bookSlug, item.chapter, item.verse);
+                            onClose();
+                          }}
+                          className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[var(--green)] hover:opacity-90 text-[var(--paper)] font-bold text-xs shadow transition cursor-pointer"
+                        >
+                          <span>Open</span>
+                          <ArrowRight className="h-3 w-3" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            deleteReadingHistoryItem(itemKey);
+                            setHistoryList(getReadingHistory());
+                          }}
+                          className="p-1.5 rounded-lg text-[var(--subtle)] hover:text-red-400 hover:bg-red-500/10 transition cursor-pointer"
+                          title="Remove from history"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="py-12 px-4 text-center my-auto flex flex-col items-center">
+                <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-2xl mb-3 text-amber-400">
+                  <Clock className="h-7 w-7" />
+                </div>
+                <div className="text-base font-bold text-[var(--ink)]">
+                  {searchQuery ? 'No Matching History Found' : 'No Scripture Searches or Visits Yet'}
+                </div>
+                <p className="text-xs text-[var(--subtle)] mt-1.5 max-w-md leading-relaxed">
+                  {searchQuery
+                    ? `No recent searches or passages match "${searchQuery}". Try clearing the search box above.`
+                    : 'Your scripture searches, passage visits, and book navigations are instantly saved locally (0ms offline) and backed up to your R2 Cloud Vault.'}
+                </p>
+
+                <div className="mt-6 w-full max-w-lg">
+                  <div className="text-[11px] font-bold text-amber-400 uppercase tracking-wider mb-2.5">
+                    ⚡ Quick Launch Flagship Passages:
+                  </div>
+                  <div className="flex flex-wrap items-center justify-center gap-2">
+                    {[
+                      { name: 'Genesis 1', slug: 'genesis', ch: 1 },
+                      { name: 'Psalm 23', slug: 'psalms', ch: 23 },
+                      { name: 'John 1', slug: 'john', ch: 1 },
+                      { name: 'Ephesians 1', slug: 'ephesians', ch: 1 },
+                      { name: 'Wisdom 3', slug: 'wisdom-of-solomon', ch: 3 },
+                      { name: 'Sirach 2', slug: 'sirach', ch: 2 },
+                      { name: 'Tobit 4', slug: 'tobit', ch: 4 },
+                      { name: '1 Enoch 1', slug: '1-enoch', ch: 1 },
+                      { name: 'Psalm 151', slug: 'psalm-151', ch: 1 },
+                    ].map((p) => (
+                      <button
+                        key={p.name}
+                        type="button"
+                        onClick={() => {
+                          recordReadingHistory({
+                            bookSlug: p.slug,
+                            bookName: p.name.split(' ')[0],
+                            chapter: p.ch,
+                            version: (activeVersionId || 'nkjv').toUpperCase(),
+                            source: 'navigator',
+                          });
+                          onSelectBookChapter(p.slug, p.ch);
+                          onClose();
+                        }}
+                        className="px-2.5 py-1.5 rounded-lg border border-[var(--line)] bg-[var(--surface)] hover:border-amber-400 hover:bg-[var(--soft)] text-xs font-semibold text-[var(--ink)] transition flex items-center gap-1 shadow-sm cursor-pointer"
+                      >
+                        <span>{p.name}</span>
+                        <span className="text-[10px] text-amber-400">→</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          /* Split Content with resilient min-h-0 flex-1 scrolling */
+          <div className="flex-1 min-h-0 flex flex-col md:flex-row overflow-hidden">
           {/* Books & Scripture Verses Column */}
           <div
             className={`w-full md:w-3/5 border-r border-[var(--line)] overflow-y-auto p-3 sm:p-4 flex flex-col gap-3.5 ${
@@ -470,6 +864,17 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                       key={v.id}
                       type="button"
                       onClick={() => {
+                        recordReadingHistory({
+                          bookSlug: v.bookSlug,
+                          bookName: v.reference.replace(/\s+\d+.*$/, '') || v.bookSlug,
+                          chapter: v.chapter,
+                          verse: v.verse,
+                          verseText: v.text,
+                          category: v.category,
+                          version: (activeVersionId || 'nkjv').toUpperCase(),
+                          source: 'search',
+                          query: searchQuery.trim() || undefined,
+                        });
                         onSelectBookChapter(v.bookSlug, v.chapter, v.verse);
                         onClose();
                       }}
@@ -658,6 +1063,19 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
                             activeBook.id === parsedPassage?.book.id && chNum === parsedPassage?.chapter
                               ? parsedPassage.verse
                               : undefined;
+                          recordReadingHistory({
+                            bookSlug: activeBook.slug,
+                            bookName:
+                              uiLanguageCode !== 'en' && activeBook.names[uiLanguageCode]
+                                ? activeBook.names[uiLanguageCode]
+                                : activeBook.names.en,
+                            chapter: chNum,
+                            verse: targetVerse,
+                            testament: activeBook.testament,
+                            category: activeBook.category,
+                            version: (activeVersionId || 'nkjv').toUpperCase(),
+                            source: 'navigator',
+                          });
                           onSelectBookChapter(activeBook.slug, chNum, targetVerse);
                           onClose();
                         }}
@@ -718,6 +1136,7 @@ export const BookChapterSelectorModal: React.FC<BookChapterSelectorModalProps> =
             </div>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

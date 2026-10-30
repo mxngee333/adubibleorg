@@ -497,7 +497,7 @@ export function App() {
   const [isThemePickerOpen, setIsThemePickerOpen] = useState<boolean>(false);
   const [settingsInitialSection, setSettingsInitialSection] = useState<'general' | 'theme' | 'commentaries' | 'api'>('general');
   const [isBookModalOpen, setIsBookModalOpen] = useState<boolean>(false);
-  const [bookPickerTab, setBookPickerTab] = useState<'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD'>('CANONICAL');
+  const [bookPickerTab, setBookPickerTab] = useState<'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD' | 'HISTORY'>('CANONICAL');
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState<boolean>(false);
   const [isLangAddonModalOpen, setIsLangAddonModalOpen] =
     useState<boolean>(false);
@@ -646,8 +646,13 @@ export function App() {
         recordReadingHistory({
           bookId: currentBook.id,
           bookSlug: currentBook.slug,
+          bookName: currentBook.names.en || currentBook.id,
           chapter: currentChapter,
+          testament: currentBook.testament,
+          category: currentBook.category,
+          version: (activeVersionIds[0] || 'nkjv').toUpperCase(),
           versionId: activeVersionIds[0] || 'nkjv',
+          source: 'read',
           timestamp: Date.now(),
         });
       }

@@ -3,6 +3,7 @@ import { Search, X, BookOpen, ArrowRight, CornerDownLeft, Sparkles, Loader2, Quo
 import { BibleBook } from '../types/bible';
 import { parsePassageQuery } from '../services/passageService';
 import { searchScripture, BibleSearchResult } from '../services/scriptureSearchService';
+import { recordReadingHistory } from '../services/studyVaultService';
 
 interface OmniSearchBarProps {
   books: BibleBook[];
@@ -236,6 +237,20 @@ export const OmniSearchBar: React.FC<OmniSearchBarProps> = ({
   }, [query, books, currentBookSlug, currentChapter, liveVerses]);
 
   const handleSelect = (suggestion: SearchSuggestion) => {
+    const b = books.find((x) => x.slug === suggestion.bookSlug);
+    recordReadingHistory({
+      bookId: b?.id || suggestion.bookSlug,
+      bookSlug: suggestion.bookSlug,
+      bookName: b?.names.en || suggestion.label,
+      chapter: suggestion.chapter,
+      verse: suggestion.verse,
+      versionId: activeVersionId,
+      query: query.trim() || suggestion.label,
+      timestamp: Date.now(),
+      testament: b?.testament,
+      category: b?.category,
+      source: 'search',
+    });
     onNavigate(suggestion.bookSlug, suggestion.chapter, suggestion.verse);
     setIsFocused(false);
     setQuery('');
@@ -253,6 +268,19 @@ export const OmniSearchBar: React.FC<OmniSearchBarProps> = ({
       e.preventDefault();
       const direct = parsePassageQuery(query, books);
       if (direct) {
+        recordReadingHistory({
+          bookId: direct.book.id,
+          bookSlug: direct.book.slug,
+          bookName: direct.book.names.en,
+          chapter: direct.chapter,
+          verse: direct.verse,
+          versionId: activeVersionId,
+          query: query.trim(),
+          timestamp: Date.now(),
+          testament: direct.book.testament,
+          category: direct.book.category,
+          source: 'search',
+        });
         onNavigate(direct.book.slug, direct.chapter, direct.verse);
         setIsFocused(false);
         setQuery('');
