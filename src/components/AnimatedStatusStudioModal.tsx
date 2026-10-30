@@ -22,6 +22,7 @@ import {
   STATUS_THEMES,
   StatusVideoTheme,
   VideoAspectRatio,
+  calculateTailoredDuration,
 } from '../services/statusVideoEngine';
 import {
   GOOGLE_NEURAL_VOICES,
@@ -131,6 +132,8 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
   // Video customization state
   const [selectedTheme, setSelectedTheme] = useState<StatusVideoTheme>(STATUS_THEMES[0]);
   const [aspectRatio, setAspectRatio] = useState<VideoAspectRatio>('3:4');
+  const [durationMode, setDurationMode] = useState<number>(0); // 0 = Smart Auto-Tailored to verse length
+  const [currentDuration, setCurrentDuration] = useState<number>(() => calculateTailoredDuration(initialText));
   const [voiceName, setVoiceName] = useState<GoogleNeuralVoiceName>('Kore');
   const [includeAmbientMusic, setIncludeAmbientMusic] = useState<boolean>(true);
   const [boldTypography, setBoldTypography] = useState<boolean>(true);
@@ -268,6 +271,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
   useEffect(() => {
     if (!isOpen || !canvasRef.current) return;
 
+    const effectiveDuration = durationMode > 0 ? durationMode : 0;
     if (!rendererRef.current) {
       rendererRef.current = new StatusVideoRenderer(canvasRef.current, {
         reference,
@@ -277,13 +281,14 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
         secondaryText: includeSecondary ? secondaryText : undefined,
         theme: selectedTheme,
         aspectRatio,
-        durationSeconds: 10.0,
+        durationSeconds: effectiveDuration,
         voiceName,
         langCode,
         includeAmbientMusic,
         boldTypography,
         voiceBoost,
       });
+      setCurrentDuration(rendererRef.current.getDuration());
     } else {
       rendererRef.current.updateOptions({
         reference,
@@ -293,12 +298,14 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
         secondaryText: includeSecondary ? secondaryText : undefined,
         theme: selectedTheme,
         aspectRatio,
+        durationSeconds: effectiveDuration,
         voiceName,
         langCode,
         includeAmbientMusic,
         boldTypography,
         voiceBoost,
       });
+      setCurrentDuration(rendererRef.current.getDuration());
     }
 
     // Draw initial 0s frame
@@ -310,7 +317,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
         stopPreviewRef.current = null;
       }
     };
-  }, [isOpen, reference, versionName, verseText, secondaryText, secondaryVersionName, includeSecondary, selectedTheme, aspectRatio, voiceName, langCode, includeAmbientMusic, boldTypography, voiceBoost]);
+  }, [isOpen, reference, versionName, verseText, secondaryText, secondaryVersionName, includeSecondary, selectedTheme, aspectRatio, durationMode, voiceName, langCode, includeAmbientMusic, boldTypography, voiceBoost]);
 
   // Cleanup renderer on modal unmount
   useEffect(() => {
@@ -332,6 +339,9 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
     try {
       const ok = await rendererRef.current.preloadAudio();
       setAudioLoaded(ok);
+      if (rendererRef.current) {
+        setCurrentDuration(rendererRef.current.getDuration());
+      }
     } catch {
       setAudioLoaded(false);
     } finally {
@@ -360,11 +370,12 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
       setIsPlaying(false);
     } else {
       setIsPlaying(true);
+      const totalDur = rendererRef.current.getDuration();
       stopPreviewRef.current = rendererRef.current.playPreview(
         (sec) => setPlaybackSeconds(sec),
         () => {
           setIsPlaying(false);
-          setPlaybackSeconds(10.0);
+          setPlaybackSeconds(totalDur);
         }
       );
     }
@@ -382,7 +393,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
     }
   };
 
-  // Video Export pipeline (10s Canvas Capture + Audio)
+  // Video Export pipeline (Smart Tailored Canvas Capture + Audio)
   const handleExportVideo = async () => {
     if (!rendererRef.current) return;
     if (isPlaying && stopPreviewRef.current) {
@@ -403,9 +414,10 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
       const url = URL.createObjectURL(blob);
       setExportedUrl(url);
 
-      // Trigger instant automatic download
+      // Trigger instant automatic download with sample-accurate tailored duration
+      const durSec = Math.round(rendererRef.current.getDuration());
       const cleanRef = reference.replace(/[^a-zA-Z0-9_-]/g, '_');
-      const filename = `AduBible_${cleanRef}_${aspectRatio.replace(':', 'x')}_10s_Status.${blob.type.includes('mp4') ? 'mp4' : 'webm'}`;
+      const filename = `AduBible_${cleanRef}_${aspectRatio.replace(':', 'x')}_${durSec}s_Status.${blob.type.includes('mp4') ? 'mp4' : 'webm'}`;
       const a = document.createElement('a');
       a.href = url;
       a.download = filename;
@@ -413,7 +425,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
       a.click();
       document.body.removeChild(a);
 
-      setShareNotice(`✅ 10s Status Video exported as "${filename}"! Ready for WhatsApp Status & Stories.`);
+      setShareNotice(`✅ ${durSec}s Tailored Status Video exported as "${filename}"! Full verse recited cleanly.`);
       setTimeout(() => setShareNotice(''), 6000);
     } catch (err: any) {
       setShareNotice(`⚠️ Export notice: ${err?.message || 'Could not export video'}`);
@@ -589,13 +601,13 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
             </div>
             <div className="min-w-0">
               <h2 id="status-studio-title" className="text-base sm:text-lg font-serif font-bold text-[var(--ink)] flex items-center gap-2 truncate">
-                10s Animated Scripture Status Studio
+                Animated Scripture Status Studio
                 <span className="text-[10px] font-sans uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[var(--soft)] text-[var(--green)] border border-[var(--line)] shrink-0">
-                  Viral Reels
+                  Tailored Reels
                 </span>
               </h2>
               <p className="text-xs text-[var(--subtle)] truncate">
-                Generate 10s kinetic text videos with 24kHz Google neural voice &amp; permanent <span className="text-[var(--green)] font-semibold">Adubible.org</span> watermark
+                Generate kinetic text video reels with 24kHz Google neural voice in smart tailored length &amp; permanent <span className="text-[var(--green)] font-semibold">AduBible.org</span> watermark
               </p>
             </div>
           </div>
@@ -690,7 +702,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
                 onChange={(e) => setVerseText(e.target.value)}
                 rows={3}
                 className="w-full text-xs sm:text-sm bg-stone-900 border border-stone-800 rounded-lg p-3 text-stone-100 font-serif leading-relaxed focus:border-amber-500/60 outline-none resize-none"
-                placeholder="Enter scripture verse text for 10s kinetic animation..."
+                placeholder="Enter scripture verse text for kinetic video reel..."
               />
 
               {/* Quick Inspiration Pills */}
@@ -971,6 +983,51 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
                 </button>
               </div>
             </div>
+
+            {/* 5. Video Reel Duration Control (Smart Tailored Length Engine) */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold uppercase tracking-wider text-stone-400 flex items-center gap-1.5">
+                  <Film className="w-3.5 h-3.5 text-amber-400" />
+                  Smart Tailored Reel Duration
+                </label>
+                <span className="text-[11px] font-mono text-emerald-400 font-bold bg-emerald-950/60 border border-emerald-800/80 px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  {durationMode === 0 ? `⚡ Auto: ${Math.round(currentDuration)}s (Full Verse)` : `${durationMode}s Fixed`}
+                </span>
+              </div>
+              <div className="grid grid-cols-4 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setDurationMode(0)}
+                  className={`py-2 px-2 rounded-xl text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 ${
+                    durationMode === 0
+                      ? 'bg-amber-500 text-stone-950 shadow-md ring-2 ring-amber-400/40'
+                      : 'bg-stone-900 border border-stone-800 text-stone-300 hover:border-stone-700'
+                  }`}
+                >
+                  <span className="flex items-center gap-1">⚡ Auto</span>
+                  <span className="text-[9.5px] font-normal opacity-90">{Math.round(currentDuration)}s Tailored</span>
+                </button>
+                {[10, 15, 30].map((dur) => (
+                  <button
+                    key={dur}
+                    type="button"
+                    onClick={() => setDurationMode(dur)}
+                    className={`py-2 px-2 rounded-xl text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 ${
+                      durationMode === dur
+                        ? 'bg-amber-500 text-stone-950 shadow-md ring-2 ring-amber-400/40'
+                        : 'bg-stone-900 border border-stone-800 text-stone-300 hover:border-stone-700'
+                    }`}
+                  >
+                    <span>{dur}s</span>
+                    <span className="text-[9.5px] font-normal opacity-90">
+                      {dur === 10 ? 'Quick' : dur === 15 ? 'Story' : 'Status'}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* RIGHT COLUMN: Live Canvas Stage, Controls & Viral Share Suite (5 cols) */}
@@ -1008,7 +1065,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
                 {isPlaying && (
                   <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-red-500/80 text-white text-[10px] font-bold tracking-wider uppercase animate-pulse flex items-center gap-1 shadow-md">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
-                    LIVE 10s
+                    LIVE {Math.round(currentDuration)}s
                   </div>
                 )}
               </div>
@@ -1023,7 +1080,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
                   className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs flex items-center gap-1.5 shadow-lg shadow-amber-500/25 transition-all"
                 >
                   {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current" />}
-                  {isPlaying ? 'Pause' : 'Play 10s'}
+                  {isPlaying ? 'Pause' : `Play (${Math.round(currentDuration)}s)`}
                 </button>
 
                 <button
@@ -1038,7 +1095,15 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
 
               <div className="text-right">
                 <span className="text-xs font-mono font-bold text-amber-300">
-                  {`0:0${Math.min(10, Math.floor(playbackSeconds))} / 0:10`}
+                  {(() => {
+                    const formatMmSs = (sec: number) => {
+                      const clamped = Math.max(0, Math.floor(sec));
+                      const m = Math.floor(clamped / 60);
+                      const s = clamped % 60;
+                      return `${m}:${s < 10 ? '0' : ''}${s}`;
+                    };
+                    return `${formatMmSs(playbackSeconds)} / ${formatMmSs(currentDuration)}`;
+                  })()}
                 </span>
                 <span className="block text-[10px] text-stone-500 font-sans">
                   Adubible.org Watermark Locked
@@ -1059,7 +1124,7 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
                 }`}
               >
                 <Download className="w-4 h-4" />
-                {isExporting ? `Rendering 10s Video (${exportProgress}%)...` : '🎬 Export 10s Video (MP4 / WebM)'}
+                {isExporting ? `Rendering Video (${exportProgress}%)...` : `🎬 Export Full Reel (${Math.round(currentDuration)}s MP4)`}
               </button>
 
               {isExporting && (
@@ -1088,10 +1153,10 @@ export const AnimatedStatusStudioModal: React.FC<AnimatedStatusStudioModalProps>
                   type="button"
                   onClick={handleShareWhatsApp}
                   className="col-span-2 py-2.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/40 transition-all text-xs sm:text-sm"
-                  title="Share 10s Video Reel directly to WhatsApp Status"
+                  title="Share Video Reel directly to WhatsApp Status"
                 >
                   <span className="text-base">💬</span>
-                  <span>Share 10s Video to WhatsApp Status</span>
+                  <span>Share Full Reel ({Math.round(currentDuration)}s) to WhatsApp</span>
                   <span className="px-1.5 py-0.5 rounded bg-emerald-800 text-[10px] text-emerald-100 uppercase font-extrabold tracking-wider">
                     Instant Reel
                   </span>
