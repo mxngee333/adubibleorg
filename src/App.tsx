@@ -85,6 +85,7 @@ import { OmniSearchBar } from './components/OmniSearchBar';
 import { QuickVersionRibbon } from './components/QuickVersionRibbon';
 import { MobileBottomDock } from './components/MobileBottomDock';
 import { GrandSiteFooter } from './components/GrandSiteFooter';
+import { BibleGamesArcadeModal } from './components/games/BibleGamesArcadeModal';
 import { AduBibleLogo } from './components/AduBibleLogo';
 import { AskAduBibleModal } from './components/AskAduBibleModal';
 import { DonationHubPage } from './components/DonationHubPage';
@@ -456,6 +457,14 @@ export function App() {
       ) {
         e.preventDefault();
         setIsSlideDeckOpen((prev) => !prev);
+      } else if (
+        (e.key === 'g' || e.key === 'G') &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.altKey
+      ) {
+        e.preventDefault();
+        setIsGamesArcadeOpen((prev) => !prev);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -507,6 +516,7 @@ export function App() {
     secondaryText?: string;
   } | null>(null);
   const [isStatusStudioOpen, setIsStatusStudioOpen] = useState<boolean>(false);
+  const [isGamesArcadeOpen, setIsGamesArcadeOpen] = useState<boolean>(false);
   const [statusStudioTarget, setStatusStudioTarget] = useState<{
     reference: string;
     primaryText: string;
@@ -891,6 +901,7 @@ export function App() {
     setIsMobileSearchOpen(false);
     setStatusStudioTarget(null);
     setIsStatusStudioOpen(false);
+    setIsGamesArcadeOpen(false);
     setPickerSlot(null);
     setVerseCardTarget(null);
     setActiveVerseActionBar(null);
@@ -928,6 +939,7 @@ export function App() {
       Boolean(verseCardTarget) ||
       Boolean(statusStudioTarget) ||
       isStatusStudioOpen ||
+      isGamesArcadeOpen ||
       isSlideDeckOpen ||
       isMobileSearchOpen ||
       isSettingsOpen ||
@@ -1471,6 +1483,20 @@ export function App() {
 
           <button
             type="button"
+            className={`quiet-button ${isGamesArcadeOpen ? 'active-pill' : ''}`}
+            onClick={() => setIsGamesArcadeOpen(true)}
+            title="3D Bible Games & Scripture Quiz Arcade (G)"
+            aria-label="3D Bible Games & Scripture Quiz Arcade"
+            style={{
+              color: isGamesArcadeOpen ? '#f59e0b' : undefined,
+              borderColor: isGamesArcadeOpen ? '#f59e0b' : undefined,
+            }}
+          >
+            <span>🎮 Games</span>
+          </button>
+
+          <button
+            type="button"
             className={`quiet-button ${studyLayersActiveCount > 0 || isSettingsOpen ? 'active-pill' : ''}`}
             onClick={() => setIsSettingsOpen((prev) => !prev)}
             title={isSettingsOpen ? 'Close Settings' : "Reading Settings — Toggle Strong's Concordance & Commentaries"}
@@ -1518,6 +1544,22 @@ export function App() {
             <span className="search-placeholder-text">
               {activeVersionIds.length > 1 ? 'Search' : 'Search...'}
             </span>
+          </button>
+
+          <button
+            type="button"
+            className="mobile-mast-pill-btn"
+            onClick={() => setIsGamesArcadeOpen(true)}
+            aria-label="3D Bible Games"
+            title="3D Bible Games & Quiz Arcade"
+            style={{
+              padding: '0 8px',
+              color: '#f59e0b',
+              borderColor: 'rgba(245, 158, 11, 0.4)',
+              fontWeight: 700,
+            }}
+          >
+            <span>🎮 Games</span>
           </button>
 
           <button
@@ -1818,6 +1860,16 @@ export function App() {
             </button>
 
             <div className="mobile-bar-quick-actions">
+              <button
+                type="button"
+                className={`mobile-quick-btn ${isGamesArcadeOpen ? 'active' : ''}`}
+                onClick={() => setIsGamesArcadeOpen(true)}
+                title="3D Bible Games & Quiz Arcade"
+                aria-label="3D Bible Games & Quiz Arcade"
+                style={{ fontSize: '13px' }}
+              >
+                🎮
+              </button>
               {activeVersionIds.length >= 2 && (
                 <button
                   type="button"
@@ -3762,6 +3814,18 @@ export function App() {
             updatedAt: Date.now(),
           };
           handleSaveNote(newNote);
+        }}
+      />
+
+      
+      {/* 3D BIBLE GAMES & SCRIPTURE QUIZ ARCADE */}
+      <BibleGamesArcadeModal
+        isOpen={isGamesArcadeOpen}
+        onClose={() => setIsGamesArcadeOpen(false)}
+        onOpenPassage={(slug, ch, v) => {
+          handleSelectBookChapter(slug, ch, v);
+          setIsGamesArcadeOpen(false);
+          if (v) scrollToVerse(v);
         }}
       />
 

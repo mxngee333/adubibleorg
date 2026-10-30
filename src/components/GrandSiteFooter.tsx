@@ -14,6 +14,7 @@ interface GrandSiteFooterProps {
   onSelectTheme?: (themeId: string) => void;
   onOpenBookPickerWithTab?: (tab: 'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD') => void;
   onOpenVideoStudio?: () => void;
+  onOpenGamesArcade?: () => void;
   showStrongs: boolean;
   showCommentaries: boolean;
 }
@@ -26,6 +27,7 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
   onSelectTheme,
   onOpenBookPickerWithTab,
   onOpenVideoStudio,
+  onOpenGamesArcade,
   showStrongs,
   showCommentaries,
 }) => {
@@ -789,6 +791,22 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
           >
             🎬 Make Video for Status
           </button>
+          {onOpenGamesArcade && (
+            <button
+              type="button"
+              onClick={onOpenGamesArcade}
+              className="footer-legal-pill footer-games-pill"
+              style={{
+                color: '#f59e0b',
+                borderColor: 'rgba(245, 158, 11, 0.4)',
+                fontWeight: 700,
+                cursor: 'pointer',
+              }}
+              title="3D Bible Games, Solomon's Temple Quiz & Eden Word Scramble"
+            >
+              🎮 3D Bible Games
+            </button>
+          )}
           <a
             href="/donate/"
             onClick={(e) => {
