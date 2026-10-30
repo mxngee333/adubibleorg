@@ -8,7 +8,7 @@ import {
   cleanVerseForSpeech,
   getActiveGeminiApiKeys,
 } from '../services/neuralTtsService';
-import { isTwiLanguage } from '../services/twiAudioService';
+import { isTwiLanguage, isDeadLegacyAudioUrl } from '../services/twiAudioService';
 import { transphonemizeTwiForSpeech } from '../services/twiPhonemeEngine';
 import {
   scrollVerseIntoViewIfNeeded,
@@ -112,14 +112,21 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     }
     return 'Charon';
   });
+  const validAudioUrl =
+    audioUrl && !isDeadLegacyAudioUrl(audioUrl) && !isTwiLanguage(langCode)
+      ? audioUrl
+      : undefined;
+
   const [rate, setRate] = useState(1.0);
   const [bilingualMode, setBilingualMode] = useState(false);
-  const [useStudioMp3, setUseStudioMp3] = useState<boolean>(Boolean(audioUrl));
+  const [useStudioMp3, setUseStudioMp3] = useState<boolean>(Boolean(validAudioUrl));
+  const useStudioMp3Ref = useRef<boolean>(Boolean(validAudioUrl));
+  const studioFailedRef = useRef<boolean>(false);
   const [engineType, setEngineType] = useState<'24khz' | 'native' | 'studio'>(() => {
     if (typeof window !== 'undefined' && getActiveGeminiApiKeys().length > 0) {
       return '24khz';
     }
-    return audioUrl ? 'studio' : 'native';
+    return validAudioUrl ? 'studio' : 'native';
   });
   const [statusMessage, setStatusMessage] = useState<string>('');
   const [bufferedCount, setBufferedCount] = useState<number>(0);
@@ -180,8 +187,11 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   }, [isPlaying]);
 
   useEffect(() => {
-    setUseStudioMp3(Boolean(audioUrl));
-  }, [audioUrl]);
+    const hasValid = Boolean(validAudioUrl);
+    studioFailedRef.current = false;
+    useStudioMp3Ref.current = hasValid;
+    setUseStudioMp3(hasValid);
+  }, [validAudioUrl]);
 
   // Continuous Auto-Advance & Chapter Change Listener
   useEffect(() => {
@@ -482,7 +492,10 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     isPlayingRef.current = true;
     setStatusMessage('');
 
+    let didStart = false;
+
     utterance.onstart = () => {
+      didStart = true;
       setIsLoadingVerse(false);
       setStatusMessage('');
     };
@@ -503,6 +516,19 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
         return;
       }
       console.warn('[AudioBibleBar] SpeechSynthesis error:', e.error);
+      // Guard against iOS WebKit gesture expiration ('not-allowed') or synthesis failure
+      // so it NEVER enters a runaway verse/chapter advance loop
+      if (
+        !didStart ||
+        e.error === 'not-allowed' ||
+        e.error === 'audio-busy' ||
+        e.error === 'synthesis-unavailable' ||
+        e.error === 'synthesis-failed'
+      ) {
+        stopPlayback();
+        setStatusMessage('Tap ▶ Listen to start voice');
+        return;
+      }
       if (isPlayingRef.current) {
         onEnded();
       }
@@ -524,9 +550,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
         }
       } catch (err) {
         console.warn('[AudioBibleBar] Failed to call window.speechSynthesis.speak:', err);
-        if (isPlayingRef.current) {
-          onEnded();
-        }
+        stopPlayback();
       }
     };
 
@@ -542,7 +566,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     }
   };
 
-  const playVerseAtIndex = async (index: number) => {
+  const playVerseAtIndex = async (index: number, bypassStudio = false) => {
     if (index < 0 || index >= verses.length) {
       if (index >= verses.length && continuousPlayback && onNextChapter) {
         setIsLoadingVerse(true);
@@ -589,8 +613,15 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     currentVerseIdxRef.current = index;
     notifyVerseChange(verseObj.verse);
 
-    // 1. Studio MP3 Narration branch
-    if (useStudioMp3 && audioUrl && studioAudioElRef.current && !bilingualMode) {
+    // 1. Studio MP3 Narration branch (Protected by synchronous refs + bypassStudio guard to prevent infinite microtask recursion)
+    if (
+      !bypassStudio &&
+      !studioFailedRef.current &&
+      useStudioMp3Ref.current &&
+      validAudioUrl &&
+      studioAudioElRef.current &&
+      !bilingualMode
+    ) {
       setEngineType('studio');
       setIsLoadingVerse(false);
       const audioEl = studioAudioElRef.current;
@@ -611,8 +642,14 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       }
 
       audioEl.play().catch(() => {
+        studioFailedRef.current = true;
+        useStudioMp3Ref.current = false;
         setUseStudioMp3(false);
-        playVerseAtIndex(index);
+        setTimeout(() => {
+          if (isPlayingRef.current) {
+            playVerseAtIndex(index, true);
+          }
+        }, 15);
       });
       setIsPlaying(true);
       isPlayingRef.current = true;
@@ -1035,11 +1072,16 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
   return (
     <div className="audio-bar-wrapper">
-      {audioUrl && (
+      {validAudioUrl && (
         <audio
           ref={studioAudioElRef}
-          src={audioUrl}
+          src={validAudioUrl}
           onTimeUpdate={handleStudioTimeUpdate}
+          onError={() => {
+            studioFailedRef.current = true;
+            useStudioMp3Ref.current = false;
+            setUseStudioMp3(false);
+          }}
           onEnded={() => {
             if (continuousPlayback && onNextChapter) {
               setIsLoadingVerse(true);
@@ -1319,13 +1361,15 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
           )}
 
           {/* Studio MP3 toggle */}
-          {audioUrl && !bilingualMode && (
+          {validAudioUrl && !bilingualMode && (
             <button
               type="button"
               className={`audio-bar-toggle-pill ${useStudioMp3 ? 'active' : ''}`}
               onClick={() => {
                 stopPlayback();
-                setUseStudioMp3(!useStudioMp3);
+                const next = !useStudioMp3;
+                useStudioMp3Ref.current = next;
+                setUseStudioMp3(next);
               }}
               title="Switch between Studio Recorded MP3 and Verse-by-Verse Narration"
             >
@@ -1520,13 +1564,15 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             )}
 
             {/* Studio MP3 toggle */}
-            {audioUrl && !bilingualMode && (
+            {validAudioUrl && !bilingualMode && (
               <button
                 type="button"
                 className={`audio-bar-toggle-pill ${useStudioMp3 ? 'active' : ''}`}
                 onClick={() => {
                   stopPlayback();
-                  setUseStudioMp3(!useStudioMp3);
+                  const next = !useStudioMp3;
+                  useStudioMp3Ref.current = next;
+                  setUseStudioMp3(next);
                 }}
                 title="Switch between Studio Recorded MP3 and Verse-by-Verse Narration"
               >

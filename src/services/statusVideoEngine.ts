@@ -273,7 +273,7 @@ export class StatusVideoRenderer {
    * Plays the generated scripture voice narration solo using the renderer's own AudioContext,
    * guaranteeing zero cross-context NotSupportedError exceptions and crystal-clear loudness.
    */
-  public playVoiceSolo(onEnded?: () => void): () => void {
+  public playVoiceSolo(onEnded?: () => void, isRetry = false): () => void {
     this.stopAudio();
     this.ensureAudioUnlocked();
 
@@ -288,10 +288,14 @@ export class StatusVideoRenderer {
         this.speechSource.buffer = this.speechBuffer;
       } catch (bufErr) {
         console.warn('[StatusVideoRenderer] Cross-context buffer mismatch, refreshing:', bufErr);
-        // Refresh buffer for current AudioContext
+        if (isRetry) {
+          if (onEnded) onEnded();
+          return () => {};
+        }
+        // Refresh buffer for current AudioContext once
         this.preloadAudio().then((ok) => {
           if (ok && this.speechBuffer && this.audioCtx) {
-            this.playVoiceSolo(onEnded);
+            this.playVoiceSolo(onEnded, true);
           } else if (onEnded) {
             onEnded();
           }

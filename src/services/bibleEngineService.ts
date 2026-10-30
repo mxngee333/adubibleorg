@@ -14,6 +14,7 @@ import {
 } from '../data/featuredChaptersCorpus';
 import {
   isTwiLanguage,
+  isDeadLegacyAudioUrl,
   resolveTwiAudioUrl,
   getCornerstoneTwiAudioUrl,
 } from './twiAudioService';
@@ -65,7 +66,7 @@ function parseHelloaoChapterPayload(
       chapter: validChapter,
       verses: json.verses,
       chapterFootnotes: json.chapterFootnotes || [],
-      audioUrl: json.audioUrl,
+      audioUrl: isDeadLegacyAudioUrl(json.audioUrl) ? undefined : json.audioUrl,
       source: sourceLabel,
       licenseUrl: json.licenseUrl,
       licenseText: json.licenseText,
@@ -141,6 +142,9 @@ function parseHelloaoChapterPayload(
       ? (Object.values(audioLinks)[0] as string | undefined)
       : undefined;
 
+  if (isDeadLegacyAudioUrl(resolvedAudioUrl)) {
+    resolvedAudioUrl = undefined;
+  }
   if (!resolvedAudioUrl && isTwiLanguage(versionId)) {
     resolvedAudioUrl =
       getCornerstoneTwiAudioUrl(book.slug, validChapter) ||
@@ -743,6 +747,9 @@ export async function resolveChapterData(
   // 3. Check IndexedDB Offline Vault Cache
   const cached = await getCachedChapter(versionId, book.id, validChapter);
   if (cached && cached.verses && cached.verses.length > 0) {
+    if (isDeadLegacyAudioUrl(cached.audioUrl) || isTwiLanguage(versionId)) {
+      cached.audioUrl = undefined;
+    }
     memoryCache.set(memKey, cached);
     return cached;
   }

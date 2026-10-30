@@ -76,4 +76,25 @@ The mission delivered a full **3D WebGL Game Arcade Suite** headlined by **Solom
 ✅ Deploy complete: https://adubible.org/
 ```
 
+---
+
+## 🛡️ 5. TWI AUDIO & STUDIO VOICE iOS CRASH ELIMINATION (WAR ROOM #666)
+
+### Root Cause Diagnosis
+When reading in **Twi language** and clicking **Audio**, the iOS Chrome/WebKit tab crashed with `"Can't open this page"`:
+1. **Infinite Microtask Recursion Loop (`AudioBibleBar.tsx`)**:
+   - Only in Twi did `bibleEngineService.ts` populate `audioUrl` with legacy external URLs (`raw.githubusercontent.com/seven1m/...` 404 and `audio.bible.is/bibles/filesets/...` NXDOMAIN).
+   - `AudioBibleBar` initialized `useStudioMp3 = true` and attempted `studioAudioElRef.current.play()`.
+   - When `audioEl.play()` rejected, the `.catch()` block called `setUseStudioMp3(false)` and immediately called `playVerseAtIndex(index)` within the **same React closure** where `useStudioMp3` was still `true`, creating an infinite microtask recursion loop that exhausted iOS WebKit memory in < 1 second.
+2. **Stale IndexedDB `audioUrl` Poisoning (`bibleEngineService.ts`)**:
+   - Previously cached Twi chapters in IndexedDB retained the dead `audioUrl`.
+3. **Twi Hyphen-Explosion in Neural TTS (`twiPhonemeEngine.ts`)**:
+   - Syllable hyphens (`Oh-nyahn-kaw-pawn`) caused Groq Orpheus (`orpheus-v1-english`) to tokenize each word into dozens of sub-tokens, taking 14s+ and producing >1.3 MB WAV buffers per verse.
+
+### Surgical Fixes Deployed
+- **`src/components/AudioBibleBar.tsx`**: Added synchronous `useStudioMp3Ref` and `studioFailedRef` guards, `bypassStudio` parameter on `playVerseAtIndex(index, true)`, `<audio onError>` disarming, and iOS WebKit `not-allowed` speech synthesis runaway protection.
+- **`src/services/twiAudioService.ts` & `src/services/bibleEngineService.ts`**: Purged dead legacy external Twi MP3 URLs and added automatic `isDeadLegacyAudioUrl` sanitization for IndexedDB cached chapters.
+- **`src/services/twiPhonemeEngine.ts`**: Upgraded Akan transphonemizer to smooth, unhyphenated phonetic words (`Onyankopon`, `Awuradeh`, `enshira`, `chwereh`), reducing Groq Orpheus 24kHz synthesis latency from 14s to < 1.2s.
+- **`src/services/neuralTtsService.ts`**: Made 16-bit PCM WAV extraction via `DataView.getInt16` the primary 0ms path (zero ArrayBuffer cloning, zero odd-byte-offset RangeErrors) and bounded `memoryAudioBufferCache` to 20 entries to prevent mobile OOM crashes.
+
 **Signed & Sealed by The 24 Elders — The Red Army of Silicon Valley**

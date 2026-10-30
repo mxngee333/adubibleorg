@@ -1,18 +1,13 @@
 /**
  * Authentic Asante Twi & Akuapem Twi Audio Service
- * 
- * Top Bible applications (YouVersion, Bible.is, Faith Comes By Hearing, Davar Partners)
- * provide authentic native-speaker studio recordings for Asante Twi and Akuapem Twi.
- * 
- * This service maps canonical and historical books & chapters to high-fidelity
- * streaming audio URLs (Faith Comes By Hearing / Open.Bible / DBP CDN / Global Recordings).
- * When studio MP3 is available, AduBible plays the authentic human recording.
- * When studio MP3 is unavailable, the player seamlessly fails over to the
- * Twi Phoneme Engine for crystal-clear phonological pronunciation.
+ *
+ * Routes Asante Twi and Akuapem Twi chapters directly through the 24kHz Neural Voice
+ * and Akan Phonemic TTS Engine for instant, crash-free verse-by-verse narration on
+ * iOS Safari, iOS Chrome, Android, and Desktop.
  */
 
 // Canonical Book mapping to standard DBP / Faith Comes By Hearing book codes
-const CANONICAL_BOOK_CODES: Record<string, { code: string; order: number; testament: 'OT' | 'NT' }> = {
+export const CANONICAL_BOOK_CODES: Record<string, { code: string; order: number; testament: 'OT' | 'NT' }> = {
   // Old Testament (OT)
   genesis: { code: 'GEN', order: 1, testament: 'OT' },
   exodus: { code: 'EXO', order: 2, testament: 'OT' },
@@ -97,65 +92,40 @@ export function isTwiLanguage(versionOrLang: string): boolean {
     lower === 'ak-twi' ||
     lower === 'twi-apoc' ||
     lower === 'asante' ||
+    lower === 'asante-twi' ||
     lower === 'akuapem' ||
-    lower.startsWith('twi_')
+    lower === 'akuapem-twi' ||
+    lower.startsWith('twi_') ||
+    lower.includes('twi')
   );
 }
 
 /**
- * Resolves authentic studio audio streaming URL for a given book and chapter in Asante Twi / Akuapem Twi.
- * Top Bible apps route through verified multi-CDN audio mirrors.
+ * Detects legacy broken external audio URLs so they are stripped from any cached chapter objects.
  */
-export function resolveTwiAudioUrl(
-  bookSlug: string,
-  chapter: number,
-  versionId: string = 'twi'
-): string | null {
-  const normSlug = (bookSlug || '').toLowerCase().trim();
-  const meta = CANONICAL_BOOK_CODES[normSlug];
-  if (!meta) return null;
-
-  const chStr = String(chapter).padStart(2, '0');
-  const chNumStr = String(chapter);
-  const bookOrder = String(meta.order).padStart(2, '0');
-  const bookCode = meta.code;
-
-  // 1. Asante Twi (Bible Society of Ghana / Biblica / FCBH / Davar Stream Mirror)
-  // Format standard: B01___01_Matthew_____ENGESVN2DA.mp3 style or chapter-based streaming
-  const isAkuapem = versionId.toLowerCase().includes('ak');
-  const dialCode = isAkuapem ? 'AKA' : 'ASA';
-
-  // Primary High-Availability Global Bible CDN Mirror
-  // Multi-tier CDN fallback pool verified across open digital Bible networks
-  return `https://audio.bible.is/bibles/filesets/TSINTA2DA/${bookCode}/${chNumStr}`;
+export function isDeadLegacyAudioUrl(url?: string | null): boolean {
+  if (!url) return false;
+  return (
+    url.includes('seven1m/open-bibles') ||
+    url.includes('audio.bible.is/bibles/filesets')
+  );
 }
 
 /**
- * Fallback direct MP3 URL resolver for featured cornerstone passages
- * (Ephesians, Genesis, Psalms, Matthew, John, Romans)
+ * Returns null so Twi chapters route directly to the 24kHz Neural Voice & Akan Phonemic Engine
+ * without attempting dead external MP3 streams.
  */
-export function getCornerstoneTwiAudioUrl(bookSlug: string, chapter: number): string | null {
-  const s = bookSlug.toLowerCase().trim();
+export function resolveTwiAudioUrl(
+  _bookSlug: string,
+  _chapter: number,
+  _versionId: string = 'twi'
+): string | null {
+  return null;
+}
 
-  // Curated high-fidelity studio mirrors for the top studied chapters in Asante Twi
-  const CORNERSTONE_AUDIO_MAP: Record<string, string> = {
-    'ephesians:1': 'https://raw.githubusercontent.com/seven1m/open-bibles/master/twi_asa/audio/EPH_01.mp3',
-    'ephesians:2': 'https://raw.githubusercontent.com/seven1m/open-bibles/master/twi_asa/audio/EPH_02.mp3',
-    'ephesians:3': 'https://raw.githubusercontent.com/seven1m/open-bibles/master/twi_asa/audio/EPH_03.mp3',
-    'ephesians:4': 'https://raw.githubusercontent.com/seven1m/open-bibles/master/twi_asa/audio/EPH_04.mp3',
-    'ephesians:5': 'https://raw.githubusercontent.com/seven1m/open-bibles/master/twi_asa/audio/EPH_05.mp3',
-    'ephesians:6': 'https://raw.githubusercontent.com/seven1m/open-bibles/master/twi_asa/audio/EPH_06.mp3',
-    'psalms:23': 'https://raw.githubusercontent.com/seven1m/open-bibles/master/twi_asa/audio/PSA_23.mp3',
-    'psalms:91': 'https://raw.githubusercontent.com/seven1m/open-bibles/master/twi_asa/audio/PSA_91.mp3',
-    'john:1': 'https://raw.githubusercontent.com/seven1m/open-bibles/master/twi_asa/audio/JHN_01.mp3',
-    'john:3': 'https://raw.githubusercontent.com/seven1m/open-bibles/master/twi_asa/audio/JHN_03.mp3',
-    'matthew:1': 'https://raw.githubusercontent.com/seven1m/open-bibles/master/twi_asa/audio/MAT_01.mp3',
-    'matthew:5': 'https://raw.githubusercontent.com/seven1m/open-bibles/master/twi_asa/audio/MAT_05.mp3',
-    'matthew:6': 'https://raw.githubusercontent.com/seven1m/open-bibles/master/twi_asa/audio/MAT_06.mp3',
-    'genesis:1': 'https://raw.githubusercontent.com/seven1m/open-bibles/master/twi_asa/audio/GEN_01.mp3',
-    'romans:8': 'https://raw.githubusercontent.com/seven1m/open-bibles/master/twi_asa/audio/ROM_08.mp3',
-  };
-
-  const key = `${s}:${chapter}`;
-  return CORNERSTONE_AUDIO_MAP[key] || null;
+/**
+ * Returns null so Twi chapters route directly to the 24kHz Neural Voice & Akan Phonemic Engine.
+ */
+export function getCornerstoneTwiAudioUrl(_bookSlug: string, _chapter: number): string | null {
+  return null;
 }

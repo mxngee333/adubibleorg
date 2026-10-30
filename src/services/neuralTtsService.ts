@@ -328,10 +328,11 @@ export async function synthesizeGroqOrpheusTts(
   if (!apiKey) return null;
 
   const targetVoice = GROQ_VOICE_MAP[voiceName] || 'autumn';
+  const safeInput = pureVerseText.length > 420 ? pureVerseText.slice(0, 420) : pureVerseText;
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 12000);
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     const res = await fetch('https://api.groq.com/openai/v1/audio/speech', {
       method: 'POST',
@@ -342,7 +343,7 @@ export async function synthesizeGroqOrpheusTts(
       signal: controller.signal,
       body: JSON.stringify({
         model: GROQ_ORPHEUS_MODEL,
-        input: pureVerseText,
+        input: safeInput,
         voice: targetVoice,
         response_format: 'wav',
       }),
@@ -535,7 +536,23 @@ export async function decodeUniversalAudioToBuffer(
       pos += 8 + (chunkSize === 0xffffffff ? 0 : chunkSize);
     }
 
-    // Try native decodeAudioData first
+    // Direct Linear PCM Extractor (Primary path for 16-bit PCM WAV — 0ms, zero ArrayBuffer copy, 100% alignment-safe on iOS Safari & Chrome)
+    if (audioFormat === 1 && bitsPerSample === 16 && dataOffset > 0 && dataSize >= 2 * channels) {
+      const numSamples = Math.floor(dataSize / (2 * channels));
+      const audioBuffer = audioContext.createBuffer(channels, numSamples, sampleRate);
+      for (let ch = 0; ch < channels; ch++) {
+        const channelData = audioBuffer.getChannelData(ch);
+        for (let i = 0; i < numSamples; i++) {
+          const bytePos = dataOffset + (i * channels + ch) * 2;
+          if (bytePos + 1 < bytes.byteLength) {
+            channelData[i] = dv.getInt16(bytePos, true) / 32768.0;
+          }
+        }
+      }
+      return audioBuffer;
+    }
+
+    // Fallback to native decodeAudioData for non-standard WAV formats
     try {
       const copy = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
       const buffer = await new Promise<AudioBuffer>((resolve, reject) => {
@@ -545,21 +562,7 @@ export async function decodeUniversalAudioToBuffer(
         return buffer;
       }
     } catch (decodeErr) {
-      console.warn('[neuralTtsService] decodeAudioData error, executing direct PCM fallback:', decodeErr);
-    }
-
-    // Direct Linear PCM Extractor Fallback (100% resilient across Safari iOS & Chrome)
-    if (audioFormat === 1 && bitsPerSample === 16 && dataOffset > 0) {
-      const numSamples = Math.floor(dataSize / (2 * channels));
-      const audioBuffer = audioContext.createBuffer(channels, numSamples, sampleRate);
-      const pcm16 = new Int16Array(bytes.buffer, bytes.byteOffset + dataOffset, numSamples * channels);
-      for (let ch = 0; ch < channels; ch++) {
-        const channelData = audioBuffer.getChannelData(ch);
-        for (let i = 0; i < numSamples; i++) {
-          channelData[i] = pcm16[i * channels + ch] / 32768.0;
-        }
-      }
-      return audioBuffer;
+      console.warn('[neuralTtsService] decodeAudioData fallback error:', decodeErr);
     }
   }
 
@@ -594,19 +597,20 @@ export function decodePcm24kToAudioBuffer(
   base64Data: string
 ): AudioBuffer {
   const binaryString = atob(base64Data);
-  const bytes = new Uint8Array(binaryString.length);
-  for (let i = 0; i < binaryString.length; i++) {
+  const evenLength = binaryString.length - (binaryString.length % 2);
+  const bytes = new Uint8Array(evenLength);
+  for (let i = 0; i < evenLength; i++) {
     bytes[i] = binaryString.charCodeAt(i);
   }
 
-  // TTS returns raw PCM 16-bit signed at 24000Hz
-  const pcmData = new Int16Array(bytes.buffer);
-  const float32Data = new Float32Array(pcmData.length);
-  for (let i = 0; i < pcmData.length; i++) {
-    float32Data[i] = pcmData[i] / 32768.0;
+  const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const sampleCount = Math.floor(evenLength / 2);
+  const float32Data = new Float32Array(sampleCount);
+  for (let i = 0; i < sampleCount; i++) {
+    float32Data[i] = dv.getInt16(i * 2, true) / 32768.0;
   }
 
-  const audioBuffer = audioContext.createBuffer(1, float32Data.length, 24000);
+  const audioBuffer = audioContext.createBuffer(1, Math.max(1, float32Data.length), 24000);
   audioBuffer.getChannelData(0).set(float32Data);
   return audioBuffer;
 }
@@ -642,6 +646,13 @@ export async function getOrPreloadAudioBuffer(
   try {
     const buffer = await decodeUniversalAudioToBuffer(audioContext, base64Audio);
     if (buffer && buffer.duration > 0.4) {
+      // Bound in-memory AudioBuffer cache to 20 entries to prevent iOS WebKit OOM tab crashes
+      if (memoryAudioBufferCache.size >= 20) {
+        const oldestKey = memoryAudioBufferCache.keys().next().value;
+        if (oldestKey) {
+          memoryAudioBufferCache.delete(oldestKey);
+        }
+      }
       memoryAudioBufferCache.set(memKey, buffer);
       return buffer;
     }
