@@ -10,7 +10,9 @@ interface GrandSiteFooterProps {
   onOpenLegal: (page: LegalPageKey) => void;
   onOpenSettings: () => void;
   onGoHome: (e?: React.MouseEvent) => void;
-  onSelectNavTab: (tab: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin') => void;
+  onSelectNavTab: (tab: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin' | 'topics' | 'lexicon') => void;
+  onOpenTopics?: (slug?: string) => void;
+  onOpenLexicon?: (code?: string) => void;
   onSelectTheme?: (themeId: string) => void;
   onOpenBookPickerWithTab?: (tab: 'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD') => void;
   onOpenVideoStudio?: () => void;
@@ -28,6 +30,8 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
   onOpenBookPickerWithTab,
   onOpenVideoStudio,
   onOpenGamesArcade,
+  onOpenTopics,
+  onOpenLexicon,
   showStrongs,
   showCommentaries,
 }) => {
@@ -655,6 +659,57 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
                 style={{ color: '#f59e0b', fontWeight: 700 }}
               >
                 <span>📖 15 Pillar Scripture &amp; Study Guides</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="/topics/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onOpenTopics) {
+                    onOpenTopics();
+                  } else {
+                    onSelectNavTab('topics');
+                  }
+                  if (typeof window !== 'undefined') {
+                    window.history.pushState({}, '', '/topics/');
+                  }
+                }}
+                className="footer-text-link"
+                style={{ color: '#10b981', fontWeight: 700 }}
+              >
+                <span>🌿 10 Topical Scripture Authority Hubs</span>
+                <ChevronRight className="footer-link-chevron" />
+              </a>
+            </li>
+            <li>
+              <a
+                href="/verse/"
+                className="footer-text-link"
+                style={{ color: '#38bdf8', fontWeight: 700 }}
+              >
+                <span>⚡ Top 30 Searched Bible Verses</span>
+                <ChevronRight className="footer-link-chevron" />
+              </a>
+            </li>
+            <li>
+              <a
+                href="/lexicon/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onOpenLexicon) {
+                    onOpenLexicon();
+                  } else {
+                    onSelectNavTab('lexicon');
+                  }
+                  if (typeof window !== 'undefined') {
+                    window.history.pushState({}, '', '/lexicon/');
+                  }
+                }}
+                className="footer-text-link"
+                style={{ color: '#a78bfa', fontWeight: 700 }}
+              >
+                <span>🏛️ Interlinear Greek &amp; Hebrew Strong’s Lexicon</span>
                 <ChevronRight className="footer-link-chevron" />
               </a>
             </li>
@@ -775,6 +830,43 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
             className="footer-legal-pill footer-legal-pillar-pill"
           >
             📖 15 Pillar Guides
+          </a>
+          <a
+            href="/topics/"
+            onClick={(e) => {
+              e.preventDefault();
+              if (onOpenTopics) onOpenTopics();
+              else onSelectNavTab('topics');
+              if (typeof window !== 'undefined') {
+                window.history.pushState({}, '', '/topics/');
+              }
+            }}
+            className="footer-legal-pill"
+            style={{ color: '#10b981', borderColor: 'rgba(16, 185, 129, 0.4)', fontWeight: 700 }}
+          >
+            🌿 Topical Hubs
+          </a>
+          <a
+            href="/verse/"
+            className="footer-legal-pill"
+            style={{ color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.4)', fontWeight: 700 }}
+          >
+            ⚡ Top Verses
+          </a>
+          <a
+            href="/lexicon/"
+            onClick={(e) => {
+              e.preventDefault();
+              if (onOpenLexicon) onOpenLexicon();
+              else onSelectNavTab('lexicon');
+              if (typeof window !== 'undefined') {
+                window.history.pushState({}, '', '/lexicon/');
+              }
+            }}
+            className="footer-legal-pill"
+            style={{ color: '#a78bfa', borderColor: 'rgba(167, 139, 250, 0.4)', fontWeight: 700 }}
+          >
+            🏛️ Strong’s Lexicon
           </a>
           <button
             type="button"

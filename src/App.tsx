@@ -298,6 +298,18 @@ export function App() {
   >(null);
   const [chapterSearchQuery, setChapterSearchQuery] = useState<string>('');
 
+  // Scroll to targeted verse if routed directly to a verse anchor
+  useEffect(() => {
+    if (initialRoute.verse) {
+      setSelectedVerse(initialRoute.verse);
+      setActiveVerseActionBar(initialRoute.verse);
+      const timer = setTimeout(() => {
+        scrollToVerse(initialRoute.verse!);
+      }, 700);
+      return () => clearTimeout(timer);
+    }
+  }, [initialRoute.verse]);
+
   // Defensive guard: Eradicate browser email autofill into chapter search
   useEffect(() => {
     if (
@@ -1384,6 +1396,14 @@ export function App() {
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }}
+      onOpenTopics={(slug) => {
+        if (slug) setActiveTopicSlug(slug);
+        setIsTopicalModalOpen(true);
+      }}
+      onOpenLexicon={(code) => {
+        if (code) setSelectedStrongCode(code);
+        setIsStrongsModalOpen(true);
+      }}
       onSelectTheme={(themeKey) => {
         updatePrefs({ theme: themeKey as any });
       }}
@@ -1507,6 +1527,36 @@ export function App() {
             }}
           >
             <span>📽️ Slide</span>
+          </button>
+
+          <button
+            type="button"
+            className={`quiet-button ${isTopicalModalOpen ? 'active-pill' : ''}`}
+            onClick={() => {
+              setIsTopicalModalOpen(true);
+              if (typeof window !== 'undefined') {
+                window.history.pushState({}, '', '/topics/');
+              }
+            }}
+            title="Topical Scripture Hubs — 10 Curated Biblical Themes"
+            aria-label="Topical Scripture Hubs"
+          >
+            <span>🌿 Topics</span>
+          </button>
+
+          <button
+            type="button"
+            className={`quiet-button ${isStrongsModalOpen ? 'active-pill' : ''}`}
+            onClick={() => {
+              setIsStrongsModalOpen(true);
+              if (typeof window !== 'undefined') {
+                window.history.pushState({}, '', '/lexicon/');
+              }
+            }}
+            title="Greek & Hebrew Strong's Lexicon"
+            aria-label="Greek & Hebrew Strong's Lexicon"
+          >
+            <span>🏛️ Lexicon</span>
           </button>
 
 
@@ -3745,6 +3795,17 @@ export function App() {
         allEntries={STRONGS_DICTIONARY}
         onSelectEntry={(code: string) => setSelectedStrongCode(code)}
         onNavigateReference={handleJumpToReferenceString}
+      />
+
+      {/* TOPICAL SCRIPTURE AUTHORITY HUB MODAL */}
+      <TopicalScriptureHubModal
+        isOpen={isTopicalModalOpen}
+        onClose={() => setIsTopicalModalOpen(false)}
+        initialTopicSlug={activeTopicSlug}
+        onNavigateChapter={(slug, ch) => {
+          handleSelectBookChapter(slug, ch);
+          setIsTopicalModalOpen(false);
+        }}
       />
 
       {/* PERSONAL STUDY VAULT DRAWER (Bookmarks, Pins, Highlights, Notes) */}
