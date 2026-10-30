@@ -45,6 +45,8 @@
   - Wrapped Gemini API Key input in an isolated `<form autoComplete="off">` with `autoComplete="new-password"` and password-manager ignore attributes.
 - [`src/services/statusVideoEngine.ts`](file:///c:/Users/kwame/Downloads/bible/src/services/statusVideoEngine.ts):
   - Corrected `totalWords` reference calculation in kinetic typography rendering.
+- [`build-ssg.js`](file:///c:/Users/kwame/Downloads/bible/build-ssg.js):
+  - Removed duplicate declarations of authority prerender shell functions (`buildTopVersePrerenderShell`, etc.), restoring clean SSG builds.
 
 ---
 
