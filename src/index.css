@@ -2994,11 +2994,11 @@ body:has(.theme-wisdom-legacy) ::-webkit-scrollbar-thumb:hover {
   }
 
   .masthead .brand {
-    flex-shrink: 0;
+    flex-shrink: 0 !important;
     display: inline-flex;
     align-items: center;
-    max-width: 44%;
-    overflow: hidden;
+    max-width: none !important;
+    overflow: visible !important;
   }
 
   /* Completely hide the bulky top button row and inline search input on mobile */
@@ -5517,45 +5517,54 @@ mark.search-highlight {
 
 /* ==========================================================================
    SMART ADAPTIVE LOGO ENGINE (ZERO-CLASH INVARIANT)
-   Adapts cleanly across single-version and multi-version / added-books modes
+   "AduBible" MUST ALWAYS BE SEEN — Complete brand visibility across all devices
    ========================================================================== */
 
-/* 1. Mobile Global (< 768px): Hide .org TLD and optimize typography */
+/* 1. Mobile Global (< 768px): Hide .org TLD and optimize typography so AduBible is pristine */
 @media (max-width: 768px) {
   .logo-word-tld {
     display: none !important; /* Never let .org crowd mobile top masthead */
   }
 
   .adubible-logo-mark {
-    gap: 6px !important;
+    gap: 5px !important;
+    flex-shrink: 0 !important;
   }
 
   .adubible-logo-mark .logo-symbol-wave {
-    width: 28px !important;
-    height: 28px !important;
+    width: 25px !important;
+    height: 25px !important;
   }
 
   .adubible-logo-mark .logo-wordmark {
-    font-size: 18px !important;
+    display: inline-flex !important; /* AduBible ALWAYS visible */
+    font-size: 17px !important;
     letter-spacing: -0.015em !important;
+    white-space: nowrap !important;
+  }
+
+  .adubible-logo-mark .logo-word-adu,
+  .adubible-logo-mark .logo-word-bible {
+    display: inline !important; /* Both "Adu" and "Bible" ALWAYS seen */
   }
 }
 
-/* 2. Added Books / Multi-Version Mode on Compact Screens (<= 540px) */
-/* When 2+ versions are loaded, the versions pill expands to "4 Versions",
-   so the logo adapts to [Symbol] Adu to guarantee zero clash with the search box */
-@media (max-width: 540px) {
-  .masthead.has-multiple-versions .logo-word-bible,
-  .adubible-logo-mark.has-added-versions .logo-word-bible {
-    display: none !important;
-  }
+/* 2. When Added Books / Multiple Versions are active (e.g. 4 Versions) */
+/* The versions pill expands, so the search box adapts into a sleek 32px circular icon pill,
+   leaving generous breathing room so AduBible is 100% visible with zero clash */
+.masthead.has-multiple-versions .mobile-mast-search-box-btn .search-placeholder-text {
+  display: none !important;
 }
 
-/* 3. Ultra-compact screens (<= 360px) or when explicitly requesting symbol variant */
-@media (max-width: 360px) {
-  .adubible-logo-mark .logo-wordmark {
-    display: none !important; /* Symbol-only on ultra-compact devices */
-  }
+.masthead.has-multiple-versions .mobile-mast-search-box-btn {
+  padding: 0 !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  max-width: 32px !important;
+  flex: 0 0 32px !important;
+  border-radius: 50% !important;
+  justify-content: center !important;
 }
 
 .adubible-logo-mark.variant-symbol .logo-wordmark {

@@ -581,50 +581,73 @@ export const ScriptureSlideDeckModal: React.FC<ScriptureSlideDeckModalProps> = (
           flexWrap: 'nowrap',
         }}
       >
-        {/* Left: Scripture Reference Badge */}
+        {/* Left: AduBible Brand + Scripture Reference Badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, minWidth: 0 }}>
           <div
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              width: '28px',
-              height: '28px',
-              borderRadius: '7px',
-              background: 'rgba(255, 255, 255, 0.08)',
-              border: `1px solid ${currentTheme.accent}40`,
+              gap: '6px',
+              textDecoration: 'none',
               flexShrink: 0,
             }}
-            title="AduBible.org — Sanctuary Presentation"
+            title="AduBible.org — Sovereign Scripture Presentation"
           >
-            <img
-              src="/brand/icon-128.png"
-              alt="AduBible"
-              style={{ width: '20px', height: '20px', objectFit: 'contain' }}
-            />
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '26px',
+                height: '26px',
+                borderRadius: '6px',
+                background: 'rgba(255, 255, 255, 0.08)',
+                border: `1px solid ${currentTheme.accent}40`,
+                flexShrink: 0,
+              }}
+            >
+              <img
+                src="/brand/icon-128.png"
+                alt="AduBible"
+                style={{ width: '18px', height: '18px', objectFit: 'contain' }}
+              />
+            </div>
+            <span
+              style={{
+                fontFamily: 'Georgia, serif',
+                fontSize: '15px',
+                fontWeight: 700,
+                letterSpacing: '-0.015em',
+                display: 'inline-flex',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <span style={{ color: 'var(--logo-adu-color, #8EA486)' }}>Adu</span>
+              <span style={{ color: 'var(--logo-bible-color, #B8AC94)' }}>Bible</span>
+            </span>
           </div>
 
           <div
             style={{
-              padding: '5px 11px',
+              padding: '4px 9px',
               borderRadius: '999px',
               background: currentTheme.badgeBg,
               color: currentTheme.badgeText,
               border: `1px solid ${currentTheme.accent}`,
               fontWeight: 700,
-              fontSize: '11.5px',
+              fontSize: '11px',
               letterSpacing: '0.04em',
               textTransform: 'uppercase',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
+              gap: '5px',
               boxShadow: `0 0 14px ${currentTheme.accentGlow}`,
               whiteSpace: 'nowrap',
               minWidth: 0,
             }}
           >
-            <span style={{ fontSize: '11px' }}>📽️</span>
-            <span style={{ maxWidth: 'clamp(95px, 28vw, 180px)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <span style={{ fontSize: '10px' }}>📽️</span>
+            <span style={{ maxWidth: 'clamp(80px, 20vw, 150px)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {bookDisplayName} {chapter}:{currentVerseNum}
             </span>
           </div>

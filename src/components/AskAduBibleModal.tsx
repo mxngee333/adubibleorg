@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import {
   askAduBibleAI,
+  getSanctuaryFallbackAnswer,
   AskAduBibleContext,
   AskAduBibleMessage,
 } from '../services/askAduBibleService';
@@ -151,17 +152,13 @@ Ask any question about this passage, explore the original **Greek (Textus Recept
 
       setMessages((prev) => [...prev, botMsg]);
     } catch {
+      const fallbackText = getSanctuaryFallbackAnswer(textToSend, context);
       const fallbackMsg: AskAduBibleMessage = {
         id: `err-${Date.now()}`,
         sender: 'assistant',
-        text: `### Exegetical Reflection on ${context.bookNameEn} ${context.chapter}
-The living Word of God (*Hebrews 4:12*) speaks with covenantal authority across English and Asante Twi.
-
-**Key Truths:**
-- **Divine Sovereignty**: The eternal purpose of God accomplished in Christ.
-- **Adom ne Asomdwoeɛ (Grace and Peace)**: Rest in the full measure of Christ's finished work.
-- **Continual Meditation**: Keep searching scripture (*Acts 17:11*) side-by-side without distractions.`,
+        text: fallbackText,
         timestamp: Date.now(),
+        bookContext: `${context.bookNameEn} ${context.chapter}`,
       };
       setMessages((prev) => [...prev, fallbackMsg]);
     } finally {
