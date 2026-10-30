@@ -579,7 +579,7 @@ export const VerseCardStudioModal: React.FC<VerseCardStudioModalProps> = ({
     ctx.textBaseline = 'alphabetic';
     ctx.font = 'bold 24px Georgia, serif';
     ctx.fillStyle = selectedTheme.accent;
-    ctx.fillText('AduBible.org', W / 2, H - 75);
+    ctx.fillText('AduBible.org®', W / 2, H - 75);
     ctx.restore();
   }, [
     isOpen,

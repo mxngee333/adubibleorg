@@ -5539,10 +5539,13 @@ mark.search-highlight {
    "AduBible" MUST ALWAYS BE SEEN — Complete brand visibility across all devices
    ========================================================================== */
 
-/* 1. Mobile Global (< 768px): Hide .org TLD and optimize typography so AduBible is pristine */
+/* 1. Mobile Global (< 768px): Preserve complete AduBible.org® brand identity with zero clipping */
 @media (max-width: 768px) {
   .logo-word-tld {
-    display: none !important; /* Never let .org crowd mobile top masthead */
+    display: inline !important; /* AduBible.org® is globally preserved on mobile */
+    font-size: 0.82em !important;
+    opacity: 0.85 !important;
+    margin-left: 1px !important;
   }
 
   .adubible-logo-mark {
@@ -5556,8 +5559,9 @@ mark.search-highlight {
   }
 
   .adubible-logo-mark .logo-wordmark {
-    display: inline-flex !important; /* AduBible ALWAYS visible */
-    font-size: 17px !important;
+    display: inline-flex !important; /* AduBible.org® ALWAYS visible */
+    align-items: baseline !important;
+    font-size: 16px !important;
     letter-spacing: -0.015em !important;
     white-space: nowrap !important;
   }
@@ -5569,8 +5573,10 @@ mark.search-highlight {
 
   .adubible-logo-mark .logo-registered-mark {
     display: inline-block !important;
-    font-size: 0.42em !important;
+    font-size: 0.44em !important;
     margin-left: 1.5px !important;
+    align-self: flex-start !important;
+    margin-top: 1px !important;
   }
 }
 

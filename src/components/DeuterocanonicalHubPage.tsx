@@ -11,6 +11,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { BibleBook } from '../types/bible';
+import { AduBibleLogo } from './AduBibleLogo';
 
 interface DeuterocanonicalHubPageProps {
   books: BibleBook[];
@@ -59,6 +60,11 @@ export const DeuterocanonicalHubPage: React.FC<DeuterocanonicalHubPageProps> = (
     <div className="workspace" style={{ paddingBottom: '70px' }}>
       {/* 1. HERO BANNER */}
       <section className="page-heading">
+        <div style={{ marginBottom: '14px' }}>
+          <a href="/" style={{ textDecoration: 'none' }} title="AduBible.org® — Sovereign Scripture Engine">
+            <AduBibleLogo size="md" />
+          </a>
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
           <span className="eyebrow" style={{ color: 'var(--green)', fontWeight: 700 }}>
             HISTORICAL BIBLICAL CANON · DEUTEROCANONICAL SCRIPTURES

@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { getAllArticles, getAllArticleCategories } from '../data/articlesCorpus';
 import { Search, Sparkles, BookOpen, Clock, ArrowRight, Shield, Globe, Award, Check } from 'lucide-react';
+import { AduBibleLogo } from './AduBibleLogo';
 
 interface ArticlesDirectoryHubPageProps {
   onSelectArticle: (slug: string) => void;
@@ -41,6 +42,11 @@ export const ArticlesDirectoryHubPage: React.FC<ArticlesDirectoryHubPageProps> =
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent pointer-events-none" />
         
         <div className="relative max-w-5xl mx-auto space-y-6 text-center">
+          <div className="flex justify-center pt-2">
+            <a href="/" className="transition hover:opacity-95" title="AduBible.org® — Sovereign Scripture Hub">
+              <AduBibleLogo size="lg" />
+            </a>
+          </div>
           <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-1.5 text-xs font-sans font-bold text-amber-300 shadow-sm">
             <Sparkles className="h-3.5 w-3.5" />
             <span>AduBible Scripture Articles &amp; Expository Hub</span>

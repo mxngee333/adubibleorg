@@ -1268,7 +1268,7 @@ export class StatusVideoRenderer {
     ctx.letterSpacing = '3px';
     ctx.shadowColor = theme.accent;
     ctx.shadowBlur = 12;
-    ctx.fillText('✦ AduBible.org ✦', W / 2, watermarkY + 5.5);
+    ctx.fillText('✦ AduBible.org® ✦', W / 2, watermarkY + 5.5);
 
     ctx.restore();
   }

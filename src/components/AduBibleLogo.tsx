@@ -15,7 +15,7 @@ export const AduBibleLogo: React.FC<AduBibleLogoProps> = ({
   variant = 'adaptive',
   className = '',
   onClick,
-  title = 'AduBible.org — Sovereign Scripture Engine',
+  title = 'AduBible.org® — Sovereign Scripture Engine',
   isParallelActive = false,
   showRegistered = true,
 }) => {

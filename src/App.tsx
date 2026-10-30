@@ -672,7 +672,7 @@ export function App() {
 
     if (window.location.pathname === '/' && isAtHomeState) {
       document.title =
-        "AduBible.org — Free Multilingual Parallel Bible Hub in 35+ Languages";
+        "AduBible.org® — Free Multilingual Parallel Bible Hub in 35+ Languages";
       return;
     }
 
@@ -684,7 +684,7 @@ export function App() {
     ) {
       window.history.replaceState({}, '', nextUrl);
     }
-    document.title = `${getBookDisplayName(currentBook)} ${currentChapter} — AduBible.org Parallel Bible Reader`;
+    document.title = `${getBookDisplayName(currentBook)} ${currentChapter} — AduBible.org® Parallel Bible Reader`;
   }, [activeVersionIds, currentBook, currentChapter]);
 
   // Listen for browser back / forward navigation
@@ -1416,7 +1416,7 @@ export function App() {
           href="/"
           className="brand"
           onClick={handleGoHome}
-          title="AduBible.org — Sovereign Scripture Engine"
+          title="AduBible.org® — Sovereign Scripture Engine"
         >
           <AduBibleLogo size="md" isParallelActive={activeVersionIds.length > 1} />
         </a>

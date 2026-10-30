@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PillarArticle, getAllArticles } from '../data/articlesCorpus';
 import { ChevronLeft, Share2, BookOpen, Clock, Calendar, Check, ArrowRight, Sparkles, Shield, Bookmark, Tag } from 'lucide-react';
+import { AduBibleLogo } from './AduBibleLogo';
 
 interface ArticleReaderPageProps {
   article: PillarArticle;
@@ -46,10 +47,14 @@ export const ArticleReaderPage: React.FC<ArticleReaderPageProps> = ({
       {/* Top Header Navigation */}
       <header className="sticky top-0 z-40 border-b border-stone-800 bg-stone-950/90 backdrop-blur-md px-4 sm:px-6 py-3">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            <a href="/" className="inline-flex items-center hover:opacity-90 transition" title="AduBible.org® — Sovereign Scripture Hub">
+              <AduBibleLogo size="sm" />
+            </a>
+            <span className="text-xs font-sans text-stone-700">|</span>
             <button
               onClick={onBackToDirectory}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-stone-800 bg-stone-900 px-3 py-1.5 text-xs font-sans font-semibold text-stone-300 hover:border-amber-500/50 hover:bg-stone-800 hover:text-amber-300 transition"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-stone-800 bg-stone-900 px-2.5 py-1 text-xs font-sans font-semibold text-stone-300 hover:border-amber-500/50 hover:bg-stone-800 hover:text-amber-300 transition"
             >
               <ChevronLeft className="h-4 w-4" />
               <span>All Articles</span>
