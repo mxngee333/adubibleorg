@@ -1481,19 +1481,7 @@ export function App() {
             <span>📽️ Slide</span>
           </button>
 
-          <button
-            type="button"
-            className={`quiet-button ${isGamesArcadeOpen ? 'active-pill' : ''}`}
-            onClick={() => setIsGamesArcadeOpen(true)}
-            title="3D Bible Games & Scripture Quiz Arcade (G)"
-            aria-label="3D Bible Games & Scripture Quiz Arcade"
-            style={{
-              color: isGamesArcadeOpen ? '#f59e0b' : undefined,
-              borderColor: isGamesArcadeOpen ? '#f59e0b' : undefined,
-            }}
-          >
-            <span>🎮 Games</span>
-          </button>
+
 
           <button
             type="button"
@@ -1504,6 +1492,22 @@ export function App() {
             <span>
               ⚙️ Settings{studyLayersActiveCount > 0 ? ` (${studyLayersActiveCount})` : ''}
             </span>
+          </button>
+
+          <button
+            type="button"
+            className={`quiet-button ${isGamesArcadeOpen ? 'active-pill' : ''}`}
+            onClick={() => setIsGamesArcadeOpen(true)}
+            title="3D Bible Games & Scripture Quiz Arcade (G)"
+            aria-label="3D Bible Games & Scripture Quiz Arcade"
+            style={{
+              color: isGamesArcadeOpen ? '#f59e0b' : undefined,
+              borderColor: isGamesArcadeOpen ? '#f59e0b' : undefined,
+              fontSize: '15px',
+              padding: '0 8px',
+            }}
+          >
+            <span aria-hidden="true">🎮</span>
           </button>
 
           <button
@@ -1546,21 +1550,7 @@ export function App() {
             </span>
           </button>
 
-          <button
-            type="button"
-            className="mobile-mast-pill-btn"
-            onClick={() => setIsGamesArcadeOpen(true)}
-            aria-label="3D Bible Games"
-            title="3D Bible Games & Quiz Arcade"
-            style={{
-              padding: '0 8px',
-              color: '#f59e0b',
-              borderColor: 'rgba(245, 158, 11, 0.4)',
-              fontWeight: 700,
-            }}
-          >
-            <span>🎮 Games</span>
-          </button>
+
 
           <button
             type="button"
@@ -1586,6 +1576,21 @@ export function App() {
             title="Active Bible Translations"
           >
             <span>{activeVersionIds.length > 1 ? `${activeVersionIds.length} Versions` : activeVersionIds[0]?.toUpperCase() || 'NKJV'}</span>
+          </button>
+
+          <button
+            type="button"
+            className="mobile-mast-icon-btn"
+            onClick={() => setIsGamesArcadeOpen(true)}
+            aria-label="3D Bible Games & Quiz Arcade"
+            title="3D Bible Games & Quiz Arcade (G)"
+            style={{
+              borderColor: isGamesArcadeOpen ? '#f59e0b' : undefined,
+              color: isGamesArcadeOpen ? '#f59e0b' : undefined,
+              fontSize: '14px',
+            }}
+          >
+            <span aria-hidden="true">🎮</span>
           </button>
 
           <button
