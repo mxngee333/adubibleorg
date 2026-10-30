@@ -1139,11 +1139,24 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </span>
               </div>
 
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSaveKey();
+                }}
+                autoComplete="off"
+                style={{ display: 'flex', gap: '8px', alignItems: 'center' }}
+              >
                 <input
                   type={isKeyVisible ? 'text' : 'password'}
                   value={apiKeyInput}
                   onChange={(e) => setApiKeyInput(e.target.value)}
+                  name="gemini_user_api_key_vault_field"
+                  id="gemini_user_api_key_vault_field"
+                  autoComplete="new-password"
+                  data-lpignore="true"
+                  data-1p-ignore="true"
+                  data-form-type="other"
                   placeholder="Paste AIzaSy... key (optional)"
                   style={{
                     flex: 1,
@@ -1166,14 +1179,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   {isKeyVisible ? '🙈' : '👁️'}
                 </button>
                 <button
-                  type="button"
+                  type="submit"
                   className="add-column"
-                  onClick={handleSaveKey}
                   style={{ minWidth: '80px' }}
                 >
                   Save
                 </button>
-              </div>
+              </form>
 
               {keyNotice && (
                 <div style={{ fontSize: '12px', color: 'var(--green)', fontWeight: 500 }}>

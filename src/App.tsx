@@ -86,6 +86,7 @@ import { QuickVersionRibbon } from './components/QuickVersionRibbon';
 import { MobileBottomDock } from './components/MobileBottomDock';
 import { GrandSiteFooter } from './components/GrandSiteFooter';
 import { BibleGamesArcadeModal } from './components/games/BibleGamesArcadeModal';
+import { TopicalScriptureHubModal } from './components/TopicalScriptureHubModal';
 import { AduBibleLogo } from './components/AduBibleLogo';
 import { AskAduBibleModal } from './components/AskAduBibleModal';
 import { DonationHubPage } from './components/DonationHubPage';
@@ -181,8 +182,8 @@ export function App() {
     initialRoute.chapter || 1
   );
 
-  // Active Canon Navigation Tab: 'canonical' (Default Scripture Reader) | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin'
-  const [activeNavTab, setActiveNavTab] = useState<'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin'>(() => {
+  // Active Canon Navigation Tab: 'canonical' (Default Scripture Reader) | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin' | 'topics' | 'lexicon'
+  const [activeNavTab, setActiveNavTab] = useState<'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin' | 'topics' | 'lexicon'>(() => {
     if (initialRoute.targetTab) return initialRoute.targetTab;
     if (typeof window !== 'undefined') {
       const qTab = new URLSearchParams(window.location.search).get('tab');
@@ -296,6 +297,17 @@ export function App() {
     number | null
   >(null);
   const [chapterSearchQuery, setChapterSearchQuery] = useState<string>('');
+
+  // Defensive guard: Eradicate browser email autofill into chapter search
+  useEffect(() => {
+    if (
+      chapterSearchQuery &&
+      (chapterSearchQuery.includes('@') ||
+        (user?.email && chapterSearchQuery.trim() === user.email.trim()))
+    ) {
+      setChapterSearchQuery('');
+    }
+  }, [chapterSearchQuery, user]);
   const [quickPassageInput, setQuickPassageInput] = useState<string>('');
   const [showAudioBar, setShowAudioBar] = useState<boolean>(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
@@ -501,9 +513,18 @@ export function App() {
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState<boolean>(false);
   const [isLangAddonModalOpen, setIsLangAddonModalOpen] =
     useState<boolean>(false);
-  const [isStrongsModalOpen, setIsStrongsModalOpen] = useState<boolean>(false);
-  const [selectedStrongCode, setSelectedStrongCode] =
-    useState<string>('G2128');
+  const [isStrongsModalOpen, setIsStrongsModalOpen] = useState<boolean>(() => {
+    return initialRoute.targetTab === 'lexicon';
+  });
+  const [selectedStrongCode, setSelectedStrongCode] = useState<string>(
+    initialRoute.lexiconId || 'H430'
+  );
+  const [isTopicalModalOpen, setIsTopicalModalOpen] = useState<boolean>(() => {
+    return initialRoute.targetTab === 'topics';
+  });
+  const [activeTopicSlug, setActiveTopicSlug] = useState<string | null>(
+    initialRoute.topicSlug || null
+  );
   const [isStudyVaultOpen, setIsStudyVaultOpen] = useState<boolean>(false);
   const [studyVaultTab, setStudyVaultTab] = useState<
     'pins' | 'highlights' | 'bookmarks' | 'notes'
@@ -776,6 +797,8 @@ export function App() {
     savePreferences(next);
     syncToCloudIfSignedIn(highlights, bookmarks, pins, notes, next);
     if (partial.theme || partial.customTheme) {
+      // Instantly clear any chapter search filter / accidental browser autofill so verses are immediately visible
+      setChapterSearchQuery('');
       const themeLabel =
         next.theme === 'custom'
           ? (next.customTheme?.name || 'Custom Palette')
@@ -2826,7 +2849,23 @@ export function App() {
               <input
                 type="search"
                 value={chapterSearchQuery}
-                onChange={(e) => setChapterSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val.includes('@') || (user?.email && val.trim() === user.email.trim())) {
+                    setChapterSearchQuery('');
+                    return;
+                  }
+                  setChapterSearchQuery(val);
+                }}
+                name="chapter_filter_search_field"
+                id="chapter_filter_search_field"
+                autoComplete="new-password"
+                autoCapitalize="off"
+                autoCorrect="off"
+                spellCheck={false}
+                data-lpignore="true"
+                data-1p-ignore="true"
+                data-form-type="other"
                 placeholder="Find in this chapter"
               />
               {chapterSearchQuery && (
@@ -3256,6 +3295,31 @@ export function App() {
                   </div>
                 );
               })}
+
+              {filteredVerseNumbers.length === 0 && (
+                <div className="py-12 px-6 text-center w-full col-span-full border border-[var(--line)] rounded-2xl bg-[var(--surface)] my-4">
+                  <div className="text-2xl mb-2">🔍</div>
+                  <div className="text-sm font-bold text-[var(--ink)]">
+                    No verses found {chapterSearchQuery ? `matching "${chapterSearchQuery}"` : ''}
+                  </div>
+                  <p className="text-xs text-[var(--subtle)] mt-1.5 max-w-md mx-auto leading-relaxed">
+                    {chapterSearchQuery
+                      ? 'A chapter filter is currently hiding the text. Clear the filter below to reveal all verses.'
+                      : loadingChapters
+                        ? 'Loading chapter text across translations...'
+                        : 'No verses available for this chapter.'}
+                  </p>
+                  {chapterSearchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setChapterSearchQuery('')}
+                      className="mt-3.5 px-4 py-2 rounded-xl bg-[var(--green)] text-[var(--paper)] font-bold text-xs shadow hover:opacity-90 transition cursor-pointer"
+                    >
+                      Clear Filter &amp; Show All Verses
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -3401,6 +3465,31 @@ export function App() {
                   </button>
                 );
               })}
+
+              {filteredVerseNumbers.length === 0 && (
+                <div className="py-12 px-6 text-center w-full col-span-full border border-[var(--line)] rounded-2xl bg-[var(--surface)] my-4">
+                  <div className="text-2xl mb-2">🔍</div>
+                  <div className="text-sm font-bold text-[var(--ink)]">
+                    No verses found {chapterSearchQuery ? `matching "${chapterSearchQuery}"` : ''}
+                  </div>
+                  <p className="text-xs text-[var(--subtle)] mt-1.5 max-w-md mx-auto leading-relaxed">
+                    {chapterSearchQuery
+                      ? 'A chapter filter is currently hiding the text. Clear the filter below to reveal all verses.'
+                      : loadingChapters
+                        ? 'Loading chapter text across translations...'
+                        : 'No verses available for this chapter.'}
+                  </p>
+                  {chapterSearchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setChapterSearchQuery('')}
+                      className="mt-3.5 px-4 py-2 rounded-xl bg-[var(--green)] text-[var(--paper)] font-bold text-xs shadow hover:opacity-90 transition cursor-pointer"
+                    >
+                      Clear Filter &amp; Show All Verses
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -3501,7 +3590,10 @@ export function App() {
       {/* SETTINGS MODAL (Strong's & Commentaries OFF by default, toggleable here) */}
       <SettingsModal
         isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
+        onClose={() => {
+          setIsSettingsOpen(false);
+          setChapterSearchQuery((prev) => (prev.includes('@') ? '' : prev));
+        }}
         prefs={prefs}
         onUpdatePrefs={updatePrefs}
         onOpenLanguageAddonModal={() => setIsLangAddonModalOpen(true)}

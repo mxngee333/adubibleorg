@@ -1229,6 +1229,7 @@ export function parseBibleHubUrlPath(pathname: string): {
   versionId?: string;
   bookSlug?: string;
   chapter?: number;
+  verse?: number;
   isParallelRoute?: boolean;
   legalPage?:
     | 'about'
@@ -1240,8 +1241,10 @@ export function parseBibleHubUrlPath(pathname: string): {
     | 'sources'
     | 'contact'
     | 'cookie-policy';
-  targetTab?: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin';
+  targetTab?: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin' | 'topics' | 'lexicon';
   articleSlug?: string;
+  topicSlug?: string;
+  lexiconId?: string;
 } {
   const cleanPath = pathname
     .replace(/\.html?$/i, '')
@@ -1301,6 +1304,57 @@ export function parseBibleHubUrlPath(pathname: string): {
       chapter: 1,
       targetTab: 'list-of-sixty',
     };
+  }
+
+  // Topical Scripture Hubs (/topics/ or /topics/[topic])
+  if (lower === 'topics' || lower.startsWith('topics/')) {
+    const slug = lower.replace(/^topics\/?/, '').trim();
+    return {
+      versionId: 'nkjv',
+      bookSlug: 'psalms',
+      chapter: 23,
+      targetTab: 'topics',
+      topicSlug: slug || undefined,
+    };
+  }
+
+  // Strong's Greek & Hebrew Lexicon Hubs (/lexicon/ or /lexicon/[id])
+  if (lower === 'lexicon' || lower.startsWith('lexicon/')) {
+    const id = lower.replace(/^lexicon\/?/, '').trim().toUpperCase();
+    return {
+      versionId: 'nkjv',
+      bookSlug: 'ephesians',
+      chapter: 1,
+      targetTab: 'lexicon',
+      lexiconId: id || undefined,
+    };
+  }
+
+  // Direct Verse Deep Links (e.g. /verse/john/3/16 or /verse/john-3-16)
+  if (lower.startsWith('verse/')) {
+    const sub = lower.replace(/^verse\/?/, '').trim();
+    const parts = sub.split('/').filter(Boolean);
+    if (parts.length >= 3) {
+      const maybeBook = getBookBySlug(parts[0]) || getBookById(parts[0]);
+      return {
+        versionId: 'nkjv',
+        bookSlug: maybeBook?.slug || parts[0],
+        chapter: parseInt(parts[1], 10) || 1,
+        verse: parseInt(parts[2], 10) || 1,
+        targetTab: 'canonical',
+      };
+    }
+    const hyphenMatch = sub.match(/^([a-z0-9-]+?)-(\d+)-(\d+)$/i);
+    if (hyphenMatch) {
+      const maybeBook = getBookBySlug(hyphenMatch[1]) || getBookById(hyphenMatch[1]);
+      return {
+        versionId: 'nkjv',
+        bookSlug: maybeBook?.slug || hyphenMatch[1],
+        chapter: parseInt(hyphenMatch[2], 10) || 1,
+        verse: parseInt(hyphenMatch[3], 10) || 1,
+        targetTab: 'canonical',
+      };
+    }
   }
 
   // Legal & Institutional Governance Pages

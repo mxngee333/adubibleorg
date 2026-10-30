@@ -832,6 +832,7 @@ export class StatusVideoRenderer {
     ctx.restore();
 
     // 11. Kinetic Typography Rendering (Natural Mixed-Case Serifs & Dynamic Highlighter)
+    const totalWords = this.words.length;
     const textStartTime = 0.5;
     const speechDuration =
       this.speechBuffer && this.speechBuffer.duration > 1.0

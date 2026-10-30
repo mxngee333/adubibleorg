@@ -41,6 +41,37 @@ if (fs.existsSync(legalCorpusPath)) {
   }
 }
 
+// Load compiled authority corpora (Top Verses, Topical Hubs, Strong's Lexicon)
+const topVersesPath = path.join(__dirname, 'src', 'data', 'topVersesCorpus.json');
+let topVerses = [];
+if (fs.existsSync(topVersesPath)) {
+  try {
+    topVerses = JSON.parse(fs.readFileSync(topVersesPath, 'utf-8'));
+  } catch (err) {
+    console.error('Failed to parse topVersesCorpus.json:', err);
+  }
+}
+
+const topicalHubsPath = path.join(__dirname, 'src', 'data', 'topicalScriptureCorpus.json');
+let topicalHubs = [];
+if (fs.existsSync(topicalHubsPath)) {
+  try {
+    topicalHubs = JSON.parse(fs.readFileSync(topicalHubsPath, 'utf-8'));
+  } catch (err) {
+    console.error('Failed to parse topicalScriptureCorpus.json:', err);
+  }
+}
+
+const strongsLexiconPath = path.join(__dirname, 'src', 'data', 'strongsLexicon.json');
+let strongsEntries = {};
+if (fs.existsSync(strongsLexiconPath)) {
+  try {
+    strongsEntries = JSON.parse(fs.readFileSync(strongsLexiconPath, 'utf-8'));
+  } catch (err) {
+    console.error('Failed to parse strongsLexicon.json:', err);
+  }
+}
+
 const CANONICAL_ROUTES = [
   {
     route: '/',
@@ -416,6 +447,94 @@ for (const loc of MEGA_LOCALES) {
   });
 }
 
+// ==========================================
+// 1. TOP 30 VERSES AUTHORITY HUBS & DIRECTORY
+// ==========================================
+CANONICAL_ROUTES.push({
+  route: '/verse/',
+  priority: '0.9',
+  changefreq: 'weekly',
+  title: 'Top 30 Most Searched Bible Verses in Parallel | AduBible.org®',
+  description:
+    'Read and study the 30 most famous and searched Bible verses in parallel (John 3:16, Psalm 23:1, Psalm 91:1, Romans 8:28, Philippians 4:13) across NKJV, KJV, BSB, Hebrew, Greek, and Asante Twi with Strong’s Concordance and 24kHz Studio Audio on AduBible.org®.',
+  heading: 'Top 30 Most Searched Bible Verses — Multi-Translation Parallel Sanctuary',
+  excerpt:
+    'A curated sanctuary of the 30 most profound scriptures in human history, compared side-by-side across English, Original Languages, and African Translations with Position #0 definitions.',
+  isVerseIndex: true,
+});
+
+for (const v of topVerses) {
+  CANONICAL_ROUTES.push({
+    route: `/verse/${v.slug}/`,
+    priority: '0.9',
+    changefreq: 'weekly',
+    title: `${v.title}`,
+    description: `${v.positionZeroSummary} Read in NKJV, KJV, BSB, and Asante Twi on AduBible.org®.`,
+    heading: `${v.reference} — Parallel Bible Study & Original Language Exegesis`,
+    excerpt: v.positionZeroSummary,
+    topVerseData: v,
+  });
+}
+
+// ==========================================
+// 2. 10 TOPICAL SCRIPTURE LIFE THEMES & HUB
+// ==========================================
+CANONICAL_ROUTES.push({
+  route: '/topics/',
+  priority: '0.9',
+  changefreq: 'weekly',
+  title: 'Topical Scripture Hubs — 10 Life Themes in Parallel | AduBible.org®',
+  description:
+    'Explore 10 comprehensive topical scripture hubs: Healing, Strength, Divine Protection, Peace Over Anxiety, Thanksgiving, Faith, Love (Agape), Hope, Forgiveness, and Wisdom with parallel translations and commentaries on AduBible.org®.',
+  heading: 'AduBible Topical Scripture Hubs — 10 Foundational Themes for Life & Prayer',
+  excerpt:
+    'Curated thematic scripture collections addressing real human needs: healing, endurance, anxiety, thanksgiving, and spiritual defense with deep theological expositions and 24kHz audio.',
+  isTopicsIndex: true,
+});
+
+for (const hub of topicalHubs) {
+  CANONICAL_ROUTES.push({
+    route: `/topics/${hub.slug}/`,
+    priority: '0.9',
+    changefreq: 'weekly',
+    title: hub.title,
+    description: hub.metaDescription,
+    heading: hub.h1,
+    excerpt: hub.tagline,
+    topicalHubData: hub,
+  });
+}
+
+// ==========================================
+// 3. STRONG'S GREEK & HEBREW LEXICON ENGINE
+// ==========================================
+CANONICAL_ROUTES.push({
+  route: '/lexicon/',
+  priority: '0.9',
+  changefreq: 'weekly',
+  title: 'Strong’s Greek & Hebrew Exhaustive Concordance Lexicon | AduBible.org®',
+  description:
+    'Search and study Hebrew (H1–H8674) and Greek (G1–G5624) original root words from Strong’s Exhaustive Concordance with BDB/Thayer definitions, pronunciations, biblical occurrences, and Asante Twi translations on AduBible.org®.',
+  heading: 'Strong’s Exhaustive Concordance — Hebrew & Greek Lexicon Sanctuary',
+  excerpt:
+    'The complete biblical vocabulary of the Old and New Testaments, providing root derivations, phonetic pronunciations, theological meanings, and occurrence maps for pastors and scholars.',
+  isLexiconIndex: true,
+});
+
+for (const [code, entry] of Object.entries(strongsEntries)) {
+  const codeLower = code.toLowerCase();
+  CANONICAL_ROUTES.push({
+    route: `/lexicon/${codeLower}/`,
+    priority: '0.8',
+    changefreq: 'monthly',
+    title: `${code} ${entry.transliteration} (${entry.originalWord}) — Strong’s ${entry.language} Lexicon & Definition | AduBible.org®`,
+    description: `${entry.code} ${entry.transliteration} (${entry.originalWord}): ${entry.shortDefinition}. Strong's ${entry.language} definition, BDB/Thayer exegesis, occurrences (${entry.occurrences}x), and key biblical verses on AduBible.org®.`,
+    heading: `${entry.code}: ${entry.originalWord} (${entry.transliteration}) — Strong’s ${entry.language} Lexicon`,
+    excerpt: `${entry.shortDefinition} — ${entry.fullDefinition}`,
+    lexiconData: entry,
+  });
+}
+
 function extractFaqSchema(contentHtml) {
   const faqRegex = /<h3[^>]*>(?:Q\d+:?\s*)?([^<]+)<\/h3>\s*<p><strong>Answer:<\/strong>\s*([\s\S]*?)<\/p>/gi;
   const questions = [];
@@ -493,6 +612,9 @@ function buildSanctuaryNavPillsHtml() {
     { href: '/nkjv/romans/8/', label: '🔥 Romans 8' },
     { href: '/deuterocanon/', label: '📜 16 Deuterocanon Books' },
     { href: '/list-of-sixty/', label: '🏺 List of Sixty & Enoch' },
+    { href: '/topics/', label: '🏷️ 10 Topical Scripture Hubs', gold: true },
+    { href: '/verse/', label: '✨ Top 30 Bible Verses', gold: true },
+    { href: '/lexicon/', label: '📖 Strong’s Lexicon', gold: true },
     { href: '/articles/', label: '📚 15 Pillar Study Guides', gold: true },
     { href: '/donate/', label: '💛 Support Mission (Donate)', gold: true },
   ];
@@ -514,6 +636,9 @@ function buildSanctuaryFooterHtml() {
     </div>
     <nav aria-label="Institutional & Legal Governance" style="margin-bottom:1.25rem;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 10px;max-width:1100px;margin-left:auto;margin-right:auto;">
       <a href="/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#f7d584;font-weight:700;font-size:12px;text-decoration:none;">AduBible Home</a>
+      <a href="/topics/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#f7d584;font-weight:600;font-size:12px;text-decoration:none;">🏷️ 10 Topical Hubs</a>
+      <a href="/verse/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#f7d584;font-weight:600;font-size:12px;text-decoration:none;">✨ Top 30 Verses</a>
+      <a href="/lexicon/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#f7d584;font-weight:600;font-size:12px;text-decoration:none;">📖 Strong’s Lexicon</a>
       <a href="/articles/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#f7d584;font-weight:600;font-size:12px;text-decoration:none;">15 Pillar Guides</a>
       <a href="/about/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#d8e2d5;font-size:12px;text-decoration:none;">About AduBible</a>
       <a href="/how-to-use/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#d8e2d5;font-size:12px;text-decoration:none;">How to Use</a>
@@ -791,6 +916,452 @@ function buildHomeAuthorityPrerenderShell() {
           Frequently Asked Questions About Online Bible Study, Psalms &amp; AduBible.org&reg;
         </h2>
         ${faqHtml}
+      </section>
+
+      ${buildSanctuaryFooterHtml()}
+    </div>
+  </main></div>`;
+}
+
+function buildTopVersePrerenderShell(v) {
+  const strongsPills = (v.strongsCodes || []).map((code) => {
+    const entry = strongsEntries[code];
+    const gloss = entry ? ` (${entry.transliteration} — ${entry.shortDefinition})` : '';
+    return `<a href="/lexicon/${code.toLowerCase()}/" style="display:inline-block;padding:4px 10px;background:#19251b;border:1px solid #2d3c2e;border-radius:6px;color:#f7d584;font-size:12px;text-decoration:none;font-family:monospace;margin:3px;">${code}${gloss}</a>`;
+  }).join(' ');
+
+  const crossRefLinks = (v.crossReferences || []).map((ref) => {
+    return `<span style="display:inline-block;padding:4px 10px;background:#141e16;border:1px solid #283629;border-radius:6px;color:#c8d4c5;font-size:12px;margin:3px;">${ref}</span>`;
+  }).join(' ');
+
+  return `<div id="root"><main id="seo-prerender" style="min-height:100vh;background-color:#0f1712;color:#e3e6d8;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Georgia,serif;line-height:1.7;padding:2rem 1.25rem;">
+    <div style="max-width:1020px;margin:0 auto;">
+      <header style="background:linear-gradient(180deg,#172319 0%,#121b14 100%);border:1px solid rgba(212,167,44,0.38);border-radius:16px;padding:2rem 1.5rem;margin-bottom:1.75rem;">
+        <nav aria-label="Breadcrumb" style="font-size:13px;color:#9ca89a;margin-bottom:0.85rem;">
+          <a href="/" style="color:#f7d584;text-decoration:none;">AduBible</a> &rsaquo;
+          <a href="/verse/" style="color:#f7d584;text-decoration:none;">Top Verses</a> &rsaquo;
+          <a href="/nkjv/${v.bookSlug}/${v.chapter}/" style="color:#f7d584;text-decoration:none;">${v.bookName} ${v.chapter}</a> &rsaquo;
+          <span style="color:#e3e6d8;">Verse ${v.verse}</span>
+        </nav>
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:4px 12px;background:rgba(212,167,44,0.14);border:1px solid rgba(212,167,44,0.45);border-radius:999px;color:#f7d584;font-size:11.5px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem;">
+          ${v.theme} &bull; Parallel Scripture Study
+        </div>
+        <h1 style="font-family:Georgia,serif;font-size:clamp(1.75rem,3.2vw,2.4rem);line-height:1.25;color:#fafaf5;margin:0 0 1rem 0;">
+          ${v.reference} — Parallel Bible Study &amp; Exegesis
+        </h1>
+        
+        <!-- POSITION #0 SUMMARY BOX -->
+        <div style="background:#19251b;border-left:4px solid #d4a72c;border-radius:8px;padding:1.15rem 1.35rem;margin-bottom:1.25rem;">
+          <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:#f7d584;margin-bottom:0.35rem;">
+            📌 Quick Summary &amp; Biblical Meaning
+          </div>
+          <p style="margin:0;font-size:1.02rem;color:#e3e6d8;line-height:1.7;">
+            ${v.positionZeroSummary}
+          </p>
+        </div>
+
+        <nav aria-label="Sanctuary Quick Navigation" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;">
+          ${buildSanctuaryNavPillsHtml()}
+        </nav>
+      </header>
+
+      <!-- 4-COLUMN PARALLEL SCRIPTURE CARDS -->
+      <section style="background:#141e16;border:1px solid #283629;border-radius:16px;padding:1.75rem;margin-bottom:1.75rem;">
+        <h2 style="font-family:Georgia,serif;font-size:1.35rem;color:#f7d584;margin:0 0 1.25rem 0;">
+          ${v.reference} Side-by-Side Parallel Translations
+        </h2>
+        
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:1.5rem;">
+          <!-- NKJV Card -->
+          <div style="background:#19251b;border:1px solid #2d3c2e;border-radius:12px;padding:1.25rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+              <span style="font-weight:700;color:#f7d584;font-size:13px;text-transform:uppercase;letter-spacing:0.06em;">New King James Version (NKJV)</span>
+            </div>
+            <p style="font-family:Georgia,serif;font-size:1.08rem;line-height:1.75;color:#fafaf5;margin:0;">
+              &ldquo;${v.nkjv}&rdquo;
+            </p>
+          </div>
+
+          <!-- KJV Card -->
+          <div style="background:#19251b;border:1px solid #2d3c2e;border-radius:12px;padding:1.25rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+              <span style="font-weight:700;color:#9ca89a;font-size:13px;text-transform:uppercase;letter-spacing:0.06em;">King James Version (KJV 1769)</span>
+            </div>
+            <p style="font-family:Georgia,serif;font-size:1.05rem;line-height:1.75;color:#d8e2d5;margin:0;">
+              &ldquo;${v.kjv}&rdquo;
+            </p>
+          </div>
+
+          <!-- BSB Card -->
+          <div style="background:#19251b;border:1px solid #2d3c2e;border-radius:12px;padding:1.25rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+              <span style="font-weight:700;color:#9ca89a;font-size:13px;text-transform:uppercase;letter-spacing:0.06em;">Berean Standard Bible (BSB)</span>
+            </div>
+            <p style="font-family:Georgia,serif;font-size:1.05rem;line-height:1.75;color:#d8e2d5;margin:0;">
+              &ldquo;${v.bsb}&rdquo;
+            </p>
+          </div>
+
+          <!-- Original Language Card -->
+          <div style="background:#19251b;border:1px solid #2d3c2e;border-radius:12px;padding:1.25rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+              <span style="font-weight:700;color:#f7d584;font-size:13px;text-transform:uppercase;letter-spacing:0.06em;">${v.originalLanguageLabel} Interlinear</span>
+            </div>
+            <p style="font-family:Georgia,serif;font-size:1.15rem;line-height:1.8;color:#f7d584;margin:0;direction:${v.originalLanguageLabel === 'Hebrew WLC' ? 'rtl' : 'ltr'};">
+              ${v.originalLanguageText}
+            </p>
+          </div>
+
+          <!-- Asante Twi Card -->
+          <div style="background:#19251b;border:1px solid rgba(52,211,153,0.3);border-radius:12px;padding:1.25rem;grid-column:1 / -1;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+              <span style="font-weight:700;color:#34d399;font-size:13px;text-transform:uppercase;letter-spacing:0.06em;">Asante Twi (Twerɛ Kronkron &bull; Akan Audio)</span>
+            </div>
+            <p style="font-family:Georgia,serif;font-size:1.08rem;line-height:1.75;color:#e6fcf2;margin:0;">
+              &ldquo;${v.twiText}&rdquo;
+            </p>
+          </div>
+        </div>
+
+        <div style="text-align:center;padding-top:1rem;border-top:1px solid #283629;">
+          <a href="/nkjv/${v.bookSlug}/${v.chapter}/?verse=${v.verse}" style="display:inline-flex;align-items:center;gap:8px;padding:10px 24px;background:#d4a72c;color:#0d1310;font-weight:800;font-size:14px;border-radius:10px;text-decoration:none;">
+            📖 Open Full ${v.bookName} ${v.chapter} in Synchronized Parallel Reader &rarr;
+          </a>
+        </div>
+      </section>
+
+      <!-- STRONG'S CONCORDANCE & CROSS-REFERENCES -->
+      <section style="background:#141e16;border:1px solid #283629;border-radius:16px;padding:1.5rem;margin-bottom:1.75rem;">
+        <h3 style="font-family:Georgia,serif;font-size:1.25rem;color:#f7d584;margin:0 0 0.85rem 0;">
+          Strong&rsquo;s Exhaustive Concordance Word Study
+        </h3>
+        <p style="font-size:0.95rem;color:#d0dbd0;line-height:1.7;margin-bottom:1rem;">
+          ${v.keyStrongsNotes}
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.25rem;">
+          ${strongsPills}
+        </div>
+        <h4 style="font-size:0.95rem;color:#f7d584;margin:1.25rem 0 0.5rem 0;text-transform:uppercase;letter-spacing:0.06em;">
+          Companion Scripture Cross-References:
+        </h4>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          ${crossRefLinks}
+        </div>
+      </section>
+
+      ${buildSanctuaryFooterHtml()}
+    </div>
+  </main></div>`;
+}
+
+function buildTopVersesIndexPrerenderShell() {
+  const cardsHtml = topVerses.map((v) => `
+    <div style="background:#141e16;border:1px solid #283629;border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;justify-content:space-between;">
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+          <span style="font-size:11px;font-weight:800;color:#f7d584;text-transform:uppercase;letter-spacing:0.06em;background:rgba(212,167,44,0.12);padding:2px 8px;border-radius:4px;">${v.theme}</span>
+          <span style="font-size:12px;color:#9ca89a;">${v.bookName}</span>
+        </div>
+        <h2 style="font-family:Georgia,serif;font-size:1.2rem;color:#fafaf5;margin:0 0 0.5rem 0;">
+          <a href="/verse/${v.slug}/" style="color:#fafaf5;text-decoration:none;">${v.reference}</a>
+        </h2>
+        <p style="font-family:Georgia,serif;font-size:0.96rem;line-height:1.65;color:#c8d4c5;margin:0 0 1rem 0;font-style:italic;">
+          &ldquo;${v.nkjv.length > 130 ? v.nkjv.slice(0, 130) + '...' : v.nkjv}&rdquo;
+        </p>
+      </div>
+      <div style="border-top:1px solid #283629;padding-top:0.75rem;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:12px;color:#34d399;font-weight:600;">NKJV &bull; KJV &bull; TWI</span>
+        <a href="/verse/${v.slug}/" style="color:#d4a72c;font-size:12px;font-weight:700;text-decoration:none;">Study Parallel &rarr;</a>
+      </div>
+    </div>
+  `).join('\n');
+
+  return `<div id="root"><main id="seo-prerender" style="min-height:100vh;background-color:#0f1712;color:#e3e6d8;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Georgia,serif;line-height:1.7;padding:2rem 1.25rem;">
+    <div style="max-width:1080px;margin:0 auto;">
+      <header style="text-align:center;background:linear-gradient(180deg,#172319 0%,#121b14 100%);border:1px solid rgba(212,167,44,0.38);border-radius:16px;padding:2.25rem 1.5rem;margin-bottom:2rem;">
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:5px 14px;background:rgba(212,167,44,0.14);border:1px solid rgba(212,167,44,0.45);border-radius:999px;color:#f7d584;font-size:11.5px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.85rem;">
+          ✨ Programmatic Scripture Authority Hub
+        </div>
+        <h1 style="font-family:Georgia,serif;font-size:clamp(1.85rem,3.4vw,2.6rem);line-height:1.2;color:#fafaf5;margin:0 0 0.85rem 0;">
+          Top 30 Most Searched Bible Verses in Parallel
+        </h1>
+        <p style="font-size:1.05rem;color:#c8d4c5;max-width:840px;margin:0 auto 1.25rem auto;line-height:1.7;">
+          Read, compare, and study humanity’s most cherished scriptures side-by-side across the New King James Version (NKJV), King James Version (KJV), Berean Standard Bible (BSB), Original Hebrew/Greek Interlinear, and Asante Twi (Twerɛ Kronkron). Includes 24kHz Studio Audio and Strong’s Concordance.
+        </p>
+        <nav aria-label="Sanctuary Quick Navigation" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;">
+          ${buildSanctuaryNavPillsHtml()}
+        </nav>
+      </header>
+
+      <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:16px;margin-bottom:2.5rem;">
+        ${cardsHtml}
+      </section>
+
+      ${buildSanctuaryFooterHtml()}
+    </div>
+  </main></div>`;
+}
+
+function buildTopicalHubPrerenderShell(hub) {
+  const versesHtml = (hub.verses || []).map((v) => `
+    <div style="background:#19251b;border:1px solid #2d3c2e;border-radius:12px;padding:1.25rem;margin-bottom:1rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;">
+        <span style="font-weight:700;color:#f7d584;font-size:1.1rem;font-family:Georgia,serif;">${v.reference}</span>
+        <a href="/nkjv/${v.bookSlug}/${v.chapter}/?verse=${v.verse}" style="color:#d4a72c;font-size:12px;text-decoration:none;font-weight:700;">Open Chapter &rarr;</a>
+      </div>
+      <p style="font-family:Georgia,serif;font-size:1.06rem;line-height:1.75;color:#fafaf5;margin:0 0 0.5rem 0;">
+        <strong style="color:#f7d584;font-size:11px;font-family:sans-serif;text-transform:uppercase;margin-right:6px;background:rgba(212,167,44,0.15);padding:2px 6px;border-radius:4px;">NKJV</strong>${v.nkjv}
+      </p>
+      <p style="font-family:Georgia,serif;font-size:0.96rem;line-height:1.7;color:#c8d4c5;margin:0 0 0.5rem 0;border-top:1px solid rgba(45,60,46,0.5);padding-top:0.4rem;">
+        <strong style="color:#9ca89a;font-size:11px;font-family:sans-serif;text-transform:uppercase;margin-right:6px;background:#141e16;padding:2px 6px;border-radius:4px;">KJV</strong>${v.kjv}
+      </p>
+      <p style="font-family:Georgia,serif;font-size:0.96rem;line-height:1.7;color:#34d399;margin:0 0 0.5rem 0;border-top:1px solid rgba(45,60,46,0.5);padding-top:0.4rem;">
+        <strong style="color:#34d399;font-size:11px;font-family:sans-serif;text-transform:uppercase;margin-right:6px;background:rgba(52,211,153,0.1);padding:2px 6px;border-radius:4px;">TWI</strong>${v.twi}
+      </p>
+      <div style="font-size:12px;color:#9ca89a;font-style:italic;margin-top:0.4rem;">
+        ${v.strongsNotes}
+      </div>
+    </div>
+  `).join('\n');
+
+  const faqsHtml = (hub.faqs || []).map((f) => `
+    <div style="background:#19251b;border:1px solid #2d3c2e;border-radius:10px;padding:1rem 1.25rem;margin-bottom:0.75rem;">
+      <h3 style="font-size:1rem;color:#f7d584;margin:0 0 0.4rem 0;">${f.q}</h3>
+      <p style="margin:0;font-size:0.92rem;color:#d0dbd0;line-height:1.65;">${f.a}</p>
+    </div>
+  `).join('\n');
+
+  return `<div id="root"><main id="seo-prerender" style="min-height:100vh;background-color:#0f1712;color:#e3e6d8;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Georgia,serif;line-height:1.7;padding:2rem 1.25rem;">
+    <div style="max-width:1020px;margin:0 auto;">
+      <header style="background:linear-gradient(180deg,#172319 0%,#121b14 100%);border:1px solid rgba(212,167,44,0.38);border-radius:16px;padding:2rem 1.5rem;margin-bottom:1.75rem;">
+        <nav aria-label="Breadcrumb" style="font-size:13px;color:#9ca89a;margin-bottom:0.85rem;">
+          <a href="/" style="color:#f7d584;text-decoration:none;">AduBible</a> &rsaquo;
+          <a href="/topics/" style="color:#f7d584;text-decoration:none;">Topical Scripture Hubs</a> &rsaquo;
+          <span style="color:#e3e6d8;">${hub.slug.charAt(0).toUpperCase() + hub.slug.slice(1)}</span>
+        </nav>
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:4px 12px;background:rgba(212,167,44,0.14);border:1px solid rgba(212,167,44,0.45);border-radius:999px;color:#f7d584;font-size:11.5px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem;">
+          ${hub.icon} Foundational Scripture Life Theme
+        </div>
+        <h1 style="font-family:Georgia,serif;font-size:clamp(1.75rem,3.2vw,2.4rem);line-height:1.25;color:#fafaf5;margin:0 0 0.75rem 0;">
+          ${hub.h1}
+        </h1>
+        <p style="font-size:1.1rem;color:#f7d584;font-style:italic;margin:0 0 1.25rem 0;">
+          &ldquo;${hub.tagline}&rdquo;
+        </p>
+        <nav aria-label="Sanctuary Quick Navigation" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;">
+          ${buildSanctuaryNavPillsHtml()}
+        </nav>
+      </header>
+
+      <!-- THEOLOGICAL EXPOSITION -->
+      <section style="background:#141e16;border:1px solid #283629;border-radius:16px;padding:1.75rem;margin-bottom:1.75rem;">
+        <h2 style="font-family:Georgia,serif;font-size:1.35rem;color:#f7d584;margin:0 0 0.85rem 0;">
+          Theological Context &amp; Scriptural Exegesis
+        </h2>
+        <p style="font-size:1.02rem;color:#d8e2d5;line-height:1.8;margin-bottom:1rem;">
+          ${hub.historicalExposition}
+        </p>
+        <div style="background:#19251b;border-left:3px solid #d4a72c;padding:0.75rem 1rem;border-radius:6px;font-family:monospace;font-size:0.92rem;color:#f7d584;">
+          ${hub.hebrewGreekRoots}
+        </div>
+      </section>
+
+      <!-- CURATED PARALLEL VERSES -->
+      <section style="background:#141e16;border:1px solid #283629;border-radius:16px;padding:1.75rem;margin-bottom:1.75rem;">
+        <h2 style="font-family:Georgia,serif;font-size:1.35rem;color:#f7d584;margin:0 0 1rem 0;">
+          Foundational Scriptures on ${hub.slug.charAt(0).toUpperCase() + hub.slug.slice(1)} (${hub.verses.length} Key Passages)
+        </h2>
+        ${versesHtml}
+      </section>
+
+      <!-- FAQS -->
+      <section style="background:#141e16;border:1px solid #283629;border-radius:16px;padding:1.75rem;margin-bottom:1.75rem;">
+        <h2 style="font-family:Georgia,serif;font-size:1.35rem;color:#f7d584;margin:0 0 1rem 0;">
+          Frequently Asked Questions on ${hub.slug.charAt(0).toUpperCase() + hub.slug.slice(1)}
+        </h2>
+        ${faqsHtml}
+      </section>
+
+      ${buildSanctuaryFooterHtml()}
+    </div>
+  </main></div>`;
+}
+
+function buildTopicalHubsIndexPrerenderShell() {
+  const cardsHtml = topicalHubs.map((hub) => `
+    <div style="background:#141e16;border:1px solid #283629;border-radius:12px;padding:1.35rem;display:flex;flex-direction:column;justify-content:space-between;">
+      <div>
+        <div style="font-size:2rem;margin-bottom:0.5rem;">${hub.icon}</div>
+        <h2 style="font-family:Georgia,serif;font-size:1.25rem;color:#fafaf5;margin:0 0 0.5rem 0;">
+          <a href="/topics/${hub.slug}/" style="color:#fafaf5;text-decoration:none;">${hub.h1}</a>
+        </h2>
+        <p style="font-size:0.95rem;color:#c8d4c5;line-height:1.65;margin:0 0 0.75rem 0;">
+          ${hub.tagline}
+        </p>
+      </div>
+      <div style="border-top:1px solid #283629;padding-top:0.75rem;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:12px;color:#f7d584;font-weight:600;">${hub.verses.length} Key Verses</span>
+        <a href="/topics/${hub.slug}/" style="color:#d4a72c;font-size:12px;font-weight:700;text-decoration:none;">Explore Theme &rarr;</a>
+      </div>
+    </div>
+  `).join('\n');
+
+  return `<div id="root"><main id="seo-prerender" style="min-height:100vh;background-color:#0f1712;color:#e3e6d8;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Georgia,serif;line-height:1.7;padding:2rem 1.25rem;">
+    <div style="max-width:1080px;margin:0 auto;">
+      <header style="text-align:center;background:linear-gradient(180deg,#172319 0%,#121b14 100%);border:1px solid rgba(212,167,44,0.38);border-radius:16px;padding:2.25rem 1.5rem;margin-bottom:2rem;">
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:5px 14px;background:rgba(212,167,44,0.14);border:1px solid rgba(212,167,44,0.45);border-radius:999px;color:#f7d584;font-size:11.5px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.85rem;">
+          🏷️ Thematic Biblical Sanctuary
+        </div>
+        <h1 style="font-family:Georgia,serif;font-size:clamp(1.85rem,3.4vw,2.6rem);line-height:1.2;color:#fafaf5;margin:0 0 0.85rem 0;">
+          Topical Scripture Hubs — 10 Life Themes in Parallel
+        </h1>
+        <p style="font-size:1.05rem;color:#c8d4c5;max-width:840px;margin:0 auto 1.25rem auto;line-height:1.7;">
+          Discover curated scriptures addressing real human spiritual and physical needs: Healing, Supernatural Strength, Divine Protection, Peace over Anxiety, Thanksgiving, Mountain-Moving Faith, Agape Love, Anchor Hope, Forgiveness, and Heavenly Wisdom in parallel translations.
+        </p>
+        <nav aria-label="Sanctuary Quick Navigation" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;">
+          ${buildSanctuaryNavPillsHtml()}
+        </nav>
+      </header>
+
+      <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:16px;margin-bottom:2.5rem;">
+        ${cardsHtml}
+      </section>
+
+      ${buildSanctuaryFooterHtml()}
+    </div>
+  </main></div>`;
+}
+
+function buildStrongsLexiconPrerenderShell(e) {
+  const isHebrew = e.language === 'Hebrew';
+  const keyVersesHtml = (e.keyVerses || []).map((kv) => {
+    return `<span style="display:inline-block;padding:4px 10px;background:#19251b;border:1px solid #2d3c2e;border-radius:6px;color:#d8e2d5;font-size:13px;margin:3px;">${kv}</span>`;
+  }).join('');
+
+  return `<div id="root"><main id="seo-prerender" style="min-height:100vh;background-color:#0f1712;color:#e3e6d8;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Georgia,serif;line-height:1.7;padding:2rem 1.25rem;">
+    <div style="max-width:1020px;margin:0 auto;">
+      <header style="background:linear-gradient(180deg,#172319 0%,#121b14 100%);border:1px solid rgba(212,167,44,0.38);border-radius:16px;padding:2rem 1.5rem;margin-bottom:1.75rem;">
+        <nav aria-label="Breadcrumb" style="font-size:13px;color:#9ca89a;margin-bottom:0.85rem;">
+          <a href="/" style="color:#f7d584;text-decoration:none;">AduBible</a> &rsaquo;
+          <a href="/lexicon/" style="color:#f7d584;text-decoration:none;">Strong’s Lexicon</a> &rsaquo;
+          <span style="color:#e3e6d8;">${e.code} (${e.transliteration})</span>
+        </nav>
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:4px 12px;background:rgba(212,167,44,0.14);border:1px solid rgba(212,167,44,0.45);border-radius:999px;color:#f7d584;font-size:11.5px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem;">
+          Strong’s ${e.language} &bull; ${e.partOfSpeech}
+        </div>
+        <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:16px;margin-bottom:0.5rem;">
+          <h1 style="font-family:Georgia,serif;font-size:clamp(2rem,4vw,3rem);color:#fafaf5;margin:0;">
+            ${e.code}: ${e.transliteration}
+          </h1>
+          <span style="font-size:2.4rem;color:#f7d584;font-family:Georgia,serif;direction:${isHebrew ? 'rtl' : 'ltr'};">
+            ${e.originalWord}
+          </span>
+        </div>
+        <p style="font-size:1.15rem;color:#c8d4c5;margin:0 0 0.5rem 0;font-style:italic;">
+          Pronounced: <strong>/${e.phonetic}/</strong> &bull; ${e.rootWord}
+        </p>
+        <p style="font-size:1.05rem;color:#e3e6d8;margin:0 0 1.25rem 0;">
+          <strong>Short Definition:</strong> ${e.shortDefinition}
+        </p>
+        <nav aria-label="Sanctuary Quick Navigation" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;">
+          ${buildSanctuaryNavPillsHtml()}
+        </nav>
+      </header>
+
+      <!-- LEXICAL EXPOSITION -->
+      <section style="background:#141e16;border:1px solid #283629;border-radius:16px;padding:1.75rem;margin-bottom:1.75rem;">
+        <h2 style="font-family:Georgia,serif;font-size:1.35rem;color:#f7d584;margin:0 0 0.85rem 0;">
+          Exhaustive Lexicon Definition &amp; Theological Meaning
+        </h2>
+        <p style="font-size:1.05rem;color:#fafaf5;line-height:1.8;margin-bottom:1.25rem;">
+          ${e.fullDefinition}
+        </p>
+        <div style="background:#19251b;border-left:3px solid #d4a72c;padding:1rem 1.25rem;border-radius:8px;margin-bottom:1.25rem;">
+          <h3 style="font-size:0.95rem;color:#f7d584;margin:0 0 0.35rem 0;text-transform:uppercase;letter-spacing:0.06em;">
+            Brown-Driver-Briggs / Thayer Exegesis:
+          </h3>
+          <p style="margin:0;font-size:0.96rem;color:#d8e2d5;line-height:1.7;">
+            ${e.bdbOrThayer}
+          </p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;">
+          <div style="background:#19251b;border:1px solid #2d3c2e;border-radius:10px;padding:1rem;">
+            <div style="font-size:11px;font-weight:700;color:#9ca89a;text-transform:uppercase;">KJV Translation Usage</div>
+            <div style="font-size:1.05rem;color:#fafaf5;font-weight:700;margin-top:0.25rem;">${e.kjvUsage}</div>
+          </div>
+          <div style="background:#19251b;border:1px solid #2d3c2e;border-radius:10px;padding:1rem;">
+            <div style="font-size:11px;font-weight:700;color:#9ca89a;text-transform:uppercase;">Total Biblical Occurrences</div>
+            <div style="font-size:1.05rem;color:#f7d584;font-weight:700;margin-top:0.25rem;">${e.occurrences} Times</div>
+          </div>
+          <div style="background:#19251b;border:1px solid rgba(52,211,153,0.3);border-radius:10px;padding:1rem;">
+            <div style="font-size:11px;font-weight:700;color:#34d399;text-transform:uppercase;">Asante Twi Equivalent</div>
+            <div style="font-size:1.05rem;color:#34d399;font-weight:700;margin-top:0.25rem;">${e.twiEquivalent || '—'}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- KEY BIBLICAL VERSES -->
+      <section style="background:#141e16;border:1px solid #283629;border-radius:16px;padding:1.75rem;margin-bottom:1.75rem;">
+        <h2 style="font-family:Georgia,serif;font-size:1.35rem;color:#f7d584;margin:0 0 0.85rem 0;">
+          Key Biblical Occurrences
+        </h2>
+        <p style="font-size:0.95rem;color:#d0dbd0;line-height:1.7;margin-bottom:1rem;">
+          ${e.code} (${e.originalWord}) appears in these foundational scripture passages:
+        </p>
+        <div>
+          ${keyVersesHtml}
+        </div>
+      </section>
+
+      ${buildSanctuaryFooterHtml()}
+    </div>
+  </main></div>`;
+}
+
+function buildStrongsLexiconIndexPrerenderShell() {
+  const cardsHtml = Object.entries(strongsEntries).map(([code, entry]) => `
+    <div style="background:#141e16;border:1px solid #283629;border-radius:10px;padding:1.15rem;display:flex;flex-direction:column;justify-content:space-between;">
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+          <span style="font-family:monospace;font-weight:800;color:#f7d584;font-size:13px;">${code}</span>
+          <span style="font-size:11px;color:#9ca89a;text-transform:uppercase;">${entry.language}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.4rem;">
+          <h2 style="font-family:Georgia,serif;font-size:1.15rem;color:#fafaf5;margin:0;">
+            <a href="/lexicon/${code.toLowerCase()}/" style="color:#fafaf5;text-decoration:none;">${entry.transliteration}</a>
+          </h2>
+          <span style="font-size:1.35rem;color:#f7d584;font-family:Georgia,serif;">${entry.originalWord}</span>
+        </div>
+        <p style="font-size:0.88rem;color:#c8d4c5;line-height:1.55;margin:0 0 0.75rem 0;">
+          ${entry.shortDefinition}
+        </p>
+      </div>
+      <div style="border-top:1px solid #283629;padding-top:0.5rem;display:flex;justify-content:space-between;align-items:center;font-size:12px;">
+        <span style="color:#9ca89a;">${entry.occurrences}x in KJV</span>
+        <a href="/lexicon/${code.toLowerCase()}/" style="color:#d4a72c;font-weight:700;text-decoration:none;">Lexicon Entry &rarr;</a>
+      </div>
+    </div>
+  `).join('\n');
+
+  return `<div id="root"><main id="seo-prerender" style="min-height:100vh;background-color:#0f1712;color:#e3e6d8;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Georgia,serif;line-height:1.7;padding:2rem 1.25rem;">
+    <div style="max-width:1080px;margin:0 auto;">
+      <header style="text-align:center;background:linear-gradient(180deg,#172319 0%,#121b14 100%);border:1px solid rgba(212,167,44,0.38);border-radius:16px;padding:2.25rem 1.5rem;margin-bottom:2rem;">
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:5px 14px;background:rgba(212,167,44,0.14);border:1px solid rgba(212,167,44,0.45);border-radius:999px;color:#f7d584;font-size:11.5px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.85rem;">
+          📖 Hebrew &amp; Greek Exegetical Lexicon
+        </div>
+        <h1 style="font-family:Georgia,serif;font-size:clamp(1.85rem,3.4vw,2.6rem);line-height:1.2;color:#fafaf5;margin:0 0 0.85rem 0;">
+          Strong’s Exhaustive Concordance Lexicon Directory
+        </h1>
+        <p style="font-size:1.05rem;color:#c8d4c5;max-width:840px;margin:0 auto 1.25rem auto;line-height:1.7;">
+          Explore original Hebrew (H) and Greek (G) root words with Brown-Driver-Briggs &amp; Thayer definitions, transliterations, pronunciations, biblical occurrences, and Asante Twi translation equivalents. 100% Ad-Free on AduBible.org&reg;.
+        </p>
+        <nav aria-label="Sanctuary Quick Navigation" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;">
+          ${buildSanctuaryNavPillsHtml()}
+        </nav>
+      </header>
+
+      <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;margin-bottom:2.5rem;">
+        ${cardsHtml}
       </section>
 
       ${buildSanctuaryFooterHtml()}
@@ -1123,6 +1694,160 @@ function buildSSG() {
       );
 
       html = replaceRootMount(html, buildHomeAuthorityPrerenderShell());
+    } else if (item.topVerseData) {
+      const v = item.topVerseData;
+      const verseSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BibleVerse',
+        'name': v.reference,
+        'headline': item.heading,
+        'description': item.description,
+        'text': v.nkjv,
+        'inLanguage': 'en',
+        'url': canonicalUrl,
+        'isPartOf': {
+          '@type': 'WebSite',
+          'name': 'AduBible.org®',
+          'url': BASE_URL,
+        },
+      };
+      const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': `${BASE_URL}/` },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Top Verses', 'item': `${BASE_URL}/verse/` },
+          { '@type': 'ListItem', 'position': 3, 'name': v.reference, 'item': canonicalUrl },
+        ],
+      };
+      html = html.replace(
+        '</head>',
+        `\n    <script type="application/ld+json">\n${JSON.stringify([verseSchema, breadcrumbSchema], null, 2)}\n    </script>\n  </head>`
+      );
+      html = replaceRootMount(html, buildTopVersePrerenderShell(v));
+    } else if (item.isVerseIndex) {
+      const pageSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        'name': item.title,
+        'description': item.description,
+        'url': canonicalUrl,
+      };
+      const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': `${BASE_URL}/` },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Top Verses', 'item': canonicalUrl },
+        ],
+      };
+      html = html.replace(
+        '</head>',
+        `\n    <script type="application/ld+json">\n${JSON.stringify([pageSchema, breadcrumbSchema], null, 2)}\n    </script>\n  </head>`
+      );
+      html = replaceRootMount(html, buildTopVersesIndexPrerenderShell());
+    } else if (item.topicalHubData) {
+      const hub = item.topicalHubData;
+      const topicSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        'name': hub.h1,
+        'description': hub.metaDescription,
+        'url': canonicalUrl,
+      };
+      const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': `${BASE_URL}/` },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Topical Scripture Hubs', 'item': `${BASE_URL}/topics/` },
+          { '@type': 'ListItem', 'position': 3, 'name': hub.h1, 'item': canonicalUrl },
+        ],
+      };
+      const faqSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'mainEntity': (hub.faqs || []).map((f) => ({
+          '@type': 'Question',
+          'name': f.q,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': f.a,
+          },
+        })),
+      };
+      html = html.replace(
+        '</head>',
+        `\n    <script type="application/ld+json">\n${JSON.stringify([topicSchema, breadcrumbSchema, faqSchema], null, 2)}\n    </script>\n  </head>`
+      );
+      html = replaceRootMount(html, buildTopicalHubPrerenderShell(hub));
+    } else if (item.isTopicsIndex) {
+      const pageSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        'name': item.title,
+        'description': item.description,
+        'url': canonicalUrl,
+      };
+      const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': `${BASE_URL}/` },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Topical Scripture Hubs', 'item': canonicalUrl },
+        ],
+      };
+      html = html.replace(
+        '</head>',
+        `\n    <script type="application/ld+json">\n${JSON.stringify([pageSchema, breadcrumbSchema], null, 2)}\n    </script>\n  </head>`
+      );
+      html = replaceRootMount(html, buildTopicalHubsIndexPrerenderShell());
+    } else if (item.lexiconData) {
+      const e = item.lexiconData;
+      const termSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'DefinedTerm',
+        'termCode': e.code,
+        'name': `${e.code} ${e.transliteration} (${e.originalWord})`,
+        'description': e.shortDefinition,
+        'inDefinedTermSet': "Strong's Exhaustive Concordance",
+        'url': canonicalUrl,
+      };
+      const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': `${BASE_URL}/` },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Strong’s Lexicon', 'item': `${BASE_URL}/lexicon/` },
+          { '@type': 'ListItem', 'position': 3, 'name': e.code, 'item': canonicalUrl },
+        ],
+      };
+      html = html.replace(
+        '</head>',
+        `\n    <script type="application/ld+json">\n${JSON.stringify([termSchema, breadcrumbSchema], null, 2)}\n    </script>\n  </head>`
+      );
+      html = replaceRootMount(html, buildStrongsLexiconPrerenderShell(e));
+    } else if (item.isLexiconIndex) {
+      const pageSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        'name': item.title,
+        'description': item.description,
+        'url': canonicalUrl,
+      };
+      const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': `${BASE_URL}/` },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Strong’s Lexicon', 'item': canonicalUrl },
+        ],
+      };
+      html = html.replace(
+        '</head>',
+        `\n    <script type="application/ld+json">\n${JSON.stringify([pageSchema, breadcrumbSchema], null, 2)}\n    </script>\n  </head>`
+      );
+      html = replaceRootMount(html, buildStrongsLexiconIndexPrerenderShell());
     } else {
       // Luxury inline-styled Chapter & Hub Pre-render Shell
       const chapterSchema = {
