@@ -45,19 +45,20 @@ const CANONICAL_ROUTES = [
   {
     route: '/',
     priority: '1.0',
-    changefreq: 'weekly',
-    title: "AduBible.org — Free Multilingual Parallel Bible Hub, Genesis 1, Strong's Concordance & Global Study",
+    changefreq: 'daily',
+    title: "AduBible.org® — Free Online Bible, Parallel Bible Hub, Strong's Concordance, Audio Bible & Commentary",
     description:
-      "Read Genesis 1 and the Holy Bible in parallel across 35+ languages including KJV, NKJV, BSB, Hebrew, Greek, French, Spanish, German, and Twi on AduBible (Adubible.org). Dedicated to Humanity in honor of the Legacy of Apostle Kwame Adu · Nsuhia, Ghana (https://nsuhia.com/). 100% Ads-Free Reading Experience with Strong's Concordance and Cloud Study Sync.",
-    heading: 'Genesis Chapter 1 (Genesis 1) — In the Beginning God Created the Heavens and the Earth',
+      "Read the Holy Bible online free in 4 parallel columns across NKJV, KJV, BSB, Hebrew, Greek, French, Spanish, German, and Twi (35+ languages) on AduBible.org®. Features Genesis 1, Psalm 91, Psalm 23, Psalm 1, Psalm 35, Strong's Concordance, Bible Hub Commentary, 24kHz Audio Bible, Offline Bible App for Android & iOS, 3D Bible Games, and Bible Verses on Thanksgiving & Strength. 100% Ads-Free.",
+    heading: "AduBible.org® — Free Online Parallel Bible Hub, Strong's Concordance, Audio Bible & Exegetical Commentary",
     excerpt:
-      'In the beginning God created the heaven and the earth. And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of God moved upon the face of the waters. And God said, Let there be light: and there was light (Genesis 1:1–3). Honoring the Legacy of Apostle Kwame Adu · Nsuhia, Ghana (https://nsuhia.com/) · adubible.org · Dedicated to Humanity · 100% Ads-Free Reading Experience.',
+      "Read and compare the Holy Bible online in up to 4 synchronized parallel columns across NKJV, KJV, BSB, Original Hebrew (WLC), Koine Greek (Textus Receptus), French, Spanish, German, and Asante Twi (35+ global languages). Includes Strong's Exhaustive Concordance, Matthew Henry & John Gill Commentaries, 24kHz Neural Audio Bible, Free Offline Bible App (Android, iOS & PC PWA), 3D Bible & Psalm Games, and Genesis 1 to Revelation 22 — 100% Ads-Free Forever.",
+    isHomeAuthority: true,
   },
   {
     route: '/articles/',
     priority: '0.9',
     changefreq: 'weekly',
-    title: 'Pillar Scripture Guides, Exegesis & Digital Translation Library | AduBible.org',
+    title: 'Pillar Scripture Guides, Exegesis & Digital Translation Library | AduBible.org®',
     description:
       "Explore 15 authoritative scripture and study guides: 100% ad-free parallel reading, Bible Gateway & Bible Hub comparisons, Greek/Hebrew Strong's concordance, Asante Twi, and ancient manuscripts on AduBible.",
     heading: 'AduBible Scripture & Study Articles — 15 Authoritative Research Pillars',
@@ -68,40 +69,64 @@ const CANONICAL_ROUTES = [
     route: '/nkjv/ephesians/1/',
     priority: '0.9',
     changefreq: 'monthly',
-    title: "Ephesians 1 NKJV Parallel Bible — Strong's Concordance & Matthew Henry Commentary | AduBible",
+    title: "Ephesians 1 NKJV Parallel Bible — Strong's Concordance & Matthew Henry Commentary | AduBible.org®",
     description:
       "Study Ephesians Chapter 1 (verses 1–23) in NKJV, KJV, BSB, and Original Greek Interlinear with Strong's numbers (G2128 eulogētos, G4309 proorizō) and Matthew Henry Commentary on AduBible.",
     heading: 'Ephesians Chapter 1 (NKJV) — Parallel Study, Greek Interlinear & Commentaries',
     excerpt:
       'Paul, an apostle of Jesus Christ by the will of God, To the saints who are in Ephesus, and faithful in Christ Jesus: Grace to you and peace from God our Father and the Lord Jesus Christ. Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ.',
+    verses: [
+      '1. Paul, an apostle of Jesus Christ by the will of God, To the saints who are in Ephesus, and faithful in Christ Jesus:',
+      '2. Grace to you and peace from God our Father and the Lord Jesus Christ.',
+      '3. Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ,',
+      '4. just as He chose us in Him before the foundation of the world, that we should be holy and without blame before Him in love,',
+      '5. having predestined us to adoption as sons by Jesus Christ to Himself, according to the good pleasure of His will,',
+      '6. to the praise of the glory of His grace, by which He made us accepted in the Beloved.',
+      '7. In Him we have redemption through His blood, the forgiveness of sins, according to the riches of His grace.',
+    ],
+    studyNotes: "Strong's Greek Key: Eulogētos (G2128 — Blessed/Adored), Eklegomai (G1586 — Chosen out in love), Proorizō (G4309 — Predestined unto sonship huiothesia G5206), Apolytrōsis (G629 — Redemption by ransom).",
   },
   {
     route: '/twi/ephesians/1/',
     priority: '0.9',
     changefreq: 'monthly',
-    title: 'Efesofoɔ 1 — Asante Twi Bible (Twerɛ Kronkron) & English Parallel Study | AduBible',
+    title: 'Efesofoɔ 1 — Asante Twi Bible (Twerɛ Kronkron) & English Parallel Study | AduBible.org®',
     description:
-      'Kenkan Efesofoɔ Ti 1 (Ephesians 1) wɔ Asante Twi Twerɛ Kronkron ne Borɔfo (NKJV/KJV) mu. Read Asante Twi and Akuapem Twi Scripture side-by-side with Strong’s Lexicon and study notes on AduBible.',
-    heading: 'Efesofoɔ Ti 1 (Asante Twi Twerɛ Kronkron) — Parallel Bible Study',
+      'Kenkan Efesofoɔ Ti 1 (Ephesians 1) wɔ Asante Twi Twerɛ Kronkron ne Borɔfo (NKJV/KJV) mu. Read Asante Twi and Akuapem Twi Scripture side-by-side with Strong’s Lexicon and 24kHz Akan Audio on AduBible.',
+    heading: 'Efesofoɔ Ti 1 (Asante Twi Twerɛ Kronkron) — Parallel Bible & 24kHz Akan Audio Study',
     excerpt:
-      'Paulo, Yesu Kristo somafoɔ a ɛnam Onyankopɔn pɛ so, de kɔma akronkronfoɔ a wɔwɔ Efeso ne Kristo Yesu mu agyidifoɔ: Adom ne asomdwoeɛ a efi yɛn Agya Onyankopɔn ne Awurade Yesu Kristo nka mo.',
+      'Paulo, Onyankopɔn pɛ mu Kristo Yesu somafoɔ, de kɔma ahotefoɔ a wɔwɔ Efeso ne Kristo Yesu mu agyidifoɔ: Adom ne asomdwoeɛ a ɛfiri yɛn Agya Onyankopɔn ne Awurade Yesu Kristo nka mo.',
+    verses: [
+      '1. Paulo, Onyankopɔn pɛ mu Kristo Yesu somafoɔ, de kɔma ahotefoɔ a wɔwɔ Efeso ne Kristo Yesu mu agyidifoɔ:',
+      '2. Adom ne asomdwoeɛ a ɛfiri yɛn Agya Onyankopɔn ne Awurade Yesu Kristo nka mo.',
+      '3. Nhyira nka yɛn Awurade Yesu Kristo Nyankopɔn ne n’Agya a ɔnam Kristo so de honhom mu nhyira nyinaa ahyira yɛn ɔsoro hɔnom,',
+      '4. sɛdeɛ ɔyii yɛn wɔ ne mu ansa na wɔrebɔ wiase, sɛ yɛnyɛ kronkron a dɛm nni yɛn ho wɔ n’anim, ɔdɔ mu;',
+      '7. Ɔno ara mu na yɛnam ne mogya so nya ɔgyeɛ, a ɛne mfomsoɔ fafirie, sɛdeɛ n’adom ahonya no teɛ.',
+    ],
+    studyNotes: 'Includes Asante Twi (Twerɛ Kronkron), Akuapem Twi, English NKJV/KJV side-by-side parallel alignment, and 24kHz Akan Neural Voice Synthesis.',
   },
   {
     route: '/kjv/ephesians/1/',
     priority: '0.9',
     changefreq: 'monthly',
-    title: "Ephesians 1 KJV with Strong's Concordance & Parallel Study | AduBible",
+    title: "Ephesians 1 KJV with Strong's Concordance & Parallel Study | AduBible.org®",
     description:
       "Read Ephesians 1 in the Authorized King James Version (KJV) with Greek Textus Receptus and Strong's Exhaustive Concordance on AduBible.",
     heading: 'Ephesians Chapter 1 (KJV 1769) — Exhaustive Strong’s Concordance Edition',
     excerpt:
       'Blessed be the God and Father of our Lord Jesus Christ, who hath blessed us with all spiritual blessings in heavenly places in Christ: According as he hath chosen us in him before the foundation of the world.',
+    verses: [
+      '1. Paul, an apostle of Jesus Christ by the will of God, to the saints which are at Ephesus, and to the faithful in Christ Jesus:',
+      '2. Grace be to you, and peace, from God our Father, and from the Lord Jesus Christ.',
+      '3. Blessed be the God and Father of our Lord Jesus Christ, who hath blessed us with all spiritual blessings in heavenly places in Christ:',
+      '4. According as he hath chosen us in him before the foundation of the world, that we should be holy and without blame before him in love.',
+    ],
   },
   {
     route: '/parallel/ephesians/1/',
     priority: '0.9',
     changefreq: 'monthly',
-    title: 'Ephesians 1 Multi-Language Parallel Bible (KJV, BSB, Greek, French, Spanish) | AduBible',
+    title: 'Ephesians 1 Multi-Language Parallel Bible (KJV, BSB, Greek, French, Spanish) | AduBible.org®',
     description:
       'Compare Ephesians 1 verse-by-verse across KJV, BSB, NKJV, Koine Greek, French Louis Segond, Spanish Reina-Valera, and 35+ global languages on AduBible.',
     heading: 'Ephesians 1 — Synchronized Multi-Language Parallel Reader',
@@ -112,51 +137,176 @@ const CANONICAL_ROUTES = [
     route: '/nkjv/genesis/1/',
     priority: '0.9',
     changefreq: 'monthly',
-    title: "Genesis 1 NKJV, Hebrew WLC & KJV Parallel Bible | AduBible",
+    title: "Genesis 1 NKJV, Hebrew WLC & KJV Parallel Bible — In the Beginning God Created | AduBible.org®",
     description:
-      "In the beginning God (Elohim H430) created the heavens and the earth. Read Genesis 1 in parallel across NKJV, KJV, BSB, and Westminster Leningrad Codex Hebrew on AduBible.",
-    heading: 'Genesis Chapter 1 (NKJV) — Creation Account in Parallel & Hebrew Interlinear',
+      "In the beginning God (Elohim H430) created the heavens and the earth. Read Genesis Chapter 1 (verses 1–31) in parallel across NKJV, KJV, BSB, and Westminster Leningrad Codex Hebrew on AduBible.",
+    heading: 'Genesis Chapter 1 (NKJV & KJV) — Creation Account in Parallel & Hebrew Interlinear',
     excerpt:
-      'In the beginning God created the heavens and the earth. בְּרֵאשִׁית בָּרָא אֱלֹהִيم אֵת הַשָּׁמַיִם וְאֵת הָאָרֶץ׃',
+      'In the beginning God created the heavens and the earth. בְּרֵאשִׁית בָּרָא אֱלֹהִים אֵת הַשָּׁמַיִם וְאֵת הָאָרֶץ׃ Read all 31 verses of Genesis 1 with Strong’s Hebrew Concordance (H7225 Bereshit, H1254 Bara, H430 Elohim, H216 Or) and Matthew Henry Commentary.',
+    verses: [
+      '1. In the beginning God created the heavens and the earth.',
+      '2. The earth was without form, and void; and darkness was on the face of the deep. And the Spirit of God was hovering over the face of the waters.',
+      '3. Then God said, “Let there be light”; and there was light.',
+      '4. And God saw the light, that it was good; and God divided the light from the darkness.',
+      '5. God called the light Day, and the darkness He called Night. So the evening and the morning were the first day.',
+      '26. Then God said, “Let Us make man in Our image, according to Our likeness...”',
+      '27. So God created man in His own image; in the image of God He created him; male and female He created them.',
+      '31. Then God saw everything that He had made, and indeed it was very good. So the evening and the morning were the sixth day.',
+    ],
+    studyNotes: "Strong's Hebrew Lexicon: Bereshit (H7225 — In the beginning), Bara (H1254 — Created ex nihilo), Elohim (H430 — Supreme Creator God), Ruach Elohim (H7307 — Spirit of God), Or (H216 — Light).",
+  },
+  {
+    route: '/nkjv/psalms/1/',
+    priority: '0.9',
+    changefreq: 'weekly',
+    title: 'Psalms Chapter 1 (Psalm 1 NKJV & KJV) — Blessed Is the Man Parallel Bible & Commentary | AduBible.org®',
+    description:
+      'Read Psalms Chapter 1 (Psalm 1:1–6) in NKJV, KJV, Hebrew, and Asante Twi on AduBible.org®. "Blessed is the man who walks not in the counsel of the ungodly... He shall be like a tree planted by the rivers of water." Includes Psalm pronunciation, commentary, and audio.',
+    heading: 'Psalms Chapter 1 (Psalm 1 NKJV & KJV) — The Way of the Righteous & the Ungodly',
+    excerpt:
+      'Blessed is the man Who walks not in the counsel of the ungodly, Nor stands in the path of sinners, Nor sits in the seat of the scornful; But his delight is in the law of the LORD, And in His law he meditates day and night (Psalm 1:1–2).',
+    verses: [
+      '1. Blessed is the man Who walks not in the counsel of the ungodly, Nor stands in the path of sinners, Nor sits in the seat of the scornful;',
+      '2. But his delight is in the law of the LORD, And in His law he meditates day and night.',
+      '3. He shall be like a tree Planted by the rivers of water, That brings forth its fruit in its season, Whose leaf also shall not wither; And whatever he does shall prosper.',
+      '4. The ungodly are not so, But are like the chaff which the wind drives away.',
+      '5. Therefore the ungodly shall not stand in the judgment, Nor sinners in the congregation of the righteous.',
+      '6. For the LORD knows the way of the righteous, But the way of the ungodly shall perish.',
+    ],
+    studyNotes: "Strong's Hebrew Key: Esheg / Ashrei (H835 — O the blessednesses of), Torah (H8451 — Law/Instruction of YHWH), Hagah (H1897 — To meditate/ponder day and night), Shalath / Shatal (H8362 — Transplanted by streams of water).",
   },
   {
     route: '/nkjv/psalms/23/',
     priority: '0.9',
-    changefreq: 'monthly',
-    title: 'Psalm 23 NKJV & KJV Parallel Bible — The LORD Is My Shepherd | AduBible',
+    changefreq: 'weekly',
+    title: 'Psalm 23 NKJV & KJV Parallel Bible — The LORD Is My Shepherd | AduBible.org®',
     description:
-      'The LORD is my shepherd; I shall not want. Study Psalm 23 in NKJV, KJV, Hebrew, and Matthew Henry Commentary on AduBible.',
-    heading: 'Psalm 23 (NKJV) — Parallel Shepherd Psalm & Exegesis',
+      'The LORD is my shepherd; I shall not want. Read and study all 6 verses of Psalm 23 in NKJV, KJV, Hebrew (Yahweh Roi), Asante Twi, and Matthew Henry Commentary with 24kHz Audio on AduBible.org®.',
+    heading: 'Psalm 23 (NKJV & KJV) — The LORD Is My Shepherd Parallel Psalm & Exegesis',
     excerpt:
-      'The LORD is my shepherd; I shall not want. He makes me to lie down in green pastures; He leads me beside the still waters.',
+      'The LORD is my shepherd; I shall not want. He makes me to lie down in green pastures; He leads me beside the still waters. He restores my soul; He leads me in the paths of righteousness For His name’s sake (Psalm 23:1–3).',
+    verses: [
+      '1. The LORD is my shepherd; I shall not want.',
+      '2. He makes me to lie down in green pastures; He leads me beside the still waters.',
+      '3. He restores my soul; He leads me in the paths of righteousness For His name’s sake.',
+      '4. Yea, though I walk through the valley of the shadow of death, I will fear no evil; For You are with me; Your rod and Your staff, they comfort me.',
+      '5. You prepare a table before me in the presence of my enemies; You anoint my head with oil; My cup runs over.',
+      '6. Surely goodness and mercy shall follow me All the days of my life; And I will dwell in the house of the LORD Forever.',
+    ],
+    studyNotes: "Strong's Hebrew Key: YHWH Roi (H3068 + H7462 — The LORD is my Shepherd), Nephesh (H5315 — Soul/Vital life restored), Tsalmaveth (H6757 — Shadow of death/deep darkness), Chesed (H2617 — Covenant mercy and unfailing love).",
+  },
+  {
+    route: '/nkjv/psalms/34/',
+    priority: '0.9',
+    changefreq: 'weekly',
+    title: 'Psalm 34 NKJV & KJV Parallel Bible — I Will Bless the LORD at All Times | AduBible.org®',
+    description:
+      'Read Psalm 34 (verses 1–22) in NKJV, KJV, and Asante Twi parallel columns on AduBible.org®. "I sought the LORD, and He heard me, and delivered me from all my fears... Oh, taste and see that the LORD is good!"',
+    heading: 'Psalm 34 (NKJV & KJV) — Deliverance from Fear & Taste and See That the LORD Is Good',
+    excerpt:
+      'I will bless the LORD at all times; His praise shall continually be in my mouth... I sought the LORD, and He heard me, And delivered me from all my fears. The angel of the LORD encamps all around those who fear Him, And delivers them (Psalm 34:1, 4, 7).',
+    verses: [
+      '1. I will bless the LORD at all times; His praise shall continually be in my mouth.',
+      '2. My soul shall make its boast in the LORD; The humble shall hear of it and be glad.',
+      '3. Oh, magnify the LORD with me, And let us exalt His name together.',
+      '4. I sought the LORD, and He heard me, And delivered me from all my fears.',
+      '7. The angel of the LORD encamps all around those who fear Him, And delivers them.',
+      '8. Oh, taste and see that the LORD is good; Blessed is the man who trusts in Him!',
+      '18. The LORD is near to those who have a broken heart, And saves such as have a contrite spirit.',
+      '19. Many are the afflictions of the righteous, But the LORD delivers him out of them all.',
+    ],
+    studyNotes: "Strong's Hebrew Key: Barak (H1288 — Kneel/Bless continually), Darash (H1875 — Sought earnestly), Natsal (H5337 — Delivered/Snatched away from all fears), Ta'am (H2938 — Taste/Perceive experientially).",
+  },
+  {
+    route: '/nkjv/psalms/35/',
+    priority: '0.9',
+    changefreq: 'weekly',
+    title: 'Psalm 35 NKJV & KJV Parallel Bible — Plead My Cause, O LORD & Commentary | AduBible.org®',
+    description:
+      'Read Psalm 35 (verses 1–28) in NKJV, KJV, and Asante Twi parallel columns on AduBible.org®. "Plead my cause, O LORD, with those who strive with me; fight against those who fight against me. Take hold of shield and buckler, and stand up for my help."',
+    heading: 'Psalm 35 (NKJV & KJV) — Prayer for Divine Vindication & Spiritual Defense',
+    excerpt:
+      'Plead my cause, O LORD, with those who strive with me; Fight against those who fight against me. Take hold of shield and buckler, And stand up for my help. Also draw out the spear, And stop those who pursue me. Say to my soul, “I am your salvation” (Psalm 35:1–3).',
+    verses: [
+      '1. Plead my cause, O LORD, with those who strive with me; Fight against those who fight against me.',
+      '2. Take hold of shield and buckler, And stand up for my help.',
+      '3. Also draw out the spear, And stop those who pursue me. Say to my soul, “I am your salvation.”',
+      '9. And my soul shall be joyful in the LORD; It shall rejoice in His salvation.',
+      '10. All my bones shall say, “LORD, who is like You, Delivering the poor from him who is too strong for him...”',
+      '27. Let them shout for joy and be glad, Who favor my righteous cause; And let them say continually, “Let the LORD be magnified, Who has pleasure in the prosperity of His servant.”',
+      '28. And my tongue shall speak of Your righteousness And of Your praise all the day long.',
+    ],
+    studyNotes: "Strong's Hebrew Key: Rib (H7378 — Contend/Plead my legal cause), Lacham (H3898 — Fight/Do battle), Magen & Tsinnah (H4043 & H6793 — Small buckler and full-body shield), Yeshuah (H3444 — Salvation/Deliverance).",
+  },
+  {
+    route: '/nkjv/psalms/91/',
+    priority: '0.9',
+    changefreq: 'weekly',
+    title: 'Book of Psalms 91 (Psalm 91 NKJV & KJV) — Under the Shadow of the Almighty Parallel Bible | AduBible.org®',
+    description:
+      'Read the Book of Psalms 91 (Psalm 91:1–16) in NKJV, KJV, Hebrew, and Asante Twi on AduBible.org®. "He who dwells in the secret place of the Most High shall abide under the shadow of the Almighty. I will say of the LORD, He is my refuge and my fortress."',
+    heading: 'Book of Psalms 91 (Psalm 91 NKJV & KJV) — Dwelling in the Secret Place of the Most High',
+    excerpt:
+      'He who dwells in the secret place of the Most High Shall abide under the shadow of the Almighty. I will say of the LORD, “He is my refuge and my fortress; My God, in Him I will trust” (Psalm 91:1–2). Read all 16 verses in parallel with Strong’s Hebrew names of God (Elyon, Shaddai, YHWH, Elohim).',
+    verses: [
+      '1. He who dwells in the secret place of the Most High Shall abide under the shadow of the Almighty.',
+      '2. I will say of the LORD, “He is my refuge and my fortress; My God, in Him I will trust.”',
+      '3. Surely He shall deliver you from the snare of the fowler And from the perilous pestilence.',
+      '4. He shall cover you with His feathers, And under His wings you shall take refuge; His truth shall be your shield and buckler.',
+      '5. You shall not be afraid of the terror by night, Nor of the arrow that flies by day,',
+      '6. Nor of the pestilence that walks in darkness, Nor of the destruction that lays waste at noonday.',
+      '7. A thousand may fall at your side, And ten thousand at your right hand; But it shall not come near you.',
+      '9. Because you have made the LORD, who is my refuge, Even the Most High, your dwelling place,',
+      '10. No evil shall befall you, Nor shall any plague come near your dwelling;',
+      '11. For He shall give His angels charge over you, To keep you in all your ways.',
+      '14. “Because he has set his love upon Me, therefore I will deliver him; I will set him on high, because he has known My name.',
+      '15. He shall call upon Me, and I will answer him; I will be with him in trouble; I will deliver him and honor him.',
+      '16. With long life I will satisfy him, And show him My salvation.”',
+    ],
+    studyNotes: "Strong's Four Covenant Names in Psalm 91:1–2: Elyon (H5945 — The Most High), Shaddai (H7706 — The Almighty), YHWH (H3068 — The Covenant LORD), Elohim (H430 — My Mighty God). Secret Place: Sether (H5643).",
   },
   {
     route: '/nkjv/john/1/',
     priority: '0.9',
     changefreq: 'monthly',
-    title: 'John 1 NKJV, Greek Interlinear & KJV Parallel Bible | AduBible',
+    title: 'John 1 NKJV, Greek Interlinear & KJV Parallel Bible | AduBible.org®',
     description:
       'In the beginning was the Word (Logos G3056), and the Word was with God, and the Word was God. Study John 1 in parallel with Strong’s Greek Lexicon on AduBible.',
     heading: 'John Chapter 1 (NKJV) — The Eternal Logos in Parallel & Greek Interlinear',
     excerpt:
       'In the beginning was the Word, and the Word was with God, and the Word was God. The same was in the beginning with God. All things were made by him; and without him was not any thing made that was made.',
+    verses: [
+      '1. In the beginning was the Word, and the Word was with God, and the Word was God.',
+      '2. He was in the beginning with God.',
+      '3. All things were made through Him, and without Him nothing was made that was made.',
+      '4. In Him was life, and the life was the light of men.',
+      '5. And the light shines in the darkness, and the darkness did not comprehend it.',
+      '14. And the Word became flesh and dwelt among us, and we beheld His glory, the glory as of the only begotten of the Father, full of grace and truth.',
+    ],
   },
   {
     route: '/nkjv/romans/8/',
     priority: '0.9',
     changefreq: 'monthly',
-    title: 'Romans 8 NKJV & KJV Parallel Bible Study | AduBible',
+    title: 'Romans 8 NKJV & KJV Parallel Bible Study — More Than Conquerors | AduBible.org®',
     description:
       'There is therefore now no condemnation to those who are in Christ Jesus. Read Romans 8 in parallel across NKJV, KJV, and Open-Source Commentaries on AduBible.',
     heading: 'Romans Chapter 8 (NKJV) — Life in the Spirit & More Than Conquerors',
     excerpt:
       'There is therefore now no condemnation to those who are in Christ Jesus, who do not walk according to the flesh, but according to the Spirit.',
+    verses: [
+      '1. There is therefore now no condemnation to those who are in Christ Jesus, who do not walk according to the flesh, but according to the Spirit.',
+      '2. For the law of the Spirit of life in Christ Jesus has made me free from the law of sin and death.',
+      '28. And we know that all things work together for good to those who love God, to those who are the called according to His purpose.',
+      '31. What then shall we say to these things? If God is for us, who can be against us?',
+      '37. Yet in all these things we are more than conquerors through Him who loved us.',
+    ],
   },
   {
     route: '/deuterocanon/',
     priority: '0.9',
     changefreq: 'weekly',
-    title: 'Deuterocanonical Scriptures & Apocrypha — 16 Sacred Books in Parallel | AduBible',
+    title: 'Deuterocanonical Scriptures & Apocrypha — 16 Sacred Books in Parallel | AduBible.org®',
     description:
       'Read the 16 Deuterocanonical Books (Tobit, Judith, Wisdom of Solomon, Sirach, Baruch, 1 & 2 Maccabees, Septuagint additions) in parallel across KJV 1611 Apocrypha, Douay-Rheims, Greek LXX, and Asante Twi on AduBible.',
     heading: 'Deuterocanonical Scriptures & Biblical Apocrypha (16 Books) — Parallel Study',
@@ -167,7 +317,7 @@ const CANONICAL_ROUTES = [
     route: '/list-of-sixty/',
     priority: '0.9',
     changefreq: 'weekly',
-    title: 'List of Sixty Canonical & Apocryphal Books — 7th-Century Manuscript Index & Apostolic Fathers | AduBible',
+    title: 'List of Sixty Canonical & Apocryphal Books — 7th-Century Manuscript Index & Apostolic Fathers | AduBible.org®',
     description:
       'Explore the ancient 7th-century List of Sixty and Apocrypha (1 Enoch, Didache, Shepherd of Hermas, Clement, Testament of the Twelve Patriarchs) in parallel across R.H. Charles, Lightfoot, and Asante Twi translations on AduBible.',
     heading: 'List of Sixty & Ancient Apocrypha (25 Historic Books) — Apostolic Fathers & Pseudepigrapha',
@@ -178,7 +328,7 @@ const CANONICAL_ROUTES = [
     route: '/apocrypha/',
     priority: '0.9',
     changefreq: 'weekly',
-    title: 'Biblical Apocrypha & Ancient Pseudepigrapha — 25 Historic Sacred Books | AduBible',
+    title: 'Biblical Apocrypha & Ancient Pseudepigrapha — 25 Historic Sacred Books | AduBible.org®',
     description:
       'Read 25 ancient Apocrypha and Pseudepigrapha books (1 Enoch, Book of Jasher, Jubilees, 2 Esdras, Didache, Shepherd of Hermas) in parallel across R.H. Charles, Lightfoot, and Asante Twi on AduBible.',
     heading: 'Biblical Apocrypha & Ancient Pseudepigrapha (25 Sacred Books) — Parallel Study',
@@ -189,7 +339,7 @@ const CANONICAL_ROUTES = [
     route: '/donate/',
     priority: '0.8',
     changefreq: 'monthly',
-    title: 'Support the AduBible Scripture Mission — 100% Ad-Free Scripture for Humanity | Adubible.org',
+    title: 'Support the AduBible Scripture Mission — 100% Ad-Free Scripture for Humanity | AduBible.org®',
     description:
       'Partner with AduBible in honoring the legacy of Apostle Kwame Adu of Nsuhia, Ghana. Support non-profit parallel Bible translation, Asante Twi digitizing, and zero-ad server operations via Stripe and PayPal.',
     heading: 'Support the AduBible Planetary Scripture Mission — Giving & Partnership',
@@ -259,14 +409,14 @@ for (const loc of MEGA_LOCALES) {
     route: `/${loc.code}/`,
     priority: '0.8',
     changefreq: 'weekly',
-    title: `AduBible (${loc.name}) — Parallel Bible, Strong's Concordance & Study Sync | Adubible.org`,
-    description: `Read and study the Holy Bible in ${loc.name} alongside English (NKJV/KJV/BSB) and Original Hebrew & Greek on AduBible with Strong's Concordance and zero ads.`,
-    heading: `${loc.name} — Parallel Scripture & Exegetical Study Edition`,
-    excerpt: `Read ${loc.name} in synchronized parallel columns with Strong's Exhaustive Concordance, Matthew Henry Commentary, and cloud-synced bookmarks, pins, highlights, and notes on AduBible.`,
+    title: `AduBible.org® (${loc.name}) — Online Parallel Bible, Strong's Concordance & Audio | Adubible.org`,
+    description: `Read and study the Holy Bible online in ${loc.name} alongside English (NKJV/KJV/BSB) and Original Hebrew & Greek on AduBible.org® with Strong's Concordance, Commentaries, and zero ads.`,
+    heading: `${loc.name} — Online Parallel Bible & Exegetical Study Sanctuary`,
+    excerpt: `Read ${loc.name} in synchronized parallel columns with Strong's Exhaustive Concordance, Matthew Henry Commentary, 24kHz Audio Bible, and cloud-synced bookmarks, pins, highlights, and notes on AduBible.org®.`,
   });
 }
 
-function extractFaqSchema(contentHtml, canonicalUrl) {
+function extractFaqSchema(contentHtml) {
   const faqRegex = /<h3[^>]*>(?:Q\d+:?\s*)?([^<]+)<\/h3>\s*<p><strong>Answer:<\/strong>\s*([\s\S]*?)<\/p>/gi;
   const questions = [];
   let match;
@@ -290,6 +440,404 @@ function extractFaqSchema(contentHtml, canonicalUrl) {
     '@type': 'FAQPage',
     'mainEntity': questions,
   };
+}
+
+const HOME_FAQ_ITEMS = [
+  {
+    q: 'What is the best 100% ad-free online Bible alternative to Bible Hub and Bible Gateway?',
+    a: "AduBible.org® is a 100% ad-free, unmonetized online parallel Bible sanctuary dedicated to humanity. It combines Bible Hub's deep exegetical resources (Strong's Hebrew and Greek Concordance, interlinear parsing, and classic commentaries by Matthew Henry, John Gill, and Jamieson-Fausset-Brown) with Bible Gateway's multi-translation readability—allowing readers to compare up to 4 translations side-by-side across 35+ languages with zero display ads, zero video popups, and zero subscription paywalls.",
+  },
+  {
+    q: 'Is there a free Bible Hub app for Android, iPhone, and offline download?',
+    a: 'Yes. AduBible.org® functions as an instant-install Progressive Web App (PWA) for Android, iOS (iPhone and iPad), Windows, and macOS with a built-in IndexedDB Offline Scripture Vault. Readers can open adubible.org in Chrome or Safari, tap "Add to Home Screen" or "Install App," and read NKJV, KJV, BSB, Asante Twi, Strong\'s Lexicon, and saved study notes 100% offline without heavy APK downloads or data tracking.',
+  },
+  {
+    q: 'How do you pronounce "Psalm" and what does the Book of Psalms mean in the Bible?',
+    a: 'The word "Psalm" is pronounced /sɑːm/ ("SAHM", rhyming with calm and balm), where the initial letter "P" is completely silent and the "L" is silent in standard pronunciation. It comes from the Koine Greek word psalmos (ψαλμός, Strong\'s G5568), signifying a sacred song sung to the plucking of a stringed harp, translating the Hebrew word Mizmor (מִזְמוֹר, Strong\'s H4210). The Hebrew title of the Book of Psalms is Tehillim (תְּהִלִּים), meaning "Praises."',
+  },
+  {
+    q: 'What are the most read chapters in the Book of Psalms (Psalm 91, Psalm 23, Psalm 1, Psalm 35, Psalm 34)?',
+    a: 'The most searched chapters in the Book of Psalms include: Psalm 1 ("Blessed is the man who walks not in the counsel of the ungodly"), Psalm 23 ("The LORD is my shepherd; I shall not want"), Psalm 34 ("I sought the LORD, and He heard me, and delivered me from all my fears"), Psalm 35 ("Plead my cause, O LORD, with those who strive with me"), and Book of Psalms 91 ("He who dwells in the secret place of the Most High shall abide under the shadow of the Almighty"). All 150 Psalms can be studied in parallel on AduBible.org®.',
+  },
+  {
+    q: 'What are the best Bible verses about strength in hard times?',
+    a: 'Key Bible verses about strength in hard times include Isaiah 41:10 ("Fear not, for I am with you; Be not dismayed, for I am your God. I will strengthen you"), Isaiah 40:31 ("Those who wait on the LORD shall renew their strength; they shall mount up with wings like eagles"), Philippians 4:13 ("I can do all things through Christ who strengthens me"), Psalm 46:1 ("God is our refuge and strength, a very present help in trouble"), 2 Corinthians 12:9 ("My grace is sufficient for you, for My strength is made perfect in weakness"), and Joshua 1:9.',
+  },
+  {
+    q: 'What are the top Bible verses on thanksgiving and gratitude?',
+    a: 'Foundational Bible verses on thanksgiving include Psalm 100:4 ("Enter into His gates with thanksgiving, and into His courts with praise"), 1 Thessalonians 5:18 ("In everything give thanks; for this is the will of God in Christ Jesus for you"), Psalm 107:1 ("Oh, give thanks to the LORD, for He is good! For His mercy endures forever"), Philippians 4:6–7 ("With thanksgiving, let your requests be made known to God"), and Colossians 3:15–17.',
+  },
+  {
+    q: 'Can I listen to an Audio Bible in English and Twi on AduBible.org®?',
+    a: 'Yes. AduBible.org® includes a 24kHz Neural Audio Bible engine that streams crystal-clear spoken Scripture across English (NKJV, KJV, BSB), Asante Twi & Akuapem Twi (Twerɛ Kronkron), French, Spanish, German, and global translations, complete with real-time verse highlighting and auto-scrolling.',
+  },
+  {
+    q: 'Does AduBible have interactive 3D Bible games and a Psalm quiz game?',
+    a: 'Yes. AduBible.org® features a built-in 3D WebGL Bible Games Arcade accessible from the top header (🎮) or by pressing G. It includes three interactive 3D games: 3D Scripture Quiz Sanctuary (testing knowledge of the Psalms, Gospels, Genesis, and Epistles), 3D Verse Scramble Temple, and 3D Armor of God Runner.',
+  },
+];
+
+function buildSanctuaryNavPillsHtml() {
+  const pills = [
+    { href: '/', label: '🏛️ AduBible Home', gold: true },
+    { href: '/nkjv/genesis/1/', label: '📖 Genesis 1 (Creation)' },
+    { href: '/nkjv/psalms/91/', label: '🛡️ Book of Psalms 91', gold: true },
+    { href: '/nkjv/psalms/23/', label: '🌿 Psalm 23 (Shepherd)', gold: true },
+    { href: '/nkjv/psalms/1/', label: '🌳 Psalms Chapter 1 (NKJV)' },
+    { href: '/nkjv/psalms/35/', label: '⚔️ Psalm 35 (Defense)' },
+    { href: '/nkjv/psalms/34/', label: '🙌 Psalm 34 (Deliverance)' },
+    { href: '/nkjv/ephesians/1/', label: '✨ Ephesians 1 NKJV' },
+    { href: '/twi/ephesians/1/', label: '🌍 Efesofoɔ 1 Twi' },
+    { href: '/kjv/ephesians/1/', label: '👑 Ephesians 1 KJV' },
+    { href: '/nkjv/john/1/', label: '🕊️ John 1 (Logos)' },
+    { href: '/nkjv/romans/8/', label: '🔥 Romans 8' },
+    { href: '/deuterocanon/', label: '📜 16 Deuterocanon Books' },
+    { href: '/list-of-sixty/', label: '🏺 List of Sixty & Enoch' },
+    { href: '/articles/', label: '📚 15 Pillar Study Guides', gold: true },
+    { href: '/donate/', label: '💛 Support Mission (Donate)', gold: true },
+  ];
+  return pills
+    .map((p) =>
+      p.gold
+        ? `<a href="${p.href}" style="display:inline-block;padding:6px 13px;background:#202d20;border:1px solid rgba(212,167,44,0.55);border-radius:999px;color:#f7d584;font-weight:700;font-size:12.5px;text-decoration:none;">${p.label}</a>`
+        : `<a href="${p.href}" style="display:inline-block;padding:6px 13px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#d8e2d5;font-weight:600;font-size:12.5px;text-decoration:none;">${p.label}</a>`
+    )
+    .join('\n');
+}
+
+function buildSanctuaryFooterHtml() {
+  return `<footer style="margin-top:3rem;padding-top:2rem;border-top:1px solid #283629;font-size:13px;color:#9ca89a;text-align:center;">
+    <div style="margin-bottom:1.25rem;font-style:italic;color:#c2cbbd;max-width:860px;margin-left:auto;margin-right:auto;line-height:1.7;">
+      &ldquo;Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ.&rdquo; &mdash; Ephesians 1:3 &bull;
+      &ldquo;For the word of God is living and active, sharper than any two-edged sword...&rdquo; &mdash; Hebrews 4:12 &bull;
+      &ldquo;All Scripture is breathed out by God and profitable for teaching...&rdquo; &mdash; 2 Timothy 3:16
+    </div>
+    <nav aria-label="Institutional & Legal Governance" style="margin-bottom:1.25rem;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 10px;max-width:1100px;margin-left:auto;margin-right:auto;">
+      <a href="/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#f7d584;font-weight:700;font-size:12px;text-decoration:none;">AduBible Home</a>
+      <a href="/articles/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#f7d584;font-weight:600;font-size:12px;text-decoration:none;">15 Pillar Guides</a>
+      <a href="/about/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#d8e2d5;font-size:12px;text-decoration:none;">About AduBible</a>
+      <a href="/how-to-use/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#d8e2d5;font-size:12px;text-decoration:none;">How to Use</a>
+      <a href="/editorial-policy/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#d8e2d5;font-size:12px;text-decoration:none;">Editorial Policy</a>
+      <a href="/glossary/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#d8e2d5;font-size:12px;text-decoration:none;">Biblical Glossary</a>
+      <a href="/sources/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#d8e2d5;font-size:12px;text-decoration:none;">Manuscript Sources</a>
+      <a href="/privacy/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#d8e2d5;font-size:12px;text-decoration:none;">Privacy Policy</a>
+      <a href="/terms/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#d8e2d5;font-size:12px;text-decoration:none;">Terms of Service</a>
+      <a href="/cookie-policy/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#d8e2d5;font-size:12px;text-decoration:none;">Cookie Policy</a>
+      <a href="/contact/" style="display:inline-block;padding:5px 12px;background:#162018;border:1px solid #2d3c2e;border-radius:999px;color:#d8e2d5;font-size:12px;text-decoration:none;">Contact Us</a>
+      <a href="/donate/" style="display:inline-block;padding:5px 14px;background:rgba(212,167,44,0.14);border:1px solid rgba(212,167,44,0.55);border-radius:999px;color:#f7d584;font-weight:700;font-size:12px;text-decoration:none;">💛 Support Mission</a>
+    </nav>
+    <p style="margin:0 auto;max-width:860px;line-height:1.7;">&copy; ${CURRENT_YEAR} <a href="https://adubible.org/" style="color:#f7d584;text-decoration:none;font-weight:700;">AduBible.org&reg;</a> &middot; Dedicated to Humanity; A Global Ministry of Apostle Kwame Adu &middot; <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" style="color:#f7d584;text-decoration:none;">Nsuhia, Ghana ↗</a> &middot; <span style="color:#34d399;font-weight:700;">100% Ads-Free Reading Experience</span></p>
+  </footer>`;
+}
+
+function buildHomeAuthorityPrerenderShell() {
+  const faqHtml = HOME_FAQ_ITEMS.map(
+    (item) => `
+      <div style="background:#141e16;border:1px solid #283629;border-radius:12px;padding:1.15rem 1.35rem;margin-bottom:0.85rem;">
+        <h3 style="font-size:1.05rem;color:#f7d584;margin:0 0 0.45rem 0;font-weight:700;">${item.q}</h3>
+        <p style="margin:0;color:#d8e2d5;font-size:0.95rem;line-height:1.7;">${item.a}</p>
+      </div>`
+  ).join('\n');
+
+  return `<div id="root"><main id="seo-prerender" style="min-height:100vh;background-color:#0f1712;color:#e3e6d8;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Georgia,serif;line-height:1.7;padding:2rem 1.25rem;">
+    <div style="max-width:1080px;margin:0 auto;">
+
+      <!-- LUXURY SANCTUARY PRE-HYDRATION HEADER & LIVE LOADER -->
+      <header style="text-align:center;background:linear-gradient(180deg,#172319 0%,#121b14 100%);border:1px solid rgba(212,167,44,0.38);border-radius:18px;padding:2rem 1.5rem;margin-bottom:2rem;box-shadow:0 12px 36px rgba(0,0,0,0.45);">
+        <div style="display:inline-flex;align-items:center;gap:10px;padding:6px 16px;background:rgba(212,167,44,0.14);border:1px solid rgba(212,167,44,0.48);border-radius:999px;color:#f7d584;font-size:12px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1rem;">
+          <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#34d399;box-shadow:0 0 10px #34d399;"></span>
+          Initializing AduBible.org&reg; Parallel Scripture Sanctuary &bull; 100% Ads-Free Forever
+        </div>
+        <h1 style="font-family:Georgia,'Playfair Display',serif;font-size:clamp(1.75rem,3.6vw,2.65rem);line-height:1.2;color:#fafaf5;margin:0 0 0.85rem 0;font-weight:800;">
+          AduBible.org&reg; &mdash; Free Online Bible, Parallel Bible Hub, Strong&rsquo;s Concordance, Audio Bible &amp; Commentary
+        </h1>
+        <p style="font-size:1.05rem;color:#c8d4c5;max-width:880px;margin:0 auto 1.25rem auto;line-height:1.75;">
+          <strong>Quick Summary:</strong> Read and study the Holy Bible online free in up to <strong>4 synchronized parallel columns</strong> across <strong>NKJV, KJV, BSB, Original Hebrew (WLC), Koine Greek (Textus Receptus), French, Spanish, German, and Asante Twi (35+ global languages)</strong>. Engineered as a 100% ad-free sanctuary combining <strong>Bible Hub&rsquo;s</strong> exhaustive Strong&rsquo;s Concordance &amp; verse-by-verse commentaries with <strong>Bible Gateway&rsquo;s</strong> clean multi-version passage lookup, plus a <strong>24kHz Neural Audio Bible</strong>, <strong>Offline Bible App (Android, iOS &amp; PC PWA)</strong>, and <strong>Interactive 3D Bible &amp; Psalm Games</strong>.
+        </p>
+        <nav aria-label="Quick Passage & Sanctuary Directory" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:1rem;">
+          ${buildSanctuaryNavPillsHtml()}
+        </nav>
+      </header>
+
+      <!-- SECTION 1: GENESIS CHAPTER 1 (DEFAULT READER PASSAGE PARITY) -->
+      <section style="background:#141e16;border:1px solid #283629;border-radius:16px;padding:1.5rem;margin-bottom:2rem;">
+        <div style="font-size:11.5px;font-weight:800;color:#f7d584;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.4rem;">
+          Active Sanctuary Reader Passage &bull; Parallel NKJV, KJV, Hebrew &amp; Asante Twi
+        </div>
+        <h2 style="font-family:Georgia,serif;font-size:1.5rem;color:#fafaf5;margin:0 0 0.75rem 0;">
+          Genesis Chapter 1 (Genesis 1) &mdash; In the Beginning God Created the Heavens and the Earth
+        </h2>
+        <p style="margin:0 0 0.85rem 0;color:#dce5d8;font-size:1rem;">
+          <strong>Genesis 1:1&ndash;5 (NKJV / KJV):</strong> &ldquo;[1] In the beginning God (<em>Elohim</em> H430) created (<em>bara</em> H1254) the heavens and the earth. [2] The earth was without form, and void; and darkness was on the face of the deep. And the Spirit of God (<em>Ruach Elohim</em> H7307) was hovering over the face of the waters. [3] Then God said, &lsquo;Let there be light&rsquo; (<em>Or</em> H216); and there was light. [4] And God saw the light, that it was good; and God divided the light from the darkness. [5] God called the light Day, and the darkness He called Night. So the evening and the morning were the first day.&rdquo;
+        </p>
+        <p style="margin:0;color:#b7c99f;font-size:0.92rem;">
+          <strong>Original Hebrew (Westminster Leningrad Codex):</strong> בְּרֵאשִׁית בָּרָא אֱלֹהִים אֵת הַשָּׁמַיִם וְאֵת הָאָרֶץ׃ &bull;
+          <strong>Asante Twi (Twerɛ Kronkron):</strong> &ldquo;Mfitiaseɛ no Onyankopɔn bɔɔ ɔsoro ne asase.&rdquo; &mdash;
+          <a href="/nkjv/genesis/1/" style="color:#f7d584;font-weight:700;text-decoration:underline;">Open Full Genesis 1 Parallel Study &rarr;</a>
+        </p>
+      </section>
+
+      <!-- SECTION 2: ONLINE BIBLE HUB & BIBLE GATEWAY COMPARISON MATRIX -->
+      <section style="background:#141e16;border:1px solid #283629;border-radius:16px;padding:1.5rem;margin-bottom:2rem;">
+        <h2 style="font-family:Georgia,serif;font-size:1.5rem;color:#f7d584;margin:0 0 0.65rem 0;">
+          Online Bible Sanctuary Comparison: AduBible.org&reg; vs. Bible Hub &amp; Bible Gateway (2026)
+        </h2>
+        <p style="margin:0 0 1rem 0;color:#d0dbd0;font-size:0.96rem;">
+          Millions of believers search daily for an <strong>online Bible</strong>, <strong>Bible Hub commentary</strong>, <strong>Bible Gateway parallel translations</strong>, and a <strong>free offline Bible app</strong> without intrusive commercial advertisements or subscription paywalls:
+        </p>
+        <div style="overflow-x:auto;border:1px solid #2d3c2e;border-radius:12px;">
+          <table style="width:100%;border-collapse:collapse;text-align:left;font-size:13.5px;">
+            <thead>
+              <tr style="background:#1a271c;color:#f7d584;border-bottom:1px solid #2d3c2e;">
+                <th style="padding:10px 12px;">Bible Study Feature</th>
+                <th style="padding:10px 12px;">AduBible.org&reg; Sanctuary</th>
+                <th style="padding:10px 12px;">Bible Hub</th>
+                <th style="padding:10px 12px;">Bible Gateway</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid #233025;">
+                <td style="padding:10px 12px;font-weight:700;color:#fafaf5;">Parallel Bible Reading</td>
+                <td style="padding:10px 12px;color:#34d399;font-weight:700;">Up to 4 Synchronized Columns (35+ Languages)</td>
+                <td style="padding:10px 12px;color:#c8d4c5;">Single-verse stacked list view</td>
+                <td style="padding:10px 12px;color:#c8d4c5;">2-column desktop view</td>
+              </tr>
+              <tr style="border-bottom:1px solid #233025;">
+                <td style="padding:10px 12px;font-weight:700;color:#fafaf5;">Strong&rsquo;s Concordance &amp; Commentary</td>
+                <td style="padding:10px 12px;color:#34d399;font-weight:700;">1-Tap Hebrew/Greek Lexicon + Matthew Henry &amp; Gill</td>
+                <td style="padding:10px 12px;color:#c8d4c5;">Full Interlinear &amp; Commentaries (Desktop UI)</td>
+                <td style="padding:10px 12px;color:#c8d4c5;">Many study notes locked behind Plus paywall</td>
+              </tr>
+              <tr style="border-bottom:1px solid #233025;">
+                <td style="padding:10px 12px;font-weight:700;color:#fafaf5;">Offline Bible App (Android, iOS &amp; PC)</td>
+                <td style="padding:10px 12px;color:#34d399;font-weight:700;">100% Free Offline PWA Vault (Zero APK Bloat)</td>
+                <td style="padding:10px 12px;color:#c8d4c5;">Separate mobile app downloads</td>
+                <td style="padding:10px 12px;color:#c8d4c5;">Ad-supported mobile app</td>
+              </tr>
+              <tr style="border-bottom:1px solid #233025;">
+                <td style="padding:10px 12px;font-weight:700;color:#fafaf5;">Audio Bible &amp; 3D Bible Games</td>
+                <td style="padding:10px 12px;color:#34d399;font-weight:700;">24kHz Neural Audio (English &amp; Twi) + 3D Bible Games</td>
+                <td style="padding:10px 12px;color:#c8d4c5;">Basic chapter audio links; no 3D games</td>
+                <td style="padding:10px 12px;color:#c8d4c5;">English audio streams; no 3D games</td>
+              </tr>
+              <tr>
+                <td style="padding:10px 12px;font-weight:700;color:#fafaf5;">Commercial Ads &amp; Tracking</td>
+                <td style="padding:10px 12px;color:#34d399;font-weight:700;">100% Ads-Free Forever &bull; Zero Tracking</td>
+                <td style="padding:10px 12px;color:#c8d4c5;">Display ad banners</td>
+                <td style="padding:10px 12px;color:#c8d4c5;">Display &amp; video advertisements</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION 3: BOOK OF PSALMS AUTHORITY HUB (PSALM 91, PSALM 23, PSALM 1, PSALM 35, PSALM 34, PRONUNCIATION, LIST & 3D PSALM GAME) -->
+      <section style="background:#141e16;border:1px solid #283629;border-radius:16px;padding:1.5rem;margin-bottom:2rem;">
+        <div style="font-size:11.5px;font-weight:800;color:#f7d584;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.4rem;">
+          The Book of Psalms (Sefer Tehillim) &bull; Complete 150 Psalms Study Hub
+        </div>
+        <h2 style="font-family:Georgia,serif;font-size:1.5rem;color:#fafaf5;margin:0 0 0.75rem 0;">
+          Psalm Bible Hub: Book of Psalms 91, Psalm 23, Psalms Chapter 1, Psalm 35, Psalm 34, Pronunciation &amp; List
+        </h2>
+        <p style="margin:0 0 1.15rem 0;color:#d0dbd0;font-size:0.96rem;">
+          Explore the most searched chapters in the <strong>Book of Psalms</strong> in parallel across <strong>NKJV, KJV, BSB, Original Hebrew, and Asante Twi</strong>, complete with <strong>Strong&rsquo;s Concordance</strong>, <strong>Matthew Henry &amp; Spurgeon commentaries</strong>, and <strong>24kHz Audio Bible</strong> playback:
+        </p>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;margin-bottom:1.25rem;">
+          <article style="background:#19251b;border:1px solid rgba(212,167,44,0.35);border-radius:12px;padding:1.15rem;">
+            <h3 style="font-size:1.08rem;color:#f7d584;margin:0 0 0.4rem 0;">
+              <a href="/nkjv/psalms/91/" style="color:#f7d584;text-decoration:none;">🛡️ Book of Psalms 91 (Psalm 91 NKJV &amp; KJV)</a>
+            </h3>
+            <p style="font-size:0.9rem;color:#dce5d8;margin:0 0 0.5rem 0;">
+              &ldquo;He who dwells in the secret place of the Most High (<em>Elyon</em> H5945) shall abide under the shadow of the Almighty (<em>Shaddai</em> H7706). I will say of the LORD, &lsquo;He is my refuge and my fortress; My God, in Him I will trust.&rsquo;&rdquo; (Psalm 91:1&ndash;2)
+            </p>
+            <a href="/nkjv/psalms/91/" style="font-size:12.5px;color:#34d399;font-weight:700;text-decoration:underline;">Read All 16 Verses of Psalm 91 in Parallel &rarr;</a>
+          </article>
+
+          <article style="background:#19251b;border:1px solid rgba(212,167,44,0.35);border-radius:12px;padding:1.15rem;">
+            <h3 style="font-size:1.08rem;color:#f7d584;margin:0 0 0.4rem 0;">
+              <a href="/nkjv/psalms/23/" style="color:#f7d584;text-decoration:none;">🌿 Psalm 23 (NKJV, KJV &amp; Hebrew Yahweh Roi)</a>
+            </h3>
+            <p style="font-size:0.9rem;color:#dce5d8;margin:0 0 0.5rem 0;">
+              &ldquo;The LORD is my shepherd; I shall not want. He makes me to lie down in green pastures; He leads me beside the still waters. He restores my soul; He leads me in the paths of righteousness For His name&rsquo;s sake.&rdquo; (Psalm 23:1&ndash;3)
+            </p>
+            <a href="/nkjv/psalms/23/" style="font-size:12.5px;color:#34d399;font-weight:700;text-decoration:underline;">Read Psalm 23 in Parallel &amp; Audio &rarr;</a>
+          </article>
+
+          <article style="background:#19251b;border:1px solid #2d3c2e;border-radius:12px;padding:1.15rem;">
+            <h3 style="font-size:1.08rem;color:#f7d584;margin:0 0 0.4rem 0;">
+              <a href="/nkjv/psalms/1/" style="color:#f7d584;text-decoration:none;">🌳 Psalms Chapter 1 (Psalm 1 NKJV &amp; KJV)</a>
+            </h3>
+            <p style="font-size:0.9rem;color:#dce5d8;margin:0 0 0.5rem 0;">
+              &ldquo;Blessed is the man who walks not in the counsel of the ungodly, nor stands in the path of sinners, nor sits in the seat of the scornful; But his delight is in the law of the LORD, and in His law he meditates day and night.&rdquo; (Psalm 1:1&ndash;2)
+            </p>
+            <a href="/nkjv/psalms/1/" style="font-size:12.5px;color:#34d399;font-weight:700;text-decoration:underline;">Read Psalms Chapter 1 (Psalm 1 NKJV) &rarr;</a>
+          </article>
+
+          <article style="background:#19251b;border:1px solid #2d3c2e;border-radius:12px;padding:1.15rem;">
+            <h3 style="font-size:1.08rem;color:#f7d584;margin:0 0 0.4rem 0;">
+              <a href="/nkjv/psalms/35/" style="color:#f7d584;text-decoration:none;">⚔️ Psalm 35 (NKJV &amp; KJV Prayer for Vindication)</a>
+            </h3>
+            <p style="font-size:0.9rem;color:#dce5d8;margin:0 0 0.5rem 0;">
+              &ldquo;Plead my cause, O LORD, with those who strive with me; fight against those who fight against me. Take hold of shield and buckler, and stand up for my help... Say to my soul, &lsquo;I am your salvation.&rsquo;&rdquo; (Psalm 35:1&ndash;3)
+            </p>
+            <a href="/nkjv/psalms/35/" style="font-size:12.5px;color:#34d399;font-weight:700;text-decoration:underline;">Read All 28 Verses of Psalm 35 &rarr;</a>
+          </article>
+
+          <article style="background:#19251b;border:1px solid #2d3c2e;border-radius:12px;padding:1.15rem;">
+            <h3 style="font-size:1.08rem;color:#f7d584;margin:0 0 0.4rem 0;">
+              <a href="/nkjv/psalms/34/" style="color:#f7d584;text-decoration:none;">🙌 Psalm 34 (NKJV &amp; KJV Deliverance from Fear)</a>
+            </h3>
+            <p style="font-size:0.9rem;color:#dce5d8;margin:0 0 0.5rem 0;">
+              &ldquo;I will bless the LORD at all times; His praise shall continually be in my mouth... I sought the LORD, and He heard me, and delivered me from all my fears. Oh, taste and see that the LORD is good!&rdquo; (Psalm 34:1, 4, 8)
+            </p>
+            <a href="/nkjv/psalms/34/" style="font-size:12.5px;color:#34d399;font-weight:700;text-decoration:underline;">Read All 22 Verses of Psalm 34 &rarr;</a>
+          </article>
+
+          <article style="background:#19251b;border:1px solid #2d3c2e;border-radius:12px;padding:1.15rem;">
+            <h3 style="font-size:1.08rem;color:#f7d584;margin:0 0 0.4rem 0;">
+              🎮 Interactive 3D Psalm Game &amp; Bible Quiz Arcade
+            </h3>
+            <p style="font-size:0.9rem;color:#dce5d8;margin:0 0 0.5rem 0;">
+              Play our free browser-based <strong>3D Psalm Game &amp; Bible Quiz Sanctuary</strong>! Test your mastery of Psalm 23, Psalm 91, Psalm 1, and all 66 books in the <strong>3D Scripture Quiz</strong>, <strong>3D Verse Scramble Temple</strong>, and <strong>3D Armor of God Runner</strong>.
+            </p>
+            <span style="font-size:12.5px;color:#f7d584;font-weight:700;">Tap 🎮 in the Top Header or Press &lsquo;G&rsquo; to Play Instant 3D Games</span>
+          </article>
+        </div>
+
+        <!-- PSALM PRONUNCIATION & LIST OF 150 PSALMS -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;">
+          <div style="background:#101812;border:1px solid #283629;border-radius:12px;padding:1.15rem;">
+            <h3 style="font-size:1.02rem;color:#f7d584;margin:0 0 0.45rem 0;">🔊 Psalm Pronunciation &amp; Hebrew/Greek Etymology</h3>
+            <p style="margin:0;font-size:0.9rem;color:#d0dbd0;line-height:1.65;">
+              <strong>How to Pronounce &ldquo;Psalm&rdquo;:</strong> Pronounced <strong>/sɑːm/ (&ldquo;SAHM&rdquo;</strong>, rhyming with <em>calm</em> and <em>balm</em>; the initial <strong>P</strong> is completely silent). Plural: <strong>Psalms (/sɑːmz/ &ldquo;SAHMZ&rdquo;)</strong>. Derived from Koine Greek <em>psalmos</em> (<strong>ψαλμός</strong>, Strong&rsquo;s G5568 &mdash; a sacred song sung to the plucking of stringed instruments), translating Biblical Hebrew <em>Mizmor</em> (<strong>מִזְמוֹר</strong>, Strong&rsquo;s H4210). The Hebrew title of the entire Psalter is <em>Sefer Tehillim</em> (<strong>תְּהִלִּים</strong>, &ldquo;Book of Praises&rdquo;), and in Asante Twi it is <strong>Nnwom</strong>.
+            </p>
+          </div>
+          <div style="background:#101812;border:1px solid #283629;border-radius:12px;padding:1.15rem;">
+            <h3 style="font-size:1.02rem;color:#f7d584;margin:0 0 0.45rem 0;">📋 Psalms in the Bible List (All 5 Books of the 150 Psalms)</h3>
+            <ul style="margin:0;padding-left:1.1rem;font-size:0.88rem;color:#d0dbd0;line-height:1.6;">
+              <li><strong>Book I (Psalms 1&ndash;41):</strong> Davidic Psalms of Torah Wisdom, Shepherd Trust &amp; Deliverance (Psalm 1, 8, 19, 22, 23, 24, 27, 34, 35, 37, 40).</li>
+              <li><strong>Book II (Psalms 42&ndash;72):</strong> Korah, Asaph &amp; David &mdash; Refuge, Repentance &amp; Royal Intercession (Psalm 42, 46, 51, 61, 63, 72).</li>
+              <li><strong>Book III (Psalms 73&ndash;89):</strong> Asaph &amp; Korah Sanctuary Laments &amp; Covenant Faithfulness (Psalm 73, 84, 86, 89).</li>
+              <li><strong>Book IV (Psalms 90&ndash;106):</strong> Prayer of Moses, Shadow of the Almighty &amp; Thanksgiving (Psalm 90, 91, 95, 100, 103).</li>
+              <li><strong>Book V (Psalms 107&ndash;150):</strong> Word of God, Songs of Ascents &amp; Hallelujah Doxology (Psalm 107, 119, 121, 136, 139, 150).</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: MOST SEARCHED TOPICAL BIBLE VERSES (STRENGTH IN HARD TIMES & THANKSGIVING) -->
+      <section style="background:#141e16;border:1px solid #283629;border-radius:16px;padding:1.5rem;margin-bottom:2rem;">
+        <h2 style="font-family:Georgia,serif;font-size:1.5rem;color:#f7d584;margin:0 0 0.85rem 0;">
+          Essential Bible Verses: Strength in Hard Times &amp; Bible Verses on Thanksgiving
+        </h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;">
+          <div style="background:#19251b;border:1px solid #2d3c2e;border-radius:12px;padding:1.25rem;">
+            <h3 style="font-size:1.1rem;color:#f7d584;margin:0 0 0.65rem 0;">💪 Bible Verses About Strength in Hard Times</h3>
+            <ul style="margin:0;padding-left:1.1rem;font-size:0.9rem;color:#dce5d8;line-height:1.68;">
+              <li style="margin-bottom:0.45rem;"><strong>Isaiah 41:10 (NKJV):</strong> &ldquo;Fear not, for I am with you; Be not dismayed, for I am your God. I will strengthen you, Yes, I will help you, I will uphold you with My righteous right hand.&rdquo;</li>
+              <li style="margin-bottom:0.45rem;"><strong>Isaiah 40:31 (NKJV):</strong> &ldquo;But those who wait on the LORD shall renew their strength; They shall mount up with wings like eagles, They shall run and not be weary, They shall walk and not faint.&rdquo;</li>
+              <li style="margin-bottom:0.45rem;"><strong>Philippians 4:13 (NKJV):</strong> &ldquo;I can do all things through Christ who strengthens me.&rdquo;</li>
+              <li style="margin-bottom:0.45rem;"><strong>Psalm 46:1&ndash;2 (NKJV):</strong> &ldquo;God is our refuge and strength, a very present help in trouble. Therefore we will not fear...&rdquo;</li>
+              <li style="margin-bottom:0.45rem;"><strong>2 Corinthians 12:9 (NKJV):</strong> &ldquo;My grace is sufficient for you, for My strength is made perfect in weakness.&rdquo;</li>
+              <li><strong>Joshua 1:9 &amp; <a href="/nkjv/romans/8/" style="color:#34d399;">Romans 8:31&ndash;39</a>:</strong> &ldquo;Be strong and of good courage; do not be afraid, nor be dismayed, for the LORD your God is with you wherever you go.&rdquo;</li>
+            </ul>
+          </div>
+
+          <div style="background:#19251b;border:1px solid #2d3c2e;border-radius:12px;padding:1.25rem;">
+            <h3 style="font-size:1.1rem;color:#f7d584;margin:0 0 0.65rem 0;">🙏 Bible Verses on Thanksgiving &amp; Gratitude</h3>
+            <ul style="margin:0;padding-left:1.1rem;font-size:0.9rem;color:#dce5d8;line-height:1.68;">
+              <li style="margin-bottom:0.45rem;"><strong>Psalm 100:4 (NKJV):</strong> &ldquo;Enter into His gates with thanksgiving, And into His courts with praise. Be thankful to Him, and bless His name.&rdquo;</li>
+              <li style="margin-bottom:0.45rem;"><strong>1 Thessalonians 5:16&ndash;18 (NKJV):</strong> &ldquo;Rejoice always, pray without ceasing, in everything give thanks; for this is the will of God in Christ Jesus for you.&rdquo;</li>
+              <li style="margin-bottom:0.45rem;"><strong>Psalm 107:1 (NKJV):</strong> &ldquo;Oh, give thanks to the LORD, for He is good! For His mercy endures forever.&rdquo;</li>
+              <li style="margin-bottom:0.45rem;"><strong>Philippians 4:6&ndash;7 (NKJV):</strong> &ldquo;Be anxious for nothing, but in everything by prayer and supplication, with thanksgiving, let your requests be made known to God...&rdquo;</li>
+              <li style="margin-bottom:0.45rem;"><strong>Colossians 3:15&ndash;17 (NKJV):</strong> &ldquo;And let the peace of God rule in your hearts, to which also you were called in one body; and be thankful.&rdquo;</li>
+              <li><strong>Psalm 95:2 &amp; Psalm 136:1 (NKJV):</strong> &ldquo;Let us come before His presence with thanksgiving; Let us shout joyfully to Him with psalms.&rdquo;</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5: OFFLINE BIBLE APP (ANDROID/IOS), AUDIO BIBLE & COMMENTARIES -->
+      <section style="background:#141e16;border:1px solid #283629;border-radius:16px;padding:1.5rem;margin-bottom:2rem;">
+        <h2 style="font-family:Georgia,serif;font-size:1.5rem;color:#f7d584;margin:0 0 0.75rem 0;">
+          Free Offline Bible App (Android &amp; iOS), 24kHz Audio Bible &amp; Bible Hub Commentary Suite
+        </h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;">
+          <div style="background:#19251b;border:1px solid #2d3c2e;border-radius:12px;padding:1.1rem;">
+            <h3 style="font-size:1rem;color:#f7d584;margin:0 0 0.4rem 0;">📲 Offline Bible App for Android, iOS &amp; PC</h3>
+            <p style="margin:0;font-size:0.89rem;color:#d0dbd0;line-height:1.65;">
+              Searching for a <strong>Bible Hub app for Android</strong> or <strong>free offline Bible download</strong>? AduBible.org&reg; installs directly to your phone or desktop as a lightweight Progressive Web App (PWA) with automatic IndexedDB offline chapter caching &mdash; read Scripture anywhere with zero internet connection and zero ads.
+            </p>
+          </div>
+          <div style="background:#19251b;border:1px solid #2d3c2e;border-radius:12px;padding:1.1rem;">
+            <h3 style="font-size:1rem;color:#f7d584;margin:0 0 0.4rem 0;">🎧 24kHz Neural Audio Bible Streaming</h3>
+            <p style="margin:0;font-size:0.89rem;color:#d0dbd0;line-height:1.65;">
+              Listen to any chapter in crystal-clear <strong>24kHz Neural Audio</strong> across English (NKJV, KJV, BSB), Asante Twi (Twerɛ Kronkron), French, Spanish, and German. Includes verse-by-verse auto-scroll synchronization, adjustable playback speeds, and hands-free chapter progression.
+            </p>
+          </div>
+          <div style="background:#19251b;border:1px solid #2d3c2e;border-radius:12px;padding:1.1rem;">
+            <h3 style="font-size:1rem;color:#f7d584;margin:0 0 0.4rem 0;">📚 Exhaustive Commentaries &amp; Strong&rsquo;s Lexicon</h3>
+            <p style="margin:0;font-size:0.89rem;color:#d0dbd0;line-height:1.65;">
+              Access complete verse-by-verse expositions from <strong>Matthew Henry&rsquo;s Complete Commentary</strong>, <strong>John Gill&rsquo;s Exposition of the Entire Bible</strong>, and <strong>Jamieson-Fausset-Brown</strong> alongside 1-tap Strong&rsquo;s Hebrew (H1&ndash;H8674) and Greek (G1&ndash;G5624) lexical definitions.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 6: PEOPLE ALSO ASK (PAA) FREQUENTLY ASKED QUESTIONS -->
+      <section style="margin-bottom:2rem;">
+        <h2 style="font-family:Georgia,serif;font-size:1.5rem;color:#f7d584;margin:0 0 0.85rem 0;">
+          Frequently Asked Questions About Online Bible Study, Psalms &amp; AduBible.org&reg;
+        </h2>
+        ${faqHtml}
+      </section>
+
+      ${buildSanctuaryFooterHtml()}
+    </div>
+  </main></div>`;
+}
+
+function buildChapterOrHubPrerenderShell(item) {
+  const versesHtml = Array.isArray(item.verses) && item.verses.length > 0
+    ? `<section style="background:#141e16;border:1px solid #283629;border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;">
+        <h2 style="font-family:Georgia,serif;font-size:1.3rem;color:#f7d584;margin:0 0 0.85rem 0;">Scripture Text Preview &mdash; ${item.heading}</h2>
+        <div style="display:flex;flex-direction:column;gap:0.65rem;color:#e3e6d8;font-size:1.02rem;line-height:1.75;">
+          ${item.verses.map((v) => `<p style="margin:0;padding-bottom:0.5rem;border-bottom:1px solid rgba(45,60,46,0.5);">${v}</p>`).join('\n')}
+        </div>
+        ${item.studyNotes ? `<div style="margin-top:1rem;padding:0.85rem 1rem;background:#19251b;border-left:3px solid #d4a72c;border-radius:8px;font-size:0.92rem;color:#c8d4c5;"><strong>Exegetical &amp; Lexical Notes:</strong> ${item.studyNotes}</div>` : ''}
+      </section>`
+    : '';
+
+  return `<div id="root"><main id="seo-prerender" style="min-height:100vh;background-color:#0f1712;color:#e3e6d8;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Georgia,serif;line-height:1.7;padding:2rem 1.25rem;">
+    <div style="max-width:1020px;margin:0 auto;">
+      <header style="text-align:center;background:linear-gradient(180deg,#172319 0%,#121b14 100%);border:1px solid rgba(212,167,44,0.38);border-radius:16px;padding:1.75rem 1.5rem;margin-bottom:1.75rem;">
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:5px 14px;background:rgba(212,167,44,0.14);border:1px solid rgba(212,167,44,0.45);border-radius:999px;color:#f7d584;font-size:11.5px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.85rem;">
+          AduBible.org&reg; Parallel Scripture Sanctuary &bull; 100% Ads-Free
+        </div>
+        <h1 style="font-family:Georgia,serif;font-size:clamp(1.65rem,3.2vw,2.35rem);line-height:1.25;color:#fafaf5;margin:0 0 0.75rem 0;">${item.heading}</h1>
+        <p style="font-size:1.03rem;color:#c8d4c5;max-width:840px;margin:0 auto 1.2rem auto;line-height:1.7;">${item.excerpt}</p>
+        <nav aria-label="Sanctuary Quick Navigation" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;">
+          ${buildSanctuaryNavPillsHtml()}
+        </nav>
+      </header>
+      ${versesHtml}
+      <section style="background:#141e16;border:1px solid #283629;border-radius:14px;padding:1.35rem;margin-bottom:1.5rem;">
+        <h2 style="font-family:Georgia,serif;font-size:1.2rem;color:#f7d584;margin:0 0 0.5rem 0;">Parallel Bible Study, Strong&rsquo;s Concordance, 24kHz Audio &amp; Offline Vault</h2>
+        <p style="margin:0;font-size:0.94rem;color:#d0dbd0;line-height:1.7;">
+          Compare this passage side-by-side in up to 4 synchronized columns across <strong>NKJV, KJV, BSB, Original Hebrew (WLC), Koine Greek (Textus Receptus), Asante Twi (Twerɛ Kronkron), French, Spanish, German, and 35+ global languages</strong> on <strong>AduBible.org&reg;</strong>. Tap any verse for Strong&rsquo;s Exhaustive Concordance numbers, Matthew Henry &amp; John Gill commentaries, 24kHz Neural Audio streaming, and 100% offline PWA access.
+        </p>
+      </section>
+      ${buildSanctuaryFooterHtml()}
+    </div>
+  </main></div>`;
+}
+
+function replaceRootMount(html, replacementBlock) {
+  if (html.includes('<div id="root"><!--SEO_PRERENDER_SLOT--></div>')) {
+    return html.replace('<div id="root"><!--SEO_PRERENDER_SLOT--></div>', replacementBlock);
+  }
+  return html.replace('<div id="root"></div>', replacementBlock);
 }
 
 function buildSSG() {
@@ -402,7 +950,7 @@ function buildSSG() {
         ],
       };
 
-      const faqSchema = extractFaqSchema(art.contentHtml, canonicalUrl);
+      const faqSchema = extractFaqSchema(art.contentHtml);
 
       const schemas = [blogPostingSchema, breadcrumbSchema];
       if (faqSchema) schemas.push(faqSchema);
@@ -412,7 +960,7 @@ function buildSSG() {
 
       // Inject full article body inside #root
       const articleSsrBlock = `<div id="root"><main style="max-width:960px;margin:0 auto;padding:2rem 1.25rem;font-family:Georgia,serif;color:#f5f5f4;background:#1c1917;line-height:1.75;"><header style="margin-bottom:2rem;border-bottom:1px solid #292524;padding-bottom:1.5rem;"><nav aria-label="Breadcrumb" style="font-size:13px;color:#a8a29e;margin-bottom:1rem;"><a href="/" style="color:#f59e0b;text-decoration:none;">AduBible</a> &rsaquo; <a href="/articles/" style="color:#f59e0b;text-decoration:none;">Articles</a> &rsaquo; <span>${art.category}</span></nav><div style="font-size:12px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">${art.category} &bull; ${art.readTimeMinutes} Min Read</div><h1 style="font-size:2.25rem;line-height:1.2;color:#fafaf9;margin:0 0 1rem 0;">${art.title}</h1><p style="font-size:1.15rem;color:#d6d3d1;font-style:italic;margin:0 0 1rem 0;">${art.subtitle}</p><div style="font-size:13px;color:#a8a29e;">By <strong>${art.author}</strong> &bull; Published ${art.datePublished} &bull; Updated ${art.dateModified} &bull; <span>${art.wordCount.toLocaleString()} Words</span></div><div style="margin-top:1.5rem;"><picture><source srcset="/assets/articles/${art.slug}-16x9.webp" type="image/webp" /><img src="/assets/articles/${art.slug}-16x9.webp" alt="${art.title}" width="1600" height="900" style="width:100%;height:auto;border-radius:12px;border:1px solid #292524;" loading="eager" fetchpriority="high" /></picture></div></header><article class="article-body" style="font-size:1.05rem;line-height:1.8;">${art.contentHtml}</article><footer style="margin-top:3rem;padding-top:2rem;border-top:1px solid #292524;font-size:13px;color:#a8a29e;text-align:center;"><nav style="margin-bottom:1.25rem;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 10px;max-width:1100px;margin-left:auto;margin-right:auto;"><a href="/articles/" style="display:inline-block;padding:5px 12px;background:#243024;border:1px solid rgba(245,158,11,0.4);border-radius:999px;color:#f59e0b;font-weight:700;font-size:12px;text-decoration:none;">&larr; Back to All Articles</a><a href="/" style="display:inline-block;padding:5px 12px;background:#1c1917;border:1px solid #3d3835;border-radius:999px;color:#f59e0b;font-weight:600;font-size:12px;text-decoration:none;">AduBible Home</a><a href="/about/" style="display:inline-block;padding:5px 12px;background:#1c1917;border:1px solid #3d3835;border-radius:999px;color:#d6d3d1;font-size:12px;text-decoration:none;">About AduBible</a><a href="/privacy/" style="display:inline-block;padding:5px 12px;background:#1c1917;border:1px solid #3d3835;border-radius:999px;color:#d6d3d1;font-size:12px;text-decoration:none;">Privacy Policy</a><a href="/terms/" style="display:inline-block;padding:5px 12px;background:#1c1917;border:1px solid #3d3835;border-radius:999px;color:#d6d3d1;font-size:12px;text-decoration:none;">Terms of Service</a><a href="/contact/" style="display:inline-block;padding:5px 12px;background:#1c1917;border:1px solid #3d3835;border-radius:999px;color:#d6d3d1;font-size:12px;text-decoration:none;">Contact Us</a><a href="/donate/" style="display:inline-block;padding:5px 14px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.6);border-radius:999px;color:#f59e0b;font-weight:700;font-size:12px;text-decoration:none;">💛 Support the Mission</a></nav><p style="margin:0 auto;max-width:820px;line-height:1.7;">&copy; ${CURRENT_YEAR} <a href="https://adubible.org/" style="color:#f59e0b;text-decoration:none;font-weight:700;">AduBible.org&reg;</a> &middot; Dedicated to Humanity; A Global Ministry of Apostle Kwame Adu &middot; <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" style="color:#f59e0b;text-decoration:none;">Nsuhia, Ghana ↗</a> &middot; <span style="color:#10b981;font-weight:700;">100% Ads-Free Reading Experience</span></p></footer></main></div>`;
-      html = html.replace('<div id="root"></div>', articleSsrBlock);
+      html = replaceRootMount(html, articleSsrBlock);
     } else if (item.legalPageData) {
       const lp = item.legalPageData;
       const schemaType = lp.schemaType || 'WebPage';
@@ -468,7 +1016,6 @@ function buildSSG() {
       const jsonLdBlock = `\n    <script type="application/ld+json">\n${JSON.stringify([pageSchema, breadcrumbSchema], null, 2)}\n    </script>\n  </head>`;
       html = html.replace('</head>', jsonLdBlock);
 
-      // Render full sections HTML with formatted tables and email obfuscation
       const renderLegalContent = (content) => {
         const blocks = content.split('\n\n');
         return blocks
@@ -551,31 +1098,51 @@ function buildSSG() {
             ${sectionsHtml}
           </article>
 
-          <footer style="margin-top:3.5rem;padding-top:2rem;border-top:1px solid #2d382c;font-size:13px;color:#8e968d;text-align:center;">
-            <nav style="margin-bottom:1.25rem;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 10px;max-width:1100px;margin-left:auto;margin-right:auto;">
-              <a href="/" style="display:inline-block;padding:5px 12px;background:#1a221a;border:1px solid #2d382c;border-radius:999px;color:#b7c99f;font-weight:600;font-size:12px;text-decoration:none;">AduBible Home</a>
-              <a href="/about/" style="display:inline-block;padding:5px 12px;background:#1a221a;border:1px solid #2d382c;border-radius:999px;color:#e3e6d8;font-size:12px;text-decoration:none;">About AduBible</a>
-              <a href="/privacy/" style="display:inline-block;padding:5px 12px;background:#1a221a;border:1px solid #2d382c;border-radius:999px;color:#e3e6d8;font-size:12px;text-decoration:none;">Privacy Policy</a>
-              <a href="/terms/" style="display:inline-block;padding:5px 12px;background:#1a221a;border:1px solid #2d382c;border-radius:999px;color:#e3e6d8;font-size:12px;text-decoration:none;">Terms of Service</a>
-              <a href="/contact/" style="display:inline-block;padding:5px 12px;background:#1a221a;border:1px solid #2d382c;border-radius:999px;color:#e3e6d8;font-size:12px;text-decoration:none;">Contact Us</a>
-              <a href="/cookie-policy/" style="display:inline-block;padding:5px 12px;background:#1a221a;border:1px solid #2d382c;border-radius:999px;color:#e3e6d8;font-size:12px;text-decoration:none;">Cookie Policy</a>
-              <a href="/how-to-use/" style="display:inline-block;padding:5px 12px;background:#1a221a;border:1px solid #2d382c;border-radius:999px;color:#e3e6d8;font-size:12px;text-decoration:none;">How to Use</a>
-              <a href="/editorial-policy/" style="display:inline-block;padding:5px 12px;background:#1a221a;border:1px solid #2d382c;border-radius:999px;color:#e3e6d8;font-size:12px;text-decoration:none;">Editorial Policy</a>
-              <a href="/glossary/" style="display:inline-block;padding:5px 12px;background:#1a221a;border:1px solid #2d382c;border-radius:999px;color:#e3e6d8;font-size:12px;text-decoration:none;">Glossary</a>
-              <a href="/sources/" style="display:inline-block;padding:5px 12px;background:#1a221a;border:1px solid #2d382c;border-radius:999px;color:#e3e6d8;font-size:12px;text-decoration:none;">Sources</a>
-              <a href="/articles/" style="display:inline-block;padding:5px 12px;background:#243024;border:1px solid rgba(245,158,11,0.4);border-radius:999px;color:#f59e0b;font-weight:700;font-size:12px;text-decoration:none;">📖 15 Pillar Guides</a>
-              <a href="/donate/" style="display:inline-block;padding:5px 14px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.6);border-radius:999px;color:#f59e0b;font-weight:700;font-size:12px;text-decoration:none;">💛 Support Scripture Mission (Donate)</a>
-            </nav>
-            <p style="margin:0 auto;max-width:820px;line-height:1.7;">&copy; ${CURRENT_YEAR} <a href="https://adubible.org/" style="color:#b7c99f;text-decoration:none;font-weight:700;">AduBible.org&reg;</a> &middot; Dedicated to Humanity; A Global Ministry of Apostle Kwame Adu &middot; <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" style="color:#b7c99f;text-decoration:none;">Nsuhia, Ghana ↗</a> &middot; <span style="color:#4ade80;font-weight:700;">100% Ads-Free Reading Experience</span></p>
-          </footer>
+          ${buildSanctuaryFooterHtml()}
         </main>
       </div>`;
 
-      html = html.replace('<div id="root"></div>', legalSsrBlock);
+      html = replaceRootMount(html, legalSsrBlock);
+    } else if (item.isHomeAuthority) {
+      // Inject FAQPage JSON-LD schema for the root Online Bible Authority Hub
+      const homeFaqSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'mainEntity': HOME_FAQ_ITEMS.map((itemFaq) => ({
+          '@type': 'Question',
+          'name': itemFaq.q,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': itemFaq.a,
+          },
+        })),
+      };
+      html = html.replace(
+        '</head>',
+        `\n    <script type="application/ld+json">\n${JSON.stringify(homeFaqSchema, null, 2)}\n    </script>\n  </head>`
+      );
+
+      html = replaceRootMount(html, buildHomeAuthorityPrerenderShell());
     } else {
-      // Standard crawlable <main> for chapters and directory
-      const ssrMainBlock = `<div id="root"><main style="max-width:960px;margin:0 auto;padding:2rem;font-family:Georgia,serif;color:#f5f5f4;"><h1>${item.heading}</h1><p>${item.excerpt}</p><nav><a href="/">AduBible Home</a> | <a href="/articles/">Pillar Articles</a> | <a href="/nkjv/ephesians/1/">Ephesians 1 NKJV</a> | <a href="/twi/ephesians/1/">Efesofoɔ 1 Twi</a> | <a href="/donate/">Support Mission (Donate)</a> | <a href="/about/">About</a> | <a href="/privacy/">Privacy Policy</a> | <a href="/terms/">Terms of Service</a> | <a href="/contact/">Contact Us</a> | <a href="/cookie-policy/">Cookie Policy</a> | <a href="/how-to-use/">How to Use</a></nav><footer style="margin-top:2rem;font-size:12px;color:#a8a29e;border-top:1px solid #292524;padding-top:1.5rem;"><div style="margin-bottom:1rem;font-style:italic;">&ldquo;Blessed be the God and Father of our Lord Jesus Christ, who has blessed us with every spiritual blessing in the heavenly places in Christ.&rdquo; &mdash; Ephesians 1:3 &bull; &ldquo;For the word of God is living and active, sharper than any two-edged sword...&rdquo; &mdash; Hebrews 4:12 &bull; &ldquo;All Scripture is breathed out by God and profitable for teaching...&rdquo; &mdash; 2 Timothy 3:16</div>&copy; ${CURRENT_YEAR} <a href="https://adubible.org/" style="color:inherit;text-decoration:none;font-weight:700;">AduBible.org&reg;</a> &middot; Dedicated to Humanity; A Global Ministry of Apostle Kwame Adu &middot; <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" style="color:#f59e0b;">Nsuhia, Ghana ↗</a> &middot; <span style="color:#10b981;">100% Ads-Free Reading Experience</span></footer></main></div>`;
-      html = html.replace('<div id="root"></div>', ssrMainBlock);
+      // Luxury inline-styled Chapter & Hub Pre-render Shell
+      const chapterSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        'name': item.title,
+        'headline': item.heading,
+        'description': item.description,
+        'url': canonicalUrl,
+        'isPartOf': {
+          '@type': 'WebSite',
+          'name': 'AduBible.org®',
+          'url': BASE_URL,
+        },
+      };
+      html = html.replace(
+        '</head>',
+        `\n    <script type="application/ld+json">\n${JSON.stringify(chapterSchema, null, 2)}\n    </script>\n  </head>`
+      );
+      html = replaceRootMount(html, buildChapterOrHubPrerenderShell(item));
     }
 
     if (item.route === '/donate/') {
@@ -614,11 +1181,11 @@ function buildSSG() {
     .replace(
       /<link\s+rel="canonical"\s+href="[^"]*"\s*\/?>/i,
       `<link rel="canonical" href="${BASE_URL}/admin/" />`
-    )
-    .replace(
-      '<div id="root"></div>',
-      '<div id="root"><main style="max-width:760px;margin:4rem auto;padding:2rem;font-family:Georgia,serif;color:#f5f5f4;text-align:center;"><h1 style="color:#e3e6d8;font-size:2rem;margin-bottom:0.75rem;">AduBible Mission Command Deck</h1><p style="color:#9ca3af;font-size:1rem;">Initializing Sovereign Executive Authentication...</p></main></div>'
     );
+  adminHtml = replaceRootMount(
+    adminHtml,
+    '<div id="root"><main style="max-width:760px;margin:4rem auto;padding:2rem;font-family:Georgia,serif;color:#f5f5f4;text-align:center;"><h1 style="color:#e3e6d8;font-size:2rem;margin-bottom:0.75rem;">AduBible Mission Command Deck</h1><p style="color:#9ca3af;font-size:1rem;">Initializing Sovereign Executive Authentication...</p></main></div>'
+  );
   fs.writeFileSync(path.join(adminDir, 'index.html'), adminHtml, 'utf-8');
 
   // Generate sitemap.xml
@@ -667,19 +1234,21 @@ ${imageSitemapEntries}
   fs.writeFileSync(path.join(DIST_DIR, 'image-sitemap.xml'), imageSitemapXml, 'utf-8');
 
   // Generate llms.txt for LLM crawlers
-  const llmsTxt = `# AduBible.org — Sovereign Multilingual Parallel Bible Engine
+  const llmsTxt = `# AduBible.org® — Sovereign Multilingual Parallel Bible Engine
 
-> Free, unmonetized, 100% ad-free Scripture study platform uniting 35+ global translations, Strong's Greek and Hebrew Lexicon, classic commentaries, and ancient manuscripts. Dedicated to humanity in honor of the ministry of Apostle Kwame Adu (Nsuhia, Ghana · https://nsuhia.com/).
+> Free, unmonetized, 100% ad-free Scripture study platform uniting 35+ global translations, Strong's Greek and Hebrew Lexicon, classic commentaries, 24kHz Neural Audio Bible, 3D Bible & Psalm Games, and ancient manuscripts. Dedicated to humanity in honor of the ministry of Apostle Kwame Adu (Nsuhia, Ghana · https://nsuhia.com/).
 
 ## Core Features
 - Synchronized multi-column parallel reading (up to 4 versions simultaneously)
 - 100% ad-free forever with zero tracking and zero monetization
 - 35+ global language translations including Asante Twi, Akuapem Twi, Hebrew, Greek, French, Spanish, German, Hausa, Yoruba, Swahili, Arabic, Chinese, and Hindi
 - Strong's Exhaustive Concordance with instant morphological word studies
-- Matthew Henry, Gill, and classic commentaries
+- Matthew Henry, John Gill, and Jamieson-Fausset-Brown classic commentaries
+- Flagship Psalms Study Hub: Book of Psalms 91 (/nkjv/psalms/91/), Psalm 23 (/nkjv/psalms/23/), Psalms Chapter 1 (/nkjv/psalms/1/), Psalm 35 (/nkjv/psalms/35/), Psalm 34 (/nkjv/psalms/34/)
 - 16 Deuterocanonical books and 25 ancient Apocryphal works from the 7th-century List of Sixty
-- 24kHz Neural Audio Bible streaming
-- Private Study Vault (bookmarks, pins, highlights, notes) with cross-device sync
+- 24kHz Neural Audio Bible streaming across English and Twi
+- Interactive 3D WebGL Bible & Psalm Games Arcade (Scripture Quiz, Verse Scramble, Armor of God Runner)
+- Private Offline Study Vault (PWA for Android, iOS & Desktop with bookmarks, pins, highlights, notes)
 
 ## Authoritative Exegesis & Study Guides (/articles/)
 ${articles.map((a, idx) => `${idx + 1}. ${a.title}: ${BASE_URL}/articles/${a.slug}/`).join('\n')}

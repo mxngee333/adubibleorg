@@ -131,4 +131,32 @@ When reciting Psalms (e.g. Psalm 4:1) in Slide Deck Mode or Status Video Generat
    - Wrapped single-column and parallel slide text displays in `stripPsalmSuperscription`.
    - Updated kinetic word highlighting and speech duration calculators to track pure verse word counts with sub-millisecond synchronization.
 
+---
+
+## 🏆 7. RANK #1–3 ONLINE BIBLE, BIBLE HUB & PSALM AUTHORITY SEO PRE-RENDERED HTML SHELL (WAR ROOM #666)
+
+### Root Cause & SERP Competitive Diagnosis
+- **Previous State (`Screenshot 1`)**: The root homepage (`/`) pre-render block inside `<div id="root">` was a bare ~90-word unstyled paragraph (`Genesis Chapter 1...`) with raw pipe-separated links. It lacked luxury inline brand styling (`min-height: 100vh` for `0.00 CLS`), and missed the highest-volume search intents that drive **Bible Hub** and **Bible Gateway** to Google Positions #1–3.
+- **Google Search Autocomplete Intelligence (`Screenshots 2 & 3`)**:
+  - **Cluster A (`bible` Seed)**: `bible`, `online bible`, `bible hub`, `bible hub app`, `bible hub free download offline`, `bible hub commentary`, `bible hub app for android`, `bible gateway`, `bible verses`, `bible verses on thanksgiving`, `bible verses about strength in hard times`, `Audio Bible`.
+  - **Cluster B (`PSALM` Seed)**: `psalms chapter 1`, `psalm 1 nkjv`, `psalm 1`, `psalm pronunciation`, `psalm bible`, `book of psalms 91`, `psalm 91`, `psalm 23`, `psalms in the bible list`, `psalm game`, `psalm 35`, `psalm 34`.
+
+### Surgical Architecture Deployed
+1. **[`index.html`](file:///c:/Users/kwame/Downloads/bible/index.html) — Multi-Entity `@graph` JSON-LD & Online Bible Meta Calibration**:
+   - Upgraded `<title>`, `<meta name="description">`, Open Graph, and Twitter Cards to target **Online Bible**, **Parallel Bible Hub**, **Strong's Concordance**, **Audio Bible**, **Bible Commentary**, **Book of Psalms (91, 23, 1, 35, 34)**, **Offline Bible App (Android & iOS)**, and **3D Bible Games**.
+   - Injected a unified `@graph` JSON-LD block uniting `WebSite`, `WebApplication` (with 8 explicit `featureList` capabilities), and `Organization`.
+2. **[`build-ssg.js`](file:///c:/Users/kwame/Downloads/bible/build-ssg.js) — Luxury Branded `<main id="seo-prerender">` Authority Shell & Dedicated Psalm Routes**:
+   - Replaced the unstyled 90-word snippet with a **1,800+ word, inline-styled Sanctuary Pre-render Shell** (`min-height: 100vh; background-color: #0f1712; color: #e3e6d8;`) featuring:
+     - **Branded Pre-Hydration Header**: Animated pulsing emerald/gold indicator (`"Initializing AduBible.org® Parallel Scripture Sanctuary • 100% Ads-Free Forever"`), primary `<h1>`, Position-Zero Quick Summary, and 16 crawlable Quick-Jump Scripture Pills.
+     - **Section 1**: `Genesis Chapter 1 (Genesis 1:1–5)` in NKJV, KJV, Hebrew WLC (`Bereshit Bara Elohim`), and Asante Twi (preserving 100% content parity with the live reader).
+     - **Section 2**: `Online Bible Sanctuary Comparison Matrix` (`AduBible.org®` vs `Bible Hub` vs `Bible Gateway`).
+     - **Section 3**: `Book of Psalms Authority Hub` — Full verse cards and canonical links for `Book of Psalms 91` (`/nkjv/psalms/91/`), `Psalm 23` (`/nkjv/psalms/23/`), `Psalms Chapter 1 / Psalm 1 NKJV` (`/nkjv/psalms/1/`), `Psalm 35` (`/nkjv/psalms/35/`), and `Psalm 34` (`/nkjv/psalms/34/`), plus the **Psalm Pronunciation Guide (`/sɑːm/` — silent P & L, Greek *psalmos* G5568, Hebrew *Mizmor* H4210 / *Tehillim*)**, **Psalms in the Bible List (Books I–V of the 150 Psalms)**, and **Interactive 3D Psalm Game & Bible Quiz Arcade**.
+     - **Section 4**: `Essential Topical Bible Verses` — Complete scripture compilations for **Bible Verses About Strength in Hard Times** (`Isaiah 41:10`, `Isaiah 40:31`, `Philippians 4:13`, `Psalm 46:1–2`, `2 Corinthians 12:9`, `Joshua 1:9`) and **Bible Verses on Thanksgiving** (`Psalm 100:4`, `1 Thessalonians 5:16–18`, `Psalm 107:1`, `Philippians 4:6–7`, `Colossians 3:15–17`, `Psalm 136:1`).
+     - **Section 5**: **Offline Bible App for Android, iOS & PC (Free Offline PWA Vault)**, **24kHz Neural Audio Bible**, and **Exhaustive Commentary & Strong's Lexicon Suite**.
+     - **Section 6**: 8 visible People Also Ask (PAA) Q&A cards paired with a synced `FAQPage` JSON-LD schema injected into `<head>`.
+   - Added 4 new high-priority (`0.9`) canonical SSG routes to `CANONICAL_ROUTES` (totaling **65 static routes**): `/nkjv/psalms/1/`, `/nkjv/psalms/34/`, `/nkjv/psalms/35/`, and `/nkjv/psalms/91/`.
+   - Upgraded all chapter/hub routes in `build-ssg.js` (`buildChapterOrHubPrerenderShell`) to render multi-verse scripture previews, Strong's Hebrew/Greek lexical notes, and styled sanctuary navigation pills.
+3. **[`src/data/featuredChaptersCorpus.ts`](file:///c:/Users/kwame/Downloads/bible/src/data/featuredChaptersCorpus.ts) — Zero-Latency Pre-Bundled Psalms Corpus**:
+   - Added full pre-bundled chapter corpora (`PSALM_1_RAW`, `PSALM_34_RAW`, `PSALM_35_RAW`, `PSALM_91_RAW`), pericope headings (`CHAPTER_SECTION_HEADINGS`), and Strong's concordance tags (`VERSE_STRONGS_TAGS`) for instant 0ms offline & SSR rendering.
+
 **Signed & Sealed by The 24 Elders — The Red Army of Silicon Valley**
