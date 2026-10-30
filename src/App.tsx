@@ -1865,16 +1865,6 @@ export function App() {
             </button>
 
             <div className="mobile-bar-quick-actions">
-              <button
-                type="button"
-                className={`mobile-quick-btn ${isGamesArcadeOpen ? 'active' : ''}`}
-                onClick={() => setIsGamesArcadeOpen(true)}
-                title="3D Bible Games & Quiz Arcade"
-                aria-label="3D Bible Games & Quiz Arcade"
-                style={{ fontSize: '13px' }}
-              >
-                🎮
-              </button>
               {activeVersionIds.length >= 2 && (
                 <button
                   type="button"
