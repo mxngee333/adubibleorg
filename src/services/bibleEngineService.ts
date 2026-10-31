@@ -18,6 +18,7 @@ import {
   resolveTwiAudioUrl,
   getCornerstoneTwiAudioUrl,
 } from './twiAudioService';
+import { stripPsalmSuperscription } from './neuralTtsService';
 import licensesJson from '../data/wisdom/licenses.json';
 import {
   BibleBook,
@@ -33,6 +34,7 @@ import { getCachedChapter, setCachedChapter } from './studyVaultService';
 
 const licensesMap = licensesJson as Record<string, { url: string; text: string }>;
 const memoryCache = new Map<string, ChapterData>();
+const timingsMemoryCache = new Map<string, number[]>();
 
 // Helper for resilient timeout-bounded fetch with zero-hang guarantee
 const fetchWithTimeout = async (url: string, timeoutMs = 2500): Promise<Response> => {
@@ -47,6 +49,84 @@ const fetchWithTimeout = async (url: string, timeoutMs = 2500): Promise<Response
     throw e;
   }
 };
+
+/**
+ * Resolves exact millisecond verse-start timestamps (audioTimings.json) for any HelloAO Studio MP3 URL.
+ * Guarantees 0ms header/superscription skip (e.g. skipping "Psalm 3. A Psalm of David, when he fled from his son Absalom.")
+ * and frame-accurate slide synchronization across all 1,189 chapters.
+ */
+export async function fetchHelloaoAudioTimings(audioUrl?: string): Promise<number[] | undefined> {
+  if (!audioUrl) return undefined;
+  const match = audioUrl.match(/\/api\/([^/]+)\/([^/]+)\/(\d+)\/audio\/([^.]+)\.mp3/i);
+  if (!match) return undefined;
+
+  const [, transId, bookId, chNum, reader] = match;
+  const timingsUrl = `https://bible.helloao.org/api/${encodeURIComponent(transId)}/${encodeURIComponent(bookId)}/${chNum}.${encodeURIComponent(reader)}.audioTimings.json`;
+
+  if (timingsMemoryCache.has(timingsUrl)) {
+    return timingsMemoryCache.get(timingsUrl);
+  }
+
+  try {
+    const res = await fetchWithTimeout(timingsUrl, 2000);
+    if (res.ok) {
+      const json = await res.json();
+      if (Array.isArray(json?.verses) && json.verses.length > 0) {
+        const timings = json.verses.map((n: any) => Number(n)).filter((n: number) => !isNaN(n) && n >= 0);
+        if (timings.length > 0) {
+          timingsMemoryCache.set(timingsUrl, timings);
+          return timings;
+        }
+      }
+    }
+  } catch {
+    // Non-blocking fallback
+  }
+  return undefined;
+}
+
+async function attachStudioAudioAndTimings(
+  chapterData: ChapterData,
+  book: { id: string; slug: string; testament?: string },
+  verMeta?: { langCode?: string }
+): Promise<ChapterData> {
+  // Sanitize Verse 1 text if any embedded Psalm superscription remained from legacy cache or upstream API
+  if (chapterData.verses && chapterData.verses.length > 0) {
+    const v0 = chapterData.verses[0];
+    if (v0 && v0.text) {
+      const cleanedV0 = stripPsalmSuperscription(v0.text);
+      if (cleanedV0 && cleanedV0 !== v0.text) {
+        if (!v0.heading) {
+          const idx = v0.text.indexOf(cleanedV0);
+          if (idx > 0) {
+            v0.heading = v0.text.slice(0, idx).replace(/<[^>]+>/g, '').trim();
+          }
+        }
+        v0.text = cleanedV0;
+      }
+    }
+  }
+
+  const isCanonical = !book.testament || book.testament === 'OT' || book.testament === 'NT';
+  const isEnglish =
+    verMeta?.langCode === 'en' ||
+    ['nkjv', 'kjv', 'bsb', 'niv', 'esv', 'nlt', 'nasb', 'csb', 'asv', 'web'].includes(
+      (chapterData.versionId || '').toLowerCase()
+    );
+
+  if (!chapterData.audioUrl && isCanonical && isEnglish && !isTwiLanguage(chapterData.versionId)) {
+    chapterData.audioUrl = `https://audio.bible.helloao.org/api/BSB/${book.id}/${chapterData.chapter}/audio/david.mp3`;
+  }
+
+  if (chapterData.audioUrl && (!chapterData.audioTimings || chapterData.audioTimings.length === 0)) {
+    const timings = await fetchHelloaoAudioTimings(chapterData.audioUrl);
+    if (timings && timings.length > 0) {
+      chapterData.audioTimings = timings;
+    }
+  }
+
+  return chapterData;
+}
 
 function parseHelloaoChapterPayload(
   json: any,
@@ -106,7 +186,10 @@ function parseHelloaoChapterPayload(
           } else if (typeof piece.noteId === 'number') {
             pieces.push({ noteId: piece.noteId });
           } else if (piece.heading) {
-            textParts.push(String(piece.heading));
+            const hText = String(piece.heading).trim();
+            if (hText) {
+              pendingHeading = pendingHeading ? `${pendingHeading} — ${hText}` : hText;
+            }
             pieces.push({ heading: String(piece.heading) });
           }
         }
@@ -259,7 +342,8 @@ function stripHtmlAndExtractStrongs(rawHtml: string): {
   strongsCodes: string[];
 } {
   const strongsCodes: string[] = [];
-  const withExtracted = rawHtml.replace(/<S>(\d+)<\/S>/gi, (_, num) => {
+  const withoutMarginalNotes = rawHtml.replace(/<sup\b[^>]*>[\s\S]*?<\/sup>/gi, ' ');
+  const withExtracted = withoutMarginalNotes.replace(/<S>(\d+)<\/S>/gi, (_, num) => {
     strongsCodes.push(num);
     return '';
   });
@@ -705,6 +789,7 @@ export async function resolveChapterData(
           `Wisdom Seed Corpus (${seedName})`
         );
         if (parsedSeed) {
+          await attachStudioAudioAndTimings(parsedSeed, book, verMeta);
           memoryCache.set(memKey, parsedSeed);
           return parsedSeed;
         }
@@ -740,6 +825,7 @@ export async function resolveChapterData(
       licenseUrl: licInfo?.url,
       licenseText: licInfo?.text || verMeta.copyright,
     };
+    await attachStudioAudioAndTimings(result, book, verMeta);
     memoryCache.set(memKey, result);
     return result;
   }
@@ -750,6 +836,7 @@ export async function resolveChapterData(
     if (isDeadLegacyAudioUrl(cached.audioUrl) || isTwiLanguage(versionId)) {
       cached.audioUrl = undefined;
     }
+    await attachStudioAudioAndTimings(cached, book, verMeta);
     memoryCache.set(memKey, cached);
     return cached;
   }
@@ -775,6 +862,7 @@ export async function resolveChapterData(
             verses,
             source: 'AduBible Authentic NIV Corpus (0ms)',
           };
+          await attachStudioAudioAndTimings(result, book, verMeta);
           memoryCache.set(memKey, result);
           await setCachedChapter(result);
           return result;
@@ -804,6 +892,7 @@ export async function resolveChapterData(
               verses,
               source: 'Authentic NIV Cloud Corpus',
             };
+            await attachStudioAudioAndTimings(result, book, verMeta);
             memoryCache.set(memKey, result);
             await setCachedChapter(result);
             return result;
@@ -837,6 +926,7 @@ export async function resolveChapterData(
           'Cloudflare Planetary Edge (R2 Zero-Egress Vault)'
         );
         if (parsed) {
+          await attachStudioAudioAndTimings(parsed, book, verMeta);
           memoryCache.set(memKey, parsed);
           await setCachedChapter(parsed);
           return parsed;
@@ -868,6 +958,7 @@ export async function resolveChapterData(
           'Hetzner High-Throughput Origin Cluster'
         );
         if (parsed) {
+          await attachStudioAudioAndTimings(parsed, book, verMeta);
           memoryCache.set(memKey, parsed);
           await setCachedChapter(parsed);
           return parsed;
@@ -896,6 +987,7 @@ export async function resolveChapterData(
           `Free Use Bible Cloud (${helloaoId})`
         );
         if (parsed) {
+          await attachStudioAudioAndTimings(parsed, book, verMeta);
           memoryCache.set(memKey, parsed);
           await setCachedChapter(parsed);
           return parsed;
@@ -1056,6 +1148,7 @@ export async function resolveChapterData(
               verses,
               source: `Bolls Exegetical Cloud (${bollsId})`,
             };
+            await attachStudioAudioAndTimings(result, book, verMeta);
             memoryCache.set(memKey, result);
             await setCachedChapter(result);
             return result;
@@ -1191,6 +1284,7 @@ export async function resolveChapterData(
             verses,
             source: 'Open Scripture Cloud Stream',
           };
+          await attachStudioAudioAndTimings(result, book, verMeta);
           memoryCache.set(memKey, result);
           await setCachedChapter(result);
           return result;

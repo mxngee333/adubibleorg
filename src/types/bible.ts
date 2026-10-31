@@ -94,6 +94,7 @@ export interface ChapterData {
   verses: VerseData[];
   chapterFootnotes?: ChapterFootnote[];
   audioUrl?: string;
+  audioTimings?: number[];
   source?: string;
   licenseUrl?: string;
   licenseText?: string;

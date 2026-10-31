@@ -3710,6 +3710,12 @@ export function App() {
               ? primaryChapterData?.audioUrl
               : undefined
           }
+          audioTimings={
+            primaryChapterData?.chapter === currentChapter &&
+            primaryChapterData?.bookSlug === currentBook.slug
+              ? primaryChapterData?.audioTimings
+              : undefined
+          }
           parallelVerses={
             activeVersionIds[1] &&
             chaptersByVersion[activeVersionIds[1]]?.chapter === currentChapter &&

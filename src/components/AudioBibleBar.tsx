@@ -10,6 +10,7 @@ import {
 } from '../services/neuralTtsService';
 import { isTwiLanguage, isDeadLegacyAudioUrl } from '../services/twiAudioService';
 import { transphonemizeTwiForSpeech } from '../services/twiPhonemeEngine';
+import { fetchHelloaoAudioTimings } from '../services/bibleEngineService';
 import {
   scrollVerseIntoViewIfNeeded,
   isAutoScrollActive,
@@ -25,6 +26,7 @@ interface AudioBibleBarProps {
   langCode: string;
   verses: VerseData[];
   audioUrl?: string;
+  audioTimings?: number[];
   parallelVerses?: VerseData[];
   parallelVersionName?: string;
   parallelLangCode?: string;
@@ -55,6 +57,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   langCode,
   verses,
   audioUrl,
+  audioTimings,
   parallelVerses,
   parallelVersionName,
   parallelLangCode,
@@ -142,6 +145,10 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   const activeSourceRef = useRef<AudioBufferSourceNode | null>(null);
   const activeGainNodeRef = useRef<GainNode | null>(null);
   const studioAudioElRef = useRef<HTMLAudioElement | null>(null);
+  const studioTimingsRef = useRef<number[] | null>(
+    audioTimings && audioTimings.length > 0 ? audioTimings : null
+  );
+  const pendingStudioSeekRef = useRef<number | null>(null);
   const cancelDispatchTimerRef = useRef<any>(null);
   const onVerseChangeRef = useRef(onVerseChange);
   useEffect(() => {
@@ -191,7 +198,49 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     studioFailedRef.current = false;
     useStudioMp3Ref.current = hasValid;
     setUseStudioMp3(hasValid);
-  }, [validAudioUrl]);
+
+    if (audioTimings && audioTimings.length > 0) {
+      studioTimingsRef.current = audioTimings;
+    } else if (validAudioUrl) {
+      studioTimingsRef.current = null;
+      let cancelled = false;
+      fetchHelloaoAudioTimings(validAudioUrl)
+        .then((timings) => {
+          if (!cancelled && timings && timings.length > 0) {
+            studioTimingsRef.current = timings;
+            const audioEl = studioAudioElRef.current;
+            if (audioEl && isPlayingRef.current && useStudioMp3Ref.current) {
+              const targetIdx = Math.max(0, Math.min(currentVerseIdxRef.current, timings.length - 1));
+              const targetSec = timings[targetIdx];
+              if (
+                typeof targetSec === 'number' &&
+                (audioEl.currentTime < timings[0] - 0.1 ||
+                  pendingStudioSeekRef.current !== null ||
+                  (targetIdx === 0 && audioEl.currentTime < targetSec - 0.1))
+              ) {
+                try {
+                  audioEl.currentTime = targetSec;
+                } catch {}
+              }
+              audioEl.muted = false;
+              pendingStudioSeekRef.current = null;
+            }
+          } else if (!cancelled && studioAudioElRef.current) {
+            studioAudioElRef.current.muted = false;
+          }
+        })
+        .catch(() => {
+          if (!cancelled && studioAudioElRef.current) {
+            studioAudioElRef.current.muted = false;
+          }
+        });
+      return () => {
+        cancelled = true;
+      };
+    } else {
+      studioTimingsRef.current = null;
+    }
+  }, [validAudioUrl, audioTimings]);
 
   // Continuous Auto-Advance & Chapter Change Listener
   useEffect(() => {
@@ -244,15 +293,142 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     };
   }, []);
 
-  // Proportional time-update listener for Studio MP3 chapter audio synchronization
+  // Dynamic intro + superscription preamble calculator (offline fallback when audioTimings.json is unavailable)
+  const getDynamicIntroPreambleSec = useCallback((): number => {
+    let preamble = 3.8; // Base narrator chapter title announcement ("Psalm 3" / "Chapter 1")
+    const v0Heading = verses?.[0]?.heading || '';
+    if (v0Heading) {
+      // Extract Hebrew superscription part (e.g. after '—' in 'Deliver Me, O LORD! — A Psalm of David, when he fled from his son Absalom.')
+      const parts = v0Heading.split(/[—–]/);
+      const supCandidate = parts.length > 1 ? parts.slice(1).join(' ').trim() : (bookSlug === 'psalms' ? v0Heading.trim() : '');
+      if (
+        supCandidate &&
+        /\b(psalm|david|asaph|korah|choirmaster|musician|director|song|miktam|michtam|maskil|maschil|shiggaion|prayer|moses|solomon|fled|absalom|nathan|saul)\b/i.test(
+          supCandidate
+        )
+      ) {
+        const supWords = supCandidate.split(/\s+/).filter(Boolean).length;
+        preamble += supWords * 0.45;
+      }
+    }
+    return preamble;
+  }, [verses, bookSlug]);
+
+  // Exact millisecond target timestamp resolver for any verse index in Studio MP3 mode
+  const computeStudioVerseTargetTime = useCallback(
+    (index: number, duration?: number): number => {
+      const timings = studioTimingsRef.current;
+      if (timings && timings.length > 0) {
+        const clampedIdx = Math.max(0, Math.min(index, timings.length - 1));
+        if (typeof timings[clampedIdx] === 'number') {
+          return timings[clampedIdx];
+        }
+      }
+
+      const introPreambleSec = getDynamicIntroPreambleSec();
+      if (index <= 0) {
+        return introPreambleSec;
+      }
+
+      if (duration && !isNaN(duration) && duration > introPreambleSec && verses.length > 0) {
+        const effectiveDuration = Math.max(1, duration - introPreambleSec);
+        const verseWeights = verses.map((v) =>
+          Math.max(1, (v.text || '').trim().split(/\s+/).length)
+        );
+        const totalWeight = verseWeights.reduce((a, b) => a + b, 0);
+        if (totalWeight > 0) {
+          let cum = 0;
+          for (let i = 0; i < index; i++) cum += verseWeights[i];
+          return introPreambleSec + (cum / totalWeight) * effectiveDuration;
+        }
+      }
+
+      return introPreambleSec;
+    },
+    [verses, getDynamicIntroPreambleSec]
+  );
+
+  // Frame-accurate time-update listener for Studio MP3 chapter audio synchronization & header bypass
   const handleStudioTimeUpdate = useCallback(() => {
-    if (!studioAudioElRef.current || !verses || verses.length === 0) return;
-    const currentTime = studioAudioElRef.current.currentTime;
-    const duration = studioAudioElRef.current.duration;
+    const audioEl = studioAudioElRef.current;
+    if (!audioEl || !verses || verses.length === 0) return;
+
+    // 1. Apply any pending initial seek as soon as media metadata is ready
+    if (pendingStudioSeekRef.current !== null && audioEl.readyState >= 1) {
+      const targetTime = computeStudioVerseTargetTime(
+        currentVerseIdxRef.current,
+        audioEl.duration
+      );
+      if (Math.abs(audioEl.currentTime - targetTime) > 0.25) {
+        try {
+          audioEl.currentTime = targetTime;
+        } catch {}
+      }
+      if (studioTimingsRef.current || audioEl.currentTime >= targetTime - 0.2) {
+        audioEl.muted = false;
+        pendingStudioSeekRef.current = null;
+      }
+    }
+
+    const currentTime = audioEl.currentTime;
+    const timings = studioTimingsRef.current;
+
+    // 2. Primary Path: Exact Millisecond Studio Timings Array (0ms Header Skip + 0ms Slide Sync)
+    if (timings && timings.length > 0) {
+      const firstVerseStart = timings[0] ?? 0;
+
+      // Hard Header & Superscription Bypass: Never allow audio to play before Verse 1 start timestamp
+      if (currentTime < firstVerseStart - 0.15 && audioEl.readyState >= 1) {
+        const targetIdx = Math.max(0, Math.min(currentVerseIdxRef.current, timings.length - 1));
+        const jumpTo = timings[targetIdx] ?? firstVerseStart;
+        try {
+          audioEl.currentTime = jumpTo;
+          audioEl.muted = false;
+        } catch {}
+        return;
+      }
+
+      if (audioEl.muted) {
+        audioEl.muted = false;
+      }
+
+      // Advance slide ~80ms ahead of spoken phoneme so visual card lands right as the first word is spoken
+      const lookaheadTime = currentTime + 0.08;
+      let activeIdx = 0;
+      for (let i = timings.length - 1; i >= 0; i--) {
+        if (lookaheadTime >= timings[i]) {
+          activeIdx = i;
+          break;
+        }
+      }
+      activeIdx = Math.min(activeIdx, verses.length - 1);
+
+      if (activeIdx !== currentVerseIdxRef.current) {
+        currentVerseIdxRef.current = activeIdx;
+        if (verses[activeIdx]) {
+          notifyVerseChange(verses[activeIdx].verse);
+        }
+      }
+      return;
+    }
+
+    // 3. Offline Fallback Path: Dynamic Preamble + Proportional Word Weights
+    const duration = audioEl.duration;
     if (!duration || isNaN(duration) || duration <= 0) return;
 
-    // Account for 3.5s narrator chapter title announcement so verse 1 never rushes ahead
-    const introPreambleSec = 3.5;
+    const introPreambleSec = getDynamicIntroPreambleSec();
+    if (currentTime < introPreambleSec - 0.15 && audioEl.readyState >= 1) {
+      try {
+        audioEl.currentTime = introPreambleSec;
+        audioEl.muted = false;
+      } catch {}
+      return;
+    }
+
+    if (audioEl.muted) {
+      audioEl.muted = false;
+    }
+
     const effectiveTime = Math.max(0, currentTime - introPreambleSec);
     const effectiveDuration = Math.max(1, duration - introPreambleSec);
 
@@ -284,7 +460,16 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
         notifyVerseChange(verses[activeIdx].verse);
       }
     }
-  }, [verses, notifyVerseChange]);
+  }, [verses, notifyVerseChange, computeStudioVerseTargetTime, getDynamicIntroPreambleSec]);
+
+  // High-frequency 90ms polling ticker during Studio MP3 playback for sub-100ms slide transitions
+  useEffect(() => {
+    if (!isPlaying || engineType !== 'studio') return;
+    const syncTimer = setInterval(() => {
+      handleStudioTimeUpdate();
+    }, 90);
+    return () => clearInterval(syncTimer);
+  }, [isPlaying, engineType, handleStudioTimeUpdate]);
 
   const getOrCreateAudioContext = useCallback((): AudioContext => {
     if (!audioContextRef.current) {
@@ -613,7 +798,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     currentVerseIdxRef.current = index;
     notifyVerseChange(verseObj.verse);
 
-    // 1. Studio MP3 Narration branch (Protected by synchronous refs + bypassStudio guard to prevent infinite microtask recursion)
+    // 1. Studio MP3 Narration branch (Protected by synchronous refs + bypassStudio guard + exact millisecond header bypass)
     if (
       !bypassStudio &&
       !studioFailedRef.current &&
@@ -627,21 +812,29 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       const audioEl = studioAudioElRef.current;
       audioEl.playbackRate = rate;
 
-      // Proportional seek to verse position
-      if (audioEl.duration && !isNaN(audioEl.duration) && audioEl.duration > 0 && index >= 0 && verses.length > 0) {
-        const verseWeights = verses.map((v) => Math.max(1, (v.text || '').trim().split(/\s+/).length));
-        const totalWeight = verseWeights.reduce((a, b) => a + b, 0);
-        if (totalWeight > 0) {
-          let cum = 0;
-          for (let i = 0; i < index; i++) cum += verseWeights[i];
-          const targetTime = (cum / totalWeight) * audioEl.duration;
-          if (Math.abs(audioEl.currentTime - targetTime) > 1.5) {
+      const targetTime = computeStudioVerseTargetTime(index, audioEl.duration);
+      pendingStudioSeekRef.current = targetTime;
+
+      if (audioEl.readyState >= 1) {
+        if (Math.abs(audioEl.currentTime - targetTime) > 0.25) {
+          try {
             audioEl.currentTime = targetTime;
-          }
+          } catch {}
         }
+        if (studioTimingsRef.current || audioEl.currentTime >= targetTime - 0.2) {
+          audioEl.muted = false;
+          pendingStudioSeekRef.current = null;
+        }
+      } else {
+        // Mute until metadata loads & seek completes so 0.0s chapter title / Psalm superscription is NEVER heard
+        audioEl.muted = true;
+        try {
+          audioEl.currentTime = targetTime;
+        } catch {}
       }
 
       audioEl.play().catch(() => {
+        audioEl.muted = false;
         studioFailedRef.current = true;
         useStudioMp3Ref.current = false;
         setUseStudioMp3(false);
@@ -953,12 +1146,52 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     }
   };
 
+  const renderStudioAudioElement = () =>
+    validAudioUrl ? (
+      <audio
+        ref={studioAudioElRef}
+        src={validAudioUrl}
+        preload="auto"
+        onLoadedMetadata={handleStudioTimeUpdate}
+        onCanPlay={handleStudioTimeUpdate}
+        onPlay={handleStudioTimeUpdate}
+        onTimeUpdate={handleStudioTimeUpdate}
+        onError={() => {
+          if (studioAudioElRef.current) {
+            studioAudioElRef.current.muted = false;
+          }
+          studioFailedRef.current = true;
+          useStudioMp3Ref.current = false;
+          setUseStudioMp3(false);
+        }}
+        onEnded={() => {
+          if (continuousPlayback && onNextChapter) {
+            setIsLoadingVerse(true);
+            setStatusMessage(`Advancing to ${bookName} Chapter ${chapter + 1}...`);
+            isTransitioningChapterRef.current = true;
+            autoPlayNextChapterRef.current = true;
+            isPlayingRef.current = true;
+            setIsPlaying(true);
+            const hasNext = onNextChapter();
+            if (!hasNext) {
+              isTransitioningChapterRef.current = false;
+              autoPlayNextChapterRef.current = false;
+              stopPlayback();
+            }
+          } else {
+            stopPlayback();
+          }
+        }}
+      />
+    ) : null;
+
   const isReady =
     chapterReady !== undefined ? chapterReady : Boolean(verses && verses.length > 0);
 
   if (!isReady || !verses || verses.length === 0) {
     return (
       <div className="audio-bar-wrapper">
+        {renderStudioAudioElement()}
         <div className="audio-bar-container" style={{ padding: '10px 14px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -997,6 +1230,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   if (isMinimized) {
     return (
       <div className="audio-bar-wrapper">
+        {renderStudioAudioElement()}
         <div className="audio-bar-minimized">
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0, overflow: 'hidden' }}>
             <span style={{ fontSize: '16px', flexShrink: 0 }}>
@@ -1072,36 +1306,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
   return (
     <div className="audio-bar-wrapper">
-      {validAudioUrl && (
-        <audio
-          ref={studioAudioElRef}
-          src={validAudioUrl}
-          onTimeUpdate={handleStudioTimeUpdate}
-          onError={() => {
-            studioFailedRef.current = true;
-            useStudioMp3Ref.current = false;
-            setUseStudioMp3(false);
-          }}
-          onEnded={() => {
-            if (continuousPlayback && onNextChapter) {
-              setIsLoadingVerse(true);
-              setStatusMessage(`Advancing to ${bookName} Chapter ${chapter + 1}...`);
-              isTransitioningChapterRef.current = true;
-              autoPlayNextChapterRef.current = true;
-              isPlayingRef.current = true;
-              setIsPlaying(true);
-              const hasNext = onNextChapter();
-              if (!hasNext) {
-                isTransitioningChapterRef.current = false;
-                autoPlayNextChapterRef.current = false;
-                stopPlayback();
-              }
-            } else {
-              stopPlayback();
-            }
-          }}
-        />
-      )}
+      {renderStudioAudioElement()}
 
       <div className="audio-bar-container">
         {/* 1. SCRIPTURE METADATA SECTION */}

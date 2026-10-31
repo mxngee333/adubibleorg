@@ -74,8 +74,8 @@ export const GOOGLE_NEURAL_VOICES: NeuralVoiceOption[] = [
   },
 ];
 
-// v4: Upgraded with Psalm Superscription & Choirmaster Directive Purge for Zero-Lag Studio Voice Recitation
-const DB_NAME = 'elohim_tts_audio_cache_v4';
+// v5: Upgraded with Complete 150-Psalm Superscription, Choirmaster & Marginal Footnote Purge for Zero-Lag Studio Voice Recitation
+const DB_NAME = 'elohim_tts_audio_cache_v5';
 const STORE_NAME = 'audio_tracks';
 const memoryAudioBufferCache = new Map<string, AudioBuffer>();
 
@@ -194,46 +194,8 @@ export async function clearTtsAudioCache(): Promise<void> {
 function isSuperscriptionChunk(clause: string): boolean {
   const c = clause.replace(/["“”«»']/g, '').trim().toLowerCase();
   if (!c || c.length < 3) return false;
-  return (
-    c.startsWith('for the choir') ||
-    c.startsWith('to the choir') ||
-    c.startsWith('to the chief musician') ||
-    c.startsWith('for the director') ||
-    c.startsWith('to the leader') ||
-    c.startsWith('with stringed') ||
-    c.startsWith('on stringed') ||
-    c.startsWith('upon neginoth') ||
-    c.startsWith('upon sheminith') ||
-    c.startsWith('upon alamoth') ||
-    c.startsWith('upon gittith') ||
-    c.startsWith('upon muthlabben') ||
-    c.startsWith('upon mahalath') ||
-    c.startsWith('upon shoshannim') ||
-    c.startsWith('set to') ||
-    c.startsWith('according to') ||
-    c.startsWith('to the tune of') ||
-    c.startsWith('a psalm') ||
-    c.startsWith('a song') ||
-    c.startsWith('a miktam') ||
-    c.startsWith('a maskil') ||
-    c.startsWith('a shiggaion') ||
-    c.startsWith('a prayer of') ||
-    c.startsWith('a praise of') ||
-    c.startsWith('a testimony') ||
-    c.startsWith('a contemplation') ||
-    c.startsWith('when he fled') ||
-    c.startsWith('when nathan') ||
-    c.startsWith('when saul') ||
-    c.startsWith('when doeg') ||
-    c.startsWith('when the ziphites') ||
-    c.startsWith('of david') ||
-    c.startsWith('of asaph') ||
-    c.startsWith('of the sons of korah') ||
-    c.startsWith('of solomon') ||
-    c.startsWith('twenebofo') ||
-    c.startsWith('dawid dwom') ||
-    c.startsWith('asaf dwom') ||
-    c.startsWith('dwom a wɔto kɔ')
+  return /^(for the choir|to the choir|to the chief|for the director|to the leader|with stringed|on stringed|upon |set to|according to|to the tune|a psalm|psalm of|a song|song of|a miktam|miktam of|michtam of|a michtam|a maskil|maskil of|maschil of|a maschil|a shiggaion|shiggaion of|a prayer|prayer of|a praise|praise of|a testimony|a contemplation|when he |when nathan|when saul|when doeg|when the |when joab|after he |of david|of asaph|of the sons|of solomon|of ethan|of heman|of moses|the servant of the lord|who spake|which he sang|concerning the|to teach|to bring to remembrance|for instruction|twenebofo|dawid dwom|asaf dwom|dwom a )/.test(
+    c
   );
 }
 
@@ -246,34 +208,40 @@ export function stripPsalmSuperscription(text: string): string {
   let s = (text || '').trim();
   if (!s) return '';
 
-  // 1. Strip leading HTML tags (e.g. <i>To the Chief Musician...</i> or <b>...</b>)
+  // 1. Strip inline marginal footnote tags (e.g. <sup>chief: or, overseer</sup>) and leading HTML tags
+  s = s.replace(/<sup\b[^>]*>[\s\S]*?<\/sup>/gi, ' ');
   s = s.replace(/^<([a-z]+)>[\s\S]*?<\/\1>/i, ' ');
   s = s.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  s = s.replace(/\s+[A-Za-z]+:\s*(?:or,|Heb\.|Chal\.)[\s\S]*$/i, '').trim();
 
-  // 2. Strip section heading prefixes if prepended with dash (e.g. 'Answer Me When I Call! — ')
+  // 2. Strip section heading prefixes if prepended with dash (e.g. 'Deliver Me, O LORD! — ')
   s = s.replace(/^[^—–-]+[—–-]\s*/, '');
 
   // 3. Iteratively remove leading superscription sentences/clauses
-  let iterations = 0;
-  while (iterations < 10) {
-    iterations++;
+  for (let iterations = 0; iterations < 10; iterations++) {
     s = s.replace(/^["“”«»']+/, '').trim();
-    // Check delimiter [.?!;:]
-    const match = s.match(/^([^.?!;:]+)([.?!;:])\s*(.*)$/);
-    if (match) {
-      const clause = match[1].trim();
-      const rest = match[3];
-      if (isSuperscriptionChunk(clause)) {
-        s = rest.trim();
-        continue;
-      }
+
+    // Check full sentence delimiter [.?!] first so internal semicolons/commas inside a superscription are consumed together
+    const sentMatch = s.match(/^([^.?!]+)[.?!]\s*(.+)$/);
+    if (sentMatch && isSuperscriptionChunk(sentMatch[1]) && sentMatch[2].trim().length > 5) {
+      s = sentMatch[2].trim();
+      continue;
     }
-    // Check comma delimiter
-    const commaMatch = s.match(/^([^,]+),\s*(.*)$/);
-    if (commaMatch && isSuperscriptionChunk(commaMatch[1])) {
+
+    // Check colon delimiter (e.g. Psalm 18 '...from the hand of Saul: And he said, I will love thee...')
+    const colonMatch = s.match(/^([^.?!:]+):\s*(?:and he said,\s*|he said[,:]?\s*)?(.+)$/i);
+    if (colonMatch && isSuperscriptionChunk(colonMatch[1]) && colonMatch[2].trim().length > 10) {
+      s = colonMatch[2].trim();
+      continue;
+    }
+
+    // Check comma/semicolon delimiter for standalone clauses
+    const commaMatch = s.match(/^([^.,;?!:]+)[,;]\s*(.+)$/);
+    if (commaMatch && isSuperscriptionChunk(commaMatch[1]) && commaMatch[2].trim().length > 5) {
       s = commaMatch[2].trim();
       continue;
     }
+
     break;
   }
   return s.replace(/^["“”«»']+/, '').trim();
