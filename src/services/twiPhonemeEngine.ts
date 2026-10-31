@@ -1,33 +1,24 @@
 /**
- * Akan (Asante & Akuapem Twi) & West African Phonology & Speech Transphonemizer v2
+ * Akan (Asante & Akuapem Twi) & West African Phonology & Speech Transphonemizer v3
  *
- * Engineered to eliminate English homograph mispronunciations ("boo" for bɔɔ, "eye" for ɛyɛ,
- * "free" for frɛɛ, "see" for sɛ, "knee" for ne, "no" for no, "tie" for Ti, "buy-oh" for bio)
- * across all neural TTS engines (Google Gemini 24kHz, Meta MMS-TTS, Groq Orpheus 24kHz, and
- * WebKit/Chromium SpeechSynthesis).
- *
- * Key Akan Phonological Rules Enforced:
- * 1. Open-mid back rounded vowel ɔ (/ɔ/) -> "aw" (e.g., bɔɔ -> baw-aw, wɔ -> waw, dɔ -> daw, kɔ -> kaw)
- * 2. Open-mid front unrounded vowel ɛ (/ɛ/) -> "eh" (e.g., ɛyɛ -> ehyeh, frɛɛ -> freh-eh, sɛ -> seh, yɛ -> yeh)
- * 3. Short word-final vowels protected against English diphthongization:
- *    - no (/nʊ/) -> "noh" (never English "NO" /noʊ/)
- *    - ne (/nɪ/) -> "neh" (never English "KNEE" /niː/)
- *    - me (/mɪ/) -> "meh" (never English "ME" /miː/)
- *    - wo (/wʊ/) -> "woh" (never English "WOE" /woʊ/)
- *    - ti (/ti/) -> "tee" (never English "TIE" /taɪ/)
- *    - bi, di, yi, si, fi, ni -> "bee", "dee", "yee", "see", "fee", "nee"
- *    - da, na, ka, ma, ba, fa, sa, ta -> "dah", "nah", "kah", "mah", "bah", "fah", "sah", "tah"
- * 4. Akan palatalized & labial-palatalized digraphs:
- *    - tw (/tɕw/) -> "chw"
- *    - dw (/dʑw/) -> "jw"
- *    - ky (/tɕ/)  -> "ch"
- *    - gy (/dʑ/)  -> "j"
- *    - hy (/ɕ/)   -> "sh"
- *    - hw (/ɕw/)  -> "shw"
- * 5. Native Akan Cardinal Numbers (1–150) for authentic Chapter ("Ti Baako") & Psalm ("Nnwom Aduonu Mmiɛnsa") announcements.
+ * Powers two complementary speech pipelines:
+ * 1. Native Ghanaian Bible Neural Models (44.1kHz Fast Ghana Voice ONNX & 16kHz Meta MMS-TTS):
+ *    - `prepareTextForFastGhanaVoice(rawText, langCode)` conditions raw Twi/Ewe orthography
+ *      for `michsethowusu/ghana-tts-twi-ewe-dagbani` (44.1kHz StableTTS + Vocos trained on the
+ *      GhanaNLP Twi & Ewe Bible corpus): converts digits to native Twi words, normalizes NFC
+ *      lowercase, applies Akan ATR Vowel Harmony protection on biblical book names (`gyɛnɛsis`,
+ *      `matɛo`, `yɛsaia`, `ɛfɛsofoɔ`), protects labiovelar `w` in `awuurade`, and inserts
+ *      hiatus micro-pauses (`bɔɔ, ɔ`, `sɛ, ɛ`).
+ *    - `prepareClauseForMetaMmsTts(clauseText, langCode)` normalizes clauses strictly to the
+ *      lowercase `vocab.json` of `facebook/mms-tts-aka` so uppercase letters are never dropped
+ *      as `<unk>`.
+ * 2. Clause-Stitched 24kHz Studio Neural & Browser Speech Engines (Groq Orpheus 24kHz & Web Speech):
+ *    - Eliminates English homograph mispronunciations ("boo" for bɔɔ, "eye" for ɛyɛ,
+ *      "free" for frɛɛ, "see" for sɛ, "knee" for ne, "no" for no, "tie" for Ti, "buy-oh" for bio)
+ *      using binary rhythmic-foot prosody (`Onyankoh-pawn`, `Emfitia-seh`, `awsoh-roh`, `ahsah-seh`).
  */
 
-// Complete Akan Cardinal Number System (Asante Twi & Akuapem Twi) for Chapters 1–150
+// Complete Akan Cardinal Number System (Asante Twi & Akuapem Twi) for Chapters & Verses 1–150
 const ASANTE_ONES: Record<number, string> = {
   1: 'Baako',
   2: 'Mmienu',
@@ -115,27 +106,149 @@ export function numberToTwiWords(num: number, dialect: 'asante' | 'akuapem' = 'a
 }
 
 /**
- * Spoken canonical Bible book names in Asante/Akuapem Twi
+ * Orthographic & Phonological Conditioner for the 44.1kHz Fast Ghana Voice Neural Engine
+ * (`michsethowusu/ghana-tts-twi-ewe-dagbani` — StableTTS + Vocos 44.1kHz ONNX).
+ *
+ * Because `grapheme_g2p.py` in the model strips digits (`0-9`) and colons (`:`), and applies
+ * Akan regressive +ATR vowel harmony across `i`/`u`, this function:
+ * 1. Expands all numbers (1–150) to native Asante/Akuapem Twi words.
+ * 2. Converts colons/semicolons to natural clause commas and dashes to sentence breaks.
+ * 3. Protects open `-ATR` vowels in biblical loanwords (`gyɛnɛsis`, `ɛksodɔs`, `matɛo`, `yɛsaia`, `ɛfɛsofoɔ`).
+ * 4. Protects labiovelar `/w/` in `awuurade` and inserts micro-comma hiatus separators (`bɔɔ, ɔ`, `sɛ, ɛ`).
+ */
+export function prepareTextForFastGhanaVoice(rawText: string, langCode = 'tw'): string {
+  if (!rawText) return '';
+  const code = (langCode || 'tw').toLowerCase().trim();
+  const isTwi = code === 'tw' || code === 'ak' || code === 'aka' || code.includes('twi');
+  const dialect: 'asante' | 'akuapem' = code === 'ak' ? 'akuapem' : 'asante';
+
+  let s = rawText
+    .replace(/[’‘`]/g, "'")
+    .replace(/[:;]+/g, ', ')
+    .replace(/[—–]+/g, '. ')
+    .replace(/[()[\]"]/g, ' ');
+
+  if (isTwi) {
+    // Expand standalone numbers 1–150 into spoken Twi words before G2P strips digits
+    s = s.replace(/\b(\d{1,3})\b/g, (match) => {
+      const n = parseInt(match, 10);
+      if (n >= 1 && n <= 150) {
+        return numberToTwiWords(n, dialect);
+      }
+      return match;
+    });
+  }
+
+  s = s.normalize('NFC').toLowerCase();
+
+  if (isTwi) {
+    // Akan ATR Vowel Harmony Calibration for Biblical Book Names & Proper Nouns
+    // Prevents +ATR 'i' from raising preceding 'e' to 'i' ("gyinisis")
+    s = s
+      .replace(/\b(?:gyenesis|genesis)\b/g, 'gyɛnɛsis')
+      .replace(/\b(?:eksodɔs|exodus)\b/g, 'ɛksodɔs')
+      .replace(/\b(?:lewitikɔs|leviticus)\b/g, 'lɛwitikɔs')
+      .replace(/\bdeuteronomium\b/g, 'dɛtɛronomium')
+      .replace(/\bmateo\b/g, 'matɛo')
+      .replace(/\byesaia\b/g, 'yɛsaia')
+      .replace(/\byeremia\b/g, 'yɛrɛmia')
+      .replace(/\b(?:heszekiel|hesekiel)\b/g, 'hɛsɛkiɛl')
+      .replace(/\bdaniel\b/g, 'daniɛl')
+      .replace(/\befesofoɔ\b/g, 'ɛfɛsofoɔ')
+      .replace(/\befesofo\b/g, 'ɛfɛsofo')
+      .replace(/\bhebrifoɔ\b/g, 'hɛbrifoɔ')
+      .replace(/\bhebrifo\b/g, 'hɛbrifo')
+      // Preserve labiovelar /w/ in Awurade against rapid-speech elision
+      .replace(/\bawurade\b/g, 'awuurade')
+      .replace(/\bawuradie\b/g, 'awuuradie')
+      // Insert micro-comma hiatus boundaries so adjacent open vowels never coalesce across words
+      .replace(/\bbɔɔ\s+ɔ/g, 'bɔɔ, ɔ')
+      .replace(/\bsɛ\s+ɛ/g, 'sɛ, ɛ')
+      .replace(/\bfrɛɛ\s+/g, 'frɛɛ, ')
+      .replace(/\bpaee\s+/g, 'paee, ');
+  }
+
+  s = s
+    .replace(/\s*,\s*,+/g, ', ')
+    .replace(/\s*\.\s*\.+/g, '. ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (s && !/[.!?]$/.test(s)) {
+    s += '.';
+  }
+
+  return s;
+}
+
+/**
+ * Lowercase Vocabulary Conditioner for Meta MMS-TTS (`facebook/mms-tts-aka`, `ewe`, `yor`, `hau`, `swh`, `amh`).
+ * `facebook/mms-tts-aka` vocab.json contains strictly lowercase characters:
+ * `2 3 ' - _ a b d e f g h i k l m n o p r s t u w y á ɔ ɛ ʼ`
+ * Any uppercase character (`G`, `T`, `B`, `M`, `O`, `N`, `H`, `A`, `Ɔ`, `Ɛ`) is dropped as `<unk>`!
+ */
+export function prepareClauseForMetaMmsTts(clauseText: string, langCode = 'tw'): string {
+  if (!clauseText) return '';
+  const code = (langCode || 'tw').toLowerCase().trim();
+  const isTwi = code === 'tw' || code === 'ak' || code === 'aka' || code.includes('twi');
+  const dialect: 'asante' | 'akuapem' = code === 'ak' ? 'akuapem' : 'asante';
+
+  let s = clauseText.replace(/[’‘`]/g, "'");
+
+  if (isTwi) {
+    s = s.replace(/\b(\d{1,3})\b/g, (match) => {
+      const n = parseInt(match, 10);
+      if (n >= 1 && n <= 150) {
+        return numberToTwiWords(n, dialect);
+      }
+      return match;
+    });
+  }
+
+  s = s.normalize('NFC').toLowerCase();
+
+  if (isTwi) {
+    // Map non-Akan loan consonants to native Akan equivalents present in vocab.json
+    s = s
+      .replace(/c/g, 'k')
+      .replace(/j/g, 'gy')
+      .replace(/q/g, 'k')
+      .replace(/v/g, 'w')
+      .replace(/x/g, 'ks')
+      .replace(/z/g, 's');
+  }
+
+  // Strip punctuation that MMS-TTS does not model so clauses end cleanly
+  s = s
+    .replace(/[.,!?;:"“”«»()[\]—–]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return s;
+}
+
+/**
+ * Spoken canonical Bible book names in Asante/Akuapem Twi (calibrated with binary rhythmic feet)
  */
 const SPOKEN_TWI_BOOK_NAMES: Record<string, string> = {
-  gyenesis: 'Jehnehsees',
-  genesis: 'Jehnehsees',
-  eksodɔs: 'Ehksodaws',
-  exodus: 'Ehksodaws',
-  lewitikɔs: 'Lehweetikaws',
-  leviticus: 'Lehweetikaws',
-  numeri: 'Noomehree',
-  deuteronomium: 'Deh-ootehrohnohmee-oom',
+  gyenesis: 'Jehneh-sees',
+  genesis: 'Jehneh-sees',
+  eksodɔs: 'Ehksoh-daws',
+  exodus: 'Ehksoh-daws',
+  lewitikɔs: 'Lehweeti-kaws',
+  leviticus: 'Lehweeti-kaws',
+  numeri: 'Noomeh-ree',
+  deuteronomium: 'Dehtehroh-nohmee-oom',
   yosua: 'Yohsoo-ah',
   atemmufoɔ: 'Ahtehm-moofaw',
   atemmufo: 'Ahtehm-moofoh',
   rut: 'Root',
   samuel: 'Sahmoo-ehl',
   ahemfo: 'Ah-hehmfoh',
-  berɛsosɛm: 'Behreh-soh-sehm',
-  beraɛsosɛm: 'Behreh-soh-sehm',
+  berɛsosɛm: 'Behreh-sohsehm',
+  beraɛsosɛm: 'Behreh-sohsehm',
   esra: 'Ehsrah',
-  nehemia: 'Neh-heh-mee-ah',
+  nehemia: 'Neh-hehmee-ah',
   ester: 'Ehstehr',
   hiob: 'Hee-ohb',
   nnwom: 'Enwom',
@@ -144,140 +257,140 @@ const SPOKEN_TWI_BOOK_NAMES: Record<string, string> = {
   mmebusɛm: 'Emmeh-boosehm',
   ɔsɛnkafoɔ: 'Awsehn-kahfaw',
   ɔsɛnkafo: 'Awsehn-kahfoh',
-  yesaia: 'Yeh-sah-yah',
-  yeremia: 'Yeh-reh-mee-ah',
+  yesaia: 'Yehsah-yah',
+  yeremia: 'Yehreh-meeah',
   kwaadwom: 'Kwah-jwom',
-  heszekiel: 'Heh-zeh-kee-ehl',
-  daniel: 'Dah-nee-ehl',
-  hosea: 'Hoh-seh-ah',
+  heszekiel: 'Hehzeh-kee-ehl',
+  daniel: 'Dahnee-ehl',
+  hosea: 'Hohseh-ah',
   yoel: 'Yoh-ehl',
   amos: 'Ah-mohs',
-  obadia: 'Oh-bah-dee-ah',
+  obadia: 'Ohbah-deeah',
   yona: 'Yoh-nah',
   mika: 'Mee-kah',
   nahum: 'Nah-hoom',
-  habakuk: 'Hah-bah-kook',
-  sefania: 'Seh-fah-nee-ah',
-  hagai: 'Hah-gah-ee',
-  sakaria: 'Sah-kah-ree-ah',
-  malaki: 'Mah-lah-kee',
-  mateo: 'Mah-teh-oh',
+  habakuk: 'Hahbah-kook',
+  sefania: 'Sehfah-neeah',
+  hagai: 'Hahgah-ee',
+  sakaria: 'Sahkah-reeah',
+  malaki: 'Mahlah-kee',
+  mateo: 'Mahteh-oh',
   marko: 'Mahr-koh',
   luka: 'Loo-kah',
-  yohane: 'Yoh-hah-neh',
-  romafoɔ: 'Roh-mah-faw',
-  romafo: 'Roh-mah-foh',
-  korintofoɔ: 'Koh-reen-toh-faw',
-  korintofo: 'Koh-reen-toh-foh',
-  galatifoɔ: 'Gah-lah-tee-faw',
-  galatifo: 'Gah-lah-tee-foh',
-  efesofoɔ: 'Eh-feh-soh-faw',
-  efesofo: 'Eh-feh-soh-foh',
-  ephesians: 'Eh-feh-soh-faw',
-  filipifoɔ: 'Fee-lee-pee-faw',
-  filipifo: 'Fee-lee-pee-foh',
-  kolosefoɔ: 'Koh-loh-seh-faw',
-  kolosefo: 'Koh-loh-seh-foh',
-  tesalonikafoɔ: 'Teh-sah-loh-nee-kah-faw',
-  timoteo: 'Tee-moh-teh-oh',
+  yohane: 'Yoh-hahneh',
+  romafoɔ: 'Rohmah-faw',
+  romafo: 'Rohmah-foh',
+  korintofoɔ: 'Kohreen-tohfaw',
+  korintofo: 'Kohreen-tohfoh',
+  galatifoɔ: 'Gahlah-teefaw',
+  galatifo: 'Gahlah-teefoh',
+  efesofoɔ: 'Ehfeh-sohfaw',
+  efesofo: 'Ehfeh-sohfoh',
+  ephesians: 'Ehfeh-sohfaw',
+  filipifoɔ: 'Feelee-peefaw',
+  filipifo: 'Feelee-peefoh',
+  kolosefoɔ: 'Kohloh-sehfaw',
+  kolosefo: 'Kohloh-sehfoh',
+  tesalonikafoɔ: 'Tehsahloh-neekahfaw',
+  timoteo: 'Teemoh-teh-oh',
   tito: 'Tee-toh',
-  filemon: 'Fee-leh-mohn',
-  hebrifoɔ: 'Heh-bree-faw',
-  hebrifo: 'Heh-bree-foh',
-  yakobo: 'Yah-koh-boh',
-  petro: 'Peh-troh',
+  filemon: 'Feeleh-mohn',
+  hebrifoɔ: 'Hehbree-faw',
+  hebrifo: 'Hehbree-foh',
+  yakobo: 'Yahkoh-boh',
+  petro: 'Pehtroh',
   yuda: 'Yoo-dah',
-  adiyisɛm: 'Ah-dee-yee-sehm',
+  adiyisɛm: 'Ahdeeyee-sehm',
 };
 
 /**
- * Comprehensive Sacred Akan (Asante & Akuapem Twi) Phonetic Lexicon
- * Every entry is calibrated so neural TTS models produce authentic Ghanaian Akan vowel & consonant quality.
+ * Comprehensive Sacred Akan (Asante & Akuapem Twi) Phonetic Lexicon (v3 Binary Foot Prosody)
+ * Calibrated for smooth, natural Ghanaian syllable timing on 24kHz studio engines.
  */
 const SACRED_TWI_LEXICON: Record<string, string> = {
   // 1. Divine Names, Titles & Persons
-  onyankopɔn: 'Ohnyankohpawn',
-  onyankopon: 'Ohnyankohpawn',
-  nyankopɔn: 'Nyankohpawn',
-  nyankopon: 'Nyankohpawn',
-  onyame: 'Ohnyahmeh',
-  nyame: 'Nyahmeh',
-  awurade: 'Ahwoorahdeh',
-  yesu: 'Yehsoo',
-  kristo: 'Kreestoh',
+  onyankopɔn: 'Onyankoh-pawn',
+  onyankopon: 'Onyankoh-pawn',
+  nyankopɔn: 'Nyankoh-pawn',
+  nyankopon: 'Nyankoh-pawn',
+  onyame: 'Onyah-meh',
+  nyame: 'Nyah-meh',
+  awurade: 'Ahwoorah-deh',
+  yesu: 'Yeh-soo',
+  kristo: 'Krees-toh',
   tweduampɔn: 'Chwehdoo-ampawn',
   tweduampon: 'Chwehdoo-ampawn',
   ɔdomankoma: 'Awdoh-mankohmah',
-  ɔbɔadeɛ: 'Awbaw-ahdeh-eh',
-  agya: 'Ahjah',
-  honhom: 'Hohnhohm',
-  kronkron: 'Krohnkrohn',
-  ɔdɔfoɔ: 'Awdawfaw',
-  ɔdɔfo: 'Awdawfoh',
-  ɔsorosoroni: 'Awsohroh-sohroh-nee',
-  paulo: 'Pah-oo-loh',
-  dawid: 'Dahweed',
-  solomon: 'Sohlohmohn',
-  mose: 'Mohseh',
+  ɔbɔadeɛ: 'Awbaw-ahdeh',
+  agya: 'Ah-jah',
+  honhom: 'Hohn-hohm',
+  kronkron: 'Krohn-krohn',
+  ɔdɔfoɔ: 'Awdaw-faw',
+  ɔdɔfo: 'Awdaw-foh',
+  ɔsorosoroni: 'Awsohroh-sohrohnee',
+  paulo: 'Pah-ooloh',
+  dawid: 'Dah-weed',
+  solomon: 'Sohloh-mohn',
+  mose: 'Moh-seh',
   abraham: 'Ahbrah-hahm',
   israel: 'Eesrah-ehl',
-  yerusalem: 'Yehroosahlehm',
-  efeso: 'Ehfehsoh',
-  nikodemo: 'Neekohdehmoh',
+  yerusalem: 'Yehroosah-lehm',
+  efeso: 'Ehfeh-soh',
+  nikodemo: 'Neekoh-dehmoh',
 
-  // 2. Genesis 1 & Creation Core Vocabulary (Eliminating "boo", "eye", "free", "see", "no", "knee")
-  gyenesis: 'Jehnehsees',
-  mfitiaseɛ: 'Mfitee-ahseh',
-  mfitiase: 'Mfitee-ahseh',
+  // 2. Genesis 1 & Creation Core Vocabulary (Zero English Homographs)
+  gyenesis: 'Jehneh-sees',
+  mfitiaseɛ: 'Emfitia-seh',
+  mfitiase: 'Emfitia-seh',
   bɔɔ: 'baw-aw',
   bɔe: 'baw-eh',
   bɔ: 'baw',
   rebɔ: 'rehbaw',
   wɔrebɔ: 'waw-rehbaw',
-  adebɔ: 'ahdehbaw',
-  wiase: 'wee-ahseh',
-  ɔsoro: 'awsohroh',
-  soro: 'sohroh',
-  asase: 'ahsahseh',
-  asaase: 'ahsahseh',
+  adebɔ: 'ahdeh-baw',
+  wiase: 'weeah-seh',
+  ɔsoro: 'awsoh-roh',
+  soro: 'soh-roh',
+  asase: 'ahsah-seh',
+  asaase: 'ahsah-seh',
   sakasaka: 'sahkah-sahkah',
-  hunu: 'hoonoo',
-  hunuu: 'hoonoo',
-  nhunu: 'enhoonoo',
-  moahunu: 'moh-ah-hoonoo',
-  nhumu: 'enhoomoo',
-  nhunumu: 'enhoonoomoo',
-  esum: 'ehsoom',
+  hunu: 'hoo-noo',
+  hunuu: 'hoo-noo',
+  nhunu: 'enhoo-noo',
+  moahunu: 'moh-ahhoonoo',
+  nhumu: 'enhoo-moo',
+  nhunumu: 'enhoonoo-moo',
+  esum: 'eh-soom',
   sum: 'soom',
-  ebun: 'ehboon',
-  ani: 'ahnee',
-  anim: 'ahneem',
-  dɛkyɛdɛkyɛ: 'deh-cheh-deh-cheh',
+  ebun: 'eh-boon',
+  ani: 'ah-nee',
+  anim: 'ah-neem',
+  dɛkyɛdɛkyɛ: 'dehcheh-dehcheh',
   nsuo: 'ensoo-oh',
   nsu: 'ensoo',
   kaa: 'kah-ah',
   kae: 'kah-eh',
   ka: 'kah',
   nka: 'enkah',
-  bɛka: 'behkah',
-  ɔbɛka: 'awbehkah',
+  bɛka: 'beh-kah',
+  ɔbɛka: 'awbeh-kah',
   sɛ: 'seh',
   hann: 'hahn',
   mmra: 'emmrah',
   bae: 'bah-eh',
   ba: 'bah',
   mma: 'emmah',
-  ɛyɛ: 'ehyeh',
+  ɛyɛ: 'eh-yeh',
   yɛ: 'yeh',
   nyɛ: 'enyeh',
   ɔnyɛ: 'awnyeh',
   yɛn: 'yehn',
-  yɛyɛ: 'yehyeh',
-  ayɛ: 'ahyeh',
+  yɛyɛ: 'yeh-yeh',
+  ayɛ: 'ah-yeh',
   wɔayɛ: 'waw-ahyeh',
   yɛe: 'yeh-eh',
   ɔyɛe: 'awyeh-eh',
-  ɔyɛ: 'awyeh',
+  ɔyɛ: 'aw-yeh',
   paee: 'pah-eh',
   pae: 'pah-eh',
   frɛɛ: 'freh-eh',
@@ -287,17 +400,17 @@ const SACRED_TWI_LEXICON: Record<string, string> = {
   awia: 'ahwee-ah',
   anadwo: 'ahnah-jwoh',
   adeɛ: 'ahdeh-eh',
-  ade: 'ahdeh',
+  ade: 'ah-deh',
   sae: 'sah-eh',
   kyee: 'cheh-eh',
   kye: 'cheh',
   da: 'dah',
   nna: 'ennah',
-  dada: 'dahdah',
-  dedaw: 'dehdahw',
-  ɛdi: 'ehdee',
-  edi: 'ehdee',
-  adi: 'ahdee',
+  dada: 'dah-dah',
+  dedaw: 'deh-dahw',
+  ɛdi: 'eh-dee',
+  edi: 'eh-dee',
+  adi: 'ah-dee',
   yɛadi: 'yeh-ahdee',
   diiɛ: 'dee-eh',
   dii: 'dee',
@@ -306,118 +419,118 @@ const SACRED_TWI_LEXICON: Record<string, string> = {
   nie: 'nee-eh',
   ni: 'nee',
   nsia: 'ensee-ah',
-  ewim: 'ehweem',
-  nkyekyɛmu: 'encheh-cheh-moo',
+  ewim: 'eh-weem',
+  nkyekyɛmu: 'encheh-chehmoo',
 
-  // 3. High-Frequency Function Words, Pronouns & Particles (Zero English Homographs)
+  // 3. High-Frequency Function Words, Pronouns & Particles
   no: 'noh',
   ne: 'neh',
   na: 'nah',
   me: 'meh',
   mo: 'moh',
   wo: 'woh',
-  ɔno: 'awnoh',
-  ɛno: 'ehnoh',
+  ɔno: 'aw-noh',
+  ɛno: 'eh-noh',
   wɔn: 'wawn',
   wɔ: 'waw',
   wɔwɔ: 'waw-waw',
   mowɔ: 'moh-waw',
-  ɛwɔ: 'ehwaw',
+  ɛwɔ: 'eh-waw',
   mu: 'moo',
   so: 'soh',
   soɔ: 'soh-aw',
   hɔ: 'haw',
-  hɔnom: 'hawnohm',
+  hɔnom: 'haw-nohm',
   yi: 'yee',
-  eyi: 'ehyee',
+  eyi: 'eh-yee',
   bi: 'bee',
-  biara: 'bee-ahrah',
+  biara: 'beeah-rah',
   ti: 'tee',
-  tire: 'teereh',
-  tiri: 'teeree',
-  tirim: 'teereem',
+  tire: 'tee-reh',
+  tiri: 'tee-ree',
+  tirim: 'tee-reem',
   di: 'dee',
   si: 'see',
   sii: 'see',
-  asi: 'ahsee',
-  kɔsi: 'kawsee',
-  kosi: 'kohsee',
+  asi: 'ah-see',
+  kɔsi: 'kaw-see',
+  kosi: 'koh-see',
   fi: 'fee',
-  efi: 'ehfee',
-  firi: 'feeree',
-  ɛfiri: 'ehfeeree',
-  firii: 'feeree',
-  fafirie: 'fah-feeree-eh',
-  fafiri: 'fah-feeree',
+  efi: 'eh-fee',
+  firi: 'fee-ree',
+  ɛfiri: 'ehfee-ree',
+  firii: 'fee-ree',
+  fafirie: 'fahfee-ree-eh',
+  fafiri: 'fahfee-ree',
   kɔ: 'kaw',
   kɔɔ: 'kaw-aw',
-  kɔma: 'kawmah',
-  rekɔ: 'rehkaw',
+  kɔma: 'kaw-mah',
+  rekɔ: 'reh-kaw',
   tɔ: 'taw',
   wɔatɔ: 'waw-ahtaw',
-  atɔ: 'ahtaw',
+  atɔ: 'ah-taw',
   dɔ: 'daw',
-  ɔdɔ: 'awdaw',
+  ɔdɔ: 'aw-daw',
   dɔɔ: 'daw-aw',
-  modɔ: 'mohdaw',
+  modɔ: 'moh-daw',
   pɛ: 'peh',
   pɛyɛ: 'peh-yeh',
   sɔ: 'saw',
   sɔɔ: 'saw-aw',
-  anisɔ: 'ahneesaw',
+  anisɔ: 'ahnee-saw',
   ma: 'mah',
   maa: 'mah-ah',
-  ama: 'ahmah',
+  ama: 'ah-mah',
   de: 'deh',
   deɛ: 'deh-eh',
   nea: 'neh-ah',
-  sɛdeɛ: 'seh-deh-eh',
-  sɛnea: 'seh-neh-ah',
+  sɛdeɛ: 'sehdeh-eh',
+  sɛnea: 'sehneh-ah',
   teɛ: 'teh-eh',
   te: 'teh',
   tee: 'teh-eh',
   motee: 'mohteh-eh',
   tie: 'tee-eh',
   bio: 'bee-oh',
-  ara: 'ahrah',
+  ara: 'ah-rah',
   nso: 'ensoh',
   nko: 'enkoh',
   mmom: 'emmohm',
-  koraa: 'kohrah',
+  koraa: 'koh-rah',
   nti: 'entee',
-  enti: 'ehntee',
+  enti: 'ehn-tee',
   saa: 'sah-ah',
-  ansa: 'ahnsah',
-  berɛ: 'behreh',
+  ansa: 'ahn-sah',
+  berɛ: 'beh-reh',
   mmerɛ: 'emmeh-reh',
   mmere: 'emmeh-reh',
 
-  // 4. Foundational Theological & Epistle Vocabulary (Ephesians, Psalms, John, Romans)
-  nhyira: 'ensheerah',
-  ahyira: 'ah-sheerah',
-  adom: 'ahdohm',
+  // 4. Foundational Theological & Epistle Vocabulary
+  nhyira: 'enshee-rah',
+  ahyira: 'ahshee-rah',
+  adom: 'ah-dohm',
   dom: 'dohm',
-  asomdwoeɛ: 'ahsohm-jwoh-eh',
-  asomdwoee: 'ahsohm-jwoh-eh',
-  asomdwoe: 'ahsohm-jwoh-eh',
+  asomdwoeɛ: 'ahsohm-jwoheh',
+  asomdwoee: 'ahsohm-jwoheh',
+  asomdwoe: 'ahsohm-jwoheh',
   gyidie: 'jeedee-eh',
-  gyidi: 'jeedee',
+  gyidi: 'jee-dee',
   agyidifoɔ: 'ahjeedee-faw',
   gyidifo: 'jeedee-foh',
   gye: 'jeh',
   ɔgyeɛ: 'awjeh-eh',
-  ogye: 'ohjeh',
-  mogye: 'mohjeh',
-  mugye: 'moojeh',
-  yɛgye: 'yehjeh',
-  wɔbɛgye: 'waw-behjeh',
-  wobegye: 'woh-behjeh',
-  nkwagyeɛ: 'enkwah-jeh-eh',
+  ogye: 'oh-jeh',
+  mogye: 'moh-jeh',
+  mugye: 'moo-jeh',
+  yɛgye: 'yeh-jeh',
+  wɔbɛgye: 'wawbeh-jeh',
+  wobegye: 'wohbeh-jeh',
+  nkwagyeɛ: 'enkwah-jeheh',
   nkwagye: 'enkwah-jeh',
   nkwa: 'enkwah',
-  aseda: 'ahsehdah',
-  ahobrɛaseɛ: 'ah-hoh-breh-ahseh-eh',
-  ahobrease: 'ah-hoh-breh-ahseh',
+  aseda: 'ahseh-dah',
+  ahobrɛaseɛ: 'ahhoh-brehahseh',
+  ahobrease: 'ahhoh-brehahseh',
   mpaebɔ: 'empah-ehbaw',
   mpaebo: 'empah-ehboh',
   twerɛ: 'chweh-reh',
@@ -425,104 +538,104 @@ const SACRED_TWI_LEXICON: Record<string, string> = {
   kyerɛw: 'cheh-rehw',
   kyerew: 'cheh-rehw',
   kyerɛ: 'cheh-reh',
-  kyerɛɛ: 'cheh-reh-eh',
+  kyerɛɛ: 'chehreh-eh',
   kyere: 'cheh-reh',
-  nyinaa: 'nyeenah',
-  asɛm: 'ahsehm',
-  asem: 'ahsehm',
+  nyinaa: 'nyee-nah',
+  asɛm: 'ah-sehm',
+  asem: 'ah-sehm',
   asɛmpa: 'ahsehm-pah',
-  ahuntasɛm: 'ah-hoontah-sehm',
-  ahintasɛm: 'ah-heentah-sehm',
-  adiyisɛm: 'ahdee-yeesehm',
-  nnwoma: 'enwohmah',
-  nyansa: 'nyahnsah',
-  anyansa: 'ahnyahnsah',
-  bɔne: 'bawneh',
-  bone: 'bawneh',
-  mfomsoɔ: 'emfohm-soh-aw',
+  ahuntasɛm: 'ahhoontah-sehm',
+  ahintasɛm: 'ahheentah-sehm',
+  adiyisɛm: 'ahdeeyee-sehm',
+  nnwoma: 'enwoh-mah',
+  nyansa: 'nyahn-sah',
+  anyansa: 'ahnyahn-sah',
+  bɔne: 'baw-neh',
+  bone: 'baw-neh',
+  mfomsoɔ: 'emfohm-sohaw',
   mfomso: 'emfohm-soh',
-  ahemman: 'ah-hehm-mahn',
+  ahemman: 'ahhehm-mahn',
   somafoɔ: 'sohmah-faw',
   somafo: 'sohmah-foh',
-  ahotefoɔ: 'ah-hohteh-faw',
-  ahotefo: 'ah-hohteh-foh',
-  hwɛfoɔ: 'shwehfaw',
-  hwɛfo: 'shwehfoh',
+  ahotefoɔ: 'ahhohteh-faw',
+  ahotefo: 'ahhohteh-foh',
+  hwɛfoɔ: 'shweh-faw',
+  hwɛfo: 'shweh-foh',
   hwɛ: 'shweh',
   dɛm: 'dehm',
   nni: 'ennee',
   ho: 'hoh',
   yii: 'yee',
-  ɔyii: 'awyee',
+  ɔyii: 'aw-yee',
   wɔayi: 'waw-ahyee',
   wɔapaw: 'waw-ahpahw',
-  ɔpaw: 'awpahw',
+  ɔpaw: 'aw-pahw',
   paw: 'pahw',
-  bɛfa: 'behfah',
-  animuonyam: 'ahnee-moo-ohnyahm',
+  bɛfa: 'beh-fah',
+  animuonyam: 'ahneemoo-ohnyahm',
   anuonyam: 'ahnoo-ohnyahm',
   ayeyie: 'ahyeh-yee-eh',
   ayeyi: 'ahyeh-yee',
-  mogya: 'mohjah',
+  mogya: 'moh-jah',
   nya: 'nyah',
-  mennyae: 'mehn-nyah-eh',
-  ahonya: 'ah-hohnyah',
-  boroo: 'bohroh',
-  ɛboroo: 'eh-bohroh',
+  mennyae: 'mehn-nyaheh',
+  ahonya: 'ahhoh-nyah',
+  boroo: 'boh-roh',
+  ɛboroo: 'ehboh-roh',
   ɔdaa: 'awdah-ah',
-  nhyehyɛeɛ: 'ensheh-sheh-eh',
-  nhyehyɛe: 'ensheh-sheh-eh',
+  nhyehyɛeɛ: 'ensheh-sheheh',
+  nhyehyɛe: 'ensheh-sheheh',
   ɛwie: 'ehwee-eh',
   ewie: 'ehwee-eh',
-  abom: 'ahbohm',
+  abom: 'ah-bohm',
   nnoɔma: 'ennaw-mah',
   nneɛma: 'enneh-mah',
-  agyapadeɛ: 'ahjah-pahdeh-eh',
+  agyapadeɛ: 'ahjah-pahdeh',
   agyapade: 'ahjah-pahdeh',
   agyinatuo: 'ahjeenah-too-oh',
   agyinatu: 'ahjeenah-too',
   botaeɛ: 'bohtah-eh',
   botae: 'bohtah-eh',
-  ato: 'ahtoh',
+  ato: 'ah-toh',
   nokorɛ: 'nohkoh-reh',
   nokware: 'nohkwah-reh',
   bɔhyɛ: 'baw-sheh',
-  ano: 'ahnoh',
-  nnyinasodeɛ: 'enyeenah-sohdeh-eh',
+  ano: 'ah-noh',
+  nnyinasodeɛ: 'enyeenah-sohdeh',
   nnyinasode: 'enyeenah-sohdeh',
-  aso: 'ahsoh',
+  aso: 'ah-soh',
   din: 'deen',
-  mebɔ: 'mehbaw',
-  wɔbɔ: 'wawbaw',
+  mebɔ: 'meh-baw',
+  wɔbɔ: 'waw-baw',
   nimdeɛ: 'neemdeh-eh',
-  akoma: 'ahkohmah',
+  akoma: 'ahkoh-mah',
   ɔmma: 'awmmah',
-  anidasoɔ: 'ahneedah-soh-aw',
+  anidasoɔ: 'ahneedah-sohaw',
   anidaso: 'ahneedah-soh',
-  tumi: 'toomee',
-  tumidie: 'toomee-dee-eh',
+  tumi: 'too-mee',
+  tumidie: 'toomee-deeeh',
   kɛseyɛ: 'kehseh-yeh',
-  ɛtra: 'ehtrah',
-  ahoɔden: 'ah-haw-dehn',
-  adwuma: 'ahjwoomah',
-  ɔnyanee: 'aw-nyahneh',
-  awufoɔ: 'ahwoofaw',
-  awufo: 'ahwoofoh',
+  ɛtra: 'eh-trah',
+  ahoɔden: 'ahhaw-dehn',
+  adwuma: 'ahjwoo-mah',
+  ɔnyanee: 'awnyah-neh',
+  awufoɔ: 'ahwoo-faw',
+  awufo: 'ahwoo-foh',
   tenaa: 'tehnah-ah',
   tenenee: 'tehneh-neh',
-  teneneeni: 'tehneh-neh-nee',
-  nifa: 'neefah',
-  mpanyinnie: 'empah-nyeen-nee-eh',
-  awuradie: 'ahwoorah-dee-eh',
-  ɛreba: 'eh-rehbah',
-  agu: 'ahgoo',
+  teneneeni: 'tehneh-nehnee',
+  nifa: 'nee-fah',
+  mpanyinnie: 'empahnyeen-neeeh',
+  awuradie: 'ahwoorah-deeeh',
+  ɛreba: 'ehreh-bah',
+  agu: 'ah-goo',
   nan: 'nahn',
-  ase: 'ahseh',
-  asafo: 'ahsahfoh',
-  nipadua: 'neepah-doo-ah',
-  onipa: 'ohneepah',
-  suban: 'soobahn',
-  ɔhyɛ: 'awsheh',
+  ase: 'ah-seh',
+  asafo: 'ahsah-foh',
+  nipadua: 'neepah-dooah',
+  onipa: 'ohnee-pah',
+  suban: 'soo-bahn',
+  ɔhyɛ: 'aw-sheh',
   mã: 'mah',
   mãhyɛ: 'mah-sheh',
 };
@@ -536,7 +649,6 @@ export function getSpokenBookNameForTwi(bookName: string): string {
   if (SPOKEN_TWI_BOOK_NAMES[clean]) {
     return SPOKEN_TWI_BOOK_NAMES[clean];
   }
-  // Handle numbered books like "1 Samuel", "2 Korintofoɔ", "1 Yohane"
   const numMatch = clean.match(/^([123])\s+(.+)$/);
   if (numMatch) {
     const [, numStr, rest] = numMatch;
@@ -623,7 +735,6 @@ export function transphonemizeTwiWord(rawWord: string): string {
   }
 
   // Step 2C: Authentic Akan Open Vowels (ɔ = aw, ɛ = eh)
-  // Double open vowels first so bɔɔ -> baw-aw, frɛɛ -> freh-eh
   phon = phon.replace(/[ɔ\u0254]{2}/g, 'aw-aw');
   phon = phon.replace(/[ɛ\u025B]{2}/g, 'eh-eh');
   phon = phon.replace(/[ɔ\u0254]/g, 'aw');

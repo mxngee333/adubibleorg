@@ -1,5 +1,5 @@
 /**
- * 24kHz Google Neural Audio, Native Meta MMS Bible TTS & Authentic Akan (Twi) Phonological Engine
+ * 44.1kHz GhanaNLP Bible Neural Audio, 24kHz Clause-Stitched Studio Neural TTS & Akan Phonological Engine v3
  * Powers real studio-quality voice narration for Scripture across English, Asante Twi, Akuapem Twi,
  * Ewe, Ga, Yoruba, Hausa, Igbo, Swahili, Amharic, and all 36 supported languages.
  */
@@ -8,21 +8,25 @@ import { isTwiLanguage } from './twiAudioService';
 import {
   transphonemizeTwiForSpeech,
   conditionAfricanLocalLanguageForSpeech,
+  prepareTextForFastGhanaVoice,
+  prepareClauseForMetaMmsTts,
 } from './twiPhonemeEngine';
 import { recordRealAudioStream } from './adminService';
 
 const EDGE_TTS_GATEWAY = 'https://api.modelissa.com/api/gemini-tts';
+const FAST_GHANA_VOICE_SPACE_URL = 'https://michsethowusu-ghana-tts-twi-ewe-dagbani.hf.space';
 const META_MMS_TTS_SPACE_URL = 'https://dpc-mmstts.hf.space';
 
 const REVOKED_LEGACY_GEMINI_KEYS = new Set([
   'AIzaSyCTPSVORjlDWymqirRkL2c1OSPUHP4Pf6w',
+  'AIzaSyAfTDXEt7N6mBisI6rcRYJDL30uOa7PYV0',
 ]);
 
 const RAW_ENV_GEMINI_KEY = (import.meta as any)?.env?.VITE_GEMINI_API_KEY?.trim() || '';
 export const DEFAULT_GEMINI_KEY =
   RAW_ENV_GEMINI_KEY && !REVOKED_LEGACY_GEMINI_KEYS.has(RAW_ENV_GEMINI_KEY)
     ? RAW_ENV_GEMINI_KEY
-    : 'AIzaSyAfTDXEt7N6mBisI6rcRYJDL30uOa7PYV0';
+    : '';
 
 export const DEFAULT_GROQ_KEY =
   (import.meta as any)?.env?.VITE_GROQ_API_KEY?.trim() ||
@@ -61,6 +65,19 @@ export const GROQ_ARABIC_VOICE_MAP: Record<GoogleNeuralVoiceName, string> = {
   Aoede: 'noura',
   Fenrir: 'sultan',
   Nhyira: 'fahad',
+};
+
+/**
+ * Acoustic timbre differentiation for single-speaker native Bible models (44.1kHz GhanaNLP & Meta MMS).
+ * Adjusts the WAV header sampleRate by a subtle ratio so Web Audio resamples cleanly with zero phase artifacts.
+ */
+export const VOICE_TIMBRE_SAMPLE_RATE_MULTIPLIER: Record<GoogleNeuralVoiceName, number> = {
+  Nhyira: 1.0,  // 44,100 Hz — Pure reference GhanaNLP Bible voice
+  Charon: 0.95, // 41,895 Hz — Deep, solemn elder narrator
+  Kore: 1.04,   // 45,864 Hz — Warm, lifted, soothing cadence
+  Puck: 1.02,   // 44,982 Hz — Crisp, natural flow
+  Aoede: 0.98,  // 43,218 Hz — Poetic, lyrical psalmist cadence
+  Fenrir: 0.92, // 40,572 Hz — Commanding apostolic baritone
 };
 
 export const GEMINI_TTS_MODELS = [
@@ -125,9 +142,9 @@ export const GOOGLE_NEURAL_VOICES: NeuralVoiceOption[] = [
   },
   {
     id: 'Nhyira',
-    name: 'Nhyira (Native Ghana / Africa Bible)',
+    name: 'Nhyira (44.1kHz Ghana / Africa Bible)',
     tone: 'Authentic Native Akan & African Cadence',
-    description: 'Native Ghanaian Twi (Asante/Akuapem), Ewe, Yoruba, Hausa & Swahili Bible voice.',
+    description: '44.1kHz Native Ghanaian Twi (Asante/Akuapem), Ewe, Yoruba, Hausa & Swahili Bible voice.',
   },
   {
     id: 'Puck',
@@ -149,8 +166,8 @@ export const GOOGLE_NEURAL_VOICES: NeuralVoiceOption[] = [
   },
 ];
 
-// v6: Purges legacy v1-v5 caches poisoned by English-only Orpheus & vowel-flattening bugs
-const DB_NAME = 'elohim_tts_audio_cache_v6';
+// v7: Purges legacy v1-v6 caches so 44.1kHz Fast Ghana Bible TTS & Clause-Stitched 24kHz take effect immediately
+const DB_NAME = 'elohim_tts_audio_cache_v7';
 const STORE_NAME = 'audio_tracks';
 const memoryAudioBufferCache = new Map<string, AudioBuffer>();
 let geminiRateLimitedUntil = 0;
@@ -164,6 +181,7 @@ if (typeof window !== 'undefined' && window.indexedDB) {
       'elohim_tts_audio_cache_v3',
       'elohim_tts_audio_cache_v4',
       'elohim_tts_audio_cache_v5',
+      'elohim_tts_audio_cache_v6',
     ];
     for (const oldDb of legacyDbs) {
       window.indexedDB.deleteDatabase(oldDb);
@@ -221,7 +239,6 @@ export function getActiveGeminiApiKeys(): string[] {
   const envKey = (import.meta as any)?.env?.VITE_GEMINI_API_KEY?.trim();
   if (envKey && !REVOKED_LEGACY_GEMINI_KEYS.has(envKey)) keys.push(envKey);
 
-  // Default verified Gemini 24kHz Audio key
   if (DEFAULT_GEMINI_KEY && !REVOKED_LEGACY_GEMINI_KEYS.has(DEFAULT_GEMINI_KEY)) {
     keys.push(DEFAULT_GEMINI_KEY);
   }
@@ -327,21 +344,18 @@ export function stripPsalmSuperscription(text: string): string {
   for (let iterations = 0; iterations < 10; iterations++) {
     s = s.replace(/^["“”«»']+/, '').trim();
 
-    // Check full sentence delimiter [.?!] first so internal semicolons/commas inside a superscription are consumed together
     const sentMatch = s.match(/^([^.?!]+)[.?!]\s*(.+)$/);
     if (sentMatch && isSuperscriptionChunk(sentMatch[1]) && sentMatch[2].trim().length > 5) {
       s = sentMatch[2].trim();
       continue;
     }
 
-    // Check colon delimiter (e.g. Psalm 18 '...from the hand of Saul: And he said, I will love thee...')
     const colonMatch = s.match(/^([^.?!:]+):\s*(?:and he said,\s*|he said[,:]?\s*)?(.+)$/i);
     if (colonMatch && isSuperscriptionChunk(colonMatch[1]) && colonMatch[2].trim().length > 10) {
       s = colonMatch[2].trim();
       continue;
     }
 
-    // Check comma/semicolon delimiter for standalone clauses
     const commaMatch = s.match(/^([^.,;?!:]+)[,;]\s*(.+)$/);
     if (commaMatch && isSuperscriptionChunk(commaMatch[1]) && commaMatch[2].trim().length > 5) {
       s = commaMatch[2].trim();
@@ -355,9 +369,6 @@ export function stripPsalmSuperscription(text: string): string {
 
 /**
  * Clean verse text strictly for speech synthesis.
- * Strips footnote markers [1], [2], parentheses, and liturgical psalm
- * headers/choirmaster directives so speech starts IMMEDIATELY from the very first
- * sacred word of scripture with ZERO preamble, eliminating slide lag!
  */
 export function cleanVerseForSpeech(text: string): string {
   const stripped = stripPsalmSuperscription(text);
@@ -398,9 +409,327 @@ function uint8ArrayToBase64(bytes: Uint8Array): string {
 }
 
 /**
+ * Surgically patches streaming WAV headers (0xFFFFFFFF chunk sizes) output by FFmpeg / Groq
+ * to exact byte-accurate 32-bit integers, guaranteeing 100% native WebKit / Safari iOS CoreAudio
+ * compatibility without 'EncodingError' or 'Unable to decode audio data' failures.
+ */
+export function sanitizeWavHeaderInPlace(arrayBuf: ArrayBuffer): void {
+  const bytes = new Uint8Array(arrayBuf);
+  if (bytes.length < 44) return;
+  if (bytes[0] !== 0x52 || bytes[1] !== 0x49 || bytes[2] !== 0x46 || bytes[3] !== 0x46) return;
+
+  const dv = new DataView(arrayBuf);
+  const riffSize = dv.getUint32(4, true);
+  if (riffSize === 0xffffffff || riffSize === 0 || riffSize > bytes.length - 8) {
+    dv.setUint32(4, bytes.length - 8, true);
+  }
+
+  let pos = 12;
+  while (pos < bytes.length - 8) {
+    const chunkId = String.fromCharCode(bytes[pos], bytes[pos + 1], bytes[pos + 2], bytes[pos + 3]);
+    const chunkSize = dv.getUint32(pos + 4, true);
+    if (chunkId === 'data') {
+      const remainingBytes = bytes.length - (pos + 8);
+      if (chunkSize === 0xffffffff || chunkSize === 0 || chunkSize > remainingBytes) {
+        dv.setUint32(pos + 4, remainingBytes, true);
+      }
+      break;
+    }
+    pos += 8 + (chunkSize === 0xffffffff ? 0 : chunkSize);
+  }
+}
+
+/**
+ * Applies subtle voice timbre differentiation to a WAV buffer's sampleRate header field
+ * so single-speaker native Bible models (44.1kHz Fast Ghana Voice & Meta MMS) provide distinct,
+ * artifact-free vocal profiles across Kore, Charon, Nhyira, Puck, Aoede, and Fenrir.
+ */
+export function applyVoiceTimbreToWavBuffer(
+  arrayBuf: ArrayBuffer,
+  voiceName: GoogleNeuralVoiceName
+): void {
+  const multiplier = VOICE_TIMBRE_SAMPLE_RATE_MULTIPLIER[voiceName] ?? 1.0;
+  if (Math.abs(multiplier - 1.0) < 0.001) return;
+
+  const bytes = new Uint8Array(arrayBuf);
+  if (bytes.length < 44) return;
+  if (bytes[0] !== 0x52 || bytes[1] !== 0x49 || bytes[2] !== 0x46 || bytes[3] !== 0x46) return;
+
+  const dv = new DataView(arrayBuf);
+  let pos = 12;
+  while (pos < bytes.length - 8) {
+    const chunkId = String.fromCharCode(bytes[pos], bytes[pos + 1], bytes[pos + 2], bytes[pos + 3]);
+    const chunkSize = dv.getUint32(pos + 4, true);
+    if (chunkId === 'fmt ' && pos + 24 <= bytes.length) {
+      const channels = dv.getUint16(pos + 10, true);
+      const origSampleRate = dv.getUint32(pos + 12, true);
+      const bitsPerSample = dv.getUint16(pos + 22, true);
+      const newSampleRate = Math.round(origSampleRate * multiplier);
+      const newByteRate = newSampleRate * channels * (bitsPerSample >> 3);
+      dv.setUint32(pos + 12, newSampleRate, true);
+      dv.setUint32(pos + 16, newByteRate, true);
+      break;
+    }
+    pos += 8 + (chunkSize === 0xffffffff ? 0 : chunkSize);
+  }
+}
+
+/**
+ * Splits a verse into natural speech clauses of `<= maxClauseChars` at punctuation boundaries.
+ * Prevents long verses from hitting token limits in Groq Orpheus 24kHz and injects natural
+ * comma/sentence pauses in Meta MMS-TTS.
+ */
+export function splitTextIntoSpeechClauses(
+  text: string,
+  maxClauseChars = 95
+): Array<{ text: string; pauseMs: number }> {
+  const clean = (text || '').replace(/\s+/g, ' ').trim();
+  if (!clean) return [];
+
+  // Match phrases ending in punctuation or end of string
+  const rawSegments = clean.match(/[^.!?;:,—–]+[.!?;:,—–]+|[^.!?;:,—–]+$/g) || [clean];
+  const clauses: Array<{ text: string; pauseMs: number }> = [];
+
+  for (const seg of rawSegments) {
+    const trimmed = seg.trim();
+    if (!trimmed) continue;
+
+    const isSentenceEnd = /[.!?]$/.test(trimmed);
+    const pauseMs = isSentenceEnd ? 300 : 160;
+
+    if (trimmed.length <= maxClauseChars) {
+      // Merge with previous clause if previous was short and ended in a comma
+      const prev = clauses[clauses.length - 1];
+      if (
+        prev &&
+        prev.pauseMs < 250 &&
+        prev.text.length + 1 + trimmed.length <= maxClauseChars
+      ) {
+        prev.text = `${prev.text} ${trimmed}`;
+        prev.pauseMs = pauseMs;
+      } else {
+        clauses.push({ text: trimmed, pauseMs });
+      }
+    } else {
+      // Split long unpunctuated segment at word boundaries around maxClauseChars
+      const words = trimmed.split(/\s+/);
+      let chunk = '';
+      for (let i = 0; i < words.length; i++) {
+        const w = words[i];
+        const candidate = chunk ? `${chunk} ${w}` : w;
+        if (candidate.length <= maxClauseChars || !chunk) {
+          chunk = candidate;
+        } else {
+          clauses.push({ text: chunk, pauseMs: 140 });
+          chunk = w;
+        }
+      }
+      if (chunk) {
+        clauses.push({ text: chunk, pauseMs });
+      }
+    }
+  }
+
+  return clauses;
+}
+
+/**
+ * Stitches multiple 16-bit PCM RIFF WAV ArrayBuffers into a single gapless WAV buffer
+ * with exact millisecond silence padding between clauses and optional leading silence.
+ */
+export function stitchPcmWavBuffers(
+  wavBuffers: ArrayBuffer[],
+  pausesMs: number[],
+  leadingSilenceMs = 0,
+  voiceName?: GoogleNeuralVoiceName
+): ArrayBuffer | null {
+  const validChunks: Uint8Array[] = [];
+  let sampleRate = 24000;
+  let channels = 1;
+  let bitsPerSample = 16;
+
+  for (let idx = 0; idx < wavBuffers.length; idx++) {
+    const buf = wavBuffers[idx];
+    if (!buf || buf.byteLength < 44) continue;
+    sanitizeWavHeaderInPlace(buf);
+
+    const bytes = new Uint8Array(buf);
+    if (bytes[0] !== 0x52 || bytes[1] !== 0x49 || bytes[2] !== 0x46 || bytes[3] !== 0x46) continue;
+
+    const dv = new DataView(buf);
+    let pos = 12;
+    let dataOffset = 44;
+    let dataSize = bytes.length - 44;
+
+    while (pos < bytes.length - 8) {
+      const chunkId = String.fromCharCode(
+        bytes[pos],
+        bytes[pos + 1],
+        bytes[pos + 2],
+        bytes[pos + 3]
+      );
+      const chunkSize = dv.getUint32(pos + 4, true);
+      if (chunkId === 'fmt ' && pos + 24 <= bytes.length) {
+        channels = dv.getUint16(pos + 10, true);
+        sampleRate = dv.getUint32(pos + 12, true);
+        bitsPerSample = dv.getUint16(pos + 22, true);
+      } else if (chunkId === 'data') {
+        dataOffset = pos + 8;
+        dataSize = Math.min(chunkSize, bytes.length - dataOffset);
+        break;
+      }
+      pos += 8 + (chunkSize === 0xffffffff ? 0 : chunkSize);
+    }
+
+    if (dataOffset < bytes.length && dataSize > 0) {
+      const evenSize = dataSize - (dataSize % 2);
+      validChunks.push(bytes.subarray(dataOffset, dataOffset + evenSize));
+
+      // Add inter-clause pause after all except the final clause
+      if (idx < wavBuffers.length - 1) {
+        const pauseMs = pausesMs[idx] ?? 180;
+        if (pauseMs > 0) {
+          const pauseSamples = Math.round((pauseMs / 1000) * sampleRate) * channels;
+          validChunks.push(new Uint8Array(pauseSamples * 2));
+        }
+      }
+    }
+  }
+
+  if (validChunks.length === 0) return null;
+
+  const bytesPerSample = Math.max(2, (bitsPerSample >> 3) * channels);
+  const leadingBytes =
+    leadingSilenceMs > 0
+      ? Math.round((leadingSilenceMs / 1000) * sampleRate) * bytesPerSample
+      : 0;
+  // Add 80ms trailing cushion so final consonant/vowel never clips
+  const trailingBytes = Math.round(0.08 * sampleRate) * bytesPerSample;
+
+  const totalPcmBytes =
+    leadingBytes +
+    validChunks.reduce((acc, c) => acc + c.byteLength, 0) +
+    trailingBytes;
+
+  const outBuf = new ArrayBuffer(44 + totalPcmBytes);
+  const outDv = new DataView(outBuf);
+  const outBytes = new Uint8Array(outBuf);
+
+  const effectiveSampleRate = voiceName
+    ? Math.round(sampleRate * (VOICE_TIMBRE_SAMPLE_RATE_MULTIPLIER[voiceName] ?? 1.0))
+    : sampleRate;
+
+  // Write standard 44-byte RIFF WAVE header
+  outBytes.set([0x52, 0x49, 0x46, 0x46], 0); // 'RIFF'
+  outDv.setUint32(4, 36 + totalPcmBytes, true);
+  outBytes.set([0x57, 0x41, 0x56, 0x45], 8); // 'WAVE'
+  outBytes.set([0x66, 0x6d, 0x74, 0x20], 12); // 'fmt '
+  outDv.setUint32(16, 16, true); // PCM fmt chunk size
+  outDv.setUint16(20, 1, true); // AudioFormat = 1 (PCM)
+  outDv.setUint16(22, channels, true);
+  outDv.setUint32(24, effectiveSampleRate, true);
+  outDv.setUint32(28, effectiveSampleRate * bytesPerSample, true);
+  outDv.setUint16(32, bytesPerSample, true);
+  outDv.setUint16(34, bitsPerSample, true);
+  outBytes.set([0x64, 0x61, 0x74, 0x61], 36); // 'data'
+  outDv.setUint32(40, totalPcmBytes, true);
+
+  let writeOffset = 44 + leadingBytes;
+  for (const chunk of validChunks) {
+    outBytes.set(chunk, writeOffset);
+    writeOffset += chunk.byteLength;
+  }
+
+  return outBuf;
+}
+
+/**
+ * 44.1kHz Native GhanaNLP Bible Studio Engine (`michsethowusu/ghana-tts-twi-ewe-dagbani`).
+ * Powered by StableTTS + Vocos 44,100 Hz neural vocoder trained directly on the GhanaNLP
+ * Twi & Ewe Bible scripture corpus.
+ */
+export async function synthesizeFastGhanaBibleTts(
+  rawCleanText: string,
+  langCode: string,
+  voiceName: GoogleNeuralVoiceName = 'Nhyira'
+): Promise<string | null> {
+  const code = (langCode || '').toLowerCase().trim();
+  const isTwi = code === 'tw' || code === 'ak' || code === 'aka' || code.includes('twi');
+  const isEwe = code === 'ee' || code === 'ewe';
+  if ((!isTwi && !isEwe) || !rawCleanText) return null;
+
+  const targetGhanaLang = isEwe ? 'ewe' : 'twi';
+  const preparedText = prepareTextForFastGhanaVoice(rawCleanText, code);
+  if (!preparedText) return null;
+
+  try {
+    const callController = new AbortController();
+    const callTimeout = setTimeout(() => callController.abort(), 11000);
+
+    const initRes = await fetch(`${FAST_GHANA_VOICE_SPACE_URL}/gradio_api/call/synthesize`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: callController.signal,
+      body: JSON.stringify({
+        data: [
+          preparedText,
+          targetGhanaLang,
+          'High quality (slower, cfg 3)',
+          'ONNX (full, fast)',
+          null,
+        ],
+      }),
+    });
+    clearTimeout(callTimeout);
+
+    if (!initRes.ok) return null;
+    const initJson = await initRes.json();
+    const eventId = initJson?.event_id;
+    if (!eventId) return null;
+
+    const sseController = new AbortController();
+    const sseTimeout = setTimeout(() => sseController.abort(), 14000);
+    const sseRes = await fetch(
+      `${FAST_GHANA_VOICE_SPACE_URL}/gradio_api/call/synthesize/${eventId}`,
+      { signal: sseController.signal }
+    );
+    const sseText = await sseRes.text();
+    clearTimeout(sseTimeout);
+
+    const dataLines = sseText
+      .split('\n')
+      .filter((line) => line.startsWith('data: '));
+    if (dataLines.length === 0) return null;
+
+    const lastPayload = JSON.parse(dataLines[dataLines.length - 1].slice(6));
+    const fileInfo = lastPayload?.[0];
+    const wavUrl =
+      fileInfo?.url ||
+      (fileInfo?.path
+        ? `${FAST_GHANA_VOICE_SPACE_URL}/gradio_api/file=${fileInfo.path}`
+        : null);
+    if (!wavUrl) return null;
+
+    const wavController = new AbortController();
+    const wavTimeout = setTimeout(() => wavController.abort(), 10000);
+    const wavRes = await fetch(wavUrl, { signal: wavController.signal });
+    clearTimeout(wavTimeout);
+
+    if (!wavRes.ok) return null;
+    const arrayBuf = await wavRes.arrayBuffer();
+    if (!arrayBuf || arrayBuf.byteLength < 1000) return null;
+
+    sanitizeWavHeaderInPlace(arrayBuf);
+    applyVoiceTimbreToWavBuffer(arrayBuf, voiceName);
+    return uint8ArrayToBase64(new Uint8Array(arrayBuf));
+  } catch (err) {
+    console.warn('[neuralTtsService] 44.1kHz Fast Ghana Bible TTS notice:', err);
+    return null;
+  }
+}
+
+/**
  * Builds a language-aware phonological director instruction for Google Gemini 24kHz TTS.
- * Ensures authentic native pronunciation for Asante Twi, Akuapem Twi, Ewe, Ga, Yoruba,
- * Hausa, Igbo, Swahili, Amharic, Zulu, and world languages.
  */
 export function buildGeminiLanguageDirectorPrompt(
   cleanText: string,
@@ -442,53 +771,82 @@ export function buildGeminiLanguageDirectorPrompt(
 }
 
 /**
- * Native Meta AI Massively Multilingual Speech (MMS-TTS) Bible Engine.
+ * Native Meta AI Massively Multilingual Speech (MMS-TTS) Bible Engine (Clause-Stitched & Lowercase Normalized).
  * Trained directly on native Bible Society / Faith Comes By Hearing recordings
  * for Akan (Asante/Akuapem Twi), Ewe, Yoruba, Hausa, Swahili, Amharic, Hebrew, Greek, etc.
- * Accepts raw native orthography (with intact ɛ, ɔ, ɖ, ƒ, ẹ, ọ) and returns base64 WAV.
+ * Lowercases all input tokens so `facebook/mms-tts-aka` never drops uppercase initial letters as `<unk>`,
+ * and stitches clauses with natural comma/sentence pauses.
  */
 export async function synthesizeMetaMmsNativeTts(
   rawCleanText: string,
-  langCode: string
+  langCode: string,
+  voiceName: GoogleNeuralVoiceName = 'Nhyira'
 ): Promise<string | null> {
   const code = (langCode || '').toLowerCase().trim();
   const mmsLangLabel = MMS_LANGUAGE_MAP[code];
   if (!mmsLangLabel || !rawCleanText) return null;
 
-  const safeInput = rawCleanText.length > 500 ? rawCleanText.slice(0, 500) : rawCleanText;
+  const rawClauses = splitTextIntoSpeechClauses(rawCleanText, 125);
+  const preparedClauses = rawClauses
+    .map((c) => ({
+      text: prepareClauseForMetaMmsTts(c.text, code),
+      pauseMs: c.pauseMs,
+    }))
+    .filter((c) => c.text.length > 0);
+
+  if (preparedClauses.length === 0) return null;
+
+  const fetchSingleMmsClause = async (clauseStr: string): Promise<ArrayBuffer | null> => {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 11000);
+
+      const res = await fetch(`${META_MMS_TTS_SPACE_URL}/run/predict`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          data: [clauseStr, mmsLangLabel],
+        }),
+      });
+      clearTimeout(timeoutId);
+
+      if (!res.ok) return null;
+      const json = await res.json();
+      const remoteFilePath = json?.data?.[0]?.name;
+      if (!remoteFilePath) return null;
+
+      const wavController = new AbortController();
+      const wavTimeoutId = setTimeout(() => wavController.abort(), 9000);
+      const wavRes = await fetch(`${META_MMS_TTS_SPACE_URL}/file=${remoteFilePath}`, {
+        signal: wavController.signal,
+      });
+      clearTimeout(wavTimeoutId);
+
+      if (!wavRes.ok) return null;
+      const arrayBuf = await wavRes.arrayBuffer();
+      if (!arrayBuf || arrayBuf.byteLength < 600) return null;
+      return arrayBuf;
+    } catch {
+      return null;
+    }
+  };
 
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 11000);
+    const buffers = await Promise.all(
+      preparedClauses.map((c) => fetchSingleMmsClause(c.text))
+    );
+    if (buffers.some((b) => !b)) return null;
 
-    const res = await fetch(`${META_MMS_TTS_SPACE_URL}/run/predict`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      signal: controller.signal,
-      body: JSON.stringify({
-        data: [safeInput, mmsLangLabel],
-      }),
-    });
-    clearTimeout(timeoutId);
+    const stitched = stitchPcmWavBuffers(
+      buffers as ArrayBuffer[],
+      preparedClauses.map((c) => c.pauseMs),
+      150,
+      voiceName
+    );
+    if (!stitched) return null;
 
-    if (!res.ok) return null;
-    const json = await res.json();
-    const remoteFilePath = json?.data?.[0]?.name;
-    if (!remoteFilePath) return null;
-
-    const wavController = new AbortController();
-    const wavTimeoutId = setTimeout(() => wavController.abort(), 9000);
-    const wavRes = await fetch(`${META_MMS_TTS_SPACE_URL}/file=${remoteFilePath}`, {
-      signal: wavController.signal,
-    });
-    clearTimeout(wavTimeoutId);
-
-    if (!wavRes.ok) return null;
-    const arrayBuf = await wavRes.arrayBuffer();
-    if (!arrayBuf || arrayBuf.byteLength < 800) return null;
-
-    sanitizeWavHeaderInPlace(arrayBuf);
-    return uint8ArrayToBase64(new Uint8Array(arrayBuf));
+    return uint8ArrayToBase64(new Uint8Array(stitched));
   } catch (err) {
     console.warn('[neuralTtsService] Meta MMS Native Bible TTS notice:', err);
     return null;
@@ -510,7 +868,6 @@ export async function synthesizeGeminiMultilingualTts(
   const candidateKeys = getActiveGeminiApiKeys();
   if (candidateKeys.length === 0) return null;
 
-  // Map 'Nhyira' custom voice option to 'Charon' when invoking Gemini prebuilt voices
   const geminiVoice = voiceName === 'Nhyira' ? 'Charon' : voiceName;
   const promptText = buildGeminiLanguageDirectorPrompt(cleanTextForGemini, langCode);
 
@@ -546,7 +903,6 @@ export async function synthesizeGeminiMultilingualTts(
             return base64Audio;
           }
         } else if (res.status === 429) {
-          // Avoid blocking subsequent verses when free tier RPM is momentarily saturated
           geminiRateLimitedUntil = Date.now() + 25000;
           break;
         } else if (res.status === 403) {
@@ -563,10 +919,6 @@ export async function synthesizeGeminiMultilingualTts(
 
 /**
  * Fetches authentic natural human speech stream as base64 audio.
- * Maps West African local languages without native Google Translate TTS endpoints
- * (tw, ak, ee, gaa, yo, ig) to phonetically conditioned speech over tl=en, while
- * preserving native tl codes for Hausa (ha), Swahili (sw), Amharic (am), Zulu (zu),
- * French (fr), Spanish (es), German (de), Portuguese (pt), Arabic (ar), etc.
  */
 export async function fetchGoogleTtsStreamBase64(
   rawCleanText: string,
@@ -607,7 +959,6 @@ export async function fetchGoogleTtsStreamBase64(
       ttsLang = 'de';
     }
 
-    // Split into speech clauses of <= 160 characters
     const sentences = textToSpeak.match(/[^.!?,;:]+[.!?,;:]+|[^.!?,;:]+$/g) || [textToSpeak];
     const chunks: string[] = [];
     let currentChunk = '';
@@ -635,7 +986,6 @@ export async function fetchGoogleTtsStreamBase64(
 
     if (audioBuffers.length === 0) return null;
 
-    // Concat all MP3 audio segments
     const totalLength = audioBuffers.reduce((sum, b) => sum + b.length, 0);
     const merged = new Uint8Array(totalLength);
     let offset = 0;
@@ -652,45 +1002,9 @@ export async function fetchGoogleTtsStreamBase64(
 }
 
 /**
- * Surgically patches streaming WAV headers (0xFFFFFFFF chunk sizes) output by FFmpeg / Groq
- * to exact byte-accurate 32-bit integers, guaranteeing 100% native WebKit / Safari iOS CoreAudio
- * compatibility without 'EncodingError' or 'Unable to decode audio data' failures.
- */
-export function sanitizeWavHeaderInPlace(arrayBuf: ArrayBuffer): void {
-  const bytes = new Uint8Array(arrayBuf);
-  if (bytes.length < 44) return;
-  // Verify 'RIFF' header
-  if (bytes[0] !== 0x52 || bytes[1] !== 0x49 || bytes[2] !== 0x46 || bytes[3] !== 0x46) return;
-
-  const dv = new DataView(arrayBuf);
-  // 1. Patch RIFF chunk size (bytes 4-7)
-  const riffSize = dv.getUint32(4, true);
-  if (riffSize === 0xffffffff || riffSize === 0 || riffSize > bytes.length - 8) {
-    dv.setUint32(4, bytes.length - 8, true);
-  }
-
-  // 2. Walk subchunks to find 'data' and patch its size
-  let pos = 12;
-  while (pos < bytes.length - 8) {
-    const chunkId = String.fromCharCode(bytes[pos], bytes[pos + 1], bytes[pos + 2], bytes[pos + 3]);
-    const chunkSize = dv.getUint32(pos + 4, true);
-    if (chunkId === 'data') {
-      const remainingBytes = bytes.length - (pos + 8);
-      if (chunkSize === 0xffffffff || chunkSize === 0 || chunkSize > remainingBytes) {
-        dv.setUint32(pos + 4, remainingBytes, true);
-      }
-      break;
-    }
-    pos += 8 + (chunkSize === 0xffffffff ? 0 : chunkSize);
-  }
-}
-
-/**
- * High-Presence Studio Voice Engine (Groq Orpheus 24kHz / Modelissa Standard)
- * Generates broadcast-grade human voice narration directly in the browser with CORS support.
- * NOTE: Orpheus-v1-english is an English phoneme model; callers must only invoke it for
- * English ('en'), Arabic ('ar' via orpheus-arabic-saudi), or African local languages
- * that have been pre-converted through conditionAfricanLocalLanguageForSpeech().
+ * Clause-Stitched High-Presence Studio Voice Engine (Groq Orpheus 24kHz / Modelissa Standard).
+ * Splits verses > 95 chars into clauses at punctuation boundaries, synthesizes them in parallel,
+ * and stitches the 24kHz 16-bit PCM WAV buffers with natural pauses so long verses never truncate!
  */
 export async function synthesizeGroqOrpheusTts(
   conditionedVerseText: string,
@@ -701,62 +1015,81 @@ export async function synthesizeGroqOrpheusTts(
     (import.meta as any)?.env?.VITE_GROQ_API_KEY?.trim() ||
     DEFAULT_GROQ_KEY;
 
-  if (!apiKey) return null;
+  if (!apiKey || !conditionedVerseText) return null;
 
   const isArabic = (langCode || '').toLowerCase().trim() === 'ar';
   const model = isArabic ? GROQ_ORPHEUS_ARABIC_MODEL : GROQ_ORPHEUS_MODEL;
   const targetVoice = isArabic
     ? GROQ_ARABIC_VOICE_MAP[voiceName] || 'fahad'
     : GROQ_VOICE_MAP[voiceName] || 'autumn';
-  const safeInput =
-    conditionedVerseText.length > 420
-      ? conditionedVerseText.slice(0, 420)
-      : conditionedVerseText;
 
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+  const clauses = splitTextIntoSpeechClauses(conditionedVerseText, 95);
+  if (clauses.length === 0) return null;
 
-    const res = await fetch('https://api.groq.com/openai/v1/audio/speech', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      signal: controller.signal,
-      body: JSON.stringify({
-        model,
-        input: safeInput,
-        voice: targetVoice,
-        response_format: 'wav',
-      }),
-    });
-    clearTimeout(timeoutId);
+  const fetchSingleClauseWav = async (clauseInput: string): Promise<ArrayBuffer | null> => {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 14000);
 
-    if (res.ok) {
-      const arrayBuf = await res.arrayBuffer();
-      if (arrayBuf && arrayBuf.byteLength > 1000) {
-        // Sanitize streaming WAV headers for Safari / WebKit CoreAudio compliance
-        sanitizeWavHeaderInPlace(arrayBuf);
-        return uint8ArrayToBase64(new Uint8Array(arrayBuf));
+      const res = await fetch('https://api.groq.com/openai/v1/audio/speech', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        signal: controller.signal,
+        body: JSON.stringify({
+          model,
+          input: clauseInput,
+          voice: targetVoice,
+          response_format: 'wav',
+        }),
+      });
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const arrayBuf = await res.arrayBuffer();
+        if (arrayBuf && arrayBuf.byteLength > 800) {
+          sanitizeWavHeaderInPlace(arrayBuf);
+          return arrayBuf;
+        }
+      } else {
+        const errText = await res.text().catch(() => '');
+        console.warn('[neuralTtsService] Groq Orpheus TTS returned HTTP', res.status, errText);
       }
-    } else {
-      const errText = await res.text().catch(() => '');
-      console.warn('[neuralTtsService] Groq Orpheus TTS returned HTTP', res.status, errText);
+    } catch (err) {
+      console.warn('[neuralTtsService] Groq Orpheus TTS fetch exception:', err);
     }
-  } catch (err) {
-    console.warn('[neuralTtsService] Groq Orpheus TTS fetch exception:', err);
+    return null;
+  };
+
+  if (clauses.length === 1) {
+    const singleBuf = await fetchSingleClauseWav(clauses[0].text);
+    if (!singleBuf) return null;
+    return uint8ArrayToBase64(new Uint8Array(singleBuf));
   }
 
-  return null;
+  const buffers = await Promise.all(clauses.map((c) => fetchSingleClauseWav(c.text)));
+  if (buffers.some((b) => !b)) return null;
+
+  const stitched = stitchPcmWavBuffers(
+    buffers as ArrayBuffer[],
+    clauses.map((c) => c.pauseMs),
+    40
+  );
+  if (!stitched) return null;
+
+  return uint8ArrayToBase64(new Uint8Array(stitched));
 }
 
 /**
- * Synthesizes 24kHz Neural & Native Bible Audio with intelligent language-aware routing:
- * - Preserves raw native orthography (ɛ, ɔ, ɖ, ƒ, ẹ, ọ) for Multilingual Gemini 24kHz TTS
- *   and Meta MMS Native Bible TTS (trained on Bible Society of Ghana Twi/Ewe/Yoruba/Hausa audio).
- * - Applies precision Akan & West African G2P v2 (conditionAfricanLocalLanguageForSpeech)
- *   whenever routing through English-phoneme models (Groq Orpheus 24kHz or Google Speech tl=en).
+ * Synthesizes 44.1kHz / 24kHz Neural & Native Bible Audio with intelligent language-aware routing:
+ * - For Twi (`tw`, `ak`) & Ewe (`ee`): Prioritizes the 44.1kHz GhanaNLP Bible Studio Engine
+ *   (`synthesizeFastGhanaBibleTts` — StableTTS + Vocos 44,100 Hz trained on the Ghanaian Bible),
+ *   followed by Multilingual Gemini 24kHz, Clause-Stitched Groq Orpheus 24kHz (with Akan Phonology v3),
+ *   and Lowercase Clause-Stitched Meta MMS Native Bible TTS.
+ * - For other African Local Languages (`gaa`, `yo`, `ha`, `ig`, `sw`, `am`, `zu`): Routes through
+ *   Multilingual Gemini 24kHz, Lowercase Clause-Stitched Meta MMS Bible TTS, and Clause-Stitched Orpheus 24kHz.
  * - Never routes non-English world languages (French, Spanish, German, etc.) into English-only Orpheus.
  */
 export async function synthesizeNeuralAudio(
@@ -786,10 +1119,10 @@ export async function synthesizeNeuralAudio(
   }
 
   const isTwi = isTwiLanguage(normLang);
+  const isEwe = normLang === 'ee' || normLang === 'ewe';
   const isWestAfricanPhoneticLang =
     isTwi ||
-    normLang === 'ee' ||
-    normLang === 'ewe' ||
+    isEwe ||
     normLang === 'gaa' ||
     normLang === 'yo' ||
     normLang === 'ig' ||
@@ -801,37 +1134,40 @@ export async function synthesizeNeuralAudio(
     normLang === 'zu';
 
   // ============================================================================
-  // PATH A: TWI (ASANTE & AKUAPEM) & AFRICAN LOCAL LANGUAGES
+  // PATH A: TWI (ASANTE & AKUAPEM), EWE & AFRICAN LOCAL LANGUAGES
   // ============================================================================
   if (isAfricanLocalLang) {
-    // A1. If user explicitly selected 'Nhyira (Native Ghana / Africa Bible)', prioritize Meta MMS Native Bible Voice first!
+    // A1. 44.1kHz Native GhanaNLP Bible Studio Engine (Primary for Asante Twi, Akuapem Twi & Ewe)
+    if (isTwi || isEwe) {
+      const fastGhanaAudio = await synthesizeFastGhanaBibleTts(
+        rawCleanText,
+        normLang,
+        voiceName
+      );
+      if (fastGhanaAudio) {
+        await setCachedTtsAudio(cacheKey, fastGhanaAudio);
+        return fastGhanaAudio;
+      }
+    }
+
+    // A2. If user selected 'Nhyira', try Lowercase Clause-Stitched Meta MMS Native Bible Voice next
     if (voiceName === 'Nhyira') {
-      const mmsAudio = await synthesizeMetaMmsNativeTts(rawCleanText, normLang);
+      const mmsAudio = await synthesizeMetaMmsNativeTts(rawCleanText, normLang, voiceName);
       if (mmsAudio) {
         await setCachedTtsAudio(cacheKey, mmsAudio);
         return mmsAudio;
       }
     }
 
-    // A2. Primary 24kHz Studio Neural Engine: Google Gemini 2.5 Flash Multilingual TTS with Native Akan/African Director Prompt
+    // A3. Google Gemini 2.5 Flash Multilingual 24kHz TTS (when user has an active Gemini API key)
     const geminiAudio = await synthesizeGeminiMultilingualTts(rawCleanText, normLang, voiceName);
     if (geminiAudio) {
       await setCachedTtsAudio(cacheKey, geminiAudio);
       return geminiAudio;
     }
 
-    // A3. Native Ghanaian / African Bible Society Model (Meta MMS-TTS)
-    // Uses intact native orthography (ɛ, ɔ) for 100% authentic Ghanaian Bible pronunciation
-    if (voiceName !== 'Nhyira') {
-      const mmsAudio = await synthesizeMetaMmsNativeTts(rawCleanText, normLang);
-      if (mmsAudio) {
-        await setCachedTtsAudio(cacheKey, mmsAudio);
-        return mmsAudio;
-      }
-    }
-
-    // A4. High-Speed 24kHz Studio Fallback: Groq Orpheus fed with Precision Akan/African G2P v2
-    // (Protects ɔ -> aw, ɛ -> eh, bɔɔ -> baw-aw, ɛyɛ -> ehyeh, frɛɛ -> freh-eh, Ti -> Tee)
+    // A4. Clause-Stitched 24kHz Studio Engine: Groq Orpheus fed with Precision Akan/African G2P v3
+    // (Zero truncation on long verses + binary foot rhythm + ɔ -> aw, ɛ -> eh, Ti -> Tee)
     if (isWestAfricanPhoneticLang) {
       const phoneticScript = cleanVerseForSpeech(
         conditionAfricanLocalLanguageForSpeech(rawCleanText, normLang)
@@ -843,7 +1179,16 @@ export async function synthesizeNeuralAudio(
       }
     }
 
-    // A5. Resilient Google Speech Stream Fallback (uses phonetic G2P for Twi/Ewe/Ga/Yoruba/Igbo, native tl for Hausa/Swahili/Amharic/Zulu)
+    // A5. Lowercase Clause-Stitched Meta MMS Native Bible TTS
+    if (voiceName !== 'Nhyira') {
+      const mmsAudio = await synthesizeMetaMmsNativeTts(rawCleanText, normLang, voiceName);
+      if (mmsAudio) {
+        await setCachedTtsAudio(cacheKey, mmsAudio);
+        return mmsAudio;
+      }
+    }
+
+    // A6. Resilient Google Speech Stream Fallback
     const streamAudio = await fetchGoogleTtsStreamBase64(rawCleanText, normLang);
     if (streamAudio) {
       await setCachedTtsAudio(cacheKey, streamAudio);
@@ -857,7 +1202,7 @@ export async function synthesizeNeuralAudio(
   // PATH B: ENGLISH ('en') & ARABIC ('ar')
   // ============================================================================
   if (normLang.startsWith('en') || normLang === 'ar') {
-    // B1. Groq Orpheus 24kHz Studio Engine (orpheus-v1-english for EN, orpheus-arabic-saudi for AR)
+    // B1. Clause-Stitched Groq Orpheus 24kHz Studio Engine
     const groqAudio = await synthesizeGroqOrpheusTts(rawCleanText, voiceName, normLang);
     if (groqAudio) {
       await setCachedTtsAudio(cacheKey, groqAudio);
@@ -873,7 +1218,7 @@ export async function synthesizeNeuralAudio(
 
     // B3. Meta MMS Native Bible TTS (for Arabic)
     if (normLang === 'ar') {
-      const mmsAudio = await synthesizeMetaMmsNativeTts(rawCleanText, normLang);
+      const mmsAudio = await synthesizeMetaMmsNativeTts(rawCleanText, normLang, voiceName);
       if (mmsAudio) {
         await setCachedTtsAudio(cacheKey, mmsAudio);
         return mmsAudio;
@@ -915,34 +1260,29 @@ export async function synthesizeNeuralAudio(
 
   // ============================================================================
   // PATH C: WORLD & BIBLICAL CLASSICAL LANGUAGES (fr, es, de, pt, it, ru, he, el, zh, ja, ko, hi, etc.)
-  // Never route non-English languages to English-only Orpheus!
   // ============================================================================
-  // C1. If 'Nhyira' selected and language is in Meta MMS Bible corpus, try MMS first
   if (voiceName === 'Nhyira') {
-    const mmsAudio = await synthesizeMetaMmsNativeTts(rawCleanText, normLang);
+    const mmsAudio = await synthesizeMetaMmsNativeTts(rawCleanText, normLang, voiceName);
     if (mmsAudio) {
       await setCachedTtsAudio(cacheKey, mmsAudio);
       return mmsAudio;
     }
   }
 
-  // C2. Google Gemini 24kHz Multilingual Neural Audio API
   const geminiAudio = await synthesizeGeminiMultilingualTts(rawCleanText, normLang, voiceName);
   if (geminiAudio) {
     await setCachedTtsAudio(cacheKey, geminiAudio);
     return geminiAudio;
   }
 
-  // C3. Meta MMS Native Bible TTS (supports Hebrew, Ancient Greek, French, Spanish, German, Portuguese, Russian, Hindi, Korean, etc.)
   if (voiceName !== 'Nhyira') {
-    const mmsAudio = await synthesizeMetaMmsNativeTts(rawCleanText, normLang);
+    const mmsAudio = await synthesizeMetaMmsNativeTts(rawCleanText, normLang, voiceName);
     if (mmsAudio) {
       await setCachedTtsAudio(cacheKey, mmsAudio);
       return mmsAudio;
     }
   }
 
-  // C4. Native Google Speech Natural Stream Fallback (with exact target language code tl=fr, es, de, etc.)
   const streamAudio = await fetchGoogleTtsStreamBase64(rawCleanText, normLang);
   if (streamAudio) {
     await setCachedTtsAudio(cacheKey, streamAudio);
@@ -953,9 +1293,8 @@ export async function synthesizeNeuralAudio(
 }
 
 /**
- * Universal audio decoder: Handles BOTH 24kHz raw PCM from Google Gemini TTS
- * AND standard MP3/WAV speech audio streams (including 16kHz MMS-TTS WAV and 24kHz Orpheus WAV)
- * with Safari/WebKit native fallback & direct PCM parsing!
+ * Universal audio decoder: Handles 44.1kHz GhanaNLP WAV, 24kHz Orpheus WAV,
+ * 16kHz MMS-TTS WAV, 24kHz raw PCM from Gemini TTS, and MP3 streams.
  */
 export async function decodeUniversalAudioToBuffer(
   audioContext: AudioContext,
@@ -969,10 +1308,8 @@ export async function decodeUniversalAudioToBuffer(
 
   // 1. Check for RIFF WAV ('RIFF')
   if (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46) {
-    // Sanitize streaming WAV headers in place
     sanitizeWavHeaderInPlace(bytes.buffer);
 
-    // Extract format details for direct PCM extraction fallback
     const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
     let pos = 12;
     let dataOffset = -1;
@@ -998,7 +1335,7 @@ export async function decodeUniversalAudioToBuffer(
       pos += 8 + (chunkSize === 0xffffffff ? 0 : chunkSize);
     }
 
-    // Direct Linear PCM Extractor (Primary path for 16-bit PCM WAV — 0ms, zero ArrayBuffer copy, 100% alignment-safe on iOS Safari & Chrome)
+    // Direct Linear PCM Extractor (Primary path for 16-bit PCM WAV — 0ms, 100% alignment-safe on iOS Safari & Chrome)
     if (audioFormat === 1 && bitsPerSample === 16 && dataOffset > 0 && dataSize >= 2 * channels) {
       const numSamples = Math.floor(dataSize / (2 * channels));
       const audioBuffer = audioContext.createBuffer(channels, numSamples, sampleRate);
@@ -1014,7 +1351,6 @@ export async function decodeUniversalAudioToBuffer(
       return audioBuffer;
     }
 
-    // Fallback to native decodeAudioData for non-standard WAV formats
     try {
       const copy = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
       const buffer = await new Promise<AudioBuffer>((resolve, reject) => {
@@ -1105,7 +1441,6 @@ export async function getOrPreloadAudioBuffer(
   try {
     const buffer = await decodeUniversalAudioToBuffer(audioContext, base64Audio);
     if (buffer && buffer.duration > 0.4) {
-      // Bound in-memory AudioBuffer cache to 20 entries to prevent iOS WebKit OOM tab crashes
       if (memoryAudioBufferCache.size >= 20) {
         const oldestKey = memoryAudioBufferCache.keys().next().value;
         if (oldestKey) {

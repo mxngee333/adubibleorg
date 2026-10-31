@@ -142,10 +142,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   const useStudioMp3Ref = useRef<boolean>(Boolean(validAudioUrl));
   const studioFailedRef = useRef<boolean>(false);
   const [engineType, setEngineType] = useState<'24khz' | 'native' | 'studio'>(() => {
-    if (typeof window !== 'undefined' && getActiveGeminiApiKeys().length > 0) {
-      return '24khz';
-    }
-    return validAudioUrl ? 'studio' : 'native';
+    return validAudioUrl ? 'studio' : '24khz';
   });
   const [statusMessage, setStatusMessage] = useState<string>('');
   const [bufferedCount, setBufferedCount] = useState<number>(0);
@@ -626,10 +623,9 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     setBufferedCount(count);
   }, [verses, langCode, selectedVoice]);
 
-  // Look-ahead background pre-fetcher for Next Verse (N+1) in 24kHz mode
+  // Look-ahead background pre-fetcher for Next Verse (N+1) in 44.1kHz / 24kHz mode
   const prefetchAhead = useCallback(
     async (fromIndex: number, depth = 1) => {
-      if (getActiveGeminiApiKeys().length === 0) return;
       try {
         const ctx = getOrCreateAudioContext();
         for (let i = fromIndex + 1; i <= Math.min(fromIndex + depth, verses.length - 1); i++) {
@@ -994,42 +990,13 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       return;
     }
 
-    const hasGeminiKey = getActiveGeminiApiKeys().length > 0;
     const cleanedPrimaryText = cleanVerseForSpeech(verseObj.text);
     const spokenPrimaryText =
       index === 0 && announceChapterTitleRef.current
         ? `${buildSpokenChapterIntro(bookName, chapter, langCode)}${cleanedPrimaryText}`
         : cleanedPrimaryText;
 
-    // 2. Fast Path: Natural Voice Narration (Zero network buffering, 0ms latency, zero gesture expiration)
-    if (!hasGeminiKey) {
-      setEngineType('native');
-      setIsLoadingVerse(false);
-      speakNativeVerse(spokenPrimaryText, langCode, () => {
-        if (!isPlayingRef.current) return;
-        if (bilingualMode && parallelVerses && parallelVerses[index]) {
-          const pVerse = parallelVerses[index];
-          const targetLang = parallelLangCode || 'tw';
-          const cleanedParallel = cleanVerseForSpeech(pVerse.text);
-          const spokenParallel =
-            index === 0 && announceChapterTitleRef.current
-              ? `${buildSpokenChapterIntro(bookName, chapter, targetLang)}${cleanedParallel}`
-              : cleanedParallel;
-          speakNativeVerse(spokenParallel, targetLang, () => {
-            if (isPlayingRef.current) {
-              playVerseAtIndex(index + 1);
-            }
-          });
-        } else {
-          playVerseAtIndex(index + 1);
-        }
-      });
-      return;
-    }
-
-    // 3. User HAS a Gemini API Key: 24kHz Google Neural Audio branch
-    prefetchAhead(index, 1);
-
+    // 2. 44.1kHz GhanaNLP Bible / 24kHz Studio Neural Audio Pipeline
     const ctx = getOrCreateAudioContext();
     const isAlreadyInMemory = isAudioBufferPreloaded(
       spokenPrimaryText,
@@ -1039,7 +1006,11 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
     if (!isAlreadyInMemory) {
       setIsLoadingVerse(true);
-      setStatusMessage('Buffering 24kHz audio…');
+      setStatusMessage(
+        isTwiLanguage(langCode) || langCode === 'ee' || langCode === 'ewe'
+          ? 'Buffering 44.1kHz Ghana Bible audio…'
+          : 'Buffering 24kHz audio…'
+      );
     }
 
     try {
@@ -1056,7 +1027,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       }
 
       if (!primaryBuffer) {
-        // Fallback gracefully to Natural Voice if 24kHz fails or quota is exhausted
+        // Fallback gracefully to Natural Voice if cloud neural engines are unreachable
         speakNativeVerse(spokenPrimaryText, langCode, () => {
           if (!isPlayingRef.current) return;
           if (bilingualMode && parallelVerses && parallelVerses[index]) {
@@ -1079,7 +1050,11 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
         return;
       }
 
-      // Play 24kHz Web Audio Buffer
+      // Trigger look-ahead pre-fetching for Next Verse (N+1) AFTER current verse is decoded
+      // so Verse N+1 never competes in the synthesis queue with Verse N!
+      prefetchAhead(index, 1);
+
+      // Play 44.1kHz / 24kHz Web Audio Buffer
       setEngineType('24khz');
       setIsLoadingVerse(false);
       setStatusMessage('');
@@ -1507,7 +1482,11 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
                   </span>
                 ) : (
                   <span style={{ fontSize: '10px', padding: '1px 6px', borderRadius: '4px', background: 'var(--soft)', color: 'var(--subtle)' }}>
-                    {engineType === 'native' ? 'Natural Voice' : `24kHz ${selectedVoice}`}
+                    {engineType === 'native'
+                      ? 'Natural Voice'
+                      : isTwiLanguage(langCode) || langCode === 'ee' || langCode === 'ewe'
+                        ? `44.1kHz ${selectedVoice}`
+                        : `24kHz ${selectedVoice}`}
                   </span>
                 )}
               </div>
