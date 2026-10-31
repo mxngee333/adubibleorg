@@ -385,6 +385,22 @@ export function App() {
 
   // Scripture Slide Deck Presentation Mode State (Cinematic Slider Mode)
   const [isSlideDeckOpen, setIsSlideDeckOpen] = useState<boolean>(false);
+  const [isBookModalOpen, setIsBookModalOpen] = useState<boolean>(false);
+  const [bookPickerTab, setBookPickerTab] = useState<'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD' | 'HISTORY'>('CANONICAL');
+
+  const handleToggleHistory = useCallback(() => {
+    setIsBookModalOpen((prevOpen) => {
+      if (prevOpen && bookPickerTab === 'HISTORY') {
+        return false;
+      }
+      setBookPickerTab('HISTORY');
+      setIsSettingsOpen(false);
+      setIsMobileSearchOpen(false);
+      setIsStudyVaultOpen(false);
+      setIsSlideDeckOpen(false);
+      return true;
+    });
+  }, [bookPickerTab]);
 
   const handleOpenSlideDeck = useCallback((targetVerse?: number) => {
     if (typeof targetVerse === 'number') {
@@ -489,6 +505,14 @@ export function App() {
       ) {
         e.preventDefault();
         setIsGamesArcadeOpen((prev) => !prev);
+      } else if (
+        (e.key === 'h' || e.key === 'H') &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.altKey
+      ) {
+        e.preventDefault();
+        handleToggleHistory();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -500,7 +524,7 @@ export function App() {
       document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [handleToggleFullscreen]);
+  }, [handleToggleFullscreen, handleToggleHistory]);
 
   const scrollBoxRef = useRef<HTMLDivElement | null>(null);
 
@@ -520,8 +544,7 @@ export function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isThemePickerOpen, setIsThemePickerOpen] = useState<boolean>(false);
   const [settingsInitialSection, setSettingsInitialSection] = useState<'general' | 'theme' | 'commentaries' | 'api'>('general');
-  const [isBookModalOpen, setIsBookModalOpen] = useState<boolean>(false);
-  const [bookPickerTab, setBookPickerTab] = useState<'ALL' | 'CANONICAL' | 'OT' | 'NT' | 'DC' | 'PSEUD' | 'HISTORY'>('CANONICAL');
+
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState<boolean>(false);
   const [isLangAddonModalOpen, setIsLangAddonModalOpen] =
     useState<boolean>(false);
@@ -1379,6 +1402,7 @@ export function App() {
           window.history.pushState({}, '', `/${page}/`);
         }
       }}
+      onOpenHistory={handleToggleHistory}
       onOpenSettings={() => setIsSettingsOpen((prev) => !prev)}
       onGoHome={handleGoHome}
       onSelectNavTab={(tab) => {
@@ -1560,6 +1584,18 @@ export function App() {
           </button>
 
 
+
+          <button
+            type="button"
+            className={`quiet-button ${bookPickerTab === 'HISTORY' && isBookModalOpen ? 'active-pill' : ''}`}
+            onClick={handleToggleHistory}
+            title="Recent Scripture Reading & Search History (Shortcut: H)"
+            aria-label="Reading History"
+          >
+            <span style={{ color: bookPickerTab === 'HISTORY' && isBookModalOpen ? '#f59e0b' : undefined }}>
+              ⏱️ History (H)
+            </span>
+          </button>
 
           <button
             type="button"
@@ -4034,6 +4070,7 @@ export function App() {
           handleSwapLanguages();
         }}
         canSwap={activeVersionIds.length >= 2}
+        onOpenHistory={handleToggleHistory}
         onOpenSettings={() => setIsSettingsOpen((prev) => !prev)}
         isSettingsOpen={isSettingsOpen}
         onOpenVault={() => {

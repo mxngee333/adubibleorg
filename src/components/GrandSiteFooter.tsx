@@ -8,6 +8,7 @@ import {
 
 interface GrandSiteFooterProps {
   onOpenLegal: (page: LegalPageKey) => void;
+  onOpenHistory?: () => void;
   onOpenSettings: () => void;
   onGoHome: (e?: React.MouseEvent) => void;
   onSelectNavTab: (tab: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin' | 'topics' | 'lexicon') => void;
@@ -23,6 +24,7 @@ interface GrandSiteFooterProps {
 
 export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
   onOpenLegal,
+  onOpenHistory,
   onOpenSettings,
   onGoHome,
   onSelectNavTab,
@@ -406,6 +408,28 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
                   🎨 Custom Studio
                 </button>
               </div>
+            </li>
+            <li className="footer-tool-item">
+              <button
+                type="button"
+                className="footer-btn-link"
+                onClick={onOpenHistory}
+                title="View recent scripture reading &amp; search history (Shortcut: H)"
+              >
+                <span>⏱️ Recent Reading &amp; Search History</span>
+                <span className="footer-badge badge-on" style={{ background: '#f59e0b', color: '#0c0a09', fontWeight: 800 }}>H</span>
+              </button>
+            </li>
+            <li className="footer-tool-item">
+              <button
+                type="button"
+                className="footer-btn-link"
+                onClick={onOpenSettings}
+                title="Reading Settings, Font Size &amp; Palettes"
+              >
+                <span>⚙️ Reading Settings &amp; Themes</span>
+                <span className="footer-badge badge-on">PALETTE</span>
+              </button>
             </li>
             <li className="footer-tool-item">
               <button
@@ -899,6 +923,29 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
               🎮 3D Bible Games
             </button>
           )}
+          <button
+            type="button"
+            onClick={onOpenHistory}
+            className="footer-legal-pill"
+            style={{
+              color: '#f59e0b',
+              borderColor: 'rgba(245, 158, 11, 0.45)',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+            title="Recent Scripture Reading & Search History (Shortcut: H)"
+          >
+            ⏱️ History (H)
+          </button>
+          <button
+            type="button"
+            onClick={onOpenSettings}
+            className="footer-legal-pill"
+            style={{ cursor: 'pointer' }}
+            title="Reading Settings, Font Size & Color Palettes"
+          >
+            ⚙️ Settings
+          </button>
           <a
             href="/donate/"
             onClick={(e) => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Search, Headphones, Repeat, Settings, Bookmark } from 'lucide-react';
+import { BookOpen, Search, Headphones, Repeat, Settings, Bookmark, Clock } from 'lucide-react';
 
 interface MobileBottomDockProps {
   onOpenBooks: () => void;
@@ -8,6 +8,7 @@ interface MobileBottomDockProps {
   isAudioActive: boolean;
   onSwapLanguages: () => void;
   canSwap: boolean;
+  onOpenHistory?: () => void;
   onOpenSettings: () => void;
   isSettingsOpen?: boolean;
   onOpenVault: () => void;
@@ -25,6 +26,7 @@ export const MobileBottomDock: React.FC<MobileBottomDockProps> = ({
   isAudioActive,
   onSwapLanguages,
   canSwap,
+  onOpenHistory,
   onOpenSettings,
   isSettingsOpen = false,
   onOpenVault,
@@ -124,7 +126,21 @@ export const MobileBottomDock: React.FC<MobileBottomDockProps> = ({
           </button>
         )}
 
-        {/* 5. Reading Settings & Themes */}
+        {/* 5. Reading & Search History */}
+        {onOpenHistory && (
+          <button
+            type="button"
+            className="dock-item"
+            onClick={onOpenHistory}
+            aria-label="Recent Reading and Search History"
+            title="Reading & Search History (H)"
+          >
+            <Clock className="dock-icon text-amber-400" />
+            <span className="dock-label text-amber-400">History</span>
+          </button>
+        )}
+
+        {/* 6. Reading Settings & Themes */}
         <button
           type="button"
           className={`dock-item ${isSettingsOpen ? 'active' : ''}`}

@@ -47,6 +47,7 @@ npm run preview
 ### Individual Utility Scripts:
 - `npm run compile-corpus` — Compiles Markdown pillar articles from `src/content/articles` into JSON and TypeScript corpus.
 - `npm run compile-legal` — Compiles legal and institutional policy documents into static corpus.
+- `npm run compile-authority` — Compiles Top 30 Verses, Topical Scripture Hubs, and Strong's Greek/Hebrew Lexicon into static authority JSON.
 - `npm run generate-images` — Generates triple-ratio responsive WebP images for all articles.
 - `npm run generate-favicons` — Generates multi-resolution favicon stack and web manifests.
 - `npm run verify-content` — Astra Gatekeeper script that audits word counts (>= 2,500 words per article), canonicals, and image integrity.
