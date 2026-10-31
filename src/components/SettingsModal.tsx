@@ -1115,6 +1115,42 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <span className="wisdom-toggle-knob" />
               </button>
             </div>
+
+            <div
+              style={{
+                padding: '12px 14px',
+                borderRadius: '6px',
+                border: '1px solid var(--line)',
+                background: 'var(--surface)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '14px',
+                marginTop: '10px',
+              }}
+            >
+              <div>
+                <strong style={{ display: 'block', fontSize: '14px', marginBottom: '3px' }}>
+                  Announce Book &amp; Chapter on New Chapter
+                </strong>
+                <span style={{ fontSize: '12px', color: 'var(--subtle)' }}>
+                  When narration starts or advances to a new chapter, announce the Book and Chapter first (default ON) while skipping superscriptions and headers
+                </span>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={prefs.announceChapterTitle !== false}
+                className={`wisdom-toggle ${prefs.announceChapterTitle !== false ? 'on' : ''}`}
+                onClick={() =>
+                  onUpdatePrefs({
+                    announceChapterTitle: !(prefs.announceChapterTitle !== false),
+                  })
+                }
+              >
+                <span className="wisdom-toggle-knob" />
+              </button>
+            </div>
           </div>
 
           {/* 3. 24kHz Google Neural Audio & API Key Sanctuary */}

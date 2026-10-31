@@ -3778,6 +3778,10 @@ export function App() {
           isFullscreen={isFullscreen}
           onToggleFullscreen={handleToggleFullscreen}
           onOpenSlideMode={() => handleOpenSlideDeck(selectedVerse || 1)}
+          announceChapterTitle={prefs.announceChapterTitle !== false}
+          onToggleAnnounceChapterTitle={() =>
+            updatePrefs({ announceChapterTitle: !(prefs.announceChapterTitle !== false) })
+          }
           onClose={() => {
             setShowAudioBar(false);
             setIsAudioPlaying(false);

@@ -267,6 +267,7 @@ export interface ReadingPreferences {
   showMorphology: boolean;
   showCrossRefs: boolean;
   showHeadings: boolean;
+  announceChapterTitle?: boolean;
   zenMode: boolean;
   preferredVersionId?: string;
 }

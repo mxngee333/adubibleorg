@@ -46,6 +46,7 @@ export const DEFAULT_PREFERENCES: ReadingPreferences = {
   showMorphology: false,
   showCrossRefs: true,
   showHeadings: true,
+  announceChapterTitle: true,
   zenMode: false,
   preferredVersionId: 'nkjv',
 };
@@ -381,7 +382,11 @@ export function loadPreferences(): ReadingPreferences {
       }
       localStorage.setItem(LS_PREFS, JSON.stringify({ ...DEFAULT_PREFERENCES, ...parsed }));
     }
-    return { ...DEFAULT_PREFERENCES, ...parsed };
+    return {
+      ...DEFAULT_PREFERENCES,
+      ...parsed,
+      announceChapterTitle: parsed.announceChapterTitle !== false,
+    };
   } catch {
     return DEFAULT_PREFERENCES;
   }

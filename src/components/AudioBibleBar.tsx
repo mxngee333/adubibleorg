@@ -44,9 +44,13 @@ interface AudioBibleBarProps {
   isFullscreen?: boolean;
   onToggleFullscreen?: () => void;
   onOpenSlideMode?: () => void;
+  announceChapterTitle?: boolean;
+  onToggleAnnounceChapterTitle?: () => void;
 }
 
 const SAVED_VOICE_KEY = 'elohim_neural_voice_v1';
+// Skips the 0.00s–1.60s "Audio Bible" tag so the Studio Narrator speaks only "<Book>, Chapter <N>" / "Psalm <N>"
+const STUDIO_CHAPTER_INTRO_START_SEC = 1.62;
 
 export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   bookName,
@@ -75,10 +79,18 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
   isFullscreen = false,
   onToggleFullscreen,
   onOpenSlideMode,
+  announceChapterTitle = true,
+  onToggleAnnounceChapterTitle,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoadingVerse, setIsLoadingVerse] = useState(false);
   const [continuousPlayback, setContinuousPlayback] = useState<boolean>(true);
+  const announceChapterTitleRef = useRef<boolean>(announceChapterTitle !== false);
+  const studioIntroPlayingRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    announceChapterTitleRef.current = announceChapterTitle !== false;
+  }, [announceChapterTitle]);
   const [isAutoSync, setIsAutoSync] = useState<boolean>(() => {
     return typeof autoSyncReader === 'boolean' ? autoSyncReader : isAutoScrollActive();
   });
@@ -211,9 +223,16 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             const audioEl = studioAudioElRef.current;
             if (audioEl && isPlayingRef.current && useStudioMp3Ref.current) {
               const targetIdx = Math.max(0, Math.min(currentVerseIdxRef.current, timings.length - 1));
-              const targetSec = timings[targetIdx];
+              const isPlayingChapterIntro =
+                targetIdx === 0 &&
+                studioIntroPlayingRef.current &&
+                announceChapterTitleRef.current;
+              const targetSec = isPlayingChapterIntro
+                ? STUDIO_CHAPTER_INTRO_START_SEC
+                : timings[targetIdx];
               if (
                 typeof targetSec === 'number' &&
+                !isPlayingChapterIntro &&
                 (audioEl.currentTime < timings[0] - 0.1 ||
                   pendingStudioSeekRef.current !== null ||
                   (targetIdx === 0 && audioEl.currentTime < targetSec - 0.1))
@@ -293,6 +312,46 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     };
   }, []);
 
+  // End timestamp of the Studio Narrator's "<Book>, Chapter <N>" / "Psalm <N>" announcement
+  // (located inside the 2.15s silence window before any Psalm superscription begins at ~4.88s)
+  const getStudioChapterTitleEndSec = useCallback(
+    (firstVerseStart?: number): number => {
+      if (bookSlug === 'psalms') {
+        return chapter >= 100 ? 3.95 : 3.35;
+      }
+      const baseEnd = chapter >= 100 ? 4.85 : 4.55;
+      if (typeof firstVerseStart === 'number' && firstVerseStart > 0) {
+        return Math.min(baseEnd, Math.max(3.5, firstVerseStart - 0.25));
+      }
+      return baseEnd;
+    },
+    [bookSlug, chapter]
+  );
+
+  // Localized Book & Chapter announcement for Natural Voice and 24kHz Neural TTS engines
+  const buildSpokenChapterIntro = useCallback(
+    (targetBookName: string, targetChapter: number, targetLang: string): string => {
+      const code = (targetLang || 'en').toLowerCase().trim();
+      if (isTwiLanguage(code)) {
+        return `${targetBookName}, Ti ${targetChapter}. `;
+      }
+      if (code.startsWith('fr')) {
+        return `${targetBookName}, Chapitre ${targetChapter}. `;
+      }
+      if (code.startsWith('es') || code.startsWith('pt')) {
+        return `${targetBookName}, Capítulo ${targetChapter}. `;
+      }
+      if (code.startsWith('de')) {
+        return `${targetBookName}, Kapitel ${targetChapter}. `;
+      }
+      if (bookSlug === 'psalms' || /^psalms?$/i.test(targetBookName.trim())) {
+        return `Psalm ${targetChapter}. `;
+      }
+      return `${targetBookName}, Chapter ${targetChapter}. `;
+    },
+    [bookSlug]
+  );
+
   // Dynamic intro + superscription preamble calculator (offline fallback when audioTimings.json is unavailable)
   const getDynamicIntroPreambleSec = useCallback((): number => {
     let preamble = 3.8; // Base narrator chapter title announcement ("Psalm 3" / "Chapter 1")
@@ -353,12 +412,16 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     const audioEl = studioAudioElRef.current;
     if (!audioEl || !verses || verses.length === 0) return;
 
+    const isPlayingChapterIntro =
+      currentVerseIdxRef.current === 0 &&
+      studioIntroPlayingRef.current &&
+      announceChapterTitleRef.current;
+
     // 1. Apply any pending initial seek as soon as media metadata is ready
     if (pendingStudioSeekRef.current !== null && audioEl.readyState >= 1) {
-      const targetTime = computeStudioVerseTargetTime(
-        currentVerseIdxRef.current,
-        audioEl.duration
-      );
+      const targetTime = isPlayingChapterIntro
+        ? STUDIO_CHAPTER_INTRO_START_SEC
+        : computeStudioVerseTargetTime(currentVerseIdxRef.current, audioEl.duration);
       if (Math.abs(audioEl.currentTime - targetTime) > 0.25) {
         try {
           audioEl.currentTime = targetTime;
@@ -372,6 +435,40 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
     const currentTime = audioEl.currentTime;
     const timings = studioTimingsRef.current;
+
+    // 1b. Chapter Title Announcement Window (1.62s -> chapterTitleEndSec):
+    // Narrator speaks "<Book>, Chapter <N>" / "Psalm <N>", then immediately jumps to Verse 1,
+    // skipping 100% of any Psalm superscription or header!
+    if (isPlayingChapterIntro) {
+      if (currentTime < STUDIO_CHAPTER_INTRO_START_SEC - 0.15 && audioEl.readyState >= 1) {
+        try {
+          audioEl.currentTime = STUDIO_CHAPTER_INTRO_START_SEC;
+          audioEl.muted = false;
+        } catch {}
+        return;
+      }
+
+      const firstVerseStart =
+        timings && timings.length > 0 ? (timings[0] ?? 0) : getDynamicIntroPreambleSec();
+      const chapterTitleEndSec = getStudioChapterTitleEndSec(firstVerseStart);
+
+      if (currentTime < chapterTitleEndSec) {
+        if (audioEl.muted) {
+          audioEl.muted = false;
+        }
+        return;
+      }
+
+      // Chapter announcement finished -> jump over any superscription straight to Verse 1
+      studioIntroPlayingRef.current = false;
+      if (firstVerseStart > currentTime + 0.2 && audioEl.readyState >= 1) {
+        try {
+          audioEl.currentTime = Math.max(chapterTitleEndSec, firstVerseStart - 0.15);
+          audioEl.muted = false;
+        } catch {}
+        return;
+      }
+    }
 
     // 2. Primary Path: Exact Millisecond Studio Timings Array (0ms Header Skip + 0ms Slide Sync)
     if (timings && timings.length > 0) {
@@ -460,7 +557,13 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
         notifyVerseChange(verses[activeIdx].verse);
       }
     }
-  }, [verses, notifyVerseChange, computeStudioVerseTargetTime, getDynamicIntroPreambleSec]);
+  }, [
+    verses,
+    notifyVerseChange,
+    computeStudioVerseTargetTime,
+    getDynamicIntroPreambleSec,
+    getStudioChapterTitleEndSec,
+  ]);
 
   // High-frequency 90ms polling ticker during Studio MP3 playback for sub-100ms slide transitions
   useEffect(() => {
@@ -812,7 +915,11 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       const audioEl = studioAudioElRef.current;
       audioEl.playbackRate = rate;
 
-      const targetTime = computeStudioVerseTargetTime(index, audioEl.duration);
+      const shouldAnnounceChapter = index === 0 && announceChapterTitleRef.current;
+      studioIntroPlayingRef.current = shouldAnnounceChapter;
+      const targetTime = shouldAnnounceChapter
+        ? STUDIO_CHAPTER_INTRO_START_SEC
+        : computeStudioVerseTargetTime(index, audioEl.duration);
       pendingStudioSeekRef.current = targetTime;
 
       if (audioEl.readyState >= 1) {
@@ -850,17 +957,27 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     }
 
     const hasGeminiKey = getActiveGeminiApiKeys().length > 0;
+    const cleanedPrimaryText = cleanVerseForSpeech(verseObj.text);
+    const spokenPrimaryText =
+      index === 0 && announceChapterTitleRef.current
+        ? `${buildSpokenChapterIntro(bookName, chapter, langCode)}${cleanedPrimaryText}`
+        : cleanedPrimaryText;
 
     // 2. Fast Path: Natural Voice Narration (Zero network buffering, 0ms latency, zero gesture expiration)
     if (!hasGeminiKey) {
       setEngineType('native');
       setIsLoadingVerse(false);
-      speakNativeVerse(verseObj.text, langCode, () => {
+      speakNativeVerse(spokenPrimaryText, langCode, () => {
         if (!isPlayingRef.current) return;
         if (bilingualMode && parallelVerses && parallelVerses[index]) {
           const pVerse = parallelVerses[index];
           const targetLang = parallelLangCode || 'tw';
-          speakNativeVerse(pVerse.text, targetLang, () => {
+          const cleanedParallel = cleanVerseForSpeech(pVerse.text);
+          const spokenParallel =
+            index === 0 && announceChapterTitleRef.current
+              ? `${buildSpokenChapterIntro(bookName, chapter, targetLang)}${cleanedParallel}`
+              : cleanedParallel;
+          speakNativeVerse(spokenParallel, targetLang, () => {
             if (isPlayingRef.current) {
               playVerseAtIndex(index + 1);
             }
@@ -877,7 +994,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
     const ctx = getOrCreateAudioContext();
     const isAlreadyInMemory = isAudioBufferPreloaded(
-      verseObj.text,
+      spokenPrimaryText,
       langCode,
       selectedVoice
     );
@@ -890,7 +1007,7 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     try {
       const primaryBuffer = await getOrPreloadAudioBuffer(
         ctx,
-        verseObj.text,
+        spokenPrimaryText,
         langCode,
         selectedVoice
       );
@@ -902,12 +1019,17 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
 
       if (!primaryBuffer) {
         // Fallback gracefully to Natural Voice if 24kHz fails or quota is exhausted
-        speakNativeVerse(verseObj.text, langCode, () => {
+        speakNativeVerse(spokenPrimaryText, langCode, () => {
           if (!isPlayingRef.current) return;
           if (bilingualMode && parallelVerses && parallelVerses[index]) {
             const pVerse = parallelVerses[index];
             const targetLang = parallelLangCode || 'tw';
-            speakNativeVerse(pVerse.text, targetLang, () => {
+            const cleanedParallel = cleanVerseForSpeech(pVerse.text);
+            const spokenParallel =
+              index === 0 && announceChapterTitleRef.current
+                ? `${buildSpokenChapterIntro(bookName, chapter, targetLang)}${cleanedParallel}`
+                : cleanedParallel;
+            speakNativeVerse(spokenParallel, targetLang, () => {
               if (isPlayingRef.current) {
                 playVerseAtIndex(index + 1);
               }
@@ -1591,6 +1713,25 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
             </button>
           )}
 
+          {/* Announce Book & Chapter Toggle */}
+          {onToggleAnnounceChapterTitle && (
+            <button
+              type="button"
+              className={`audio-bar-toggle-pill ${announceChapterTitle !== false ? 'active' : ''}`}
+              onClick={onToggleAnnounceChapterTitle}
+              title={
+                announceChapterTitle !== false
+                  ? 'Announce Book & Chapter on new chapter is ON (click to turn OFF)'
+                  : 'Announce Book & Chapter on new chapter is OFF (click to turn ON)'
+              }
+            >
+              <span>📢</span>
+              <span className="pill-label">
+                {announceChapterTitle !== false ? 'Chapter Intro ON' : 'Chapter Intro OFF'}
+              </span>
+            </button>
+          )}
+
           {/* Bilingual Toggle */}
           {parallelVerses && parallelVerses.length > 0 && (
             <button
@@ -1794,7 +1935,26 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
               </button>
             )}
 
-            {/* Bilingual Toggle */}
+            {/* Announce Book & Chapter Toggle */}
+            {onToggleAnnounceChapterTitle && (
+              <button
+                type="button"
+                className={`audio-bar-toggle-pill ${announceChapterTitle !== false ? 'active' : ''}`}
+                onClick={onToggleAnnounceChapterTitle}
+                title={
+                  announceChapterTitle !== false
+                    ? 'Announce Book & Chapter on new chapter is ON (click to turn OFF)'
+                    : 'Announce Book & Chapter on new chapter is OFF (click to turn ON)'
+                }
+              >
+                <span>📢</span>
+                <span>
+                  {announceChapterTitle !== false ? 'Chapter Intro ON' : 'Chapter Intro OFF'}
+                </span>
+              </button>
+            )}
+
+          {/* Bilingual Toggle */}
             {parallelVerses && parallelVerses.length > 0 && (
               <button
                 type="button"
