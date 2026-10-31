@@ -11,7 +11,7 @@ interface GrandSiteFooterProps {
   onOpenHistory?: () => void;
   onOpenSettings: () => void;
   onGoHome: (e?: React.MouseEvent) => void;
-  onSelectNavTab: (tab: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin' | 'topics' | 'lexicon') => void;
+  onSelectNavTab: (tab: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin' | 'topics' | 'lexicon' | 'ask') => void;
   onOpenTopics?: (slug?: string) => void;
   onOpenLexicon?: (code?: string) => void;
   onSelectTheme?: (themeId: string) => void;
@@ -408,6 +408,25 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
                   🎨 Custom Studio
                 </button>
               </div>
+            </li>
+            <li className="footer-tool-item">
+              <a
+                href="/ask/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onSelectNavTab('ask');
+                  if (typeof window !== 'undefined') {
+                    window.history.pushState({}, '', '/ask/');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
+                className="footer-btn-link"
+                style={{ color: '#f59e0b', fontWeight: 700 }}
+                title="Ask YHWH AI — Ancient Biblical Wisdom &amp; Exegesis"
+              >
+                <span>🤖 Ask YHWH AI (Ancient Wisdom Engine)</span>
+                <span className="footer-badge badge-on" style={{ background: '#f59e0b', color: '#0c0a09', fontWeight: 800 }}>AI</span>
+              </a>
             </li>
             <li className="footer-tool-item">
               <button
@@ -923,6 +942,28 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
               🎮 3D Bible Games
             </button>
           )}
+          <a
+            href="/ask/"
+            onClick={(e) => {
+              e.preventDefault();
+              onSelectNavTab('ask');
+              if (typeof window !== 'undefined') {
+                window.history.pushState({}, '', '/ask/');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+            className="footer-legal-pill"
+            style={{
+              color: '#f59e0b',
+              borderColor: 'rgba(245, 158, 11, 0.55)',
+              background: 'rgba(245, 158, 11, 0.1)',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+            title="Ask YHWH AI — Ancient Biblical Wisdom & Exegesis"
+          >
+            🤖 Ask YHWH AI
+          </a>
           <button
             type="button"
             onClick={onOpenHistory}

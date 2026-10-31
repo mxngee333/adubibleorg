@@ -377,6 +377,17 @@ const CANONICAL_ROUTES = [
     excerpt:
       'AduBible operates as a dedicated, 100% ad-free non-profit scripture sanctuary for 4 billion readers worldwide, honoring Apostle Kwame Adu of Nsuhia, Ghana (https://nsuhia.com/). Support our planetary scripture distribution via Stripe (Card, Apple Pay, Google Pay) and PayPal.',
   },
+  {
+    route: '/ask/',
+    priority: '0.9',
+    changefreq: 'weekly',
+    title: 'Ask YHWH AI — Ancient Biblical Wisdom & Exegesis | AduBible.org®',
+    description:
+      "Ask YHWH AI for deep exegetical answers from the Holy Bible, Hebrew Masoretic text, Greek Textus Receptus, and Strong's Concordance. 100% free, unmonetized sanctuary AI honoring Apostle Kwame Adu of Nsuhia, Ghana.",
+    heading: 'Ask YHWH AI — Ancient Biblical Wisdom & Exegetical Intelligence',
+    excerpt:
+      'Explore deep biblical exegesis, original Hebrew and Greek root words, covenant hermeneutics, and Asante Twi theological heritage with YHWH AI. A sovereign, unmonetized sanctuary intelligence dedicated to the glory of God.',
+  },
 ];
 
 // Append all 9 Legal & Institutional Governance Pages from Corpus
@@ -615,6 +626,7 @@ function buildSanctuaryNavPillsHtml() {
     { href: '/topics/', label: '🏷️ 10 Topical Scripture Hubs', gold: true },
     { href: '/verse/', label: '✨ Top 30 Bible Verses', gold: true },
     { href: '/lexicon/', label: '📖 Strong’s Lexicon', gold: true },
+    { href: '/ask/', label: '🤖 Ask YHWH AI', gold: true },
     { href: '/articles/', label: '📚 15 Pillar Study Guides', gold: true },
     { href: '/donate/', label: '💛 Support Mission (Donate)', gold: true },
   ];
@@ -653,6 +665,92 @@ function buildSanctuaryFooterHtml() {
     </nav>
     <p style="margin:0 auto;max-width:860px;line-height:1.7;">&copy; ${CURRENT_YEAR} <a href="https://adubible.org/" style="color:#f7d584;text-decoration:none;font-weight:700;">AduBible.org&reg;</a> &middot; Dedicated to Humanity; A Global Ministry of Apostle Kwame Adu &middot; <a href="https://nsuhia.com/" target="_blank" rel="noopener noreferrer" style="color:#f7d584;text-decoration:none;">Nsuhia, Ghana ↗</a> &middot; <span style="color:#34d399;font-weight:700;">100% Ads-Free Reading Experience</span></p>
   </footer>`;
+}
+
+
+function buildAskAiPrerenderShell(item) {
+  const inquiries = [
+    { badge: '👑 The Divine Name', title: 'The Sacred Name YHWH (יהוה) & The Tetragrammaton', desc: 'Unpack the covenantal self-existence of "I AM THAT I AM" (Ehyeh Asher Ehyeh) in Exodus 3:14 and how YHWH reveals God\'s unchangeable fidelity.' },
+    { badge: '🕊️ Hebrew Exegesis', title: 'The Covenant of Shalom (שָׁלוֹם): Beyond Peace to Total Wholeness', desc: 'Discover the ancient root shalam—completeness, divine restoration, restitution, and holistic reconciliation with God and man.' },
+    { badge: '📜 Greek Nuance', title: 'Agape (ἀγάπη) vs. Phileo (φιλέω) in John 21', desc: 'Analyze the profound dialogue on the Sea of Tiberias where sacrificial divine covenant love meets brotherly affection.' },
+    { badge: '⚡ Covenant Victory', title: 'Tetelestai (τετέλεσται): "It is Finished" — The Legal Receipt', desc: 'Explore the ancient papyrological receipts stamped "Tetelestai" meaning "Paid in Full," confirming humanity’s sin-debt was forever cleared.' },
+    { badge: '🌿 Kingdom Ethics', title: 'The Beatitudes in Matthew 5: The Charter of the Kingdom of Heaven', desc: 'Understand Makarios as divine favor and inner tranquility untethered to external circumstances, ushering in God’s heavenly reign.' },
+    { badge: '🇬🇭 African Heritage', title: 'Tweduampɔn Nyame & Adom (Grace) in Asante Twi Heritage', desc: 'Explore the profound Akan theological ontology: Tweduampɔn as the dependable tree of eternity upon which one leans without slipping.' },
+    { badge: '🛡️ Ancient Sanctuary', title: 'Psalm 91: The Secret Place of the Most High (Elyon & Shaddai)', desc: 'Journey into the four divine names of God in Psalm 91: Elyon, Shaddai, Yahweh, and Elohim—the fortress of sovereign protection.' },
+    { badge: '⚔️ Spiritual Exegesis', title: 'The Full Armor of God in Ephesians 6: Panoplia (πανοπλία)', desc: 'Analyze each piece of armor as God’s own garments from Isaiah 59:17 conferred upon believers in covenant union with Christ.' },
+  ];
+
+  const inqCards = inquiries.map((inq) => `
+    <div style="background:#141e16;border:1px solid #283629;border-radius:14px;padding:1.25rem 1.35rem;">
+      <span style="display:inline-block;padding:3px 9px;border-radius:999px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.35);color:#f59e0b;font-size:11px;font-weight:700;margin-bottom:0.5rem;">${inq.badge}</span>
+      <h3 style="font-size:1.1rem;color:#f7d584;margin:0 0 0.5rem 0;font-weight:700;line-height:1.35;">${inq.title}</h3>
+      <p style="font-size:0.92rem;color:#c7d6c6;line-height:1.65;margin:0;">${inq.desc}</p>
+    </div>
+  `).join('\n');
+
+  return `
+  <div id="root">
+    <main style="max-width:1120px;margin:0 auto;padding:2.5rem 1.25rem;font-family:system-ui,-apple-system,sans-serif;color:#e8ede7;background:#0d140e;line-height:1.7;">
+      <header style="text-align:center;margin-bottom:2.5rem;">
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.35);color:#f59e0b;font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:1rem;">
+          <span>✦ Trained Exegetical AI &middot; Ancient Wisdom</span>
+        </div>
+        <h1 style="font-family:Georgia,serif;font-size:2.65rem;color:#fafaf9;margin:0 0 1rem 0;line-height:1.2;font-weight:800;">
+          Ask <span style="color:#f59e0b;">YHWH AI</span> for Ancient Biblical Wisdom &amp; Exegesis
+        </h1>
+        <p style="font-size:1.15rem;color:#a8b6a7;max-width:820px;margin:0 auto 1.5rem auto;line-height:1.75;font-weight:300;">
+          Trained on the 66 canonical books of the Holy Bible, the ancient Hebrew Westminster Leningrad Codex (WLC), Greek Textus Receptus, Strong's Concordance, and the gospel ministry of <strong style="color:#34d399;">Apostle Kwame Adu of Nsuhia, Ghana</strong>. 100% free, unmonetized, and ads-free.
+        </p>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:1.5rem;">
+          ${buildSanctuaryNavPillsHtml()}
+        </div>
+      </header>
+
+      <section style="background:#131c14;border:1px solid #253326;border-radius:18px;padding:1.75rem;margin-bottom:2.5rem;box-shadow:0 12px 36px rgba(0,0,0,0.45);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid #233024;">
+          <div style="width:10px;height:10px;border-radius:50%;background:#34d399;box-shadow:0 0 12px #34d399;"></div>
+          <span style="font-size:0.85rem;font-weight:700;font-family:monospace;color:#f7d584;letter-spacing:0.03em;">YHWH AI Interactive Wisdom Terminal &middot; Armed with Sacred Texts</span>
+        </div>
+        <p style="font-size:1.02rem;color:#d8e2d5;line-height:1.75;margin-bottom:1.5rem;">
+          Explore deep theological exegesis, root Hebrew and Greek meanings, covenant hermeneutics, and Asante Twi translation heritage. Tap any inquiry below to launch the live interactive terminal:
+        </p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:1rem;">
+          ${inqCards}
+        </div>
+        <div style="text-align:center;margin-top:2rem;">
+          <a href="/ask/" style="display:inline-block;padding:14px 28px;background:#f59e0b;color:#0c0a09;font-weight:800;font-size:15px;text-decoration:none;border-radius:12px;box-shadow:0 6px 20px rgba(245,158,11,0.35);">
+            Launch Interactive YHWH AI Terminal &rarr;
+          </a>
+        </div>
+      </section>
+
+      <section style="margin-bottom:2.5rem;">
+        <h2 style="font-family:Georgia,serif;font-size:1.85rem;color:#f7d584;margin-bottom:1.25rem;text-align:center;">
+          The 4 Pillars of YHWH AI Training
+        </h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:1.25rem;">
+          <div style="background:#131c14;border:1px solid #253326;border-radius:14px;padding:1.35rem;">
+            <h3 style="font-size:1.15rem;color:#34d399;margin:0 0 0.5rem 0;">1. Original Language Primacy</h3>
+            <p style="font-size:0.92rem;color:#c7d6c6;line-height:1.65;margin:0;">Every inquiry cross-references original Hebrew Masoretic and Greek Textus Receptus scripts with Strong's Concordance numbering (H1-H8674, G1-G5624) and Brown-Driver-Briggs definitions.</p>
+          </div>
+          <div style="background:#131c14;border:1px solid #253326;border-radius:14px;padding:1.35rem;">
+            <h3 style="font-size:1.15rem;color:#34d399;margin:0 0 0.5rem 0;">2. Whole-Counsel Hermeneutics</h3>
+            <p style="font-size:0.92rem;color:#c7d6c6;line-height:1.65;margin:0;">Scripture interprets scripture. No isolated proof-texting; seamlessly uniting Old and New Testament covenant typology, Messianic prophecies, and apostolic doctrine.</p>
+          </div>
+          <div style="background:#131c14;border:1px solid #253326;border-radius:14px;padding:1.35rem;">
+            <h3 style="font-size:1.15rem;color:#34d399;margin:0 0 0.5rem 0;">3. Classical Commentary Synthesis</h3>
+            <p style="font-size:0.92rem;color:#c7d6c6;line-height:1.65;margin:0;">Synthesizes Matthew Henry's Complete Commentary, Charles Ellicott, Jamieson-Fausset-Brown, and ancient patristic texts alongside parallel world translations.</p>
+          </div>
+          <div style="background:#131c14;border:1px solid #253326;border-radius:14px;padding:1.35rem;">
+            <h3 style="font-size:1.15rem;color:#34d399;margin:0 0 0.5rem 0;">4. Sovereign Sanctuary Privacy</h3>
+            <p style="font-size:0.92rem;color:#c7d6c6;line-height:1.65;margin:0;">100% free, zero ads, zero data selling. Created in honor of Apostle Kwame Adu, your spiritual questions remain private between you and God.</p>
+          </div>
+        </div>
+      </section>
+
+      ${buildSanctuaryFooterHtml()}
+    </main>
+  </div>`;
 }
 
 function buildHomeAuthorityPrerenderShell() {
@@ -1674,6 +1772,93 @@ function buildSSG() {
       </div>`;
 
       html = replaceRootMount(html, legalSsrBlock);
+    } else if (item.route === '/ask/') {
+      const askAppSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        'name': 'YHWH AI — Ancient Biblical Wisdom & Exegesis',
+        'applicationCategory': 'EducationalApplication',
+        'operatingSystem': 'All',
+        'browserRequirements': 'Requires JavaScript. Requires HTML5.',
+        'description': item.description,
+        'url': canonicalUrl,
+        'inLanguage': ['en', 'ak', 'he', 'el'],
+        'offers': {
+          '@type': 'Offer',
+          'price': '0',
+          'priceCurrency': 'USD',
+        },
+        'publisher': {
+          '@type': 'Organization',
+          'name': 'AduBible.org®',
+          'url': BASE_URL,
+        },
+      };
+
+      const askFaqSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'mainEntity': [
+          {
+            '@type': 'Question',
+            'name': 'What is YHWH AI and how was its biblical intelligence developed?',
+            'acceptedAnswer': {
+              '@type': 'Answer',
+              'text': "YHWH AI (Ask AduBible) is a sovereign, unmonetized artificial intelligence engine trained on the 66 canonical books of the Holy Bible, ancient Hebrew Masoretic text, Greek Textus Receptus, and Strong's Concordance numbering.",
+            },
+          },
+          {
+            '@type': 'Question',
+            'name': 'How does YHWH AI handle original Hebrew and Greek root words?',
+            'acceptedAnswer': {
+              '@type': 'Answer',
+              'text': "Every inquiry cross-references original language manuscripts, providing exact Strong's numbers (e.g. H7965 for Shalom, G26 for Agape), transliterations, and Brown-Driver-Briggs / Thayer definitions.",
+            },
+          },
+          {
+            '@type': 'Question',
+            'name': 'Can YHWH AI analyze the Asante Twi and African Bible translations?',
+            'acceptedAnswer': {
+              '@type': 'Answer',
+              'text': 'Yes. YHWH AI uniquely incorporates the linguistic richness of the Asante Twi Holy Bible (Twerɛ Kronkron), highlighting indigenous concepts like Tweduampɔn Nyame (The Dependable Almighty) and Adom (Grace).',
+            },
+          },
+          {
+            '@type': 'Question',
+            'name': 'Is my theological research and chat history private?',
+            'acceptedAnswer': {
+              '@type': 'Answer',
+              'text': '100% private. In alignment with our strict Ads-Free Covenant, your chats and theological questions are never logged for commercial advertising profiling, never sold, and never tracked.',
+            },
+          },
+        ],
+      };
+
+      const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          {
+            '@type': 'ListItem',
+            'position': 1,
+            'name': 'Home',
+            'item': `${BASE_URL}/`,
+          },
+          {
+            '@type': 'ListItem',
+            'position': 2,
+            'name': 'Ask YHWH AI',
+            'item': canonicalUrl,
+          },
+        ],
+      };
+
+      html = html.replace(
+        '</head>',
+        `\n    <script type="application/ld+json">\n${JSON.stringify([askAppSchema, askFaqSchema, breadcrumbSchema], null, 2)}\n    </script>\n  </head>`
+      );
+
+      html = replaceRootMount(html, buildAskAiPrerenderShell(item));
     } else if (item.isHomeAuthority) {
       // Inject FAQPage JSON-LD schema for the root Online Bible Authority Hub
       const homeFaqSchema = {

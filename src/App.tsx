@@ -89,6 +89,7 @@ import { BibleGamesArcadeModal } from './components/games/BibleGamesArcadeModal'
 import { TopicalScriptureHubModal } from './components/TopicalScriptureHubModal';
 import { AduBibleLogo } from './components/AduBibleLogo';
 import { AskAduBibleModal } from './components/AskAduBibleModal';
+import { AskAduBiblePage } from './components/AskAduBiblePage';
 import { DonationHubPage } from './components/DonationHubPage';
 import { AdminDashboardPage } from './components/AdminDashboardPage';
 import { recordRealReaderVisit } from './services/adminService';
@@ -183,12 +184,13 @@ export function App() {
   );
 
   // Active Canon Navigation Tab: 'canonical' (Default Scripture Reader) | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin' | 'topics' | 'lexicon'
-  const [activeNavTab, setActiveNavTab] = useState<'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin' | 'topics' | 'lexicon'>(() => {
+  const [activeNavTab, setActiveNavTab] = useState<'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin' | 'topics' | 'lexicon' | 'ask'>(() => {
     if (initialRoute.targetTab) return initialRoute.targetTab;
     if (typeof window !== 'undefined') {
       const qTab = new URLSearchParams(window.location.search).get('tab');
       if (qTab === 'deuterocanon' || qTab === 'list-of-sixty' || qTab === 'articles' || qTab === 'donate' || qTab === 'admin') return qTab;
       const p = window.location.pathname.toLowerCase();
+      if (p.includes('ask') || p.includes('yhwh-ai')) return 'ask';
       if (p.includes('admin') || p.includes('dashboard') || p.includes('command')) return 'admin';
       if (p.includes('donate') || p.includes('giving') || p.includes('partner')) return 'donate';
       if (p.includes('articles') || p.includes('blog')) return 'articles';
@@ -764,6 +766,11 @@ export function App() {
         return;
       }
       const route = parseBibleHubUrlPath(window.location.pathname);
+      if (route.targetTab === 'ask') {
+        setActiveNavTab('ask');
+        setLegalModalState((prev) => ({ ...prev, open: false }));
+        return;
+      }
       if (route.targetTab === 'articles') {
         setActiveNavTab('articles');
         setActiveArticleSlug(route.articleSlug || null);
@@ -1414,6 +1421,8 @@ export function App() {
               '',
               `/${activeVersionIds[0] || 'nkjv'}/${currentBookSlug}/${currentChapter}`
             );
+          } else if (tab === 'ask') {
+            window.history.pushState({}, '', '/ask/');
           } else {
             window.history.pushState({}, '', `/${tab}`);
           }
@@ -1581,6 +1590,24 @@ export function App() {
             aria-label="Greek & Hebrew Strong's Lexicon"
           >
             <span>🏛️ Lexicon</span>
+          </button>
+
+          <button
+            type="button"
+            className={`quiet-button ${activeNavTab === 'ask' ? 'active-pill' : ''}`}
+            onClick={() => {
+              setActiveNavTab('ask');
+              if (typeof window !== 'undefined') {
+                window.history.pushState({}, '', '/ask/');
+              }
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            title="Ask YHWH AI — Ancient Biblical Wisdom & Exegesis"
+            aria-label="Ask YHWH AI"
+          >
+            <span style={{ color: activeNavTab === 'ask' ? '#f59e0b' : undefined, fontWeight: 700 }}>
+              🤖 Ask AI
+            </span>
           </button>
 
 
@@ -1917,6 +1944,47 @@ export function App() {
             }
             setActiveNavTab('canonical');
           }}
+        />
+      ) : activeNavTab === 'ask' ? (
+        <AskAduBiblePage
+          onBackToReader={() => {
+            setActiveNavTab('canonical');
+            if (typeof window !== 'undefined') {
+              window.history.pushState({}, '', '/');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onNavigateToPassage={(slug, ch, v) => {
+            handleSelectBookChapter(slug, ch, v);
+            setActiveNavTab('canonical');
+            if (typeof window !== 'undefined') {
+              window.history.pushState(
+                {},
+                '',
+                `/${activeVersionIds[0] || 'nkjv'}/${slug}/${ch}`
+              );
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (v) scrollToVerse(v);
+          }}
+          onSaveToVaultNotes={(title, noteBody, passageRef) => {
+            const newNote: StudyNote = {
+              id: `vault-note-${Date.now()}`,
+              bookId: currentBook.id,
+              bookSlug: currentBook.slug,
+              chapter: currentChapter,
+              verse: selectedVerse || 1,
+              versionId: activeVersionIds[0] || 'nkjv',
+              verseText: passageRef,
+              title: title,
+              body: noteBody,
+              tags: ['yhwh-ai', 'exegesis'],
+              createdAt: Date.now(),
+              updatedAt: Date.now(),
+            };
+            handleSaveNote(newNote);
+          }}
+          footer={renderSharedFooter()}
         />
       ) : activeNavTab === 'admin' ? (
         <AdminDashboardPage

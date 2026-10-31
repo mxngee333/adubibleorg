@@ -1335,7 +1335,7 @@ export function parseBibleHubUrlPath(pathname: string): {
     | 'sources'
     | 'contact'
     | 'cookie-policy';
-  targetTab?: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin' | 'topics' | 'lexicon';
+  targetTab?: 'canonical' | 'deuterocanon' | 'list-of-sixty' | 'articles' | 'donate' | 'admin' | 'topics' | 'lexicon' | 'ask';
   articleSlug?: string;
   topicSlug?: string;
   lexiconId?: string;
@@ -1350,6 +1350,16 @@ export function parseBibleHubUrlPath(pathname: string): {
   }
 
   const lower = cleanPath.toLowerCase();
+
+  // Support /ask/ or /ask-ai/ or /yhwh-ai/
+  if (lower === 'ask' || lower === 'ask-ai' || lower === 'yhwh-ai' || lower === 'ai') {
+    return {
+      versionId: 'nkjv',
+      bookSlug: 'john',
+      chapter: 1,
+      targetTab: 'ask',
+    };
+  }
 
   // Support /admin/ or /dashboard/
   if (lower === 'admin' || lower === 'dashboard' || lower === 'command') {
