@@ -626,7 +626,7 @@ function buildSanctuaryNavPillsHtml() {
     { href: '/topics/', label: '🏷️ 10 Topical Scripture Hubs', gold: true },
     { href: '/verse/', label: '✨ Top 30 Bible Verses', gold: true },
     { href: '/lexicon/', label: '📖 Strong’s Lexicon', gold: true },
-    { href: '/ask/', label: '🤖 Ask AduBible', gold: true },
+    { href: '/ask/', label: '<img src="/brand/icon-48.png" alt="" style="width:13px;height:13px;border-radius:2px;vertical-align:-1px;margin-right:5px;display:inline-block;" />Ask AduBible', gold: true },
     { href: '/articles/', label: '📚 15 Pillar Study Guides', gold: true },
     { href: '/donate/', label: '💛 Support Mission (Donate)', gold: true },
   ];

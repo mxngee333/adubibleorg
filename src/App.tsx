@@ -1594,7 +1594,7 @@ export function App() {
 
           <button
             type="button"
-            className={`quiet-button ${activeNavTab === 'ask' ? 'active-pill' : ''}`}
+            className={`quiet-button ask-adubible-mast-btn ${activeNavTab === 'ask' ? 'active-pill' : ''}`}
             onClick={() => {
               setActiveNavTab('ask');
               if (typeof window !== 'undefined') {
@@ -1605,8 +1605,21 @@ export function App() {
             title="Ask AduBible — Ancient Biblical Wisdom & Exegesis"
             aria-label="Ask AduBible"
           >
-            <span style={{ color: activeNavTab === 'ask' ? '#f59e0b' : undefined, fontWeight: 700 }}>
-              🤖 Ask AduBible
+            <span
+              style={{
+                color: activeNavTab === 'ask' ? '#f59e0b' : undefined,
+                fontWeight: 700,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              <img
+                src="/brand/icon-48.png"
+                alt=""
+                style={{ width: '15px', height: '15px', borderRadius: '3px', objectFit: 'contain' }}
+              />
+              <span>Ask AduBible</span>
             </span>
           </button>
 

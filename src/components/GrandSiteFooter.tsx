@@ -424,8 +424,12 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
                 style={{ color: '#f59e0b', fontWeight: 700 }}
                 title="Ask AduBible — Ancient Biblical Wisdom &amp; Exegesis"
               >
-                <span>🤖 Ask AduBible (Ancient Wisdom Engine)</span>
-                <span className="footer-badge badge-on" style={{ background: '#f59e0b', color: '#0c0a09', fontWeight: 800 }}>AI</span>
+                <img
+                  src="/brand/icon-48.png"
+                  alt=""
+                  style={{ width: '15px', height: '15px', borderRadius: '3px', objectFit: 'contain' }}
+                />
+                <span>Ask AduBible (Ancient Wisdom Engine)</span>
               </a>
             </li>
             <li className="footer-tool-item">
@@ -962,7 +966,12 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
             }}
             title="Ask AduBible — Ancient Biblical Wisdom & Exegesis"
           >
-            🤖 Ask AduBible
+            <img
+              src="/brand/icon-48.png"
+              alt=""
+              style={{ width: '13px', height: '13px', borderRadius: '2px', objectFit: 'contain' }}
+            />
+            <span>Ask AduBible</span>
           </a>
           <button
             type="button"
