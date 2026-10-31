@@ -9,7 +9,11 @@ import {
   getActiveGeminiApiKeys,
 } from '../services/neuralTtsService';
 import { isTwiLanguage, isDeadLegacyAudioUrl } from '../services/twiAudioService';
-import { transphonemizeTwiForSpeech } from '../services/twiPhonemeEngine';
+import {
+  transphonemizeTwiForSpeech,
+  conditionAfricanLocalLanguageForSpeech,
+  numberToTwiWords,
+} from '../services/twiPhonemeEngine';
 import { fetchHelloaoAudioTimings } from '../services/bibleEngineService';
 import {
   scrollVerseIntoViewIfNeeded,
@@ -333,7 +337,33 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     (targetBookName: string, targetChapter: number, targetLang: string): string => {
       const code = (targetLang || 'en').toLowerCase().trim();
       if (isTwiLanguage(code)) {
-        return `${targetBookName}, Ti ${targetChapter}. `;
+        const dialect = code === 'ak' ? 'akuapem' : 'asante';
+        const twiChapterWords = numberToTwiWords(targetChapter, dialect);
+        return `${targetBookName}, Ti ${twiChapterWords}. `;
+      }
+      if (code === 'ee' || code === 'ewe') {
+        return `${targetBookName}, Ta ${targetChapter}. `;
+      }
+      if (code === 'gaa') {
+        return `${targetBookName}, Yitso ${targetChapter}. `;
+      }
+      if (code === 'yo') {
+        return `${targetBookName}, Orí ${targetChapter}. `;
+      }
+      if (code === 'ha') {
+        return `${targetBookName}, Sura ta ${targetChapter}. `;
+      }
+      if (code === 'ig') {
+        return `${targetBookName}, Isi ${targetChapter}. `;
+      }
+      if (code === 'sw') {
+        return `${targetBookName}, Sura ya ${targetChapter}. `;
+      }
+      if (code === 'am') {
+        return `${targetBookName}, ምዕራፍ ${targetChapter}. `;
+      }
+      if (code === 'zu') {
+        return `${targetBookName}, Isahluko ${targetChapter}. `;
       }
       if (code.startsWith('fr')) {
         return `${targetBookName}, Chapitre ${targetChapter}. `;
@@ -741,9 +771,18 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
       return;
     }
 
-    const isTwi = isTwiLanguage(voiceLang) || isTwiLanguage(langCode);
-    const textForSpeech = isTwi
-      ? transphonemizeTwiForSpeech(textToSpeak)
+    const code = (voiceLang || langCode || 'en').toLowerCase().trim();
+    const isTwi = isTwiLanguage(code) || isTwiLanguage(langCode);
+    const isAfricanLocal =
+      isTwi ||
+      code === 'ee' ||
+      code === 'ewe' ||
+      code === 'gaa' ||
+      code === 'yo' ||
+      code === 'ig' ||
+      code === 'ha';
+    const textForSpeech = isAfricanLocal
+      ? conditionAfricanLocalLanguageForSpeech(textToSpeak, isTwi ? 'tw' : code)
       : textToSpeak;
     const clean = cleanVerseForSpeech(textForSpeech);
     if (!clean) {
@@ -752,17 +791,16 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
     }
 
     const utterance = new SpeechSynthesisUtterance(clean);
-    // Steady, reverent pacing for Akan phonological clarity
-    utterance.rate = isTwi ? Math.min(rate, 0.95) : rate;
+    // Steady, reverent pacing for Akan & West African phonological clarity
+    utterance.rate = isAfricanLocal ? Math.min(rate, 0.94) : rate;
     utterance.pitch = 1.0;
 
-    const code = (voiceLang || 'en').toLowerCase().trim();
     const matchedVoice = getBestNativeVoice(voiceLang);
     if (matchedVoice) {
       utterance.voice = matchedVoice;
       utterance.lang = matchedVoice.lang;
-    } else if (isTwi) {
-      // Browsers lack native ak-GH voices; standard voices pronounce transphonemized Akan phonemes cleanly via en-US
+    } else if (isAfricanLocal) {
+      // Browsers lack native ak-GH/ee-GH/gaa-GH voices; standard voices pronounce transphonemized West African phonemes cleanly via en-US
       utterance.lang = 'en-US';
     } else if (code.length === 2) {
       utterance.lang = `${code}-${code.toUpperCase()}`;
@@ -1066,11 +1104,16 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
         if (bilingualMode && parallelVerses && parallelVerses[index]) {
           const pVerse = parallelVerses[index];
           const targetLang = parallelLangCode || 'tw';
+          const cleanedParallel = cleanVerseForSpeech(pVerse.text);
+          const spokenParallel =
+            index === 0 && announceChapterTitleRef.current
+              ? `${buildSpokenChapterIntro(bookName, chapter, targetLang)}${cleanedParallel}`
+              : cleanedParallel;
 
           try {
             const secBuffer = await getOrPreloadAudioBuffer(
               ctx,
-              pVerse.text,
+              spokenParallel,
               targetLang,
               selectedVoice
             );
@@ -1098,14 +1141,14 @@ export const AudioBibleBar: React.FC<AudioBibleBarProps> = ({
               };
               secSource.start();
             } else {
-              speakNativeVerse(pVerse.text, targetLang, () => {
+              speakNativeVerse(spokenParallel, targetLang, () => {
                 if (isPlayingRef.current) {
                   playVerseAtIndex(index + 1);
                 }
               });
             }
           } catch {
-            speakNativeVerse(pVerse.text, targetLang, () => {
+            speakNativeVerse(spokenParallel, targetLang, () => {
               if (isPlayingRef.current) {
                 playVerseAtIndex(index + 1);
               }

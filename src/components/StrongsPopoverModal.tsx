@@ -11,6 +11,7 @@ import {
   Check,
 } from 'lucide-react';
 import { StrongsLexiconEntry } from '../types/bible';
+import { transphonemizeTwiForSpeech } from '../services/twiPhonemeEngine';
 
 interface StrongsPopoverModalProps {
   isOpen: boolean;
@@ -61,6 +62,32 @@ export const StrongsPopoverModal: React.FC<StrongsPopoverModalProps> = ({
       `${entry.transliteration}. ${entry.shortDefinition}`
     );
     utter.rate = 0.9;
+    utter.lang = 'en-US';
+    (window as any).__strongsUtterance = utter;
+    utter.onend = () => {
+      (window as any).__strongsUtterance = null;
+    };
+    utter.onerror = () => {
+      (window as any).__strongsUtterance = null;
+    };
+    try {
+      window.speechSynthesis.speak(utter);
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+    } catch {}
+  };
+
+  const handleSpeakTwiEquivalent = (twiText: string) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+    } catch {}
+    const conditioned = transphonemizeTwiForSpeech(
+      twiText.replace(/\//g, ', ')
+    );
+    const utter = new SpeechSynthesisUtterance(conditioned);
+    utter.rate = 0.88;
     utter.lang = 'en-US';
     (window as any).__strongsUtterance = utter;
     utter.onend = () => {
@@ -230,9 +257,24 @@ export const StrongsPopoverModal: React.FC<StrongsPopoverModalProps> = ({
                 </div>
 
                 <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-4">
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--green)] mb-1 flex items-center gap-1.5">
-                    <Globe2 className="h-3.5 w-3.5" />
-                    Asante Twi (Twerɛ Kronkron) Resonance
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--green)] flex items-center gap-1.5">
+                      <Globe2 className="h-3.5 w-3.5" />
+                      Asante Twi (Twerɛ Kronkron) Resonance
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleSpeakTwiEquivalent(
+                          active.twiEquivalent || 'Kronkron, Nyankopɔn Asɛm'
+                        )
+                      }
+                      className="inline-flex items-center gap-1 rounded-lg bg-[var(--soft)] border border-[var(--line)] px-2 py-0.5 text-[11px] font-bold text-[var(--green)] hover:opacity-80 transition"
+                      title="Pronounce Asante Twi Lexicon Resonance"
+                    >
+                      <Volume2 className="h-3 w-3" />
+                      Twi Audio
+                    </button>
                   </div>
                   <div className="text-base font-bold text-[var(--ink)]">
                     {active.twiEquivalent || 'Kronkron / Nyankopɔn Asɛm'}

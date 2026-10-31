@@ -15,6 +15,7 @@ import {
   getTopicalHubBySlug,
   TopicalHubEntry,
 } from '../data/topicalScriptureCorpus';
+import { transphonemizeTwiForSpeech } from '../services/twiPhonemeEngine';
 
 interface TopicalScriptureHubModalProps {
   isOpen: boolean;
@@ -51,13 +52,15 @@ export const TopicalScriptureHubModal: React.FC<TopicalScriptureHubModalProps> =
     }
   };
 
-  const handlePlayVoicePreview = (text: string) => {
+  const handlePlayVoicePreview = (text: string, lang: 'en' | 'tw' = 'en') => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
     try {
       window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.rate = 0.88;
-      utter.pitch = 0.95;
+      const spokenText = lang === 'tw' ? transphonemizeTwiForSpeech(text) : text;
+      const utter = new SpeechSynthesisUtterance(spokenText);
+      utter.rate = lang === 'tw' ? 0.88 : 0.9;
+      utter.pitch = 0.98;
+      utter.lang = 'en-US';
       window.speechSynthesis.speak(utter);
     } catch {}
   };
@@ -211,11 +214,21 @@ export const TopicalScriptureHubModal: React.FC<TopicalScriptureHubModalProps> =
                   </div>
 
                   {/* Asante Twi Translation */}
-                  <div className="text-xs sm:text-sm font-serif text-emerald-300/80 leading-relaxed pt-1 border-t border-stone-800/60">
-                    <span className="text-[10px] font-bold font-sans text-emerald-400 uppercase mr-2 px-1.5 py-0.5 rounded bg-emerald-500/10">
-                      TWI
-                    </span>
-                    {verse.twi}
+                  <div className="text-xs sm:text-sm font-serif text-emerald-300/80 leading-relaxed pt-1 border-t border-stone-800/60 flex items-start justify-between gap-2">
+                    <div>
+                      <span className="text-[10px] font-bold font-sans text-emerald-400 uppercase mr-2 px-1.5 py-0.5 rounded bg-emerald-500/10">
+                        TWI
+                      </span>
+                      {verse.twi}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handlePlayVoicePreview(verse.twi, 'tw')}
+                      className="p-1 rounded-md bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 transition-colors flex-shrink-0"
+                      title="Listen in Asante Twi"
+                    >
+                      <Volume2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
 
                   {/* Strong's Root Notes & Direct Navigation */}

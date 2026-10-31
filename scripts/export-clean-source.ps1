@@ -45,11 +45,15 @@ if (Test-Path $zipName) {
 Write-Host "`nCompressing archive $zipName..."
 Compress-Archive -Path $allPaths -DestinationPath $zipName -CompressionLevel Optimal
 
+# Create folder alias mirror
+Copy-Item $zipName 'bible-developer-source.zip' -Force
+
 $zipItem = Get-Item $zipName
 $sizeMB = [math]::Round($zipItem.Length / 1MB, 2)
 $sizeKB = [math]::Round($zipItem.Length / 1KB, 2)
 
 Write-Host "`nArchive successfully created!"
 Write-Host "Path: $($zipItem.FullName)"
+Write-Host "Mirror Path: C:\Users\kwame\Downloads\bible\bible-developer-source.zip"
 Write-Host "Size: $sizeKB KB ($sizeMB MB)"
 Write-Host "Last Modified: $($zipItem.LastWriteTime)"
