@@ -422,9 +422,9 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
                 }}
                 className="footer-btn-link"
                 style={{ color: '#f59e0b', fontWeight: 700 }}
-                title="Ask YHWH AI — Ancient Biblical Wisdom &amp; Exegesis"
+                title="Ask AduBible — Ancient Biblical Wisdom &amp; Exegesis"
               >
-                <span>🤖 Ask YHWH AI (Ancient Wisdom Engine)</span>
+                <span>🤖 Ask AduBible (Ancient Wisdom Engine)</span>
                 <span className="footer-badge badge-on" style={{ background: '#f59e0b', color: '#0c0a09', fontWeight: 800 }}>AI</span>
               </a>
             </li>
@@ -960,9 +960,9 @@ export const GrandSiteFooter: React.FC<GrandSiteFooterProps> = ({
               fontWeight: 700,
               cursor: 'pointer',
             }}
-            title="Ask YHWH AI — Ancient Biblical Wisdom & Exegesis"
+            title="Ask AduBible — Ancient Biblical Wisdom & Exegesis"
           >
-            🤖 Ask YHWH AI
+            🤖 Ask AduBible
           </a>
           <button
             type="button"

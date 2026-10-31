@@ -381,12 +381,12 @@ const CANONICAL_ROUTES = [
     route: '/ask/',
     priority: '0.9',
     changefreq: 'weekly',
-    title: 'Ask YHWH AI — Ancient Biblical Wisdom & Exegesis | AduBible.org®',
+    title: 'Ask AduBible — Ancient Biblical Wisdom & Exegesis | AduBible.org®',
     description:
-      "Ask YHWH AI for deep exegetical answers from the Holy Bible, Hebrew Masoretic text, Greek Textus Receptus, and Strong's Concordance. 100% free, unmonetized sanctuary AI honoring Apostle Kwame Adu of Nsuhia, Ghana.",
-    heading: 'Ask YHWH AI — Ancient Biblical Wisdom & Exegetical Intelligence',
+      "Ask AduBible for deep exegetical answers from the Holy Bible, Hebrew Masoretic text, Greek Textus Receptus, and Strong's Concordance. 100% free, unmonetized sanctuary AI honoring Apostle Kwame Adu of Nsuhia, Ghana.",
+    heading: 'Ask AduBible — Ancient Biblical Wisdom & Exegetical Intelligence',
     excerpt:
-      'Explore deep biblical exegesis, original Hebrew and Greek root words, covenant hermeneutics, and Asante Twi theological heritage with YHWH AI. A sovereign, unmonetized sanctuary intelligence dedicated to the glory of God.',
+      'Explore deep biblical exegesis, original Hebrew and Greek root words, covenant hermeneutics, and Asante Twi theological heritage with Ask AduBible. A sovereign, unmonetized sanctuary intelligence dedicated to the glory of God.',
   },
 ];
 
@@ -626,7 +626,7 @@ function buildSanctuaryNavPillsHtml() {
     { href: '/topics/', label: '🏷️ 10 Topical Scripture Hubs', gold: true },
     { href: '/verse/', label: '✨ Top 30 Bible Verses', gold: true },
     { href: '/lexicon/', label: '📖 Strong’s Lexicon', gold: true },
-    { href: '/ask/', label: '🤖 Ask YHWH AI', gold: true },
+    { href: '/ask/', label: '🤖 Ask AduBible', gold: true },
     { href: '/articles/', label: '📚 15 Pillar Study Guides', gold: true },
     { href: '/donate/', label: '💛 Support Mission (Donate)', gold: true },
   ];
@@ -696,7 +696,7 @@ function buildAskAiPrerenderShell(item) {
           <span>✦ Trained Exegetical AI &middot; Ancient Wisdom</span>
         </div>
         <h1 style="font-family:Georgia,serif;font-size:2.65rem;color:#fafaf9;margin:0 0 1rem 0;line-height:1.2;font-weight:800;">
-          Ask <span style="color:#f59e0b;">YHWH AI</span> for Ancient Biblical Wisdom &amp; Exegesis
+          Ask <span style="color:#f59e0b;">AduBible</span> for Ancient Biblical Wisdom &amp; Exegesis
         </h1>
         <p style="font-size:1.15rem;color:#a8b6a7;max-width:820px;margin:0 auto 1.5rem auto;line-height:1.75;font-weight:300;">
           Trained on the 66 canonical books of the Holy Bible, the ancient Hebrew Westminster Leningrad Codex (WLC), Greek Textus Receptus, Strong's Concordance, and the gospel ministry of <strong style="color:#34d399;">Apostle Kwame Adu of Nsuhia, Ghana</strong>. 100% free, unmonetized, and ads-free.
@@ -709,7 +709,7 @@ function buildAskAiPrerenderShell(item) {
       <section style="background:#131c14;border:1px solid #253326;border-radius:18px;padding:1.75rem;margin-bottom:2.5rem;box-shadow:0 12px 36px rgba(0,0,0,0.45);">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid #233024;">
           <div style="width:10px;height:10px;border-radius:50%;background:#34d399;box-shadow:0 0 12px #34d399;"></div>
-          <span style="font-size:0.85rem;font-weight:700;font-family:monospace;color:#f7d584;letter-spacing:0.03em;">YHWH AI Interactive Wisdom Terminal &middot; Armed with Sacred Texts</span>
+          <span style="font-size:0.85rem;font-weight:700;font-family:monospace;color:#f7d584;letter-spacing:0.03em;">Ask AduBible Interactive Wisdom Terminal &middot; Armed with Sacred Texts</span>
         </div>
         <p style="font-size:1.02rem;color:#d8e2d5;line-height:1.75;margin-bottom:1.5rem;">
           Explore deep theological exegesis, root Hebrew and Greek meanings, covenant hermeneutics, and Asante Twi translation heritage. Tap any inquiry below to launch the live interactive terminal:
@@ -719,14 +719,14 @@ function buildAskAiPrerenderShell(item) {
         </div>
         <div style="text-align:center;margin-top:2rem;">
           <a href="/ask/" style="display:inline-block;padding:14px 28px;background:#f59e0b;color:#0c0a09;font-weight:800;font-size:15px;text-decoration:none;border-radius:12px;box-shadow:0 6px 20px rgba(245,158,11,0.35);">
-            Launch Interactive YHWH AI Terminal &rarr;
+            Launch Interactive Ask AduBible Terminal &rarr;
           </a>
         </div>
       </section>
 
       <section style="margin-bottom:2.5rem;">
         <h2 style="font-family:Georgia,serif;font-size:1.85rem;color:#f7d584;margin-bottom:1.25rem;text-align:center;">
-          The 4 Pillars of YHWH AI Training
+          The 4 Pillars of Ask AduBible Training
         </h2>
         <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:1.25rem;">
           <div style="background:#131c14;border:1px solid #253326;border-radius:14px;padding:1.35rem;">
@@ -1776,7 +1776,7 @@ function buildSSG() {
       const askAppSchema = {
         '@context': 'https://schema.org',
         '@type': 'WebApplication',
-        'name': 'YHWH AI — Ancient Biblical Wisdom & Exegesis',
+        'name': 'Ask AduBible — Ancient Biblical Wisdom & Exegesis',
         'applicationCategory': 'EducationalApplication',
         'operatingSystem': 'All',
         'browserRequirements': 'Requires JavaScript. Requires HTML5.',
@@ -1801,15 +1801,15 @@ function buildSSG() {
         'mainEntity': [
           {
             '@type': 'Question',
-            'name': 'What is YHWH AI and how was its biblical intelligence developed?',
+            'name': 'What is Ask AduBible and how was its biblical intelligence developed?',
             'acceptedAnswer': {
               '@type': 'Answer',
-              'text': "YHWH AI (Ask AduBible) is a sovereign, unmonetized artificial intelligence engine trained on the 66 canonical books of the Holy Bible, ancient Hebrew Masoretic text, Greek Textus Receptus, and Strong's Concordance numbering.",
+              'text': "Ask AduBible is a sovereign, unmonetized artificial intelligence engine trained on the 66 canonical books of the Holy Bible, ancient Hebrew Masoretic text, Greek Textus Receptus, and Strong's Concordance numbering.",
             },
           },
           {
             '@type': 'Question',
-            'name': 'How does YHWH AI handle original Hebrew and Greek root words?',
+            'name': 'How does Ask AduBible handle original Hebrew and Greek root words?',
             'acceptedAnswer': {
               '@type': 'Answer',
               'text': "Every inquiry cross-references original language manuscripts, providing exact Strong's numbers (e.g. H7965 for Shalom, G26 for Agape), transliterations, and Brown-Driver-Briggs / Thayer definitions.",
@@ -1817,10 +1817,10 @@ function buildSSG() {
           },
           {
             '@type': 'Question',
-            'name': 'Can YHWH AI analyze the Asante Twi and African Bible translations?',
+            'name': 'Can Ask AduBible analyze the Asante Twi and African Bible translations?',
             'acceptedAnswer': {
               '@type': 'Answer',
-              'text': 'Yes. YHWH AI uniquely incorporates the linguistic richness of the Asante Twi Holy Bible (Twerɛ Kronkron), highlighting indigenous concepts like Tweduampɔn Nyame (The Dependable Almighty) and Adom (Grace).',
+              'text': 'Yes. Ask AduBible uniquely incorporates the linguistic richness of the Asante Twi Holy Bible (Twerɛ Kronkron), highlighting indigenous concepts like Tweduampɔn Nyame (The Dependable Almighty) and Adom (Grace).',
             },
           },
           {
@@ -1847,7 +1847,7 @@ function buildSSG() {
           {
             '@type': 'ListItem',
             'position': 2,
-            'name': 'Ask YHWH AI',
+            'name': 'Ask AduBible',
             'item': canonicalUrl,
           },
         ],

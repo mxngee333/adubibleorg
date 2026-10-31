@@ -1602,11 +1602,11 @@ export function App() {
               }
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            title="Ask YHWH AI — Ancient Biblical Wisdom & Exegesis"
-            aria-label="Ask YHWH AI"
+            title="Ask AduBible — Ancient Biblical Wisdom & Exegesis"
+            aria-label="Ask AduBible"
           >
             <span style={{ color: activeNavTab === 'ask' ? '#f59e0b' : undefined, fontWeight: 700 }}>
-              🤖 Ask AI
+              🤖 Ask AduBible
             </span>
           </button>
 
@@ -3427,9 +3427,9 @@ export function App() {
                               setSelectedVerse(verseNumber);
                               setIsAskAduBibleOpen(true);
                             }}
-                            title="Ask AduBible AI Exegetical Companion about this verse"
+                            title="Ask AduBible Exegetical Companion about this verse"
                           >
-                            ✦ Ask AI
+                            ✦ Ask AduBible
                           </button>
 
                           {!prefs.showStrongsInline && (

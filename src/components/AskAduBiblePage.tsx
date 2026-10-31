@@ -112,16 +112,16 @@ const CURATED_ANCIENT_INQUIRIES: AncientWisdomInquiry[] = [
 
 const FAQS = [
   {
-    q: 'What is YHWH AI and how was its biblical intelligence developed?',
-    a: 'YHWH AI (Ask AduBible) is a sovereign, unmonetized artificial intelligence engine specially trained on the 66 canonical books of the Holy Bible, ancient Hebrew Masoretic codices, Greek Textus Receptus, Brenton Septuagint, Strong’s Concordance numbering, Brown-Driver-Briggs, and Thayer lexicons. Created in honor of the gospel legacy of Apostle Kwame Adu (Nsuhia, Ghana), it provides rigorous textual exegesis with zero commercial advertisements or behavioral data tracking.',
+    q: 'What is Ask AduBible and how was its biblical intelligence developed?',
+    a: 'Ask AduBible is a sovereign, unmonetized artificial intelligence engine specially trained on the 66 canonical books of the Holy Bible, ancient Hebrew Masoretic codices, Greek Textus Receptus, Brenton Septuagint, Strong’s Concordance numbering, Brown-Driver-Briggs, and Thayer lexicons. Created in honor of the gospel legacy of Apostle Kwame Adu (Nsuhia, Ghana), it provides rigorous textual exegesis with zero commercial advertisements or behavioral data tracking.',
   },
   {
-    q: 'How does YHWH AI handle original Hebrew and Greek root words?',
+    q: 'How does Ask AduBible handle original Hebrew and Greek root words?',
     a: 'Every biblical inquiry cross-references original language manuscripts, providing exact Strong\'s Concordance numbering (e.g. H7965 for Shalom, G26 for Agape), original script glyphs, transliterations, and nuanced definitions, preventing shallow interpretations and unlocking deep lexical clarity.',
   },
   {
-    q: 'Can YHWH AI analyze the Asante Twi and African Bible translations?',
-    a: 'Yes. YHWH AI uniquely incorporates the linguistic richness of the Asante Twi Holy Bible (Twerɛ Kronkron), Akuapem Twi, Ewe (Eʋegbe), Gã, and Yoruba, revealing how indigenous theological terms—such as Tweduampɔn Nyame (The Dependable Almighty) and Adom (Grace)—faithfully articulate eternal biblical truths.',
+    q: 'Can Ask AduBible analyze the Asante Twi and African Bible translations?',
+    a: 'Yes. Ask AduBible uniquely incorporates the linguistic richness of the Asante Twi Holy Bible (Twerɛ Kronkron), Akuapem Twi, Ewe (Eʋegbe), Gã, and Yoruba, revealing how indigenous theological terms—such as Tweduampɔn Nyame (The Dependable Almighty) and Adom (Grace)—faithfully articulate eternal biblical truths.',
   },
   {
     q: 'How do I jump directly from an AI answer into the 4-column parallel reader?',
@@ -158,8 +158,8 @@ export const AskAduBiblePage: React.FC<AskAduBiblePageProps> = ({
           id: 'intro-welcome',
           sender: 'assistant',
           timestamp: Date.now(),
-          text: `### ✦ Akwaaba to YHWH AI — Ancient Biblical Wisdom & Exegesis
-I am **YHWH AI (Ask AduBible)**, your dedicated biblical intelligence and exegetical scholar. I have been trained on the full counsel of God's Word:
+          text: `### ✦ Akwaaba to Ask AduBible — Ancient Biblical Wisdom & Exegesis
+I am **Ask AduBible**, your dedicated biblical intelligence and exegetical scholar. I have been trained on the full counsel of God's Word:
 - **The 66 Canonical Scriptures** across parallel global translations.
 - **Original Languages**: Hebrew Westminster Leningrad Codex (WLC) & Greek Textus Receptus with Strong’s Concordance (H1–H8674, G1–G5624).
 - **The Living Heritage** of the Asante Twi Holy Bible (*Twerɛ Kronkron*) honoring Apostle Kwame Adu of Nsuhia, Ghana.
@@ -246,7 +246,7 @@ Select one of the curated ancient wisdom inquiries below, or type any verse, the
 
   const handleCopyMessage = (id: string, text: string) => {
     if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText(`${text}\n\n— YHWH AI Exegesis · AduBible.org®`);
+      navigator.clipboard.writeText(`${text}\n\n— Ask AduBible Exegesis · AduBible.org®`);
       setCopiedId(id);
       setTimeout(() => setCopiedId(null), 2000);
     }
@@ -254,7 +254,7 @@ Select one of the curated ancient wisdom inquiries below, or type any verse, the
 
   const handleSaveToVault = (id: string, text: string, context?: string) => {
     if (onSaveToVaultNotes) {
-      onSaveToVaultNotes(`YHWH AI Exegesis: ${context || 'Scripture Wisdom'}`, text, context || 'Scripture');
+      onSaveToVaultNotes(`Ask AduBible Exegesis: ${context || 'Scripture Wisdom'}`, text, context || 'Scripture');
       setSavedId(id);
       setTimeout(() => setSavedId(null), 2000);
     }
@@ -289,7 +289,7 @@ Select one of the curated ancient wisdom inquiries below, or type any verse, the
                   AduBible Sanctuary
                 </span>
                 <span className="text-[10px] text-amber-500 font-semibold tracking-wider uppercase mt-0.5">
-                  YHWH AI Biblical Wisdom Engine
+                  Ask AduBible Biblical Wisdom Engine
                 </span>
               </div>
             </div>
@@ -317,7 +317,7 @@ Select one of the curated ancient wisdom inquiries below, or type any verse, the
             <span>Trained Exegetical AI · Ancient Wisdom</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-serif font-extrabold tracking-tight text-[var(--ink)] mb-4 leading-tight">
-            Ask <span className="text-amber-500 font-serif">YHWH AI</span> for Ancient Biblical Wisdom
+            Ask <span className="text-amber-500 font-serif">AduBible</span> for Ancient Biblical Wisdom
           </h1>
           <p className="text-base sm:text-lg text-[var(--subtle)] leading-relaxed font-light">
             Unpack the deep counsel of God’s Word with an AI trained on the{' '}
@@ -334,7 +334,7 @@ Select one of the curated ancient wisdom inquiries below, or type any verse, the
             <div className="flex items-center gap-2.5">
               <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-xs font-bold font-mono text-[var(--ink)]">
-                YHWH AI Terminal · Online &amp; Armed with Sacred Texts
+                Ask AduBible Terminal · Online &amp; Armed with Sacred Texts
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -376,7 +376,7 @@ Select one of the curated ancient wisdom inquiries below, or type any verse, the
                     <div className="flex items-center justify-between gap-3 pb-2 border-b border-[var(--line)]/60 text-xs text-[var(--subtle)]">
                       <div className="flex items-center gap-2">
                         <Sparkles className="w-4 h-4 text-amber-500" />
-                        <span className="font-bold text-[var(--ink)]">YHWH AI Exegetical Scholar</span>
+                        <span className="font-bold text-[var(--ink)]">Ask AduBible Exegetical Scholar</span>
                         {m.bookContext && (
                           <span className="px-2 py-0.5 rounded-full bg-[var(--soft)] text-[10px] font-mono text-emerald-400 border border-[var(--line)]">
                             {m.bookContext}
@@ -519,9 +519,9 @@ Select one of the curated ancient wisdom inquiries below, or type any verse, the
                 type="submit"
                 disabled={!inputQuery.trim() || isLoading}
                 className="px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-sm flex items-center gap-2 shadow-lg transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                title="Send inquiry to YHWH AI"
+                title="Send inquiry to Ask AduBible"
               >
-                <span>Ask AI</span>
+                <span>Ask AduBible</span>
                 <Send className="w-4 h-4" />
               </button>
             </form>
@@ -532,7 +532,7 @@ Select one of the curated ancient wisdom inquiries below, or type any verse, the
         <section className="space-y-6">
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[var(--ink)] mb-2">
-              The 4 Pillars of YHWH AI Training
+              The 4 Pillars of Ask AduBible Training
             </h2>
             <p className="text-sm text-[var(--subtle)] leading-relaxed">
               Engineered with uncompromising reverence for biblical orthodoxy, manuscript fidelity, and linguistic precision.
@@ -560,7 +560,7 @@ Select one of the curated ancient wisdom inquiries below, or type any verse, the
                 2. Whole-Counsel Covenant Hermeneutics
               </h3>
               <p className="text-sm text-[var(--subtle)] leading-relaxed">
-                Scripture interprets scripture. YHWH AI refuses isolated proof-texting, synthesizing Old and New Testament covenants, Messianic fulfillment in Christ, and apostolic doctrine with wholeness and contextual integrity.
+                Scripture interprets scripture. Ask AduBible refuses isolated proof-texting, synthesizing Old and New Testament covenants, Messianic fulfillment in Christ, and apostolic doctrine with wholeness and contextual integrity.
               </p>
             </div>
 
@@ -597,7 +597,7 @@ Select one of the curated ancient wisdom inquiries below, or type any verse, the
               Frequently Asked Questions
             </h2>
             <p className="text-sm text-[var(--subtle)] mt-1">
-              Everything you need to know about the YHWH AI biblical exegesis engine.
+              Everything you need to know about the Ask AduBible biblical exegesis engine.
             </p>
           </div>
 
